@@ -4,12 +4,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.lang.reflect.Field;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class DistanceTest {
+  @Test
+  void constructor_happy() {
+    assertDoesNotThrow(() -> new Distance(2.9324));
+  }
 
   @Test
   void constructor_shouldThrowOnNegativeKm() {
@@ -19,22 +20,9 @@ class DistanceTest {
     );
   }
 
-  @Test
-  void getKm() {
-    // given
-    Distance sut = new Distance(40.2837456412);
-
-    // when
-    double actualKm = sut.getKm();
-
-    // then
-    assertEquals(40.2837456412, actualKm);
-  }
-
   @ParameterizedTest
   @ValueSource(doubles = {120.001, 30.0, 0, 1876252.3938438743})
-  void setKm_shouldSetProperly(double validValue)
-      throws NoSuchFieldException, IllegalAccessException {
+  void setKm_happy(double validValue) {
     // given
     Distance sut = new Distance(0);
 
@@ -42,9 +30,7 @@ class DistanceTest {
     sut.setKm(validValue);
 
     // then
-    final Field field = sut.getClass().getDeclaredField("km");
-    field.setAccessible(true);
-    assertEquals(validValue, field.get(sut));
+    assertEquals(validValue, sut.getKm());
   }
 
   @ParameterizedTest

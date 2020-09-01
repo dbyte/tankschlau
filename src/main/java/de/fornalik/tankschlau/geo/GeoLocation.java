@@ -8,14 +8,14 @@ public class GeoLocation {
   private String postCode;
   private Coordinates2D coordinates2D;
 
+  public GeoLocation(Coordinates2D coordinates2D) {
+    this.coordinates2D = coordinates2D;
+  }
+
   public GeoLocation(String street, String houseNumber, String postCode) {
     this.street = street;
     this.houseNumber = houseNumber;
     this.postCode = postCode;
-  }
-
-  public GeoLocation(Coordinates2D coordinates2D) {
-    this.coordinates2D = coordinates2D;
   }
 
   public String getStreet() {

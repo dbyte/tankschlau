@@ -1,5 +1,6 @@
 package de.fornalik.tankschlau;
 
+import de.fornalik.tankschlau.geo.Coordinates2D;
 import de.fornalik.tankschlau.geo.Distance;
 import de.fornalik.tankschlau.geo.GeoLocation;
 import de.fornalik.tankschlau.station.Petrol;
@@ -13,6 +14,7 @@ public class TankSchlau {
 
   public static void main(String[] args) {
     GeoLocation location = new GeoLocation("Meinestraße", "42", "38440");
+    location.setCoordinates2D(new Coordinates2D(-43.0, 53.93822));
 
     ArrayList<Petrol> petrols = new ArrayList<>();
     petrols.add(new Petrol(PetrolType.DIESEL, 1.00));

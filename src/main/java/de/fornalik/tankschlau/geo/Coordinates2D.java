@@ -3,36 +3,28 @@ package de.fornalik.tankschlau.geo;
 import java.util.StringJoiner;
 
 public class Coordinates2D {
-  private final double latitude;
-  private final double longitude;
+  public final double LATITUDE;
+  public final double LONGITUDE;
 
   public Coordinates2D(double lat, double lon) {
-    this.latitude = lat;
-    this.longitude = lon;
+    this.LATITUDE = lat;
+    this.LONGITUDE = lon;
     throwOnInvalidCoordinates();
-  }
-
-  public double getLatitude() {
-    return latitude;
-  }
-
-  public double getLongitude() {
-    return longitude;
   }
 
   private void throwOnInvalidCoordinates() throws InvalidCoordinatesException {
     // Source: https://stackoverflow.com/a/47188298
-    if (latitude < -85.05112878 || latitude > 85.05112878
-        || longitude < -180.0 || longitude > 180.0)
+    if (LATITUDE < -85.05112878 || LATITUDE > 85.05112878
+        || LONGITUDE < -180.0 || LONGITUDE > 180.0)
       throw new InvalidCoordinatesException(
-          "One ore mode coordinates are out of bounds. Lat: " + latitude + ", Lon: " + longitude);
+          "One ore mode coordinates are out of bounds. Lat: " + LATITUDE + ", Lon: " + LONGITUDE);
   }
 
   @Override
   public String toString() {
     return new StringJoiner(", ", Coordinates2D.class.getSimpleName() + "[", "]")
-        .add("latitude=" + latitude)
-        .add("longitude=" + longitude)
+        .add("latitude=" + LATITUDE)
+        .add("longitude=" + LONGITUDE)
         .toString();
   }
 
