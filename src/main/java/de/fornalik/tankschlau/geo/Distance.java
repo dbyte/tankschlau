@@ -3,7 +3,7 @@ package de.fornalik.tankschlau.geo;
 import java.util.StringJoiner;
 
 public class Distance {
-  private double km = 0.0;
+  private double km;
 
   public Distance(double km) {
     setKm(km);
