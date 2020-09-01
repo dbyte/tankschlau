@@ -35,8 +35,8 @@ public class PetrolStation {
 
   public double getPrice(PetrolType petrolType) throws PriceException {
     double[] priceValues = petrols.stream()
-        .filter(price -> price.getType().equals(petrolType))
-        .mapToDouble(Petrol::getPrice).toArray();
+        .filter(price -> price.type.equals(petrolType))
+        .mapToDouble(petrol -> petrol.price).toArray();
 
     throwOnInvalidPrice(petrolType, priceValues.length);
     return priceValues[0];
