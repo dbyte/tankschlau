@@ -20,7 +20,7 @@ class DistanceTest {
   }
 
   @Test
-  void getKm_shouldReturnProperly() {
+  void getKm() {
     // given
     Distance sut = new Distance(40.2837456412);
 
