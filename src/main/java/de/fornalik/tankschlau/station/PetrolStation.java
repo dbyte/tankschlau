@@ -8,12 +8,12 @@ import java.util.StringJoiner;
 import java.util.UUID;
 
 public class PetrolStation {
-  private final UUID uuid;
-  private final String name;
-  private final String brand;
-  private final String place;
-  private final GeoLocation geoLocation;
-  private Distance distanceToCurrentLocation;
+  public final UUID uuid;
+  public final String name;
+  public final String brand;
+  public final String place;
+  public final GeoLocation geoLocation;
+  public final Distance distanceToCurrentLocation;
   private ArrayList<Petrol> petrols;
 
   public PetrolStation(
@@ -30,6 +30,14 @@ public class PetrolStation {
     this.place = place;
     this.geoLocation = geoLocation;
     this.distanceToCurrentLocation = distanceToCurrentLocation;
+    this.petrols = petrols;
+  }
+
+  public ArrayList<Petrol> getPetrols() {
+    return petrols;
+  }
+
+  public void setPetrols(ArrayList<Petrol> petrols) {
     this.petrols = petrols;
   }
 
@@ -61,7 +69,7 @@ public class PetrolStation {
         .add("place='" + place + "'")
         .add("geoLocation=" + geoLocation)
         .add("distanceToCurrentLocation=" + distanceToCurrentLocation)
-        .add("petrols=" + petrols.toString())
+        .add("petrols=" + (petrols != null ? petrols.toString() : null))
         .toString();
   }
 
