@@ -19,6 +19,15 @@ public class Distance {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    Distance that = (Distance) o;
+    return this.km == that.km;
+  }
+
+  @Override
   public String toString() {
     return new StringJoiner(", ", Distance.class.getSimpleName() + "[", "]")
         .add("km=" + km)

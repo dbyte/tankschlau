@@ -9,16 +9,16 @@ import de.fornalik.tankschlau.station.PetrolType;
 public class TankerkoenigResponseFixture {
 
   public JsonObject createJson(final PetrolStation petrolStation)
-      throws GeoLocation.CoordinatesNullException, PetrolStation.PriceException {
+      throws PetrolStation.PriceException {
 
-    JsonObject root = createRoot_happy();
+    JsonObject root = createJsonRoot_happy();
     JsonArray stations = new JsonArray();
-    stations.add(createPetrolStationWithAllFields(petrolStation));
+    stations.add(createJsonPetrolStationWithAllFields(petrolStation));
     root.add("stations", stations);
     return root;
   }
 
-  private JsonObject createRoot_happy() {
+  private JsonObject createJsonRoot_happy() {
     JsonObject root = new JsonObject();
 
     root.addProperty("ok", true);
@@ -29,8 +29,8 @@ public class TankerkoenigResponseFixture {
     return root;
   }
 
-  private JsonObject createPetrolStationWithAllFields(PetrolStation petrolStation)
-      throws GeoLocation.CoordinatesNullException, PetrolStation.PriceException {
+  private JsonObject createJsonPetrolStationWithAllFields(PetrolStation petrolStation)
+      throws PetrolStation.PriceException {
     JsonObject station = new JsonObject();
 
     // Create all possible fields as of API documentation at Tankerkoenig.de.
@@ -42,7 +42,7 @@ public class TankerkoenigResponseFixture {
     station.addProperty("place", petrolStation.place);
     station.addProperty("lat", petrolStation.geoLocation.getCoordinates2D().latitude);
     station.addProperty("lng", petrolStation.geoLocation.getCoordinates2D().longitude);
-    station.addProperty("dist", petrolStation.distanceToCurrentLocation.getKm());
+    station.addProperty("dist", petrolStation.distance.getKm());
     station.addProperty("diesel", petrolStation.getPrice(PetrolType.DIESEL));
     station.addProperty("e5", petrolStation.getPrice(PetrolType.E5));
     station.addProperty("e10", petrolStation.getPrice(PetrolType.E10));

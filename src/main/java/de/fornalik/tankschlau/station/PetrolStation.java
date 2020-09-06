@@ -3,9 +3,7 @@ package de.fornalik.tankschlau.station;
 import de.fornalik.tankschlau.geo.Distance;
 import de.fornalik.tankschlau.geo.GeoLocation;
 
-import java.util.ArrayList;
-import java.util.StringJoiner;
-import java.util.UUID;
+import java.util.*;
 
 public class PetrolStation {
   public final UUID uuid;
@@ -13,7 +11,7 @@ public class PetrolStation {
   public final String brand;
   public final String place;
   public final GeoLocation geoLocation;
-  public final Distance distanceToCurrentLocation;
+  public final Distance distance;
   private ArrayList<Petrol> petrols;
 
   public PetrolStation(
@@ -22,15 +20,15 @@ public class PetrolStation {
       String brand,
       String place,
       GeoLocation geoLocation,
-      Distance distanceToCurrentLocation,
+      Distance distance,
       ArrayList<Petrol> petrols) {
     this.uuid = uuid;
     this.name = name;
     this.brand = brand;
     this.place = place;
     this.geoLocation = geoLocation;
-    this.distanceToCurrentLocation = distanceToCurrentLocation;
-    this.petrols = petrols;
+    this.distance = distance;
+    setPetrols(petrols);
   }
 
   public ArrayList<Petrol> getPetrols() {
@@ -38,7 +36,7 @@ public class PetrolStation {
   }
 
   public void setPetrols(ArrayList<Petrol> petrols) {
-    this.petrols = petrols;
+    this.petrols = petrols != null ? petrols : new ArrayList<>();
   }
 
   public double getPrice(PetrolType petrolType) throws PriceException {
@@ -61,6 +59,26 @@ public class PetrolStation {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    PetrolStation that = (PetrolStation) o;
+    boolean isEqual = Objects.equals(uuid, that.uuid) &&
+        Objects.equals(name, that.name) &&
+        Objects.equals(brand, that.brand) &&
+        Objects.equals(place, that.place) &&
+        Objects.equals(geoLocation, that.geoLocation) &&
+        Objects.equals(distance, that.distance);
+    if (!isEqual) return false;
+
+    // Expensive check, thus at the end
+    this.getPetrols().sort(Petrol::compareTo);
+    that.getPetrols().sort(Petrol::compareTo);
+    return Arrays.equals(getPetrols().toArray(), that.getPetrols().toArray());
+  }
+
+  @Override
   public String toString() {
     return new StringJoiner(", ", PetrolStation.class.getSimpleName() + "[", "]")
         .add("uuid=" + uuid)
@@ -68,7 +86,7 @@ public class PetrolStation {
         .add("brand='" + brand + "'")
         .add("place='" + place + "'")
         .add("geoLocation=" + geoLocation)
-        .add("distanceToCurrentLocation=" + distanceToCurrentLocation)
+        .add("distanceToCurrentLocation=" + distance)
         .add("petrols=" + (petrols != null ? petrols.toString() : null))
         .toString();
   }

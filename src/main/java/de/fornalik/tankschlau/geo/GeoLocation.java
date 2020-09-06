@@ -1,5 +1,6 @@
 package de.fornalik.tankschlau.geo;
 
+import java.util.Objects;
 import java.util.StringJoiner;
 
 public class GeoLocation {
@@ -8,14 +9,22 @@ public class GeoLocation {
   private String postCode;
   private Coordinates2D coordinates2D;
 
-  public GeoLocation(Coordinates2D coordinates2D) {
-    this.coordinates2D = coordinates2D;
+  public GeoLocation() {
+    this("",
+         "",
+         "",
+         new Coordinates2D(0.0, 0.0));
   }
 
-  public GeoLocation(String street, String houseNumber, String postCode) {
-    this.street = street;
-    this.houseNumber = houseNumber;
-    this.postCode = postCode;
+  public GeoLocation(
+      String street,
+      String houseNumber,
+      String postCode,
+      Coordinates2D coordinates2D) {
+    setStreet(street);
+    setHouseNumber(houseNumber);
+    setPostCode(postCode);
+    setCoordinates2D(coordinates2D);
   }
 
   public String getStreet() {
@@ -42,13 +51,29 @@ public class GeoLocation {
     this.postCode = postCode.trim();
   }
 
-  public Coordinates2D getCoordinates2D() throws CoordinatesNullException {
-    if (coordinates2D == null) throw new CoordinatesNullException(this);
+  public Coordinates2D getCoordinates2D() {
     return coordinates2D;
   }
 
-  public void setCoordinates2D(Coordinates2D coordinates2D) {
-    this.coordinates2D = coordinates2D;
+  public void setCoordinates2D(final Coordinates2D coordinates2D) {
+    this.coordinates2D = coordinates2D != null ? coordinates2D : new Coordinates2D(0, 0);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    GeoLocation that = (GeoLocation) o;
+    return Objects.equals(getStreet(), that.getStreet()) &&
+        Objects.equals(getHouseNumber(), that.getHouseNumber()) &&
+        Objects.equals(getPostCode(), that.getPostCode()) &&
+        Objects.equals(getCoordinates2D(), that.getCoordinates2D());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getStreet(), getHouseNumber(), getPostCode(), getCoordinates2D());
   }
 
   @Override
@@ -59,11 +84,5 @@ public class GeoLocation {
         .add("postCode='" + postCode + "'")
         .add("coordinates2D=" + coordinates2D)
         .toString();
-  }
-
-  public static class CoordinatesNullException extends Exception {
-    public CoordinatesNullException(GeoLocation geoLocation) {
-      super("Coordinates are null for " + geoLocation.toString());
-    }
   }
 }

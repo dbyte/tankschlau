@@ -6,10 +6,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GeoLocationTest {
   @Test
-  void getCoordinates2D_happy() throws GeoLocation.CoordinatesNullException {
+  void getCoordinates2D_happy() {
     // given
     Coordinates2D expectedCoordinates = new Coordinates2D(2.9372, -42.20236);
-    GeoLocation sut = new GeoLocation(expectedCoordinates);
+    GeoLocation sut = new GeoLocation();
+    sut.setCoordinates2D(expectedCoordinates);
 
     // when then
     Coordinates2D actualCoordinates = sut.getCoordinates2D();
@@ -17,14 +18,15 @@ class GeoLocationTest {
   }
 
   @Test
-  void getCoordinates2D_shouldThrowIfNull() {
+  void getCoordinates2D_shouldZeroIfSetToNull() {
     // given
-    GeoLocation sut = new GeoLocation(null);
+    Coordinates2D expectedCoordinates = new Coordinates2D(0.0, 0.0);
+    GeoLocation sut = new GeoLocation();
 
-    // when then
-    assertThrows(
-        GeoLocation.CoordinatesNullException.class,
-        sut::getCoordinates2D
-    );
+    // when
+    sut.setCoordinates2D(null);
+
+    // then
+    assertEquals(expectedCoordinates, sut.getCoordinates2D());
   }
 }

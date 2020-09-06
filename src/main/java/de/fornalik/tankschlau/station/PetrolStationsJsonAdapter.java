@@ -4,15 +4,14 @@ import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import de.fornalik.tankschlau.geo.Coordinates2D;
-import de.fornalik.tankschlau.geo.Distance;
 import de.fornalik.tankschlau.geo.GeoLocation;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> {
+
   @Override
   public void write(
       JsonWriter jsonWriter, List<PetrolStation> petrolStation) {
@@ -28,31 +27,27 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
 
     for (JsonElement jsonElement : stations) {
       if (!jsonElement.isJsonObject()) continue;
-      JsonObject station = jsonElement.getAsJsonObject();
-      petrolStation.add(createStation(station));
+      JsonObject jsonStation = jsonElement.getAsJsonObject();
+      petrolStation.add(createStation(jsonStation));
     }
 
     return petrolStation;
   }
 
   private PetrolStation createStation(JsonObject station) {
-    UUID uuid = (UUID.fromString(station.get("id").getAsString()));
-    String name = station.get("name").getAsString();
-    String brand = station.get("brand").getAsString();
-    String place = station.get("place").getAsString();
-    boolean isOpen = station.get("isOpen").getAsBoolean();
+    GeoLocation geoLocation = adaptGeoLocation(station);
 
-    return new PetrolStation(
-        uuid,
-        name,
-        brand,
-        place,
-        createGeoLocation(station),
-        createDistance(station),
-        createPetrols(station));
+    return new PetrolStationBuilder()
+        .setBaseData(station.get("name").getAsString(),
+                     station.get("brand").getAsString(),
+                     station.get("place").getAsString())
+        .setDistance(station.get("dist").getAsDouble())
+        .setPetrols(adaptPetrols(station))
+        .setGeoLocation(adaptGeoLocation(station))
+        .create(adaptUUID(station));
   }
 
-  private ArrayList<Petrol> createPetrols(JsonObject station) {
+  private ArrayList<Petrol> adaptPetrols(JsonObject station) {
     ArrayList<Petrol> petrols = new ArrayList<>();
     JsonElement price;
 
@@ -67,25 +62,25 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
     return petrols;
   }
 
-  private GeoLocation createGeoLocation(JsonObject station) {
-    GeoLocation geoLocation = new GeoLocation(
-        station.get("street").getAsString(),
-        station.get("houseNumber").getAsString(),
-        station.get("postCode").getAsString());
+  private UUID adaptUUID(JsonObject station) {
+    return UUID.fromString(station.get("id").getAsString());
+  }
 
-    geoLocation.setCoordinates2D(createCoordinates2D(station));
+  private GeoLocation adaptGeoLocation(JsonObject station) {
+    GeoLocation geoLocation = new GeoLocation();
+
+    geoLocation.setStreet(station.get("street").getAsString());
+    geoLocation.setHouseNumber(station.get("houseNumber").getAsString());
+    geoLocation.setPostCode(station.get("postCode").getAsString());
+    geoLocation.setCoordinates2D(adaptCoordinates2D(station));
 
     return geoLocation;
   }
 
-  private Coordinates2D createCoordinates2D(JsonObject station) {
+  private Coordinates2D adaptCoordinates2D(JsonObject station) {
     return new Coordinates2D(
         station.get("lat").getAsDouble(),
         station.get("lng").getAsDouble()
     );
-  }
-
-  private Distance createDistance(JsonObject station) {
-    return new Distance(station.get("dist").getAsDouble());
   }
 }

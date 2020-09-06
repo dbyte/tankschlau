@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import de.fornalik.tankschlau.geo.GeoLocation;
-import de.fornalik.tankschlau.helpers.response.fixture.PetrolStationFixture;
 import de.fornalik.tankschlau.helpers.response.fixture.TankerkoenigResponseFixture;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,7 +20,7 @@ class PetrolStationsJsonAdapterTest {
   private static TankerkoenigResponseFixture responseFixture;
 
   @BeforeAll
-  public static void beforeAll() {
+  static void beforeAll() {
     responseFixture = new TankerkoenigResponseFixture();
 
     GsonBuilder builder = new GsonBuilder();
@@ -30,14 +29,14 @@ class PetrolStationsJsonAdapterTest {
   }
 
   @AfterAll
-  public static void afterAll() {
+  static void afterAll() {
     gson = null;
     responseFixture = null;
   }
 
   @Test
   void read_oneStationHappy()
-      throws PetrolStation.PriceException, GeoLocation.CoordinatesNullException {
+      throws PetrolStation.PriceException {
     // given
     ArrayList<PetrolStation> actualPetrolStations;
     PetrolStation expectedPetrolStation = PetrolStationFixture.create_Berlin();
@@ -50,7 +49,7 @@ class PetrolStationsJsonAdapterTest {
     assertNotNull(actualPetrolStations);
     assertEquals(1, actualPetrolStations.size());
 
-    PetrolStation station = actualPetrolStations.get(0);
-    assertEquals(expectedPetrolStation.toString(), station.toString());
+    PetrolStation actualPetrolStation = actualPetrolStations.get(0);
+    assertEquals(expectedPetrolStation, actualPetrolStation);
   }
 }

@@ -21,6 +21,17 @@ public class Coordinates2D {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    Coordinates2D that = (Coordinates2D) o;
+
+    if (Double.compare(that.latitude, latitude) != 0) return false;
+    return Double.compare(that.longitude, longitude) == 0;
+  }
+
+  @Override
   public String toString() {
     return new StringJoiner(", ", Coordinates2D.class.getSimpleName() + "[", "]")
         .add("latitude=" + latitude)
