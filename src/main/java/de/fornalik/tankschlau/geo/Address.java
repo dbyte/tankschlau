@@ -119,6 +119,16 @@ public class Address {
       return new Builder();
     }
 
+    public Address build() {
+      return new Address(
+          name,
+          mandatoryFields.get("street"),
+          houseNumber,
+          mandatoryFields.get("city"),
+          mandatoryFields.get("postCode"),
+          coordinates2D);
+    }
+
     public Builder setMandatoryFields(String street, String city, String postCode) {
       StringLegalizer.init(street).mandatory().end();
       StringLegalizer.init(city).mandatory().end();
@@ -141,19 +151,14 @@ public class Address {
       return this;
     }
 
-    public Builder setCoordinates2D(double lat, double lon) {
-      this.coordinates2D = new Coordinates2D(lat, lon);
+    public Builder setCoordinates2D(Coordinates2D coords) {
+      this.coordinates2D = coords;
       return this;
     }
 
-    public Address build() {
-      return new Address(
-          name,
-          mandatoryFields.get("street"),
-          houseNumber,
-          mandatoryFields.get("city"),
-          mandatoryFields.get("postCode"),
-          coordinates2D);
+    public Builder setCoordinates2D(double lat, double lon) {
+      this.coordinates2D = new Coordinates2D(lat, lon);
+      return this;
     }
   }
 }
