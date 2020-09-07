@@ -3,8 +3,8 @@ package de.fornalik.tankschlau.station;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import de.fornalik.tankschlau.geo.GeoLocation;
 import de.fornalik.tankschlau.helpers.response.fixture.TankerkoenigResponseFixture;
+import de.fornalik.tankschlau.util.StringLegalizer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -35,8 +35,7 @@ class PetrolStationsJsonAdapterTest {
   }
 
   @Test
-  void read_oneStationHappy()
-      throws PetrolStation.PriceException {
+  void read_oneStationHappy() throws StringLegalizer.ValueException {
     // given
     ArrayList<PetrolStation> actualPetrolStations;
     PetrolStation expectedPetrolStation = PetrolStationFixture.create_Berlin();

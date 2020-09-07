@@ -1,61 +1,41 @@
 package de.fornalik.tankschlau.station;
 
+import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Distance;
-import de.fornalik.tankschlau.geo.GeoLocation;
 
 import java.util.*;
 
 public class PetrolStation {
   public final UUID uuid;
-  public final String name;
   public final String brand;
-  public final String place;
-  public final GeoLocation geoLocation;
+  public final Address address;
   public final Distance distance;
-  private ArrayList<Petrol> petrols;
+  private final ArrayList<Petrol> petrols;
 
   public PetrolStation(
       UUID uuid,
-      String name,
       String brand,
-      String place,
-      GeoLocation geoLocation,
+      Address address,
       Distance distance,
       ArrayList<Petrol> petrols) {
-    this.uuid = uuid;
-    this.name = name;
-    this.brand = brand;
-    this.place = place;
-    this.geoLocation = geoLocation;
+
+    this.uuid = Objects.requireNonNull(uuid);
+    this.brand = Objects.requireNonNull(brand);
+    this.address = address;
     this.distance = distance;
-    setPetrols(petrols);
+    this.petrols = petrols != null ? petrols : new ArrayList<>();
   }
 
   public ArrayList<Petrol> getPetrols() {
     return petrols;
   }
 
-  public void setPetrols(ArrayList<Petrol> petrols) {
-    this.petrols = petrols != null ? petrols : new ArrayList<>();
-  }
+  public Optional<Double> getPrice(PetrolType petrolType) {
+    Objects.requireNonNull(petrolType);
 
-  public double getPrice(PetrolType petrolType) throws PriceException {
-    double[] priceValues = petrols.stream()
-        .filter(price -> price.type.equals(petrolType))
-        .mapToDouble(petrol -> petrol.price).toArray();
-
-    throwOnInvalidPrice(petrolType, priceValues.length);
-    return priceValues[0];
-  }
-
-  private void throwOnInvalidPrice(PetrolType petrolType, int countResults) throws PriceException {
-    if (countResults == 0) {
-      throw new PriceException(String.format("No price data for petrol type %s", petrolType));
-
-    } else if (countResults >= 2) {
-      throw new PriceException(
-          String.format("Price has %d duplicates for petrol type %s", countResults, petrolType));
-    }
+    return Petrols
+        .getPetrol(petrols, petrolType)
+        .map(petrol -> petrol.price);
   }
 
   @Override
@@ -65,16 +45,14 @@ public class PetrolStation {
 
     PetrolStation that = (PetrolStation) o;
     boolean isEqual = Objects.equals(uuid, that.uuid) &&
-        Objects.equals(name, that.name) &&
         Objects.equals(brand, that.brand) &&
-        Objects.equals(place, that.place) &&
-        Objects.equals(geoLocation, that.geoLocation) &&
+        Objects.equals(address, that.address) &&
         Objects.equals(distance, that.distance);
     if (!isEqual) return false;
 
     // Expensive check, thus at the end
-    this.getPetrols().sort(Petrol::compareTo);
-    that.getPetrols().sort(Petrol::compareTo);
+    Petrols.sortByType(this.getPetrols());
+    Petrols.sortByType(that.getPetrols());
     return Arrays.equals(getPetrols().toArray(), that.getPetrols().toArray());
   }
 
@@ -82,18 +60,10 @@ public class PetrolStation {
   public String toString() {
     return new StringJoiner(", ", PetrolStation.class.getSimpleName() + "[", "]")
         .add("uuid=" + uuid)
-        .add("name='" + name + "'")
         .add("brand='" + brand + "'")
-        .add("place='" + place + "'")
-        .add("geoLocation=" + geoLocation)
-        .add("distanceToCurrentLocation=" + distance)
-        .add("petrols=" + (petrols != null ? petrols.toString() : null))
+        .add("address=" + address)
+        .add("distance=" + distance)
+        .add("petrols=" + petrols)
         .toString();
-  }
-
-  public static class PriceException extends Exception {
-    public PriceException(String message) {
-      super(message);
-    }
   }
 }

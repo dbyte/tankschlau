@@ -3,8 +3,9 @@ package de.fornalik.tankschlau.station;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Coordinates2D;
-import de.fornalik.tankschlau.geo.GeoLocation;
+import de.fornalik.tankschlau.util.StringLegalizer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,35 +29,36 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
     for (JsonElement jsonElement : stations) {
       if (!jsonElement.isJsonObject()) continue;
       JsonObject jsonStation = jsonElement.getAsJsonObject();
-      petrolStation.add(createStation(jsonStation));
+
+      try {
+        petrolStation.add(createStation(jsonStation));
+      } catch (StringLegalizer.ValueException e) {
+        e.printStackTrace();
+      }
     }
 
     return petrolStation;
   }
 
-  private PetrolStation createStation(JsonObject station) {
-    GeoLocation geoLocation = adaptGeoLocation(station);
-
+  private PetrolStation createStation(JsonObject station) throws StringLegalizer.ValueException {
     return new PetrolStationBuilder()
-        .setBaseData(station.get("name").getAsString(),
-                     station.get("brand").getAsString(),
-                     station.get("place").getAsString())
+        .setBrand(station.get("brand").getAsString())
         .setDistance(station.get("dist").getAsDouble())
         .setPetrols(adaptPetrols(station))
-        .setGeoLocation(adaptGeoLocation(station))
-        .create(adaptUUID(station));
+        .setAddress(adaptAddress(station))
+        .build(adaptUUID(station));
   }
 
   private ArrayList<Petrol> adaptPetrols(JsonObject station) {
     ArrayList<Petrol> petrols = new ArrayList<>();
-    JsonElement price;
 
     for (PetrolType petrolType : PetrolType.values()) {
       // Assuming that PetrolType.toLowerCase() matches the JSON keys!
       String jsonPetrolType = petrolType.name().toLowerCase();
 
-      price = station.get(jsonPetrolType);
-      if (price != null) petrols.add(new Petrol(petrolType, price.getAsDouble()));
+      JsonElement price = station.get(jsonPetrolType);
+      if (price != null)
+        petrols.add(new Petrol(petrolType, price.getAsDouble()));
     }
 
     return petrols;
@@ -66,15 +68,14 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
     return UUID.fromString(station.get("id").getAsString());
   }
 
-  private GeoLocation adaptGeoLocation(JsonObject station) {
-    GeoLocation geoLocation = new GeoLocation();
-
-    geoLocation.setStreet(station.get("street").getAsString());
-    geoLocation.setHouseNumber(station.get("houseNumber").getAsString());
-    geoLocation.setPostCode(station.get("postCode").getAsString());
-    geoLocation.setCoordinates2D(adaptCoordinates2D(station));
-
-    return geoLocation;
+  private Address adaptAddress(JsonObject station) throws StringLegalizer.ValueException {
+    return new Address(
+        station.get("name").getAsString(),
+        station.get("street").getAsString(),
+        station.get("houseNumber").getAsString(),
+        station.get("place").getAsString(),
+        station.get("postCode").getAsString(),
+        adaptCoordinates2D(station));
   }
 
   private Coordinates2D adaptCoordinates2D(JsonObject station) {
