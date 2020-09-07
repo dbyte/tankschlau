@@ -21,7 +21,7 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
 
   @Override
   public List<PetrolStation> read(JsonReader jsonReader) {
-    ArrayList<PetrolStation> petrolStation = new ArrayList<>();
+    ArrayList<PetrolStation> petrolStations = new ArrayList<>();
 
     JsonObject rootObj = JsonParser.parseReader(jsonReader).getAsJsonObject();
     JsonArray stations = rootObj.getAsJsonArray("stations");
@@ -31,13 +31,13 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
       JsonObject jsonStation = jsonElement.getAsJsonObject();
 
       try {
-        petrolStation.add(createStation(jsonStation));
+        petrolStations.add(createStation(jsonStation));
       } catch (StringLegalizer.ValueException e) {
         e.printStackTrace();
       }
     }
 
-    return petrolStation;
+    return petrolStations;
   }
 
   private PetrolStation createStation(JsonObject station) throws StringLegalizer.ValueException {
