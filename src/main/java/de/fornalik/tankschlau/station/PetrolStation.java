@@ -9,7 +9,7 @@ public class PetrolStation {
   public final UUID uuid;
   public final String brand;
   public final Address address;
-  public final Distance distance;
+  private final Distance distance;
   private final ArrayList<Petrol> petrols;
 
   public PetrolStation(

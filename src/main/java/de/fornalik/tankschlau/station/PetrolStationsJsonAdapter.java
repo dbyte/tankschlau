@@ -37,7 +37,7 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
   }
 
   private PetrolStation createStation(JsonObject station) {
-    return new PetrolStationBuilder()
+    return PetrolStationBuilder.init()
         .setBrand(station.get("brand").getAsString())
         .setDistance(station.get("dist").getAsDouble())
         .setPetrols(adaptPetrols(station))
@@ -53,7 +53,7 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
       String jsonPetrolType = petrolType.name().toLowerCase();
 
       JsonElement price = station.get(jsonPetrolType);
-      if (price != null)
+      if (price != null && !price.isJsonNull())
         petrols.add(new Petrol(petrolType, price.getAsDouble()));
     }
 

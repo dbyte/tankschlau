@@ -2,9 +2,7 @@ package de.fornalik.tankschlau.geo;
 
 import de.fornalik.tankschlau.util.StringLegalizer;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.StringJoiner;
+import java.util.*;
 
 public class Address {
   private String name;
@@ -106,5 +104,56 @@ public class Address {
         .add("city='" + city + "'")
         .add("coordinates2D=" + getCoordinates2D())
         .toString();
+  }
+
+  public static class Builder {
+    private final Map<String, String> mandatoryFields = new HashMap<>();
+    private String name;
+    private String houseNumber;
+    private Coordinates2D coordinates2D;
+
+    private Builder() {
+    }
+
+    public static Builder init() {
+      return new Builder();
+    }
+
+    public Builder setMandatoryFields(String street, String city, String postCode) {
+      StringLegalizer.init(street).mandatory().end();
+      StringLegalizer.init(city).mandatory().end();
+      StringLegalizer.init(postCode).mandatory().end();
+
+      mandatoryFields.put("street", street);
+      mandatoryFields.put("city", city);
+      mandatoryFields.put("postCode", postCode);
+
+      return this;
+    }
+
+    public Builder setName(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public Builder setHouseNumber(String houseNumber) {
+      this.houseNumber = houseNumber;
+      return this;
+    }
+
+    public Builder setCoordinates2D(double lat, double lon) {
+      this.coordinates2D = new Coordinates2D(lat, lon);
+      return this;
+    }
+
+    public Address build() {
+      return new Address(
+          name,
+          mandatoryFields.get("street"),
+          houseNumber,
+          mandatoryFields.get("city"),
+          mandatoryFields.get("postCode"),
+          coordinates2D);
+    }
   }
 }

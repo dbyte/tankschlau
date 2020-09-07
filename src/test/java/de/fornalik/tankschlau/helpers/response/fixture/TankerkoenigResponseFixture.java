@@ -2,18 +2,18 @@ package de.fornalik.tankschlau.helpers.response.fixture;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import de.fornalik.tankschlau.geo.Coordinates2D;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolType;
 
 public class TankerkoenigResponseFixture {
 
   public JsonObject createJson(final PetrolStation petrolStation) {
-
     JsonObject root = createJsonRoot_happy();
     JsonArray stations = new JsonArray();
+
     stations.add(createJsonPetrolStationWithAllFields(petrolStation));
     root.add("stations", stations);
+
     return root;
   }
 
@@ -29,8 +29,15 @@ public class TankerkoenigResponseFixture {
   }
 
   private JsonObject createJsonPetrolStationWithAllFields(PetrolStation petrolStation) {
+    // We really need the optionals to contain values here because the incoming PetrolStation object
+    // might be value-compared to a resulting PetrolStation by some tests.
+    assert petrolStation.getPetrolPrice(PetrolType.DIESEL).isPresent();
+    assert petrolStation.getPetrolPrice(PetrolType.E10).isPresent();
+    assert petrolStation.getPetrolPrice(PetrolType.E5).isPresent();
+    assert petrolStation.getDistance().isPresent();
+    assert petrolStation.address.getCoordinates2D().isPresent();
+
     JsonObject station = new JsonObject();
-    Coordinates2D zeroCoordinates = new Coordinates2D(0.0, 0.0);
 
     // Create all possible fields as of API documentation at Tankerkoenig.de.
     // So this marks a happy path regarding valid field names.
@@ -39,21 +46,15 @@ public class TankerkoenigResponseFixture {
     station.addProperty("brand", petrolStation.brand);
     station.addProperty("street", petrolStation.address.getStreet());
     station.addProperty("place", petrolStation.address.getCity());
-    station.addProperty("dist", petrolStation.distance.getKm());
-    station.addProperty("diesel", petrolStation.getPetrolPrice(PetrolType.DIESEL).orElse(0.0));
-    station.addProperty("e5", petrolStation.getPetrolPrice(PetrolType.E5).orElse(0.0));
-    station.addProperty("e10", petrolStation.getPetrolPrice(PetrolType.E10).orElse(0.0));
+    station.addProperty("dist", petrolStation.getDistance().get().getKm());
+    station.addProperty("diesel", petrolStation.getPetrolPrice(PetrolType.DIESEL).get());
+    station.addProperty("e5", petrolStation.getPetrolPrice(PetrolType.E5).get());
+    station.addProperty("e10", petrolStation.getPetrolPrice(PetrolType.E10).get());
     station.addProperty("isOpen", true);
     station.addProperty("houseNumber", petrolStation.address.getHouseNumber());
     station.addProperty("postCode", petrolStation.address.getPostCode());
-
-    station.addProperty("lat", petrolStation.address
-        .getCoordinates2D()
-        .orElse(zeroCoordinates).latitude);
-
-    station.addProperty("lng", petrolStation.address
-        .getCoordinates2D()
-        .orElse(zeroCoordinates).longitude);
+    station.addProperty("lat", petrolStation.address.getCoordinates2D().get().latitude);
+    station.addProperty("lng", petrolStation.address.getCoordinates2D().get().longitude);
 
     return station;
   }

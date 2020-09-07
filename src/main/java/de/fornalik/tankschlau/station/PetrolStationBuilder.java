@@ -15,6 +15,13 @@ public class PetrolStationBuilder {
   private String brand;
   private Address address;
 
+  private PetrolStationBuilder() {
+  }
+
+  public static PetrolStationBuilder init() {
+    return new PetrolStationBuilder();
+  }
+
   public PetrolStation build(UUID uuid) {
     return new PetrolStation(
         uuid,
