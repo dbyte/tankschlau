@@ -15,8 +15,9 @@ public class Petrols {
   }
 
   /**
-   * Use for sorting a Petrol array, based on enum {@link PetrolType}.
-   * The array will get sorted based on the order in which the enum values are defined.
+   * Use for sorting a Petrol array, based on the order of values defined in Enum
+   * {@link PetrolType}. The array will get sorted based on the order in which the enum values
+   * are defined.
    *
    * @param petrols ArrayList of {@link Petrol}s
    */
@@ -50,7 +51,7 @@ public class Petrols {
   }
 
   /**
-   * Thrown when there are duplicates of {@link PetrolType} in a Petrol collection.
+   * Thrown when we've found duplicates of {@link PetrolType} in a {@link Petrol} collection.
    *
    * @implNote This is an unchecked Exception.
    */

@@ -30,17 +30,13 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
       if (!jsonElement.isJsonObject()) continue;
       JsonObject jsonStation = jsonElement.getAsJsonObject();
 
-      try {
-        petrolStations.add(createStation(jsonStation));
-      } catch (StringLegalizer.ValueException e) {
-        e.printStackTrace();
-      }
+      petrolStations.add(createStation(jsonStation));
     }
 
     return petrolStations;
   }
 
-  private PetrolStation createStation(JsonObject station) throws StringLegalizer.ValueException {
+  private PetrolStation createStation(JsonObject station) {
     return new PetrolStationBuilder()
         .setBrand(station.get("brand").getAsString())
         .setDistance(station.get("dist").getAsDouble())
@@ -68,7 +64,7 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
     return UUID.fromString(station.get("id").getAsString());
   }
 
-  private Address adaptAddress(JsonObject station) throws StringLegalizer.ValueException {
+  private Address adaptAddress(JsonObject station) {
     return new Address(
         station.get("name").getAsString(),
         station.get("street").getAsString(),

@@ -41,7 +41,7 @@ public class Coordinates2D {
 
   /**
    * Exception thrown when latitude, longitude or both are outside the valid range.
-   * @implNote This is an unchecked exception.
+   * @implNote Unchecked exception.
    * @see java.lang.RuntimeException
    */
   public static class InvalidCoordinatesException extends RuntimeException {

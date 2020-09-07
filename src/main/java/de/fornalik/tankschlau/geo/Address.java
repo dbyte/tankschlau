@@ -14,9 +14,7 @@ public class Address {
   private String postCode;
   private Coordinates2D coordinates2D;
 
-  public Address(String street, String city, String postCode)
-      throws StringLegalizer.ValueException {
-
+  public Address(String street, String city, String postCode) {
     this(null, street, null, city, postCode, null);
   }
 
@@ -26,7 +24,7 @@ public class Address {
       String houseNumber,
       String city,
       String postCode,
-      Coordinates2D coordinates2D) throws StringLegalizer.ValueException {
+      Coordinates2D coordinates2D) {
 
     setName(name);
     setStreet(street);
@@ -48,7 +46,7 @@ public class Address {
     return street;
   }
 
-  public void setStreet(String street) throws StringLegalizer.ValueException {
+  public void setStreet(String street) {
     this.street = StringLegalizer.init(street).mandatory().safeTrim().end();
   }
 
@@ -64,7 +62,7 @@ public class Address {
     return city;
   }
 
-  public void setCity(String city) throws StringLegalizer.ValueException {
+  public void setCity(String city) {
     this.city = StringLegalizer.init(city).mandatory().safeTrim().end();
   }
 
@@ -72,7 +70,7 @@ public class Address {
     return postCode;
   }
 
-  public void setPostCode(String postCode) throws StringLegalizer.ValueException {
+  public void setPostCode(String postCode) {
     this.postCode = StringLegalizer.init(postCode).mandatory().safeTrim().end();
   }
 

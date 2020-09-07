@@ -8,7 +8,7 @@ public class Petrol {
   public final double price;
 
   public Petrol(PetrolType type, double price) {
-    this.type = Objects.requireNonNull(type);
+    this.type = Objects.requireNonNull(type, "type must not be null.");
     this.price = price;
   }
 

@@ -35,7 +35,7 @@ class PetrolStationsJsonAdapterTest {
   }
 
   @Test
-  void read_oneStationHappy() throws StringLegalizer.ValueException {
+  void read_oneStationHappy() {
     // given
     ArrayList<PetrolStation> actualPetrolStations;
     PetrolStation expectedPetrolStation = PetrolStationFixture.create_Berlin();

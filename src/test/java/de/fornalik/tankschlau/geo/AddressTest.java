@@ -1,6 +1,5 @@
 package de.fornalik.tankschlau.geo;
 
-import de.fornalik.tankschlau.util.StringLegalizer;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -9,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AddressTest {
   @Test
-  void getCoordinates2D_happy() throws StringLegalizer.ValueException {
+  void getCoordinates2D_happy() {
     // given
     Coordinates2D expectedCoordinates = new Coordinates2D(2.9372, -42.20236);
     Address sut = new Address(null, "x", null, "x", "x", expectedCoordinates);
@@ -24,7 +23,7 @@ class AddressTest {
   }
 
   @Test
-  void getCoordinates2D_shouldReturnEmptyOptional() throws StringLegalizer.ValueException {
+  void getCoordinates2D_shouldReturnEmptyOptional() {
     // given when
     Address sut = new Address("x", "x", "x");
 
@@ -32,7 +31,6 @@ class AddressTest {
     sut.setCoordinates2D(null);
 
     // then
-    System.out.println(sut);
     assertEquals(Optional.empty(), sut.getCoordinates2D());
   }
 }

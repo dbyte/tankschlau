@@ -40,9 +40,9 @@ public class TankerkoenigResponseFixture {
     station.addProperty("street", petrolStation.address.getStreet());
     station.addProperty("place", petrolStation.address.getCity());
     station.addProperty("dist", petrolStation.distance.getKm());
-    station.addProperty("diesel", petrolStation.getPrice(PetrolType.DIESEL).orElse(0.0));
-    station.addProperty("e5", petrolStation.getPrice(PetrolType.E5).orElse(0.0));
-    station.addProperty("e10", petrolStation.getPrice(PetrolType.E10).orElse(0.0));
+    station.addProperty("diesel", petrolStation.getPetrolPrice(PetrolType.DIESEL).orElse(0.0));
+    station.addProperty("e5", petrolStation.getPetrolPrice(PetrolType.E5).orElse(0.0));
+    station.addProperty("e10", petrolStation.getPetrolPrice(PetrolType.E10).orElse(0.0));
     station.addProperty("isOpen", true);
     station.addProperty("houseNumber", petrolStation.address.getHouseNumber());
     station.addProperty("postCode", petrolStation.address.getPostCode());

@@ -21,18 +21,20 @@ public class PetrolStation {
 
     this.uuid = Objects.requireNonNull(uuid);
     this.brand = Objects.requireNonNull(brand);
-    this.address = address;
+    this.address = Objects.requireNonNull(address);
     this.distance = distance;
-    this.petrols = petrols != null ? petrols : new ArrayList<>();
+    this.petrols = Optional.ofNullable(petrols).orElse(new ArrayList<>());
+  }
+
+  public Optional<Distance> getDistance() {
+    return Optional.ofNullable(distance);
   }
 
   public ArrayList<Petrol> getPetrols() {
     return petrols;
   }
 
-  public Optional<Double> getPrice(PetrolType petrolType) {
-    Objects.requireNonNull(petrolType);
-
+  public Optional<Double> getPetrolPrice(PetrolType petrolType) {
     return Petrols
         .getPetrol(petrols, petrolType)
         .map(petrol -> petrol.price);
@@ -50,7 +52,7 @@ public class PetrolStation {
         Objects.equals(distance, that.distance);
     if (!isEqual) return false;
 
-    // Expensive check, thus at the end
+    // More expensive check, thus at the end.
     Petrols.sortByType(this.getPetrols());
     Petrols.sortByType(that.getPetrols());
     return Arrays.equals(getPetrols().toArray(), that.getPetrols().toArray());
