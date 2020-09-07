@@ -5,7 +5,6 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Coordinates2D;
-import de.fornalik.tankschlau.util.StringLegalizer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,13 +64,15 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
   }
 
   private Address adaptAddress(JsonObject station) {
-    return new Address(
-        station.get("name").getAsString(),
-        station.get("street").getAsString(),
-        station.get("houseNumber").getAsString(),
-        station.get("place").getAsString(),
-        station.get("postCode").getAsString(),
-        adaptCoordinates2D(station));
+    return Address.Builder.init()
+        .setMandatoryFields(
+            station.get("street").getAsString(),
+            station.get("place").getAsString(),
+            station.get("postCode").getAsString())
+        .setName(station.get("name").getAsString())
+        .setHouseNumber(station.get("houseNumber").getAsString())
+        .setCoordinates2D(adaptCoordinates2D(station))
+        .build();
   }
 
   private Coordinates2D adaptCoordinates2D(JsonObject station) {
