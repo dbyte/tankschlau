@@ -1,6 +1,6 @@
 package de.fornalik.tankschlau.station;
 
-import de.fornalik.tankschlau.geo.Address;
+import de.fornalik.tankschlau.geo.AddressBuilder;
 
 import java.util.UUID;
 
@@ -17,7 +17,7 @@ public class PetrolStationFixture {
         .addPetrol(PetrolType.E10, 1.319)
         .addPetrol(PetrolType.E5, 1.339)
         .setDistance(1.1)
-        .setAddress(Address.Builder.init()
+        .setAddress(AddressBuilder.init()
                         .setName("TOTAL BERLIN")
                         .setMandatoryFields("MARGARETE-SOMMER-STR.", "BERLIN", "10407")
                         .setHouseNumber("2")
