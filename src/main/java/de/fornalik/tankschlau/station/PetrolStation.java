@@ -8,6 +8,7 @@ import java.util.*;
 public class PetrolStation {
   public final UUID uuid;
   public final String brand;
+  public final boolean isOpen;
   public final Address address;
   private final Distance distance;
   private final ArrayList<Petrol> petrols;
@@ -15,12 +16,14 @@ public class PetrolStation {
   public PetrolStation(
       UUID uuid,
       String brand,
+      boolean isOpen,
       Address address,
       Distance distance,
       ArrayList<Petrol> petrols) {
 
     this.uuid = Objects.requireNonNull(uuid);
     this.brand = Objects.requireNonNull(brand);
+    this.isOpen = isOpen;
     this.address = Objects.requireNonNull(address);
     this.distance = distance;
     this.petrols = Optional.ofNullable(petrols).orElse(new ArrayList<>());
@@ -48,6 +51,7 @@ public class PetrolStation {
     PetrolStation that = (PetrolStation) o;
     boolean isEqual = Objects.equals(uuid, that.uuid) &&
         Objects.equals(brand, that.brand) &&
+        Objects.equals(isOpen, that.isOpen) &&
         Objects.equals(address, that.address) &&
         Objects.equals(distance, that.distance);
     if (!isEqual) return false;
@@ -63,6 +67,7 @@ public class PetrolStation {
     return new StringJoiner(", ", PetrolStation.class.getSimpleName() + "[", "]")
         .add("uuid=" + uuid)
         .add("brand='" + brand + "'")
+        .add("isOpen=" + isOpen)
         .add("address=" + address)
         .add("distance=" + distance)
         .add("petrols=" + petrols)

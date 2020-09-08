@@ -13,6 +13,7 @@ public class PetrolStationBuilder {
   private Distance distance;
   private ArrayList<Petrol> petrols = new ArrayList<>();
   private String brand;
+  private boolean isOpen;
   private Address address;
 
   private PetrolStationBuilder() {
@@ -26,6 +27,7 @@ public class PetrolStationBuilder {
     return new PetrolStation(
         uuid,
         brand,
+        isOpen,
         address,
         distance,
         petrols);
@@ -34,6 +36,11 @@ public class PetrolStationBuilder {
   public PetrolStationBuilder setBrand(String brand) {
     this.brand = Objects.requireNonNull(brand, "brand" + MUST_NOT_BE_NULL);
 
+    return this;
+  }
+
+  public PetrolStationBuilder setIsOpen(boolean isOpen) {
+    this.isOpen = isOpen;
     return this;
   }
 

@@ -1,11 +1,11 @@
-package de.fornalik.tankschlau.helpers.response.fixture;
+package de.fornalik.tankschlau.helpers.response;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolType;
 
-public class TankerkoenigResponseFixture {
+public class TankerkoenigResponseMock {
 
   public JsonObject createJson(final PetrolStation petrolStation) {
     JsonObject root = createJsonRoot_happy();
@@ -29,8 +29,9 @@ public class TankerkoenigResponseFixture {
   }
 
   private JsonObject createJsonPetrolStationWithAllFields(PetrolStation petrolStation) {
-    // We really need the optionals to contain values here because the incoming PetrolStation object
-    // might be value-compared to a resulting PetrolStation by some tests.
+    /*  We really need the Optionals to contain values here because the incoming PetrolStation object
+     might be value-compared to a resulting PetrolStation by some tests. Using an alternate
+     value if an Optional is empty would cause these checks for equality to fail. */
     assert petrolStation.getPetrolPrice(PetrolType.DIESEL).isPresent();
     assert petrolStation.getPetrolPrice(PetrolType.E10).isPresent();
     assert petrolStation.getPetrolPrice(PetrolType.E5).isPresent();
@@ -39,8 +40,8 @@ public class TankerkoenigResponseFixture {
 
     JsonObject station = new JsonObject();
 
-    // Create all possible fields as of API documentation at Tankerkoenig.de.
-    // So this marks a happy path regarding valid field names.
+   /*  Create all possible fields as of API documentation at Tankerkoenig.de.
+     So this marks a happy path regarding valid field names. */
     station.addProperty("id", petrolStation.uuid.toString());
     station.addProperty("name", petrolStation.address.getName());
     station.addProperty("brand", petrolStation.brand);
@@ -50,7 +51,7 @@ public class TankerkoenigResponseFixture {
     station.addProperty("diesel", petrolStation.getPetrolPrice(PetrolType.DIESEL).get());
     station.addProperty("e5", petrolStation.getPetrolPrice(PetrolType.E5).get());
     station.addProperty("e10", petrolStation.getPetrolPrice(PetrolType.E10).get());
-    station.addProperty("isOpen", true);
+    station.addProperty("isOpen", petrolStation.isOpen);
     station.addProperty("houseNumber", petrolStation.address.getHouseNumber());
     station.addProperty("postCode", petrolStation.address.getPostCode());
     station.addProperty("lat", petrolStation.address.getCoordinates2D().get().latitude);

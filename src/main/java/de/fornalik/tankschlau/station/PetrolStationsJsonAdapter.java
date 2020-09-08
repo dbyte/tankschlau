@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Converter which handles (de)serialization for PetrolStation and
+ * Tankerkoenig.de JSON response.
+ */
 public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> {
 
   @Override
@@ -38,6 +42,7 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
   private PetrolStation createStation(JsonObject station) {
     return PetrolStationBuilder.init()
         .setBrand(station.get("brand").getAsString())
+        .setIsOpen(station.get("isOpen").getAsBoolean())
         .setDistance(station.get("dist").getAsDouble())
         .setPetrols(adaptPetrols(station))
         .setAddress(adaptAddress(station))
@@ -52,7 +57,7 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
       String jsonPetrolType = petrolType.name().toLowerCase();
 
       JsonElement price = station.get(jsonPetrolType);
-      if (price != null && !price.isJsonNull())
+      if (price != null && !price.isJsonNull() && price.getAsDouble() > 0.0)
         petrols.add(new Petrol(petrolType, price.getAsDouble()));
     }
 

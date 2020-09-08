@@ -3,8 +3,7 @@ package de.fornalik.tankschlau.station;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import de.fornalik.tankschlau.helpers.response.fixture.TankerkoenigResponseFixture;
-import de.fornalik.tankschlau.util.StringLegalizer;
+import de.fornalik.tankschlau.helpers.response.TankerkoenigResponseMock;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -17,11 +16,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class PetrolStationsJsonAdapterTest {
   private static Gson gson;
-  private static TankerkoenigResponseFixture responseFixture;
+  private static TankerkoenigResponseMock responseMock;
 
   @BeforeAll
   static void beforeAll() {
-    responseFixture = new TankerkoenigResponseFixture();
+    responseMock = new TankerkoenigResponseMock();
 
     GsonBuilder builder = new GsonBuilder();
     builder.registerTypeAdapter(PetrolStation.class, new PetrolStationsJsonAdapter());
@@ -31,7 +30,7 @@ class PetrolStationsJsonAdapterTest {
   @AfterAll
   static void afterAll() {
     gson = null;
-    responseFixture = null;
+    responseMock = null;
   }
 
   @Test
@@ -39,7 +38,7 @@ class PetrolStationsJsonAdapterTest {
     // given
     ArrayList<PetrolStation> actualPetrolStations;
     PetrolStation expectedPetrolStation = PetrolStationFixture.create_Berlin();
-    JsonObject jsonResponse = responseFixture.createJson(expectedPetrolStation);
+    JsonObject jsonResponse = responseMock.createJson(expectedPetrolStation);
 
     // when
     actualPetrolStations = gson.fromJson(jsonResponse, (Type) PetrolStation.class);

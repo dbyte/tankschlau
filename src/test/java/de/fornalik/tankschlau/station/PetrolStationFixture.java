@@ -12,6 +12,7 @@ public class PetrolStationFixture {
   public static PetrolStation create_Berlin() {
     return PetrolStationBuilder.init()
         .setBrand("TOTAL")
+        .setIsOpen(true)
         .addPetrol(PetrolType.DIESEL, 1.109)
         .addPetrol(PetrolType.E10, 1.319)
         .addPetrol(PetrolType.E5, 1.339)
