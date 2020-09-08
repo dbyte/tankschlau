@@ -13,7 +13,11 @@ public class Address {
   private Coordinates2D coordinates2D;
 
   public Address(String street, String city, String postCode) {
-    this(null, street, null, city, postCode, null);
+    this(street, city, postCode, null);
+  }
+
+  public Address(String street, String city, String postCode, Coordinates2D coordinates) {
+    this("", street, "", city, postCode, coordinates);
   }
 
   public Address(
