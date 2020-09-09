@@ -1,7 +1,10 @@
 package de.fornalik.tankschlau.station;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.util.Objects;
-import java.util.StringJoiner;
 
 public class Petrol {
   public final PetrolType type;
@@ -17,15 +20,29 @@ public class Petrol {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
-    Petrol that = (Petrol) o;
-    return this.type == that.type && this.price == that.price;
+    Petrol petrol = (Petrol) o;
+
+    return new EqualsBuilder()
+        .append(price, petrol.price)
+        .append(type, petrol.type)
+        .isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(17, 37)
+        .append(type)
+        .append(price)
+        .toHashCode();
   }
 
   @Override
   public String toString() {
-    return new StringJoiner(", ", Petrol.class.getSimpleName() + "[", "]")
-        .add("type=" + type)
-        .add("price=" + price)
+    return new ToStringBuilder(this)
+        .append("type", type)
+        .append("price", price)
         .toString();
   }
+
+
 }

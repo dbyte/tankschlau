@@ -1,6 +1,7 @@
 package de.fornalik.tankschlau.geo;
 
 import de.fornalik.tankschlau.util.StringLegalizer;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.*;
 
@@ -49,7 +50,7 @@ public class Address {
   }
 
   public void setStreet(String street) {
-    this.street = StringLegalizer.init(street).mandatory().safeTrim().end();
+    this.street = StringLegalizer.init(street).safeTrim().mandatory().end();
   }
 
   public String getHouseNumber() {
@@ -65,7 +66,7 @@ public class Address {
   }
 
   public void setCity(String city) {
-    this.city = StringLegalizer.init(city).mandatory().safeTrim().end();
+    this.city = StringLegalizer.init(city).safeTrim().mandatory().end();
   }
 
   public String getPostCode() {
@@ -73,7 +74,7 @@ public class Address {
   }
 
   public void setPostCode(String postCode) {
-    this.postCode = StringLegalizer.init(postCode).mandatory().safeTrim().end();
+    this.postCode = StringLegalizer.init(postCode).safeTrim().mandatory().end();
   }
 
   public Optional<Coordinates2D> getCoordinates2D() {
@@ -100,13 +101,14 @@ public class Address {
 
   @Override
   public String toString() {
-    return new StringJoiner(", ", Address.class.getSimpleName() + "[", "]")
-        .add("name='" + name + "'")
-        .add("street='" + street + "'")
-        .add("houseNumber='" + houseNumber + "'")
-        .add("postCode='" + postCode + "'")
-        .add("city='" + city + "'")
-        .add("coordinates2D=" + getCoordinates2D())
+    return new ToStringBuilder(this)
+        .append("name", name)
+        .append("street", street)
+        .append("houseNumber", houseNumber)
+        .append("city", city)
+        .append("postCode", postCode)
+        .append("coordinates2D", coordinates2D)
         .toString();
   }
+
 }

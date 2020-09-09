@@ -1,5 +1,7 @@
 package de.fornalik.tankschlau.geo;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.util.StringJoiner;
 
 public class Coordinates2D {
@@ -33,9 +35,9 @@ public class Coordinates2D {
 
   @Override
   public String toString() {
-    return new StringJoiner(", ", Coordinates2D.class.getSimpleName() + "[", "]")
-        .add("latitude=" + latitude)
-        .add("longitude=" + longitude)
+    return new ToStringBuilder(this)
+        .append("latitude", latitude)
+        .append("longitude", longitude)
         .toString();
   }
 

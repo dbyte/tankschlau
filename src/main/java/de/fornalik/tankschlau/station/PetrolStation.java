@@ -2,6 +2,7 @@ package de.fornalik.tankschlau.station;
 
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Distance;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.*;
 
@@ -11,7 +12,7 @@ public class PetrolStation {
   public final boolean isOpen;
   public final Address address;
   private final Distance distance;
-  private final ArrayList<Petrol> petrols;
+  private final HashSet<Petrol> petrols;
 
   public PetrolStation(
       UUID uuid,
@@ -19,21 +20,21 @@ public class PetrolStation {
       boolean isOpen,
       Address address,
       Distance distance,
-      ArrayList<Petrol> petrols) {
+      Set<Petrol> petrols) {
 
     this.uuid = Objects.requireNonNull(uuid);
     this.brand = Objects.requireNonNull(brand);
     this.isOpen = isOpen;
     this.address = Objects.requireNonNull(address);
     this.distance = distance;
-    this.petrols = Optional.ofNullable(petrols).orElse(new ArrayList<>());
+    this.petrols = Optional.ofNullable((HashSet<Petrol>)petrols).orElse(new HashSet<>());
   }
 
   public Optional<Distance> getDistance() {
     return Optional.ofNullable(distance);
   }
 
-  public ArrayList<Petrol> getPetrols() {
+  public HashSet<Petrol> getPetrols() {
     return petrols;
   }
 
@@ -44,33 +45,14 @@ public class PetrolStation {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-
-    PetrolStation that = (PetrolStation) o;
-    boolean isEqual = Objects.equals(uuid, that.uuid) &&
-        Objects.equals(brand, that.brand) &&
-        Objects.equals(isOpen, that.isOpen) &&
-        Objects.equals(address, that.address) &&
-        Objects.equals(distance, that.distance);
-    if (!isEqual) return false;
-
-    // More expensive check, thus at the end.
-    Petrols.sortByType(this.getPetrols());
-    Petrols.sortByType(that.getPetrols());
-    return Arrays.equals(getPetrols().toArray(), that.getPetrols().toArray());
-  }
-
-  @Override
   public String toString() {
-    return new StringJoiner(", ", PetrolStation.class.getSimpleName() + "[", "]")
-        .add("uuid=" + uuid)
-        .add("brand='" + brand + "'")
-        .add("isOpen=" + isOpen)
-        .add("address=" + address)
-        .add("distance=" + distance)
-        .add("petrols=" + petrols)
+    return new ToStringBuilder(this)
+        .append("uuid", uuid)
+        .append("brand", brand)
+        .append("isOpen", isOpen)
+        .append("address", address)
+        .append("distance", distance)
+        .append("petrols", petrols)
         .toString();
   }
 }

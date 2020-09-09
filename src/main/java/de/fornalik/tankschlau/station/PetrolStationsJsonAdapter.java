@@ -8,6 +8,7 @@ import de.fornalik.tankschlau.geo.AddressBuilder;
 import de.fornalik.tankschlau.geo.Coordinates2D;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,12 +17,6 @@ import java.util.UUID;
  * Tankerkoenig.de JSON response.
  */
 public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> {
-
-  @Override
-  public void write(
-      JsonWriter jsonWriter, List<PetrolStation> petrolStation) {
-    // Code here
-  }
 
   @Override
   public List<PetrolStation> read(JsonReader jsonReader) {
@@ -40,18 +35,27 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
     return petrolStations;
   }
 
+  @Override
+  public void write(JsonWriter jsonWriter, List<PetrolStation> petrolStation) {
+    throw new UnsupportedOperationException("Method not implemented.");
+  }
+
   private PetrolStation createStation(JsonObject station) {
     return PetrolStationBuilder.init()
         .setBrand(station.get("brand").getAsString())
         .setIsOpen(station.get("isOpen").getAsBoolean())
-        .setDistance(station.get("dist").getAsDouble())
+        .setDistanceKm(station.get("dist").getAsDouble())
         .setPetrols(adaptPetrols(station))
         .setAddress(adaptAddress(station))
         .build(adaptUUID(station));
   }
 
-  private ArrayList<Petrol> adaptPetrols(JsonObject station) {
-    ArrayList<Petrol> petrols = new ArrayList<>();
+  private UUID adaptUUID(JsonObject station) {
+    return UUID.fromString(station.get("id").getAsString());
+  }
+
+  private HashSet<Petrol> adaptPetrols(JsonObject station) {
+    HashSet<Petrol> petrols = new HashSet<>();
 
     for (PetrolType petrolType : PetrolType.values()) {
       // Assuming that PetrolType.toLowerCase() matches the JSON keys!
@@ -63,10 +67,6 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
     }
 
     return petrols;
-  }
-
-  private UUID adaptUUID(JsonObject station) {
-    return UUID.fromString(station.get("id").getAsString());
   }
 
   private Address adaptAddress(JsonObject station) {

@@ -1,5 +1,7 @@
 package de.fornalik.tankschlau.geo;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.util.StringJoiner;
 
 public class Distance {
@@ -29,8 +31,9 @@ public class Distance {
 
   @Override
   public String toString() {
-    return new StringJoiner(", ", Distance.class.getSimpleName() + "[", "]")
-        .add("km=" + km)
+    return new ToStringBuilder(this)
+        .append("km", km)
         .toString();
   }
+
 }

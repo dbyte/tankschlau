@@ -16,7 +16,7 @@ public class PetrolStationFixture {
         .addPetrol(PetrolType.DIESEL, 1.109)
         .addPetrol(PetrolType.E10, 1.319)
         .addPetrol(PetrolType.E5, 1.339)
-        .setDistance(1.1)
+        .setDistanceKm(1.1)
         .setAddress(AddressBuilder.init()
                         .setName("TOTAL BERLIN")
                         .setMandatoryFields("MARGARETE-SOMMER-STR.", "BERLIN", "10407")
