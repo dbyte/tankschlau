@@ -7,10 +7,7 @@ import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.AddressBuilder;
 import de.fornalik.tankschlau.geo.Coordinates2D;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Converter which handles (de)serialization for PetrolStation and
@@ -41,17 +38,22 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
   }
 
   private PetrolStation createStation(JsonObject station) {
-    return PetrolStationBuilder.init()
+    return PetrolStationBuilder.create(adaptUUID(station))
         .setBrand(station.get("brand").getAsString())
         .setIsOpen(station.get("isOpen").getAsBoolean())
         .setDistanceKm(station.get("dist").getAsDouble())
         .setPetrols(adaptPetrols(station))
         .setAddress(adaptAddress(station))
-        .build(adaptUUID(station));
+        .build();
   }
 
-  private UUID adaptUUID(JsonObject station) {
-    return UUID.fromString(station.get("id").getAsString());
+  private UUID adaptUUID(JsonObject station) throws MissingElementException {
+    String property = "id";
+
+    return Optional.ofNullable(station.get(property))
+        .map(JsonElement::getAsString)
+        .map(UUID::fromString)
+        .orElseThrow(() -> new MissingElementException(property));
   }
 
   private HashSet<Petrol> adaptPetrols(JsonObject station) {
@@ -86,5 +88,16 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
         station.get("lat").getAsDouble(),
         station.get("lng").getAsDouble()
     );
+  }
+
+  /**
+   * Thrown if a mandatory JSON element is missing and app is not able to handle it straight away.
+   *
+   * @implNote This is an unchecked exception.
+   */
+  public static class MissingElementException extends RuntimeException {
+    public MissingElementException(String property) {
+      super("Required property " + property + " missing in received JSON document.");
+    }
   }
 }

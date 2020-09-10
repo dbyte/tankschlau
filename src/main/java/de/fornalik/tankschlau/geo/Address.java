@@ -3,7 +3,7 @@ package de.fornalik.tankschlau.geo;
 import de.fornalik.tankschlau.util.StringLegalizer;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import java.util.*;
+import java.util.Optional;
 
 public class Address {
   private String name;
@@ -83,20 +83,6 @@ public class Address {
 
   public void setCoordinates2D(Coordinates2D coordinates2D) {
     this.coordinates2D = coordinates2D;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-
-    Address that = (Address) o;
-    return Objects.equals(getName(), that.getName()) &&
-        Objects.equals(getStreet(), that.getStreet()) &&
-        Objects.equals(getHouseNumber(), that.getHouseNumber()) &&
-        Objects.equals(getCity(), that.getCity()) &&
-        Objects.equals(getPostCode(), that.getPostCode()) &&
-        Objects.equals(getCoordinates2D(), that.getCoordinates2D());
   }
 
   @Override

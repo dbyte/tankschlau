@@ -11,20 +11,22 @@ import java.util.UUID;
 public class PetrolStationBuilder {
   private static final String MUST_NOT_BE_NULL = " must not be null";
 
+  private final UUID uuid;
   private Distance distance;
   private HashSet<Petrol> petrols = new HashSet<>();
   private String brand;
   private boolean isOpen;
   private Address address;
 
-  private PetrolStationBuilder() {
+  private PetrolStationBuilder(UUID uuid) {
+    this.uuid = Objects.requireNonNull(uuid);
   }
 
-  public static PetrolStationBuilder init() {
-    return new PetrolStationBuilder();
+  public static PetrolStationBuilder create(UUID uuid) {
+    return new PetrolStationBuilder(uuid);
   }
 
-  public PetrolStation build(UUID uuid) {
+  public PetrolStation build() {
     return new PetrolStation(
         uuid,
         brand,

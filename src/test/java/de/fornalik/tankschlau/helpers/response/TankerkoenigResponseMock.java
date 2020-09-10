@@ -2,18 +2,46 @@ package de.fornalik.tankschlau.helpers.response;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import de.fornalik.tankschlau.station.PetrolStation;
-import de.fornalik.tankschlau.station.PetrolType;
+import de.fornalik.tankschlau.station.PetrolStationFixture;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 public class TankerkoenigResponseMock {
 
-  public JsonObject createJson(final PetrolStation petrolStation) {
+  private final PetrolStationFixture fixture;
+  private final List<String> excludedJsonProperties;
+
+  private TankerkoenigResponseMock(
+      PetrolStationFixture fixture,
+      String... excludedJsonProperties) {
+
+    this.fixture = Objects.requireNonNull(fixture);
+    this.excludedJsonProperties = excludedJsonProperties != null
+        ? Arrays.asList(excludedJsonProperties) : Collections.emptyList();
+  }
+
+  public static TankerkoenigResponseMock newInstance(PetrolStationFixture fixture) {
+    return new TankerkoenigResponseMock(fixture, "");
+  }
+
+  public static TankerkoenigResponseMock newInstance(
+      PetrolStationFixture fixture,
+      String... excludedJsonProperties) {
+
+    Objects.requireNonNull(fixture);
+    return new TankerkoenigResponseMock(fixture, excludedJsonProperties);
+  }
+
+  public JsonObject createJsonResponse() {
     JsonObject root = createJsonRoot_happy();
+
     JsonArray stations = new JsonArray();
+    stations.add(createJsonPetrolStation());
 
-    stations.add(createJsonPetrolStationWithAllFields(petrolStation));
     root.add("stations", stations);
-
     return root;
   }
 
@@ -28,34 +56,35 @@ public class TankerkoenigResponseMock {
     return root;
   }
 
-  private JsonObject createJsonPetrolStationWithAllFields(PetrolStation petrolStation) {
-    /*  We really need the Optionals to contain values here because the incoming PetrolStation object
-     might be value-compared to a resulting PetrolStation by some tests. Using an alternate
-     value if an Optional is empty would cause these checks for equality to fail. */
-    assert petrolStation.getPetrolPrice(PetrolType.DIESEL).isPresent();
-    assert petrolStation.getPetrolPrice(PetrolType.E10).isPresent();
-    assert petrolStation.getPetrolPrice(PetrolType.E5).isPresent();
-    assert petrolStation.getDistance().isPresent();
-    assert petrolStation.address.getCoordinates2D().isPresent();
+  /**
+   * Create fields as of API documentation at Tankerkoenig.de, while <b>excluding</> those which
+   * have been defined at the time this instance was created.
+   *
+   * @return Gson JSON object as defined by fixture input and excluded keys
+   */
+  private JsonObject createJsonPetrolStation() {
 
     JsonObject station = new JsonObject();
 
-   /*  Create all possible fields as of API documentation at Tankerkoenig.de.
-     So this marks a happy path regarding valid field names. */
-    station.addProperty("id", petrolStation.uuid.toString());
-    station.addProperty("name", petrolStation.address.getName());
-    station.addProperty("brand", petrolStation.brand);
-    station.addProperty("street", petrolStation.address.getStreet());
-    station.addProperty("place", petrolStation.address.getCity());
-    station.addProperty("dist", petrolStation.getDistance().get().getKm());
-    station.addProperty("diesel", petrolStation.getPetrolPrice(PetrolType.DIESEL).get());
-    station.addProperty("e5", petrolStation.getPetrolPrice(PetrolType.E5).get());
-    station.addProperty("e10", petrolStation.getPetrolPrice(PetrolType.E10).get());
-    station.addProperty("isOpen", petrolStation.isOpen);
-    station.addProperty("houseNumber", petrolStation.address.getHouseNumber());
-    station.addProperty("postCode", petrolStation.address.getPostCode());
-    station.addProperty("lat", petrolStation.address.getCoordinates2D().get().latitude);
-    station.addProperty("lng", petrolStation.address.getCoordinates2D().get().longitude);
+    station.addProperty("id", fixture.uuid.toString());
+    station.addProperty("name", fixture.name);
+    station.addProperty("brand", fixture.brand);
+    station.addProperty("isOpen", fixture.isOpen);
+
+    station.addProperty("street", fixture.street);
+    station.addProperty("houseNumber", fixture.houseNumber);
+    station.addProperty("postCode", fixture.postCode);
+    station.addProperty("lat", fixture.lat);
+    station.addProperty("lng", fixture.lng);
+    station.addProperty("place", fixture.city);
+    station.addProperty("dist", fixture.distanceKm);
+
+    station.addProperty("diesel", fixture.priceDiesel);
+    station.addProperty("e5", fixture.priceE5);
+    station.addProperty("e10", fixture.priceE10);
+
+    if (excludedJsonProperties != null && excludedJsonProperties.size() > 0)
+      excludedJsonProperties.forEach(station::remove);
 
     return station;
   }

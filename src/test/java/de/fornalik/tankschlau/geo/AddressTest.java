@@ -168,20 +168,6 @@ class AddressTest {
   }
 
   @Test
-  void equals_returnsTrueOnSameInstance() {
-    // given
-    Address address = new Address("x", "y", "z");
-
-    // when
-    //noinspection UnnecessaryLocalVariable
-    Address address_sameInstance = address;
-
-    // then
-    //noinspection ConstantConditions, SimplifiableJUnitAssertion
-    assertTrue(address.equals(address_sameInstance));
-  }
-
-  @Test
   void toString_doesNotThrowOnMinimumInitialization() {
     // given
     Address addressWithNulls = new Address("x", "y", "z");

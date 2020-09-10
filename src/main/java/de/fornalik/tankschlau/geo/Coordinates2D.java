@@ -1,5 +1,7 @@
 package de.fornalik.tankschlau.geo;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.StringJoiner;
@@ -29,8 +31,18 @@ public class Coordinates2D {
 
     Coordinates2D that = (Coordinates2D) o;
 
-    if (Double.compare(that.latitude, latitude) != 0) return false;
-    return Double.compare(that.longitude, longitude) == 0;
+    return new EqualsBuilder()
+        .append(latitude, that.latitude)
+        .append(longitude, that.longitude)
+        .isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(17, 37)
+        .append(latitude)
+        .append(longitude)
+        .toHashCode();
   }
 
   @Override
