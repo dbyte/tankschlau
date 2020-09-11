@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "license": "ignore",
+  "data": "ignore",
+  "status": "ok",
+  "stations": [
+    {
+      "name": "ignore",
+      "brand": "ignore",
+      "street": "ignore",
+      "place": "ignore",
+      "lat": 0,
+      "lng": 0,
+      "dist": 0,
+      "diesel": 0,
+      "e5": 0,
+      "e10": 0,
+      "isOpen": false,
+      "houseNumber": "ignore",
+      "postCode": 0
+    }
+  ]
+}

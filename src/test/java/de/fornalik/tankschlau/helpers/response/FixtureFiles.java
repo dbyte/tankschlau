@@ -20,6 +20,12 @@ public class FixtureFiles {
   public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_MISSING_ID_ELEM =
       TANKERKOENIG_JSON_RESPONSE_DIR + "NeighbourhoodResponse_MissingIdElem.json";
 
+  public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_STATIONS_ELEM =
+      TANKERKOENIG_JSON_RESPONSE_DIR + "NeighbourhoodResponse_ResponseOkButMissingStations.json";
+
+  public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_STATION_ARRAY =
+      TANKERKOENIG_JSON_RESPONSE_DIR + "NeighbourhoodResponse_ResponseOkButEmptyStations.json";
+
   private FixtureFiles() {
   }
 
