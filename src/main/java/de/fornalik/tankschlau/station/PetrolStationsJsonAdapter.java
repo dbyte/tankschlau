@@ -17,6 +17,9 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
 
   @Override
   public List<PetrolStation> read(JsonReader jsonReader) {
+    // https://creativecommons.tankerkoenig.de/json/list.php?lat=52.408306&lng=10.7720025&rad=5.0
+    // &sort=dist&type=all&apikey=00000000-0000-0000-0000-000000000002
+
     ArrayList<PetrolStation> petrolStations = new ArrayList<>();
 
     JsonObject rootObj = JsonParser.parseReader(jsonReader).getAsJsonObject();
@@ -38,6 +41,8 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
   }
 
   private PetrolStation createStation(JsonObject station) {
+    // Caution, response: Possible _empty_ JsonStrings for: brand
+
     return PetrolStationBuilder.create(adaptUUID(station))
         .setBrand(station.get("brand").getAsString())
         .setIsOpen(station.get("isOpen").getAsBoolean())
@@ -72,6 +77,9 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
   }
 
   private Address adaptAddress(JsonObject station) {
+    // Caution, response: Possible _empty_ JsonStrings for: houseNumber
+    // Caution, response: Incoming postCode is of type integer
+
     return AddressBuilder.init()
         .setMandatoryFields(
             station.get("street").getAsString(),
@@ -89,6 +97,23 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
         station.get("lng").getAsDouble()
     );
   }
+
+ /* private <T> T forceDefaultValueIfNull(JsonElement elem, Class<T> clazz) {
+    T out = null;
+
+    if (clazz == String.class)
+      out = elem != null ? (T) elem.getAsString() : (T) "";
+
+    else if (clazz == Double.class)
+      out = elem != null ? (T) Double.valueOf(elem.getAsDouble()) : (T) Double.valueOf(0.0);
+
+    else if (clazz == Boolean.class)
+      out = elem != null ? (T) Boolean.valueOf(elem.getAsBoolean()) : (T) Boolean.valueOf("false");
+
+    if (null != out) return out;
+
+    throw new UnsupportedOperationException("Type not available for default value.");
+  }*/
 
   /**
    * Thrown if a mandatory JSON element is missing and app is not able to handle it straight away.

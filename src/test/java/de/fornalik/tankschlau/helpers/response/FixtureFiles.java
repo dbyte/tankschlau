@@ -14,8 +14,11 @@ public class FixtureFiles {
   public static final String TANKERKOENIG_JSON_RESPONSE_DIR =
       "response_fixtures/tankerkoenig/json/";
 
-  public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_ONE_HAPPY_STATION =
-      TANKERKOENIG_JSON_RESPONSE_DIR + "TankerkoenigNeighbourhoodResponse_OneHappyStation.json";
+  public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY =
+      TANKERKOENIG_JSON_RESPONSE_DIR + "NeighbourhoodResponse_OneHappyStation.json";
+
+  public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_MISSING_ID_ELEM =
+      TANKERKOENIG_JSON_RESPONSE_DIR + "NeighbourhoodResponse_MissingIdElem.json";
 
   private FixtureFiles() {
   }
