@@ -15,6 +15,12 @@ import java.util.*;
  */
 public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> {
 
+  /**
+   * @param jsonReader An instance of {@link JsonReader}
+   * @return List of {@link PetrolStation} objects, or throws a specialized RTE
+   * @throws PetrolStationsJsonAdapter.MissingElementException if expected JSON element was not
+   * found in the JSON document
+   */
   @Override
   public List<PetrolStation> read(JsonReader jsonReader) {
     // https://creativecommons.tankerkoenig.de/json/list.php?lat=52.408306&lng=10.7720025&rad=5.0
@@ -23,7 +29,10 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
     ArrayList<PetrolStation> petrolStations = new ArrayList<>();
 
     JsonObject rootObj = JsonParser.parseReader(jsonReader).getAsJsonObject();
-    JsonArray stations = rootObj.getAsJsonArray("stations");
+    JsonArray stations = Optional
+        .ofNullable(rootObj.getAsJsonArray("stations"))
+        .orElseThrow(() -> new MissingElementException("stations"))
+        .getAsJsonArray();
 
     for (JsonElement jsonElement : stations) {
       if (!jsonElement.isJsonObject()) continue;
@@ -98,23 +107,6 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
     );
   }
 
- /* private <T> T forceDefaultValueIfNull(JsonElement elem, Class<T> clazz) {
-    T out = null;
-
-    if (clazz == String.class)
-      out = elem != null ? (T) elem.getAsString() : (T) "";
-
-    else if (clazz == Double.class)
-      out = elem != null ? (T) Double.valueOf(elem.getAsDouble()) : (T) Double.valueOf(0.0);
-
-    else if (clazz == Boolean.class)
-      out = elem != null ? (T) Boolean.valueOf(elem.getAsBoolean()) : (T) Boolean.valueOf("false");
-
-    if (null != out) return out;
-
-    throw new UnsupportedOperationException("Type not available for default value.");
-  }*/
-
   /**
    * Thrown if a mandatory JSON element is missing and app is not able to handle it straight away.
    *
@@ -122,7 +114,7 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
    */
   public static class MissingElementException extends RuntimeException {
     public MissingElementException(String property) {
-      super("Required property " + property + " missing in received JSON document.");
+      super("Required property \"" + property + "\" missing in received JSON document.");
     }
   }
 }

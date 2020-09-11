@@ -61,18 +61,34 @@ class PetrolStationsJsonAdapterTest {
   }
 
   @Test
-  void read_xxxxx() {
+  void read_oneStationThrowsOnMissingStationsElement() {
+    // given
+    JsonObject jsonFixture = PetrolStationFixture
+        .create_fromJsonFile(
+            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_STATIONS_ELEM)
+        .getRight();
+
+    // when then
+    assertThrows(PetrolStationsJsonAdapter.MissingElementException.class,
+                 () -> gson.fromJson(jsonFixture, (Type) PetrolStation.class));
+  }
+
+  @Test
+  void read_ReturnsEmptyArrayOnEmptyStationsJsonArray() {
+    // given
     Pair<PetrolStationFixture, JsonObject> fixtures = PetrolStationFixture.create_fromJsonFile(
-        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
+        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_STATION_ARRAY);
 
     PetrolStationFixture objectFixture = fixtures.getLeft();
     JsonObject jsonFixture = fixtures.getRight();
 
+    // when
     ArrayList<PetrolStation> actualPetrolStations = gson.fromJson(
         jsonFixture,
         (Type) PetrolStation.class);
 
-    assertEquals(1, actualPetrolStations.size());
-    objectFixture.assertEquals(actualPetrolStations.get(0));
+    // then
+    assertNotNull(actualPetrolStations);
+    assertEquals(0, actualPetrolStations.size());
   }
 }

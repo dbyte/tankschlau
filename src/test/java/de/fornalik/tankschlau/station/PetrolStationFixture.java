@@ -23,11 +23,11 @@ import java.util.UUID;
  */
 public class PetrolStationFixture {
   /*
-  Caution: All field names must be exactly equal to Tankerkoenig.de JSON key "stations"
+  Caution: All field names must be EXACTLY equal to Tankerkoenig.de JSON key "stations"
   in order to be able to convert the JSON fixture along with a Gson converter!
   */
   public Boolean ok;
-  public String licence;
+  public String license;
   public String data;
   public String status;
   public ArrayList<StationDTO> stations;
@@ -64,11 +64,6 @@ public class PetrolStationFixture {
     JsonObject jsonFixture = (JsonObject) JsonParser.parseReader(reader2);
 
     return Pair.of(objectFixture, jsonFixture);
-  }
-
-  public static Pair<PetrolStationFixture, JsonObject> create_Berlin() {
-    return create_fromJsonFile(
-        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
   }
 
   /**
@@ -126,7 +121,7 @@ public class PetrolStationFixture {
    */
   public static class StationDTO {
     /*
-    Caution: All field names must be exactly equal to Tankerkoenig.de response JSON keys
+    Caution: All field names must be EXACTLY equal to Tankerkoenig.de response JSON keys
     in order to be able to convert the JSON fixture along with a Gson converter!
     */
     public UUID id;
