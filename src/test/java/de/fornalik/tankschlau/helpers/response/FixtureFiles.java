@@ -9,23 +9,23 @@ import java.util.Objects;
  * Utility class for test-fixture file handling.
  */
 public class FixtureFiles {
-  public static final String TANKERKOENIG_JSON_RESPONSE_DIR =
-      "response_fixtures/tankerkoenig/json/";
+  public static final String TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR =
+      "response_fixtures/tankerkoenig/neighbourhood/json/";
 
   public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY =
-      TANKERKOENIG_JSON_RESPONSE_DIR + "NeighbourhoodResponse_OneHappyStation.json";
+      TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR + "OneHappyStation.json";
 
   public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_MISSING_ID_ELEM =
-      TANKERKOENIG_JSON_RESPONSE_DIR + "NeighbourhoodResponse_MissingIdElem.json";
+      TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR + "MissingIdElem.json";
 
   public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_STATIONS_ELEM =
-      TANKERKOENIG_JSON_RESPONSE_DIR + "NeighbourhoodResponse_ResponseOkButMissingStations.json";
+      TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR + "ResponseOkButMissingStations.json";
 
   public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_STATION_ARRAY =
-      TANKERKOENIG_JSON_RESPONSE_DIR + "NeighbourhoodResponse_ResponseOkButEmptyStations.json";
+      TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR + "ResponseOkButEmptyStations.json";
 
   public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_HOUSENUM_AND_BRAND =
-      TANKERKOENIG_JSON_RESPONSE_DIR + "NeighbourhoodResponse_MissingHouseNumberAndBrand.json";
+      TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR + "EmptyHouseNumberAndBrand.json";
 
   private FixtureFiles() {
   }
