@@ -29,12 +29,12 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
     ArrayList<PetrolStation> petrolStations = new ArrayList<>();
 
     JsonObject rootObj = JsonParser.parseReader(jsonReader).getAsJsonObject();
-    JsonArray stations = Optional
+    JsonArray jsonStations = Optional
         .ofNullable(rootObj.getAsJsonArray("stations"))
         .orElseThrow(() -> new MissingElementException("stations"))
         .getAsJsonArray();
 
-    for (JsonElement jsonElement : stations) {
+    for (JsonElement jsonElement : jsonStations) {
       if (!jsonElement.isJsonObject()) continue;
       JsonObject jsonStation = jsonElement.getAsJsonObject();
 

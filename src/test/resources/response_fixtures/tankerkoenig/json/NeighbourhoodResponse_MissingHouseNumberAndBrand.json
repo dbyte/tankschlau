@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "license": "ignore",
+  "data": "ignore",
+  "status": "ignore",
+  "stations": [
+    {
+      "id": "7ad1103c-70ad-4e0c-b203-83c89e47449a",
+      "name": "Tankstelle Reislingen Herr Rainer D\u00fcrkop",
+      "brand": "",
+      "street": "Sandkrugstra\u00dfe",
+      "place": "Wolfsburg",
+      "lat": 52.41884,
+      "lng": 10.84663,
+      "dist": 5.2,
+      "diesel": 1.009,
+      "e5": 1.009,
+      "e10": 1.009,
+      "isOpen": true,
+      "houseNumber": "",
+      "postCode": 38446
+    }
+  ]
+}

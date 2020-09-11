@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import de.fornalik.tankschlau.helpers.response.FixtureFiles;
+import de.fornalik.tankschlau.helpers.response.JsonResponseFixture;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -32,10 +33,10 @@ class PetrolStationsJsonAdapterTest {
   @Test
   void read_oneStationHappy() {
     // given
-    Pair<PetrolStationFixture, JsonObject> fixtures = PetrolStationFixture.create_fromJsonFile(
+    Pair<JsonResponseFixture, JsonObject> fixtures = JsonResponseFixture.createFromJsonFile(
         FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
 
-    PetrolStationFixture objectFixture = fixtures.getLeft();
+    JsonResponseFixture objectFixture = fixtures.getLeft();
     JsonObject jsonFixture = fixtures.getRight();
 
     // when
@@ -46,13 +47,13 @@ class PetrolStationsJsonAdapterTest {
     // then
     assertNotNull(actualPetrolStations);
     assertEquals(1, actualPetrolStations.size());
-    objectFixture.assertEquals(actualPetrolStations.get(0));
+    objectFixture.assertEquals(actualPetrolStations);
   }
 
   @Test
   void read_oneStationThrowsOnMissingIdElement() {
     // given
-    JsonObject jsonFixture = PetrolStationFixture.create_fromJsonFile(
+    JsonObject jsonFixture = JsonResponseFixture.createFromJsonFile(
         FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_MISSING_ID_ELEM).getRight();
 
     // when then
@@ -63,8 +64,8 @@ class PetrolStationsJsonAdapterTest {
   @Test
   void read_oneStationThrowsOnMissingStationsElement() {
     // given
-    JsonObject jsonFixture = PetrolStationFixture
-        .create_fromJsonFile(
+    JsonObject jsonFixture = JsonResponseFixture
+        .createFromJsonFile(
             FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_STATIONS_ELEM)
         .getRight();
 
@@ -76,10 +77,10 @@ class PetrolStationsJsonAdapterTest {
   @Test
   void read_ReturnsEmptyArrayOnEmptyStationsJsonArray() {
     // given
-    Pair<PetrolStationFixture, JsonObject> fixtures = PetrolStationFixture.create_fromJsonFile(
+    Pair<JsonResponseFixture, JsonObject> fixtures = JsonResponseFixture.createFromJsonFile(
         FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_STATION_ARRAY);
 
-    PetrolStationFixture objectFixture = fixtures.getLeft();
+    JsonResponseFixture objectFixture = fixtures.getLeft();
     JsonObject jsonFixture = fixtures.getRight();
 
     // when
@@ -90,5 +91,26 @@ class PetrolStationsJsonAdapterTest {
     // then
     assertNotNull(actualPetrolStations);
     assertEquals(0, actualPetrolStations.size());
+  }
+
+  @Test
+  void read_acceptsEmptyHouseNumberOrBrand() {
+    // given
+    JsonObject jsonFixture = JsonResponseFixture.createFromJsonFile(
+        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_HOUSENUM_AND_BRAND).getRight();
+
+    // when
+    ArrayList<PetrolStation> actualPetrolStations = gson.fromJson(
+        jsonFixture,
+        (Type) PetrolStation.class);
+
+    // then
+    assertNotNull(actualPetrolStations);
+
+    assertEquals("",
+                 actualPetrolStations.get(0).address.getHouseNumber());
+
+    assertEquals("",
+                 actualPetrolStations.get(0).brand);
   }
 }

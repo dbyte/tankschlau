@@ -1,7 +1,5 @@
 package de.fornalik.tankschlau.helpers.response;
 
-import de.fornalik.tankschlau.station.PetrolStationFixture;
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
@@ -26,6 +24,9 @@ public class FixtureFiles {
   public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_STATION_ARRAY =
       TANKERKOENIG_JSON_RESPONSE_DIR + "NeighbourhoodResponse_ResponseOkButEmptyStations.json";
 
+  public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_HOUSENUM_AND_BRAND =
+      TANKERKOENIG_JSON_RESPONSE_DIR + "NeighbourhoodResponse_MissingHouseNumberAndBrand.json";
+
   private FixtureFiles() {
   }
 
@@ -39,7 +40,7 @@ public class FixtureFiles {
   public static FileReader getFileReaderForResource(String name) {
     Objects.requireNonNull(name);
 
-    ClassLoader loader = PetrolStationFixture.class.getClassLoader();
+    ClassLoader loader = JsonResponseFixture.class.getClassLoader();
     URL fileUrl = loader.getResource(name);
 
     if (fileUrl == null)
