@@ -1,14 +1,13 @@
 package de.fornalik.tankschlau.geo;
 
+import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import java.util.StringJoiner;
-
 public class Coordinates2D {
-  public final double latitude;
-  public final double longitude;
+  @SerializedName("lat") public final double latitude;
+  @SerializedName("lng") public final double longitude;
 
   public Coordinates2D(double lat, double lon) {
     this.latitude = lat;
@@ -39,7 +38,7 @@ public class Coordinates2D {
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder(17, 37)
+    return new HashCodeBuilder(23, 177)
         .append(latitude)
         .append(longitude)
         .toHashCode();
@@ -55,6 +54,7 @@ public class Coordinates2D {
 
   /**
    * Exception thrown when latitude, longitude or both are outside the valid range.
+   *
    * @implNote Unchecked exception.
    * @see java.lang.RuntimeException
    */

@@ -1,11 +1,12 @@
 package de.fornalik.tankschlau.geo;
 
+import com.google.gson.annotations.SerializedName;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import java.util.StringJoiner;
-
 public class Distance {
-  private double km;
+  @SerializedName("dist") private double km;
 
   public Distance(double km) {
     setKm(km);
@@ -25,8 +26,18 @@ public class Distance {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
-    Distance that = (Distance) o;
-    return this.km == that.km;
+    Distance distance = (Distance) o;
+
+    return new EqualsBuilder()
+        .append(getKm(), distance.getKm())
+        .isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(19, 25)
+        .append(getKm())
+        .toHashCode();
   }
 
   @Override

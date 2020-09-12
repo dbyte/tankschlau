@@ -63,13 +63,12 @@ public class PetrolStationBuilder {
   }
 
   public PetrolStationBuilder setAddress(Address address) {
-    this.address = Objects.requireNonNull(
-        address, "address" + MUST_NOT_BE_NULL);
+    this.address = Objects.requireNonNull(address, "address" + MUST_NOT_BE_NULL);
     return this;
   }
 
-  public PetrolStationBuilder setDistanceKm(double km) {
-    distance = new Distance(km);
+  public PetrolStationBuilder setDistance(Distance distance) {
+    this.distance = Objects.requireNonNull(distance, "distance" + MUST_NOT_BE_NULL);
     return this;
   }
 }

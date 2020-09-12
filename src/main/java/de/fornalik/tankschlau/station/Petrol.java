@@ -30,7 +30,7 @@ public class Petrol {
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder(17, 37)
+    return new HashCodeBuilder(13, 61)
         .append(type)
         .append(price)
         .toHashCode();

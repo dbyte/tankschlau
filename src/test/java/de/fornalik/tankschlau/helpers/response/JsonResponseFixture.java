@@ -3,6 +3,7 @@ package de.fornalik.tankschlau.helpers.response;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.geo.Distance;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolType;
@@ -20,15 +21,12 @@ import java.util.*;
  * to be able to null them for testing purposes.
  */
 public class JsonResponseFixture {
-  /*
-  Caution: All field names must be EXACTLY equal to Tankerkoenig.de JSON key "stations"
-  in order to be able to convert the JSON fixture along with a Gson converter!
-  */
-  public Boolean ok;
-  public String license;
-  public String data;
-  public String status;
-  public ArrayList<StationDTO> stations;
+
+  @SerializedName("ok") public Boolean ok;
+  @SerializedName("license") public String license;
+  @SerializedName("data") public String data;
+  @SerializedName("status") public String status;
+  @SerializedName("stations") public ArrayList<StationDTO> stations;
 
   private JsonResponseFixture() {
     stations = new ArrayList<>();
@@ -44,7 +42,7 @@ public class JsonResponseFixture {
    * 2) a {@link Gson} JsonObject.
    *
    * @param resName Resource path as String. Note that the implicit resource root path must not
-   *                 be included here.
+   *                be included here.
    * @return Pair of JsonResponseFixture and JsonObject which is produced by reading a
    * JSON test-fixture resource file. Decompose by using .getLeft() and getRight(), see
    * {@link Pair#getLeft()} resp. {@link Pair#getRight()} <br/>
@@ -71,6 +69,7 @@ public class JsonResponseFixture {
 
   /**
    * Deep check for value equality of a JsonResponseFixture with a PetrolStation.
+   *
    * @param petrolStation The {@link PetrolStation} to be checked for deep value equality.
    */
   public void assertEquals(PetrolStation petrolStation) {
@@ -81,24 +80,24 @@ public class JsonResponseFixture {
 
     // Find required JsonResponseFixture for the PetrolStation under test.
     StationDTO fixture = stations.stream()
-        .filter(fixt -> fixt.id.equals(petrolStation.uuid))
+        .filter(fixt -> fixt.uuid.equals(petrolStation.uuid))
         .findFirst()
         .orElse(null);
 
     Assertions.assertNotNull(fixture);
 
-    Assertions.assertEquals(fixture.id, petrolStation.uuid);
+    Assertions.assertEquals(fixture.uuid, petrolStation.uuid);
     Assertions.assertEquals(fixture.brand, petrolStation.brand);
     Assertions.assertEquals(fixture.isOpen, petrolStation.isOpen);
 
-    Assertions.assertEquals(Optional.of(fixture.dist),
+    Assertions.assertEquals(Optional.of(fixture.distanceKm),
                             petrolStation.getDistance().map(Distance::getKm));
 
     Assertions.assertNotNull(petrolStation.address);
     Assertions.assertEquals(fixture.name, petrolStation.address.getName());
     Assertions.assertEquals(fixture.street, petrolStation.address.getStreet());
     Assertions.assertEquals(fixture.houseNumber, petrolStation.address.getHouseNumber());
-    Assertions.assertEquals(fixture.place, petrolStation.address.getCity());
+    Assertions.assertEquals(fixture.city, petrolStation.address.getCity());
     Assertions.assertEquals(fixture.postCode, petrolStation.address.getPostCode());
 
     Assertions.assertEquals(Optional.ofNullable(fixture.lat),
@@ -123,23 +122,19 @@ public class JsonResponseFixture {
    * library.
    */
   public static class StationDTO {
-    /*
-    Caution: All field names must be EXACTLY equal to Tankerkoenig.de response JSON keys
-    in order to be able to convert the JSON fixture along with a Gson converter!
-    */
-    public UUID id;
-    public String name;
-    public String brand;
-    public boolean isOpen;
-    public String street;
-    public String houseNumber;
-    public String place;
-    public String postCode;
-    public Double lat;
-    public Double lng;
-    public Double dist;
-    public Double diesel;
-    public Double e5;
-    public Double e10;
+    @SerializedName("id") public UUID uuid;
+    @SerializedName("name") public String name;
+    @SerializedName("brand") public String brand;
+    @SerializedName("isOpen") public boolean isOpen;
+    @SerializedName("street") public String street;
+    @SerializedName("houseNumber") public String houseNumber;
+    @SerializedName("place") public String city;
+    @SerializedName("postCode") public String postCode;
+    @SerializedName("lat") public Double lat;
+    @SerializedName("lng") public Double lng;
+    @SerializedName("dist") public Double distanceKm;
+    @SerializedName("diesel") public Double diesel;
+    @SerializedName("e5") public Double e5;
+    @SerializedName("e10") public Double e10;
   }
 }
