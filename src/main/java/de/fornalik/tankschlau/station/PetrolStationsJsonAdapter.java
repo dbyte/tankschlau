@@ -44,14 +44,10 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
     Objects.requireNonNull(jsonReader);
 
     errorMessages = new ArrayList<>();
-    ArrayList<PetrolStation> petrolStations = new ArrayList<>();
-    JsonObject jsonRoot;
 
-    /* Do not handle any occurring errors while converting to a JSON object, as there is a
-    serious problem with the given JSON document IF they occur using parseReader(). */
-    jsonRoot = JsonParser.parseReader(jsonReader).getAsJsonObject();
-
+    JsonObject jsonRoot = JsonParser.parseReader(jsonReader).getAsJsonObject();
     JsonArray jsonStations = jsonRoot.getAsJsonArray("stations");
+
     if (jsonStations == null) {
       errorMessages.add("Required property \"stations\" missing in JSON.");
       return new ArrayList<>();
@@ -61,6 +57,12 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
       errorMessages.add("Empty \"stations\" array in JSON.");
       return new ArrayList<>();
     }
+
+    return createStations(jsonStations);
+  }
+
+  private List<PetrolStation> createStations(JsonArray jsonStations) {
+    ArrayList<PetrolStation> petrolStations = new ArrayList<>();
 
     for (JsonElement jsonElement : jsonStations) {
       // Expect that each station array element is a JSON object
@@ -73,7 +75,7 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
       JsonObject jsonStation = jsonElement.getAsJsonObject();
 
       try {
-        petrolStations.add(createStation(jsonStation));
+        petrolStations.add(adaptStation(jsonStation));
       } catch (MissingElementException | IllegalStateException e) {
         errorMessages.add(e.getMessage());
       }
@@ -82,7 +84,7 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
     return petrolStations;
   }
 
-  private PetrolStation createStation(JsonObject station) {
+  private PetrolStation adaptStation(JsonObject station) {
     return PetrolStationBuilder.create(adaptUUID(station))
         .setBrand(station.get("brand").getAsString())
         .setIsOpen(station.get("isOpen").getAsBoolean())
