@@ -48,6 +48,7 @@ class PetrolStationsJsonAdapterTest {
     // then
     assertNotNull(actualPetrolStations);
     assertEquals(1, actualPetrolStations.size());
+    assertEquals(0, petrolStationsJsonAdapter.getErrorMessages().size());
     objectFixture.assertEquals(actualPetrolStations);
   }
 
@@ -86,6 +87,8 @@ class PetrolStationsJsonAdapterTest {
 
     assertEquals("",
                  actualPetrolStations.get(0).brand);
+
+    assertEquals(0, petrolStationsJsonAdapter.getErrorMessages().size());
   }
 
   @Test
