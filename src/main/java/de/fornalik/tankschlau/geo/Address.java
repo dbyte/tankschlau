@@ -16,13 +16,13 @@ public class Address {
   @SerializedName("houseNumber") private String houseNumber;
   @SerializedName("place") private String city;
   @SerializedName("postCode") private String postCode;
-  private Coordinates2D coordinates2D;
+  private Geo geo;
 
   public Address(String street, String city, String postCode) {
     this(street, city, postCode, null);
   }
 
-  public Address(String street, String city, String postCode, Coordinates2D coordinates) {
+  public Address(String street, String city, String postCode, Geo coordinates) {
     this("", street, "", city, postCode, coordinates);
   }
 
@@ -32,14 +32,14 @@ public class Address {
       String houseNumber,
       String city,
       String postCode,
-      Coordinates2D coordinates2D) {
+      Geo geo) {
 
     setName(name);
     setStreet(street);
     setHouseNumber(houseNumber);
     setCity(city);
     setPostCode(postCode);
-    setCoordinates2D(coordinates2D);
+    setGeo(geo);
   }
 
   public static Address createFromJson(JsonObject in) {
@@ -92,12 +92,12 @@ public class Address {
     this.postCode = StringLegalizer.init(postCode).safeTrim().mandatory().end();
   }
 
-  public Optional<Coordinates2D> getCoordinates2D() {
-    return Optional.ofNullable(coordinates2D);
+  public Optional<Geo> getGeo() {
+    return Optional.ofNullable(geo);
   }
 
-  public void setCoordinates2D(Coordinates2D coordinates2D) {
-    this.coordinates2D = coordinates2D;
+  public void setGeo(Geo geo) {
+    this.geo = geo;
   }
 
   @Override
@@ -108,7 +108,7 @@ public class Address {
         .append("houseNumber", houseNumber)
         .append("city", city)
         .append("postCode", postCode)
-        .append("coordinates2D", coordinates2D)
+        .append("geo", geo)
         .toString();
   }
 

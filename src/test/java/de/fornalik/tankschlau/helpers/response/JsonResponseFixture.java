@@ -101,10 +101,10 @@ public class JsonResponseFixture {
     Assertions.assertEquals(fixture.postCode, petrolStation.address.getPostCode());
 
     Assertions.assertEquals(Optional.ofNullable(fixture.lat),
-                            petrolStation.address.getCoordinates2D().map(c -> c.latitude));
+                            petrolStation.address.getGeo().map(c -> c.latitude));
 
     Assertions.assertEquals(Optional.ofNullable(fixture.lng),
-                            petrolStation.address.getCoordinates2D().map(c -> c.longitude));
+                            petrolStation.address.getGeo().map(c -> c.longitude));
 
     Assertions.assertEquals(Optional.ofNullable(fixture.diesel),
                             petrolStation.getPetrolPrice(PetrolType.DIESEL));

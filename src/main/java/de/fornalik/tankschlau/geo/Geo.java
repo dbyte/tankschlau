@@ -5,11 +5,11 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class Coordinates2D {
+public class Geo {
   @SerializedName("lat") public final double latitude;
   @SerializedName("lng") public final double longitude;
 
-  public Coordinates2D(double lat, double lon) {
+  public Geo(double lat, double lon) {
     this.latitude = lat;
     this.longitude = lon;
     throwOnInvalidCoordinates();
@@ -28,7 +28,7 @@ public class Coordinates2D {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
-    Coordinates2D that = (Coordinates2D) o;
+    Geo that = (Geo) o;
 
     return new EqualsBuilder()
         .append(latitude, that.latitude)

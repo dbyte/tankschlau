@@ -4,8 +4,6 @@ import de.fornalik.tankschlau.util.StringLegalizer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -142,14 +140,14 @@ class AddressTest {
   @Test
   void getCoordinates2D_happy() {
     // given
-    Coordinates2D expectedCoordinates = new Coordinates2D(2.9372, -42.20236);
+    Geo expectedCoordinates = new Geo(2.9372, -42.20236);
     Address address = new Address("x", "y", "z", expectedCoordinates);
-    address.setCoordinates2D(expectedCoordinates);
+    address.setGeo(expectedCoordinates);
 
     // when
-    Coordinates2D actualCoordinates = address
-        .getCoordinates2D()
-        .orElse(new Coordinates2D(0.0, 0.0));
+    Geo actualCoordinates = address
+        .getGeo()
+        .orElse(new Geo(0.0, 0.0));
 
     // then
     assertEquals(expectedCoordinates, actualCoordinates);
@@ -161,17 +159,17 @@ class AddressTest {
     Address address = new Address("x", "y", "z");
 
     // when
-    address.setCoordinates2D(null);
+    address.setGeo(null);
 
     // then
-    assertEquals(Optional.empty(), address.getCoordinates2D());
+    assertEquals(Optional.empty(), address.getGeo());
   }
 
   @Test
   void toString_doesNotThrowOnMinimumInitialization() {
     // given
     Address addressWithNulls = new Address("x", "y", "z");
-    addressWithNulls.setCoordinates2D(null);
+    addressWithNulls.setGeo(null);
 
     // when then
     assertDoesNotThrow(addressWithNulls::toString);
