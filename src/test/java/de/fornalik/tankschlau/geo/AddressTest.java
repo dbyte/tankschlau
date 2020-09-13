@@ -138,23 +138,23 @@ class AddressTest {
   }
 
   @Test
-  void getCoordinates2D_happy() {
+  void getGeo_happy() {
     // given
-    Geo expectedCoordinates = new Geo(2.9372, -42.20236);
-    Address address = new Address("x", "y", "z", expectedCoordinates);
-    address.setGeo(expectedCoordinates);
+    Geo expectedGeo = new Geo(2.9372, -42.20236, 25.284746);
+    Address address = new Address("x", "y", "z", expectedGeo);
+    address.setGeo(expectedGeo);
 
     // when
     Geo actualCoordinates = address
         .getGeo()
-        .orElse(new Geo(0.0, 0.0));
+        .orElse(new Geo(0.0, 0.0, null));
 
     // then
-    assertEquals(expectedCoordinates, actualCoordinates);
+    assertEquals(expectedGeo, actualCoordinates);
   }
 
   @Test
-  void getCoordinates2D_returnsEmptyOptional() {
+  void getGeo_returnsEmptyOptional() {
     // given
     Address address = new Address("x", "y", "z");
 
