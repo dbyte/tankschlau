@@ -2,7 +2,7 @@ package de.fornalik.tankschlau.station;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PetrolTypeTest {
   @Test
@@ -12,8 +12,15 @@ class PetrolTypeTest {
 
   @Test
   void namingIsCorrect() {
-    assertEquals(PetrolType.DIESEL, PetrolType.valueOf("DIESEL"));
-    assertEquals(PetrolType.E5, PetrolType.valueOf("E5"));
     assertEquals(PetrolType.E10, PetrolType.valueOf("E10"));
+    assertEquals(PetrolType.E5, PetrolType.valueOf("E5"));
+    assertEquals(PetrolType.DIESEL, PetrolType.valueOf("DIESEL"));
+  }
+
+  @Test
+  void getJsonKey_happy() {
+    assertEquals("e10", PetrolType.E10.getJsonKey());
+    assertEquals("e5", PetrolType.E5.getJsonKey());
+    assertEquals("diesel", PetrolType.DIESEL.getJsonKey());
   }
 }

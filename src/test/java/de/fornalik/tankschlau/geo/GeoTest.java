@@ -51,6 +51,8 @@ class GeoTest {
     );
   }
 
+  // TODO test for createFromJson(JsonObject)
+
   @Test
   void getDistance_happy() {
     // given

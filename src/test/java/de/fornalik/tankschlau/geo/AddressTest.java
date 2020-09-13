@@ -25,7 +25,7 @@ class AddressTest {
       delimiter = ':')
   void constructor_throwsOnInvalidMandatoryValues(String s1, String s2, String s3) {
     // given
-    Map<String, String> mandatoryFields = new HashMap<>();
+    final Map<String, String> mandatoryFields = new HashMap<>();
     mandatoryFields.put("street", s1);
     mandatoryFields.put("city", s2);
     mandatoryFields.put("postCode", s3);
@@ -54,10 +54,12 @@ class AddressTest {
     assertDoesNotThrow(() -> new Address("", "Street name", "", "City name", "Post code", null));
   }
 
+  // TODO test for createFromJson(JsonObject)
+
   @Test
   void setName_legalizesValue() {
     // given
-    Address address = new Address("x", "y", "z");
+    final Address address = new Address("x", "y", "z");
 
     // when
     address.setName("   My Name To Be Trimmed            ");
@@ -73,7 +75,7 @@ class AddressTest {
   @Test
   void setHouseNumber_legalizesValue() {
     // given
-    Address address = new Address("x", "y", "z");
+    final Address address = new Address("x", "y", "z");
 
     // when
     address.setHouseNumber("      25 B Hinterhof  ");
@@ -89,7 +91,7 @@ class AddressTest {
   @Test
   void setStreet_legalizesValue() {
     // given
-    Address address = new Address("x", "y", "z");
+    final Address address = new Address("x", "y", "z");
 
     // when
     address.setStreet("Walter von Schön Straße   ");
@@ -106,7 +108,7 @@ class AddressTest {
   @Test
   void setCity_legalizesValue() {
     // given
-    Address address = new Address("x", "y", "z");
+    final Address address = new Address("x", "y", "z");
 
     // when
     address.setCity(" Düsseldorf   ");
@@ -123,7 +125,7 @@ class AddressTest {
   @Test
   void setPostCode_legalizesValue() {
     // given
-    Address address = new Address("x", "y", "z");
+    final Address address = new Address("x", "y", "z");
 
     // when
     address.setPostCode("   D-80803");
@@ -137,17 +139,21 @@ class AddressTest {
         () -> address.setPostCode(""));
   }
 
-  @Test
-  void getGeo_happy() {
+  @ParameterizedTest
+  @CsvSource(value = {
+      "2.9372;-42.20236;25.284746",
+      "30.0;40.0;null"},
+      delimiter = ';')
+  void getGeo_happy(double lat, double lon, String distAsString) {
     // given
-    Geo expectedGeo = new Geo(2.9372, -42.20236, 25.284746);
-    Address address = new Address("x", "y", "z", expectedGeo);
-    address.setGeo(expectedGeo);
+    final Double dist = distAsString.equals("null") ? null : Double.parseDouble(distAsString);
+    final Geo expectedGeo = new Geo(lat, lon, dist);
+    final Address address = new Address("x", "y", "z", expectedGeo);
 
     // when
     Geo actualGeoObject = address
         .getGeo()
-        .orElse(new Geo(0.0, 0.0, null));
+        .orElse(new Geo(0.0, 0.0, 999999.0));
 
     // then
     assertEquals(expectedGeo, actualGeoObject);
@@ -156,7 +162,7 @@ class AddressTest {
   @Test
   void getGeo_returnsEmptyOptional() {
     // given
-    Address address = new Address("x", "y", "z");
+    final Address address = new Address("x", "y", "z");
 
     // when
     address.setGeo(null);
@@ -168,10 +174,26 @@ class AddressTest {
   @Test
   void toString_doesNotThrowOnMinimumInitialization() {
     // given
-    Address addressWithNulls = new Address("x", "y", "z");
-    addressWithNulls.setGeo(null);
+    final Address addressWithNullGeo = new Address("x", "y", "z");
+    addressWithNullGeo.setGeo(null);
 
     // when then
-    assertDoesNotThrow(addressWithNulls::toString);
+    assertDoesNotThrow(addressWithNullGeo::toString);
+  }
+
+  @Test
+  void toString_doesNotThrow() {
+    // given
+    final Address addressWithNullGeo = new Address("x", "y", "z");
+    // when then
+    assertDoesNotThrow(addressWithNullGeo::toString);
+
+    // given
+    final Geo fullGeo = new Geo(43.4,79.355,303.0);
+    final Address completeAddress = new Address(
+    "a", "b", "1", "c", "80803", fullGeo);
+
+    // when then
+    assertDoesNotThrow(completeAddress::toString);
   }
 }

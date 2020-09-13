@@ -1,6 +1,5 @@
 package de.fornalik.tankschlau.station;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -15,6 +14,12 @@ public class Petrols {
   private Petrols() {
   }
 
+  /**
+   * Creates a Set of petrols and their prices from a given {@link JsonObject}.
+   *
+   * @param in {@link JsonObject} from which to convert to a Set of Petrols.
+   * @return {@link Petrol} Set or empty Set if no petrol prices exist in the passed JSON.
+   */
   public static Set<Petrol> createFromJson(JsonObject in) {
     Set<Petrol> petrols = new HashSet<>();
 
