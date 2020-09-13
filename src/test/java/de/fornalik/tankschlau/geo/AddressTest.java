@@ -43,7 +43,7 @@ class AddressTest {
   }
 
   @Test
-  void constructor_acceptsNullForCoordinates() {
+  void constructor_acceptsNullForGeo() {
     // when then
     assertDoesNotThrow(() -> new Address("x", "y", "z", null));
   }
@@ -145,12 +145,12 @@ class AddressTest {
     address.setGeo(expectedGeo);
 
     // when
-    Geo actualCoordinates = address
+    Geo actualGeoObject = address
         .getGeo()
         .orElse(new Geo(0.0, 0.0, null));
 
     // then
-    assertEquals(expectedGeo, actualCoordinates);
+    assertEquals(expectedGeo, actualGeoObject);
   }
 
   @Test

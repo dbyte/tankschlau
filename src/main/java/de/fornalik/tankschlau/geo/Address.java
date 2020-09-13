@@ -22,8 +22,8 @@ public class Address {
     this(street, city, postCode, null);
   }
 
-  public Address(String street, String city, String postCode, Geo coordinates) {
-    this("", street, "", city, postCode, coordinates);
+  public Address(String street, String city, String postCode, Geo geo) {
+    this("", street, "", city, postCode, geo);
   }
 
   public Address(

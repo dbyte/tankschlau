@@ -7,15 +7,31 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.Optional;
 
+/**
+ * Geographical data such as latitude, longitude, distance to a different {@link Geo} object etc.
+ */
 public class Geo {
   @SerializedName("lat") public final double latitude;
   @SerializedName("lng") public final double longitude;
   @SerializedName("dist") private Double distance;
 
+  /**
+   * Constructor
+   *
+   * @see Geo#Geo(double lat, double lon, Double distance)
+   */
   public Geo(double lat, double lon) {
     this(lat, lon, null);
   }
 
+  /**
+   * Constructor
+   *
+   * @param lat      Latitude
+   * @param lon      Longitude
+   * @param distance Distance of this geo location related to the user's address geo location.
+   *                 This value is optional! Set to null if distance is unknown.
+   */
   public Geo(double lat, double lon, Double distance) {
     this.latitude = lat;
     this.longitude = lon;
@@ -49,14 +65,21 @@ public class Geo {
     this.distance = km;
   }
 
+  /**
+   * @throws InvalidGeoDataException if lat/lon are out of geographical constraints
+   * @see <a href="https://stackoverflow.com/a/47188298">stackoverflow.com 47188298</a>
+   */
   private void throwOnInvalidCoordinates() throws InvalidGeoDataException {
-    // Source: https://stackoverflow.com/a/47188298
     if (latitude < -85.05112878 || latitude > 85.05112878
         || longitude < -180.0 || longitude > 180.0)
       throw new InvalidGeoDataException(
           "One ore mode coordinates are out of bounds. Lat: " + latitude + ", Lon: " + longitude);
   }
 
+  /**
+   * @param o Object to compare to
+   * @return True if values of latitude, longitude and distance are equal.
+   */
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
