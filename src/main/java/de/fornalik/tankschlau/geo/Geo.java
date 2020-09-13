@@ -1,10 +1,13 @@
 package de.fornalik.tankschlau.geo;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -38,6 +41,17 @@ public class Geo {
 
     throwOnInvalidCoordinates();
     setDistance(distance);
+  }
+
+  /**
+   * Creates a new {@link Geo} by de-serializing a given {@link JsonObject}.
+   *
+   * @param in The {@link JsonObject} from which to convert to an {@link Geo}
+   * @return Instance of {@link Geo}
+   */
+  public static Geo createFromJson(JsonObject in) {
+    Objects.requireNonNull(in, "JsonObject must not be null.");
+    return new Gson().fromJson(in, Geo.class);
   }
 
   /**

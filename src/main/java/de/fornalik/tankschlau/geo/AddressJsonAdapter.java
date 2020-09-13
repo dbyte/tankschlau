@@ -18,7 +18,7 @@ public class AddressJsonAdapter extends TypeAdapter<Address> {
     Address address = new Gson().fromJson(jsonObject, Address.class);
 
     // 2. Handle custom types
-    address.setGeo(new Gson().fromJson(jsonObject, Geo.class));
+    address.setGeo(Geo.createFromJson(jsonObject));
 
     return address;
   }
