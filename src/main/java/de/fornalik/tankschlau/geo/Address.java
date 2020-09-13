@@ -1,16 +1,21 @@
 package de.fornalik.tankschlau.geo;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.util.StringLegalizer;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class Address {
-  private String name;
-  private String street;
-  private String houseNumber;
-  private String city;
-  private String postCode;
+  @SerializedName("name") private String name;
+  @SerializedName("street") private String street;
+  @SerializedName("houseNumber") private String houseNumber;
+  @SerializedName("place") private String city;
+  @SerializedName("postCode") private String postCode;
   private Coordinates2D coordinates2D;
 
   public Address(String street, String city, String postCode) {
@@ -35,6 +40,16 @@ public class Address {
     setCity(city);
     setPostCode(postCode);
     setCoordinates2D(coordinates2D);
+  }
+
+  public static Address createFromJson(JsonObject in) {
+    Objects.requireNonNull(in, "JsonObject must not be null.");
+
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapter(Address.class, new AddressJsonAdapter())
+        .create();
+
+    return gson.fromJson(in, Address.class);
   }
 
   public String getName() {

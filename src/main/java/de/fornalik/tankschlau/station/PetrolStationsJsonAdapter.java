@@ -4,8 +4,7 @@ import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import de.fornalik.tankschlau.geo.Address;
-import de.fornalik.tankschlau.geo.AddressBuilder;
-import de.fornalik.tankschlau.geo.Coordinates2D;
+import de.fornalik.tankschlau.geo.AddressJsonAdapter;
 import de.fornalik.tankschlau.geo.Distance;
 
 import java.util.*;
@@ -31,21 +30,21 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
   }
 
   /**
-   * @param jsonReader An instance of {@link JsonReader}
+   * @param in An instance of {@link JsonReader}
    * @return List of {@link PetrolStation} objects, or throws a specialized RTE
    * @throws PetrolStationsJsonAdapter.MissingElementException if expected JSON element was not
    *                                                           found in the JSON document
    * @implNote Permit lenient behavior and collect certain exceptions instead of throwing them.
    */
   @Override
-  public List<PetrolStation> read(JsonReader jsonReader) {
+  public List<PetrolStation> read(JsonReader in) {
     // https://creativecommons.tankerkoenig.de/json/list.php?lat=52.408306&lng=10.7720025&rad=10.0
     // &sort=dist&type=all&apikey=00000000-0000-0000-0000-000000000002
-    Objects.requireNonNull(jsonReader);
+    Objects.requireNonNull(in);
 
     errorMessages = new ArrayList<>();
 
-    JsonObject jsonRoot = JsonParser.parseReader(jsonReader).getAsJsonObject();
+    JsonObject jsonRoot = JsonParser.parseReader(in).getAsJsonObject();
     JsonArray jsonStations = jsonRoot.getAsJsonArray("stations");
 
     if (jsonStations == null) {
@@ -85,12 +84,15 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
   }
 
   private PetrolStation adaptStation(JsonObject station) {
+    PetrolStation ps = new Gson().fromJson(station, PetrolStation.class);
+    Distance dist = new Gson().fromJson(station, Distance.class);
+
     return PetrolStationBuilder.create(adaptUUID(station))
-        .setBrand(station.get("brand").getAsString())
-        .setIsOpen(station.get("isOpen").getAsBoolean())
-        .setDistance(new Gson().fromJson(station, Distance.class))
+        .setBrand(ps.brand)
+        .setIsOpen(ps.isOpen)
+        .setDistance(dist)
         .setPetrols(adaptPetrols(station))
-        .setAddress(adaptAddress(station))
+        .setAddress(Address.createFromJson(station))
         .build();
   }
 
@@ -111,28 +113,12 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
       String jsonPetrolType = petrolType.name().toLowerCase();
 
       JsonElement price = station.get(jsonPetrolType);
-      if (price == null || price.isJsonNull() || price.getAsDouble() <= 0.0)  continue;
+      if (price == null || price.isJsonNull() || price.getAsDouble() <= 0.0) continue;
 
       petrols.add(new Petrol(petrolType, price.getAsDouble()));
     }
 
     return petrols;
-  }
-
-  private Address adaptAddress(JsonObject station) {
-    // Caution, response: Possible _empty_ JsonStrings for: houseNumber
-
-    new Gson().fromJson(station, Address.class);
-
-    return AddressBuilder.init()
-        .setMandatoryFields(
-            station.get("street").getAsString(),
-            station.get("place").getAsString(),
-            station.get("postCode").getAsString())
-        .setName(station.get("name").getAsString())
-        .setHouseNumber(station.get("houseNumber").getAsString())
-        .setCoordinates2D(new Gson().fromJson(station, Coordinates2D.class))
-        .build();
   }
 
   /**
