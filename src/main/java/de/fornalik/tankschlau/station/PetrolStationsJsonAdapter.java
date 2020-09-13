@@ -4,7 +4,6 @@ import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import de.fornalik.tankschlau.geo.Address;
-import de.fornalik.tankschlau.geo.AddressJsonAdapter;
 import de.fornalik.tankschlau.geo.Distance;
 
 import java.util.*;
@@ -84,14 +83,15 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
   }
 
   private PetrolStation adaptStation(JsonObject station) {
-    PetrolStation ps = new Gson().fromJson(station, PetrolStation.class);
-    Distance dist = new Gson().fromJson(station, Distance.class);
+    // 1. Parse Java lang objects/primitives with Gson's default adapter
+    PetrolStation basicStation = new Gson().fromJson(station, PetrolStation.class);
 
+    // 2. Handle custom types
     return PetrolStationBuilder.create(adaptUUID(station))
-        .setBrand(ps.brand)
-        .setIsOpen(ps.isOpen)
-        .setDistance(dist)
-        .setPetrols(adaptPetrols(station))
+        .setBrand(basicStation.brand)
+        .setIsOpen(basicStation.isOpen)
+        .setDistance(Distance.createFromJson(station))
+        .setPetrols(Petrols.createFromJson(station))
         .setAddress(Address.createFromJson(station))
         .build();
   }
@@ -103,22 +103,6 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
         .map(JsonElement::getAsString)
         .map(UUID::fromString)
         .orElseThrow(() -> new MissingElementException(property));
-  }
-
-  private Set<Petrol> adaptPetrols(JsonObject station) {
-    HashSet<Petrol> petrols = new HashSet<>();
-
-    for (PetrolType petrolType : PetrolType.values()) {
-      // Assuming that PetrolType.toLowerCase() matches the JSON keys!
-      String jsonPetrolType = petrolType.name().toLowerCase();
-
-      JsonElement price = station.get(jsonPetrolType);
-      if (price == null || price.isJsonNull() || price.getAsDouble() <= 0.0) continue;
-
-      petrols.add(new Petrol(petrolType, price.getAsDouble()));
-    }
-
-    return petrols;
   }
 
   /**

@@ -1,5 +1,7 @@
 package de.fornalik.tankschlau.geo;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -10,6 +12,10 @@ public class Distance {
 
   public Distance(double km) {
     setKm(km);
+  }
+
+  public static Distance createFromJson(JsonObject in) {
+    return new Gson().fromJson(in, Distance.class);
   }
 
   public double getKm() {

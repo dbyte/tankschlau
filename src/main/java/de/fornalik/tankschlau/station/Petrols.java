@@ -1,5 +1,8 @@
 package de.fornalik.tankschlau.station;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -9,6 +12,22 @@ import java.util.stream.Collectors;
 public class Petrols {
 
   private Petrols() {
+  }
+
+  public static Set<Petrol> createFromJson(JsonObject in) {
+    Set<Petrol> petrols = new HashSet<>();
+
+    for (PetrolType petrolType : PetrolType.values()) {
+      // Assuming that PetrolType.toLowerCase() matches the JSON keys!
+      String jsonPetrolType = petrolType.name().toLowerCase();
+
+      JsonElement price = in.get(jsonPetrolType);
+      if (price == null || price.isJsonNull() || price.getAsDouble() <= 0.0) continue;
+
+      petrols.add(new Petrol(petrolType, price.getAsDouble()));
+    }
+
+    return petrols;
   }
 
   /**
