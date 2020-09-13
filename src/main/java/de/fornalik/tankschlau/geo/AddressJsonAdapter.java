@@ -4,8 +4,6 @@ import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
-import java.io.IOException;
-
 /**
  * {@link Gson} converter which handles (de)serialization to an instance of {@link Address}
  * from JSON input of web API Tankerkoenig.de.

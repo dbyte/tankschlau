@@ -84,12 +84,12 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
 
   private PetrolStation adaptStation(JsonObject station) {
     // 1. Parse Java lang objects/primitives with Gson's default adapter
-    PetrolStation basicStation = new Gson().fromJson(station, PetrolStation.class);
+    PetrolStation partialPetrolStation = new Gson().fromJson(station, PetrolStation.class);
 
     // 2. Handle custom types
     return PetrolStationBuilder.create(adaptUUID(station))
-        .setBrand(basicStation.brand)
-        .setIsOpen(basicStation.isOpen)
+        .setBrand(partialPetrolStation.brand)
+        .setIsOpen(partialPetrolStation.isOpen)
         .setDistance(Distance.createFromJson(station))
         .setPetrols(Petrols.createFromJson(station))
         .setAddress(Address.createFromJson(station))

@@ -1,5 +1,6 @@
 package de.fornalik.tankschlau.station;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -18,10 +19,9 @@ public class Petrols {
     Set<Petrol> petrols = new HashSet<>();
 
     for (PetrolType petrolType : PetrolType.values()) {
-      // Assuming that PetrolType.toLowerCase() matches the JSON keys!
-      String jsonPetrolType = petrolType.name().toLowerCase();
+      String jsonPetrolTypeKey = petrolType.getJsonKey();
 
-      JsonElement price = in.get(jsonPetrolType);
+      JsonElement price = in.get(jsonPetrolTypeKey);
       if (price == null || price.isJsonNull() || price.getAsDouble() <= 0.0) continue;
 
       petrols.add(new Petrol(petrolType, price.getAsDouble()));

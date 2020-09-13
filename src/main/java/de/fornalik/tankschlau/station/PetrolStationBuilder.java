@@ -13,7 +13,7 @@ public class PetrolStationBuilder {
 
   private final UUID uuid;
   private Distance distance;
-  private HashSet<Petrol> petrols = new HashSet<>();
+  private Set<Petrol> petrols = new HashSet<>();
   private String brand;
   private boolean isOpen;
   private Address address;
@@ -52,11 +52,18 @@ public class PetrolStationBuilder {
     return this;
   }
 
+  /**
+   * Adds {@link Petrol} with its price to a {@link PetrolStation} through this builder.
+   * <br><br>
+   * Note: Adding the same {@link PetrolType} multiple times does nothing, as it's compared by
+   * implicitly calling {@link Petrol#equals(Object)}.
+   *
+   * @param type The {@link PetrolType} of {@link Petrol} to add
+   * @param price The price of the given {@link PetrolType}
+   * @return {@link PetrolStationBuilder} to fulfill the builder pattern
+   */
   public PetrolStationBuilder addPetrol(PetrolType type, double price) {
     Objects.requireNonNull(type, "type" + MUST_NOT_BE_NULL);
-
-    boolean isDuplicate = petrols.stream().anyMatch(other -> other.type.equals(type));
-    if (isDuplicate) return this;
 
     petrols.add(new Petrol(type, price));
     return this;

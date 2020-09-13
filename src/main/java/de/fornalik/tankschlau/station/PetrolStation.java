@@ -1,9 +1,7 @@
 package de.fornalik.tankschlau.station;
 
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.geo.Address;
-import de.fornalik.tankschlau.geo.AddressJsonAdapter;
 import de.fornalik.tankschlau.geo.Distance;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -37,10 +35,6 @@ public class PetrolStation {
 
   public Optional<Distance> getDistance() {
     return Optional.ofNullable(distance);
-  }
-
-  public HashSet<Petrol> getPetrols() {
-    return petrols;
   }
 
   public Optional<Double> getPetrolPrice(PetrolType petrolType) {
