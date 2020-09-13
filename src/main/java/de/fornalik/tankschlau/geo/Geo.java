@@ -29,7 +29,7 @@ public class Geo {
    *
    * @param lat      Latitude
    * @param lon      Longitude
-   * @param distance Distance of this geo location related to the user's address geo location.
+   * @param distance Distance (km) of this geo location related to the user's address geo location.
    *                 This value is optional! Set to null if distance is unknown.
    */
   public Geo(double lat, double lon, Double distance) {
@@ -43,8 +43,8 @@ public class Geo {
   /**
    * Get the road distance of this geo location related to the user's address geo location.
    *
-   * @return Optional containing the road distance to the user's address if present, otherwise an
-   * empty Optional.
+   * @return Optional containing the road distance (km) to the user's address if present,
+   * otherwise an empty Optional.
    */
   public Optional<Double> getDistance() {
     return Optional.ofNullable(distance);

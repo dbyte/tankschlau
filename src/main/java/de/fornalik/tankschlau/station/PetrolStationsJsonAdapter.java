@@ -4,7 +4,6 @@ import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import de.fornalik.tankschlau.geo.Address;
-import de.fornalik.tankschlau.geo.Distance;
 
 import java.util.*;
 
@@ -90,7 +89,6 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
     return PetrolStationBuilder.create(adaptUUID(station))
         .setBrand(partialPetrolStation.brand)
         .setIsOpen(partialPetrolStation.isOpen)
-        .setDistance(Distance.createFromJson(station))
         .setPetrols(Petrols.createFromJson(station))
         .setAddress(Address.createFromJson(station))
         .build();

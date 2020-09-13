@@ -1,7 +1,6 @@
 package de.fornalik.tankschlau.station;
 
 import de.fornalik.tankschlau.geo.Address;
-import de.fornalik.tankschlau.geo.Distance;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -12,7 +11,6 @@ public class PetrolStationBuilder {
   private static final String MUST_NOT_BE_NULL = " must not be null";
 
   private final UUID uuid;
-  private Distance distance;
   private Set<Petrol> petrols = new HashSet<>();
   private String brand;
   private boolean isOpen;
@@ -32,7 +30,6 @@ public class PetrolStationBuilder {
         brand,
         isOpen,
         address,
-        distance,
         petrols);
   }
 
@@ -58,7 +55,7 @@ public class PetrolStationBuilder {
    * Note: Adding the same {@link PetrolType} multiple times does nothing, as it's compared by
    * implicitly calling {@link Petrol#equals(Object)}.
    *
-   * @param type The {@link PetrolType} of {@link Petrol} to add
+   * @param type  The {@link PetrolType} of {@link Petrol} to add
    * @param price The price of the given {@link PetrolType}
    * @return {@link PetrolStationBuilder} to fulfill the builder pattern
    */
@@ -71,11 +68,6 @@ public class PetrolStationBuilder {
 
   public PetrolStationBuilder setAddress(Address address) {
     this.address = Objects.requireNonNull(address, "address" + MUST_NOT_BE_NULL);
-    return this;
-  }
-
-  public PetrolStationBuilder setDistance(Distance distance) {
-    this.distance = Objects.requireNonNull(distance, "distance" + MUST_NOT_BE_NULL);
     return this;
   }
 }

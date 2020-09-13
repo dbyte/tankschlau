@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
-import de.fornalik.tankschlau.geo.Distance;
+import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolType;
 import org.apache.commons.lang3.tuple.Pair;
@@ -90,9 +90,6 @@ public class JsonResponseFixture {
     Assertions.assertEquals(fixture.brand, petrolStation.brand);
     Assertions.assertEquals(fixture.isOpen, petrolStation.isOpen);
 
-    Assertions.assertEquals(Optional.of(fixture.distanceKm),
-                            petrolStation.getDistance().map(Distance::getKm));
-
     Assertions.assertNotNull(petrolStation.address);
     Assertions.assertEquals(fixture.name, petrolStation.address.getName());
     Assertions.assertEquals(fixture.street, petrolStation.address.getStreet());
@@ -105,6 +102,9 @@ public class JsonResponseFixture {
 
     Assertions.assertEquals(Optional.ofNullable(fixture.lng),
                             petrolStation.address.getGeo().map(c -> c.longitude));
+
+    Assertions.assertEquals(Optional.ofNullable(fixture.distanceKm),
+                            petrolStation.address.getGeo().flatMap(Geo::getDistance));
 
     Assertions.assertEquals(Optional.ofNullable(fixture.diesel),
                             petrolStation.getPetrolPrice(PetrolType.DIESEL));
