@@ -51,6 +51,7 @@ public class Geo {
    */
   public static Geo createFromJson(JsonObject in) {
     Objects.requireNonNull(in, "JsonObject must not be null.");
+
     return new Gson().fromJson(in, Geo.class);
   }
 

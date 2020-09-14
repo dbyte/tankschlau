@@ -19,7 +19,7 @@ class AddressTest {
 
   @ParameterizedTest
   @CsvSource(value = {
-      ":::",
+      "::",
       "Some street::",
       "Baba Street:Berlin:",
       " : : ",
