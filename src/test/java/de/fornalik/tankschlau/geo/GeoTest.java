@@ -63,7 +63,8 @@ class GeoTest {
   @Test
   void createFromJson_happy() {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures = JsonResponseFixture.createOneGeoFromJsonFile(
+    Pair<JsonResponseFixture, JsonObject> fixtures =
+        JsonResponseFixture.createFirstStationFromJsonFile(
         FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
 
     JsonResponseFixture responseFixture = fixtures.getLeft();
@@ -80,7 +81,8 @@ class GeoTest {
   @Test
   void createFromJson_doesHandleMissingDistanceElement() {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures = JsonResponseFixture.createOneGeoFromJsonFile(
+    Pair<JsonResponseFixture, JsonObject> fixtures =
+        JsonResponseFixture.createFirstStationFromJsonFile(
         FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_DIST_ELEM);
 
     JsonObject jsonFirstStationFixture = fixtures.getRight();
@@ -96,7 +98,8 @@ class GeoTest {
   @Test
   void createFromJson_setsLatLonToZeroOnMissingLatLonElements() {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures = JsonResponseFixture.createOneGeoFromJsonFile(
+    Pair<JsonResponseFixture, JsonObject> fixtures =
+        JsonResponseFixture.createFirstStationFromJsonFile(
         FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_LAT_LON_ELEM);
 
     JsonObject jsonFirstStationFixture = fixtures.getRight();

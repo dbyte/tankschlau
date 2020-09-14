@@ -33,6 +33,9 @@ public class FixtureFiles {
   public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_LAT_LON_ELEM =
       TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR + "MissingLatLonElements.json";
 
+  public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_ALL_GEO_ELEM =
+      TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR + "MissingAllGeoElements.json";
+
   private FixtureFiles() {
   }
 

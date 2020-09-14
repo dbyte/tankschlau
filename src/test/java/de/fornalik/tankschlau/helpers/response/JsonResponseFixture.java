@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
+import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolType;
@@ -39,7 +40,7 @@ public class JsonResponseFixture {
   /**
    * Creates two test-fixture objects by reading a JSON response fixture file.<br/>
    * 1) a JsonResponseFixture which we can use e.g. for equality checks.<br/>
-   * 2) a {@link Gson} JsonObject.
+   * 2) a {@link JsonObject} of the JSON file fixture.
    *
    * @param resName Resource path as String. Note that the implicit resource root path must not
    *                be included here.
@@ -62,53 +63,43 @@ public class JsonResponseFixture {
     return Pair.of(objectFixture, jsonFixture);
   }
 
-  public static Pair<JsonResponseFixture, JsonObject> createOneGeoFromJsonFile(String resName) {
+  /**
+   * Creates two test-fixture objects by reading a JSON response fixture file.<br/>
+   * The returned JSON of this method does only include the <b>first station</b> of the response!
+   * <p>
+   * 1) a JsonResponseFixture which we can use e.g. for equality checks.<br/>
+   * 2) a {@link JsonObject} of the <b>first station</b> found within the JSON file fixture.
+   *
+   * @return {@link Pair#getLeft()}: JsonResponseFixture which we can use e.g. for equality
+   * checks.<br/>
+   * {@link Pair#getRight()}: a {@link JsonObject} of the <b>first station</b> found within the
+   * JSON file fixture.
+   * @see #createFromJsonFile(String resName)
+   */
+  public static Pair<JsonResponseFixture, JsonObject> createFirstStationFromJsonFile(String resName) {
     Objects.requireNonNull(resName);
 
-    FileReader reader1 = FixtureFiles.getFileReaderForResource(resName);
-    FileReader reader2 = FixtureFiles.getFileReaderForResource(resName);
-    Gson gson = new Gson();
+    Pair<JsonResponseFixture, JsonObject> responseFixture = createFromJsonFile(resName);
 
-    JsonResponseFixture objectFixture = gson.fromJson(reader1, JsonResponseFixture.class);
-    JsonObject jsonFixture = (JsonObject) JsonParser.parseReader(reader2);
+    assert responseFixture.getRight().getAsJsonArray("stations") != null;
 
-    JsonObject jsonFirstStationOfStationArray = jsonFixture
+    JsonObject jsonFirstStationOfStationArrayFixture = responseFixture.getRight()
         .getAsJsonArray("stations")
         .get(0)
         .getAsJsonObject();
 
-    return Pair.of(objectFixture, jsonFirstStationOfStationArray);
+    return Pair.of(responseFixture.getLeft(), jsonFirstStationOfStationArrayFixture);
   }
+
+  // region assertEqual helpers
 
   public void assertEquals(List<PetrolStation> petrolStations) {
     Objects.requireNonNull(petrolStations);
     petrolStations.forEach(this::assertEquals);
   }
 
-  public void assertEquals(Geo geoUnderTest) {
-    /* Preconditions for running the test. Note these checks are not subject to the test itself.
-    Thus, we don't use Junit assertions here. */
-    assert geoUnderTest != null;
-
-    // Get first station (which itself contains properties lat, lng, dist) of JsonResponseFixture
-    // for the Geo object under test.
-    StationDTO fixture = stations.stream()
-        .findFirst()
-        .orElse(null);
-
-    assert fixture != null;
-
-    // Begin test
-
-    Assertions.assertEquals(fixture.lat, geoUnderTest.latitude);
-    Assertions.assertEquals(fixture.lng, geoUnderTest.longitude);
-
-    Assertions.assertEquals(Optional.ofNullable(fixture.distanceKm),
-                            geoUnderTest.getDistance());
-  }
-
   /**
-   * Deep check for value equality of a JsonResponseFixture with a PetrolStation.
+   * Deep check for value equality of a JsonResponseFixture with a {@link PetrolStation}.
    *
    * @param petrolStation The {@link PetrolStation} to be checked for deep value equality.
    */
@@ -133,20 +124,7 @@ public class JsonResponseFixture {
     Assertions.assertEquals(fixture.isOpen, petrolStation.isOpen);
 
     Assertions.assertNotNull(petrolStation.address);
-    Assertions.assertEquals(fixture.name, petrolStation.address.getName());
-    Assertions.assertEquals(fixture.street, petrolStation.address.getStreet());
-    Assertions.assertEquals(fixture.houseNumber, petrolStation.address.getHouseNumber());
-    Assertions.assertEquals(fixture.city, petrolStation.address.getCity());
-    Assertions.assertEquals(fixture.postCode, petrolStation.address.getPostCode());
-
-    Assertions.assertEquals(Optional.ofNullable(fixture.lat),
-                            petrolStation.address.getGeo().map(c -> c.latitude));
-
-    Assertions.assertEquals(Optional.ofNullable(fixture.lng),
-                            petrolStation.address.getGeo().map(c -> c.longitude));
-
-    Assertions.assertEquals(Optional.ofNullable(fixture.distanceKm),
-                            petrolStation.address.getGeo().flatMap(Geo::getDistance));
+    this.assertEquals(petrolStation.address);
 
     Assertions.assertEquals(Optional.ofNullable(fixture.diesel),
                             petrolStation.getPetrolPrice(PetrolType.DIESEL));
@@ -159,8 +137,71 @@ public class JsonResponseFixture {
   }
 
   /**
+   * Helper for equality tests. Testing JSON response fixture against a resulting
+   * {@link Address} instance.
+   *
+   * @param addressUnderTest The Address object to test for equality with the generated fixture.
+   */
+  public void assertEquals(Address addressUnderTest) {
+    /* Preconditions for running the test. Note these checks are not subject to the test itself.
+    Thus, we don't use Junit assertions here. */
+
+    assert addressUnderTest != null;
+
+    // Get first station (which itself contains properties lat, lng, dist) of JsonResponseFixture
+    // for the Geo object under test.
+    StationDTO fixture = stations.stream()
+        .findFirst()
+        .orElse(null);
+
+    assert fixture != null;
+
+    // Begin test
+
+    Assertions.assertEquals(fixture.name, addressUnderTest.getName());
+    Assertions.assertEquals(fixture.street, addressUnderTest.getStreet());
+    Assertions.assertEquals(fixture.houseNumber, addressUnderTest.getHouseNumber());
+    Assertions.assertEquals(fixture.city, addressUnderTest.getCity());
+    Assertions.assertEquals(fixture.postCode, addressUnderTest.getPostCode());
+
+    this.assertEquals(addressUnderTest.getGeo().orElse(null));
+  }
+
+  /**
+   * Helper for equality tests. Testing JSON response fixture against a resulting
+   * {@link Geo} instance.
+   *
+   * @param geoUnderTest The Geo object to test for equality with the generated fixture. Null is
+   *                     explicitly <b>allowed</b>, respecting equality checks of Optional.empty().
+   */
+  public void assertEquals(Geo geoUnderTest) {
+    Optional<Geo> optGeoUnderTest = Optional.ofNullable(geoUnderTest);
+
+    // Get first station (which itself contains properties lat, lng, dist) of JsonResponseFixture
+    // for the Geo object under test.
+    StationDTO fixture = stations.stream()
+        .findFirst()
+        .orElse(null);
+
+    assert fixture != null;
+
+    // Begin test
+
+    Assertions.assertEquals(Optional.of(fixture.lat),
+                            optGeoUnderTest.map(g -> g.latitude));
+
+    Assertions.assertEquals(Optional.of(fixture.lng),
+                            optGeoUnderTest.map(g -> g.longitude));
+
+    Assertions.assertEquals(Optional.ofNullable(fixture.distanceKm),
+                            optGeoUnderTest.flatMap(Geo::getDistance));
+  }
+
+  // endregion
+
+  /**
    * Transfer class to easily convert a Tankerkoenig.de API JSON response file to a
-   * (petrol station) test-fixture class. We currently perform conversion with the {@link Gson}
+   * (petrol station) test-fixture instance. Conversion is currently processed by the {@link Gson}
    * library.
    */
   public static class StationDTO {

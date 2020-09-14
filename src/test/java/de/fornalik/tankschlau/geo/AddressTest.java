@@ -1,6 +1,10 @@
 package de.fornalik.tankschlau.geo;
 
+import com.google.gson.JsonObject;
+import de.fornalik.tankschlau.helpers.response.FixtureFiles;
+import de.fornalik.tankschlau.helpers.response.JsonResponseFixture;
 import de.fornalik.tankschlau.util.StringLegalizer;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -54,7 +58,47 @@ class AddressTest {
     assertDoesNotThrow(() -> new Address("", "Street name", "", "City name", "Post code", null));
   }
 
-  // TODO test for createFromJson(JsonObject)
+  // region createFromJson Tests
+
+  /* Tests for Address.createFromJson(JsonObject). The heavy load is currently done
+  by AddressJsonAdapter, which is not part of this unit and tested separately. */
+
+  @Test
+  void createFromJson_happy() {
+    // given
+    Pair<JsonResponseFixture, JsonObject> fixtures =
+        JsonResponseFixture.createFirstStationFromJsonFile(
+            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
+
+    JsonResponseFixture responseFixture = fixtures.getLeft();
+    JsonObject jsonFirstStationFixture = fixtures.getRight();
+
+    // when
+    Address actualAddress = Address.createFromJson(jsonFirstStationFixture);
+
+    // then
+    assertNotNull(actualAddress);
+    responseFixture.assertEquals(actualAddress);
+  }
+
+  @Test
+  void createFromJson_returnsEmptyOptionalGeoObjectIfAllGeoElementsAreMissing() {
+    // given
+    Pair<JsonResponseFixture, JsonObject> fixtures =
+        JsonResponseFixture.createFirstStationFromJsonFile(
+            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_ALL_GEO_ELEM);
+
+    JsonObject jsonFirstStationFixture = fixtures.getRight();
+
+    // when
+    Address actualAddress = Address.createFromJson(jsonFirstStationFixture);
+
+    // then
+    assertNotNull(actualAddress);
+    assertEquals(Optional.empty(), actualAddress.getGeo());
+  }
+
+  // endregion
 
   @Test
   void setName_legalizesValue() {
