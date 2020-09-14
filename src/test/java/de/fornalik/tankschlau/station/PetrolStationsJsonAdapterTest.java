@@ -14,19 +14,19 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PetrolStationsJsonAdapterTest {
-  private Gson gson;
-  private PetrolStationsJsonAdapter petrolStationsJsonAdapter;
+  private static Gson gson;
+  private static PetrolStationsJsonAdapter petrolStationsJsonAdapter;
 
-  @BeforeEach
-  void beforeEach() {
+  @BeforeAll
+  static void beforeAll() {
     petrolStationsJsonAdapter = new PetrolStationsJsonAdapter();
     gson = new GsonBuilder()
         .registerTypeAdapter(PetrolStation.class, petrolStationsJsonAdapter)
         .create();
   }
 
-  @AfterEach
-  void afterEach() {
+  @AfterAll
+  static void afterAll() {
     gson = null;
     petrolStationsJsonAdapter = null;
   }
