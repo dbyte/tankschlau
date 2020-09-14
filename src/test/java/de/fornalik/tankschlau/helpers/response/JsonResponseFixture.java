@@ -62,9 +62,49 @@ public class JsonResponseFixture {
     return Pair.of(objectFixture, jsonFixture);
   }
 
+  public static Pair<JsonResponseFixture, JsonObject> createOneGeoFromJsonFile(String resName) {
+    Objects.requireNonNull(resName);
+
+    FileReader reader1 = FixtureFiles.getFileReaderForResource(resName);
+    FileReader reader2 = FixtureFiles.getFileReaderForResource(resName);
+    Gson gson = new Gson();
+
+    JsonResponseFixture objectFixture = gson.fromJson(reader1, JsonResponseFixture.class);
+    JsonObject jsonFixture = (JsonObject) JsonParser.parseReader(reader2);
+
+    JsonObject jsonFirstStationOfStationArray = jsonFixture
+        .getAsJsonArray("stations")
+        .get(0)
+        .getAsJsonObject();
+
+    return Pair.of(objectFixture, jsonFirstStationOfStationArray);
+  }
+
   public void assertEquals(List<PetrolStation> petrolStations) {
     Objects.requireNonNull(petrolStations);
     petrolStations.forEach(this::assertEquals);
+  }
+
+  public void assertEquals(Geo geoUnderTest) {
+    /* Preconditions for running the test. Note these checks are not subject to the test itself.
+    Thus, we don't use Junit assertions here. */
+    assert geoUnderTest != null;
+
+    // Get first station (which itself contains properties lat, lng, dist) of JsonResponseFixture
+    // for the Geo object under test.
+    StationDTO fixture = stations.stream()
+        .findFirst()
+        .orElse(null);
+
+    assert fixture != null;
+
+    // Begin test
+
+    Assertions.assertEquals(fixture.lat, geoUnderTest.latitude);
+    Assertions.assertEquals(fixture.lng, geoUnderTest.longitude);
+
+    Assertions.assertEquals(Optional.ofNullable(fixture.distanceKm),
+                            geoUnderTest.getDistance());
   }
 
   /**
@@ -75,8 +115,8 @@ public class JsonResponseFixture {
   public void assertEquals(PetrolStation petrolStation) {
     /* Preconditions for running the test. Note these checks are not subject to the test itself.
     Thus, we don't use Junit assertions here. */
-    Objects.requireNonNull(petrolStation);
-    Objects.requireNonNull(petrolStation.uuid);
+
+    assert petrolStation != null;
 
     // Find required JsonResponseFixture for the PetrolStation under test.
     StationDTO fixture = stations.stream()
@@ -84,7 +124,9 @@ public class JsonResponseFixture {
         .findFirst()
         .orElse(null);
 
-    Assertions.assertNotNull(fixture);
+    assert fixture != null;
+
+    // Begin test
 
     Assertions.assertEquals(fixture.uuid, petrolStation.uuid);
     Assertions.assertEquals(fixture.brand, petrolStation.brand);

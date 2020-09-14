@@ -1,0 +1,20 @@
+{
+  "ok": true,
+  "license": "CC BY 4.0",
+  "data": "MTS-K",
+  "status": "ok",
+  "stations": [
+    {
+      "id": "448e4ee6-3404-4868-b7e6-ea59a5c78eb9",
+      "name": "Aral Tankstelle",
+      "brand": "ARAL",
+      "street": "Skalitzer Stra\u00dfe",
+      "place": "Berlin",
+      "dist": 2.7,
+      "price": 1.089,
+      "isOpen": true,
+      "houseNumber": "26",
+      "postCode": 10999
+    }
+  ]
+}

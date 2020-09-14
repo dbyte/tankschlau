@@ -27,6 +27,12 @@ public class FixtureFiles {
   public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_HOUSENUM_AND_BRAND =
       TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR + "EmptyHouseNumberAndBrand.json";
 
+  public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_DIST_ELEM =
+      TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR + "MissingDistanceElement.json";
+
+  public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_LAT_LON_ELEM =
+      TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR + "MissingLatLonElements.json";
+
   private FixtureFiles() {
   }
 

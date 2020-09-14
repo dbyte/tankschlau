@@ -1,5 +1,9 @@
 package de.fornalik.tankschlau.geo;
 
+import com.google.gson.JsonObject;
+import de.fornalik.tankschlau.helpers.response.FixtureFiles;
+import de.fornalik.tankschlau.helpers.response.JsonResponseFixture;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -51,7 +55,70 @@ class GeoTest {
     );
   }
 
-  // TODO test for createFromJson(JsonObject)
+  // region createFromJson Tests
+
+  /* Tests for Geo.createFromJson(JsonObject). The heavy load is currently done
+  by a default Gson adapter. */
+
+  @Test
+  void createFromJson_happy() {
+    // given
+    Pair<JsonResponseFixture, JsonObject> fixtures = JsonResponseFixture.createOneGeoFromJsonFile(
+        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
+
+    JsonResponseFixture responseFixture = fixtures.getLeft();
+    JsonObject jsonFirstStationFixture = fixtures.getRight();
+
+    // when
+    Geo actualGeo = Geo.createFromJson(jsonFirstStationFixture);
+
+    // then
+    assertNotNull(actualGeo);
+    responseFixture.assertEquals(actualGeo);
+  }
+
+  @Test
+  void createFromJson_doesHandleMissingDistanceElement() {
+    // given
+    Pair<JsonResponseFixture, JsonObject> fixtures = JsonResponseFixture.createOneGeoFromJsonFile(
+        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_DIST_ELEM);
+
+    JsonObject jsonFirstStationFixture = fixtures.getRight();
+
+    // when
+    Geo actualGeo = Geo.createFromJson(jsonFirstStationFixture);
+
+    // then
+    assertNotNull(actualGeo);
+    assertEquals(Optional.empty(), actualGeo.getDistance());
+  }
+
+  @Test
+  void createFromJson_setsLatLonToZeroOnMissingLatLonElements() {
+    // given
+    Pair<JsonResponseFixture, JsonObject> fixtures = JsonResponseFixture.createOneGeoFromJsonFile(
+        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_LAT_LON_ELEM);
+
+    JsonObject jsonFirstStationFixture = fixtures.getRight();
+
+    // when
+    Geo actualGeo = Geo.createFromJson(jsonFirstStationFixture);
+
+    // then
+    assertNotNull(actualGeo);
+    assertEquals(0.0, actualGeo.latitude);
+    assertEquals(0.0, actualGeo.longitude);
+  }
+
+  @Test
+  void createFromJson_doesThrowWhenPassingNullToIt() {
+    assertThrows(
+        NullPointerException.class,
+        () -> Geo.createFromJson(null)
+    );
+  }
+
+  // endregion
 
   @Test
   void getDistance_happy() {
@@ -140,7 +207,8 @@ class GeoTest {
     assertFalse(equalityProven);
   }
 
-  @Test void toString_doesNotThrow() {
+  @Test
+  void toString_doesNotThrow() {
     // given
     Geo geo = new Geo(27, 97.02479273623, 1.00023735118365);
     // when then

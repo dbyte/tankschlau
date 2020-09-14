@@ -1,0 +1,21 @@
+{
+  "ok": true,
+  "license": "CC BY 4.0",
+  "data": "MTS-K",
+  "status": "ok",
+  "stations": [
+    {
+      "id": "51d4b660-a095-1aa0-e100-80009459e03a",
+      "name": "JET BERLIN HERZBERGSTR. 27",
+      "brand": "JET",
+      "street": "HERZBERGSTR. 27",
+      "place": "BERLIN",
+      "lat": 52.5262,
+      "lng": 13.4886,
+      "price": 1.009,
+      "isOpen": true,
+      "houseNumber": "",
+      "postCode": 10365
+    }
+  ]
+}
