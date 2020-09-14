@@ -67,6 +67,8 @@ public class Address {
    *
    * @param in The {@link JsonObject} from which to convert to an {@link Address}
    * @return Instance of {@link Address}
+   * @throws com.google.gson.JsonParseException if Address is invalid from a point of business rules as
+   * checked by {@link #isValid()}.
    */
   public static Address createFromJson(JsonObject in) {
     Objects.requireNonNull(in, "JsonObject must not be null.");
@@ -148,6 +150,17 @@ public class Address {
    */
   public void setGeo(Geo geo) {
     this.geo = geo;
+  }
+
+  /**
+   * Check if this Address is valid from a point of business rules.
+   *
+   * @return true if it is a valid address by business rules
+   */
+  public boolean isValid() {
+    return street != null && !street.isEmpty()
+        && city != null && !city.isEmpty()
+        && postCode != null && !postCode.isEmpty();
   }
 
   @Override

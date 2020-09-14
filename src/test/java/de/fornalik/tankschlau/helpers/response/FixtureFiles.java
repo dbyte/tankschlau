@@ -36,6 +36,9 @@ public class FixtureFiles {
   public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_ALL_GEO_ELEM =
       TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR + "MissingAllGeoElements.json";
 
+  public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_STREET_AND_PLACE_AND_POSTCODE =
+      TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR + "EmptyStreetAndPlaceAndPostCode.json";
+
   private FixtureFiles() {
   }
 
