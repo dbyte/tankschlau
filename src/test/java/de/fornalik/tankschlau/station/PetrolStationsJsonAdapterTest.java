@@ -69,29 +69,6 @@ class PetrolStationsJsonAdapterTest {
   }
 
   @Test
-  void read_oneStation_acceptsEmptyHouseNumberOrBrand() {
-    // given
-    JsonObject jsonFixture = JsonResponseFixture.createFromJsonFile(
-        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_HOUSENUM_AND_BRAND).getRight();
-
-    // when
-    ArrayList<PetrolStation> actualPetrolStations = gson.fromJson(
-        jsonFixture,
-        (Type) PetrolStation.class);
-
-    // then
-    assertNotNull(actualPetrolStations);
-
-    assertEquals("",
-                 actualPetrolStations.get(0).address.getHouseNumber());
-
-    assertEquals("",
-                 actualPetrolStations.get(0).brand);
-
-    assertEquals(0, petrolStationsJsonAdapter.getErrorMessages().size());
-  }
-
-  @Test
   void read_noStations_returnsEmptyArrayOnMissingStationsElement() {
     // given
     JsonObject jsonFixture = JsonResponseFixture
