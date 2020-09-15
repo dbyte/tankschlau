@@ -175,4 +175,19 @@ class PetrolsTest {
     assertEquals(Optional.empty(), foundPetrol);
   }
 
+  @Test
+  void findPetrol_throwsOnFoundDuplicatePetrolTypes() {
+    // given
+    Petrol unexpectedPetrol = new Petrol(PetrolType.E10, 2.22);
+
+    HashSet<Petrol> givenPetrols = new HashSet<>();
+    givenPetrols.add(new Petrol(PetrolType.E10, 2.22));
+    givenPetrols.add(new Petrol(PetrolType.E10, 1.229));
+
+    // when, then
+    assertThrows(
+        Petrols.PetrolsDuplicateException.class,
+        () -> Petrols.findPetrol(givenPetrols, unexpectedPetrol.type));
+  }
+
 }
