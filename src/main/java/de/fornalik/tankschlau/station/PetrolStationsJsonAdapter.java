@@ -73,7 +73,7 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
 
       try {
         petrolStations.add(adaptStation(jsonStation));
-      } catch (MissingElementException | IllegalStateException e) {
+      } catch (MissingElementException | JsonParseException e) {
         errorMessages.add(e.getMessage());
       }
     }
