@@ -33,10 +33,6 @@ public class JsonResponseFixture {
     stations = new ArrayList<>();
   }
 
-  public static JsonResponseFixture create() {
-    return new JsonResponseFixture();
-  }
-
   /**
    * Creates two test-fixture objects by reading a JSON response fixture file.<br/>
    * 1) a JsonResponseFixture which we can use e.g. for equality checks.<br/>
