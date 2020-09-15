@@ -30,13 +30,8 @@ public class PetrolStation {
   }
 
   public HashSet<Petrol> getPetrols() {
+    if (petrols == null) return new HashSet<>();
     return petrols;
-  }
-
-  public Optional<Double> getPetrolPrice(PetrolType petrolType) {
-    return Petrols
-        .findPetrol(petrols, petrolType)
-        .map(petrol -> petrol.price);
   }
 
   @Override
