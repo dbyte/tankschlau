@@ -124,7 +124,7 @@ public class JsonResponseFixture {
     Assertions.assertEquals(fixture.isOpen, petrolStation.isOpen);
 
     Assertions.assertNotNull(petrolStation.address);
-    this.assertEquals(petrolStation.address);
+    this.assertEquals(petrolStation.address, stations.indexOf(fixture));
 
     Assertions.assertEquals(Optional.ofNullable(fixture.diesel),
                             petrolStation.getPetrolPrice(PetrolType.DIESEL));
@@ -142,17 +142,14 @@ public class JsonResponseFixture {
    *
    * @param addressUnderTest The Address object to test for equality with the generated fixture.
    */
-  public void assertEquals(Address addressUnderTest) {
+  public void assertEquals(Address addressUnderTest, int fixtureIdx) {
     /* Preconditions for running the test. Note these checks are not subject to the test itself.
     Thus, we don't use Junit assertions here. */
 
     assert addressUnderTest != null;
 
-    // Get first station (which itself contains properties lat, lng, dist) of JsonResponseFixture
-    // for the Geo object under test.
-    StationDTO fixture = stations.stream()
-        .findFirst()
-        .orElse(null);
+    // Get station by given index
+    StationDTO fixture = stations.get(fixtureIdx);
 
     assert fixture != null;
 
@@ -164,7 +161,7 @@ public class JsonResponseFixture {
     Assertions.assertEquals(fixture.city, addressUnderTest.getCity());
     Assertions.assertEquals(fixture.postCode, addressUnderTest.getPostCode());
 
-    this.assertEquals(addressUnderTest.getGeo().orElse(null));
+    this.assertEquals(addressUnderTest.getGeo().orElse(null), fixtureIdx);
   }
 
   /**
@@ -174,14 +171,11 @@ public class JsonResponseFixture {
    * @param geoUnderTest The Geo object to test for equality with the generated fixture. Null is
    *                     explicitly <b>allowed</b>, respecting equality checks of Optional.empty().
    */
-  public void assertEquals(Geo geoUnderTest) {
+  public void assertEquals(Geo geoUnderTest, int fixtureIdx) {
     Optional<Geo> optGeoUnderTest = Optional.ofNullable(geoUnderTest);
 
-    // Get first station (which itself contains properties lat, lng, dist) of JsonResponseFixture
-    // for the Geo object under test.
-    StationDTO fixture = stations.stream()
-        .findFirst()
-        .orElse(null);
+    // Get station by given index
+    StationDTO fixture = stations.get(fixtureIdx);
 
     assert fixture != null;
 

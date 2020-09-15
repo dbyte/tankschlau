@@ -101,4 +101,25 @@ class PetrolStationsJsonAdapterTest {
     assertEquals(0, actualPetrolStations.size());
     assertEquals(1, petrolStationsJsonAdapter.getErrorMessages().size());
   }
+
+  @Test
+  void read_multi_17HappyStations() {
+    // given
+    Pair<JsonResponseFixture, JsonObject> fixtures = JsonResponseFixture.createFromJsonFile(
+        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_17HappyStations);
+
+    JsonResponseFixture objectFixture = fixtures.getLeft();
+    JsonObject jsonFixture = fixtures.getRight();
+
+    // when
+    ArrayList<PetrolStation> actualPetrolStations = gson.fromJson(
+        jsonFixture,
+        (Type) PetrolStation.class);
+
+    // then
+    assertNotNull(actualPetrolStations);
+    assertEquals(17, actualPetrolStations.size());
+    assertEquals(0, petrolStationsJsonAdapter.getErrorMessages().size());
+    objectFixture.assertEquals(actualPetrolStations);
+  }
 }

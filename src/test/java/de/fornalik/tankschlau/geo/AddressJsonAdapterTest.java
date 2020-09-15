@@ -45,7 +45,7 @@ class AddressJsonAdapterTest {
 
     // then
     assertNotNull(actualAddress);
-    objectFixture.assertEquals(actualAddress);
+    objectFixture.assertEquals(actualAddress, 0);
   }
 
   @Test

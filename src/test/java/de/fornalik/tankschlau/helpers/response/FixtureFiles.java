@@ -39,6 +39,9 @@ public class FixtureFiles {
   public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_STREET_AND_PLACE_AND_POSTCODE =
       TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR + "EmptyStreetAndPlaceAndPostCode.json";
 
+  public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_17HappyStations =
+      TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR + "17HappyStations.json";
+
   private FixtureFiles() {
   }
 
