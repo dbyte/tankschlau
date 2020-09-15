@@ -29,6 +29,10 @@ public class PetrolStation {
     this.petrols = Optional.ofNullable((HashSet<Petrol>) petrols).orElse(new HashSet<>());
   }
 
+  public HashSet<Petrol> getPetrols() {
+    return petrols;
+  }
+
   public Optional<Double> getPetrolPrice(PetrolType petrolType) {
     return Petrols
         .getPetrol(petrols, petrolType)

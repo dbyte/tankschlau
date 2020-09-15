@@ -1,0 +1,22 @@
+{
+  "ok": true,
+  "license": "CC BY 4.0 -  https:\/\/creativecommons.tankerkoenig.de",
+  "data": "MTS-K",
+  "status": "ok",
+  "stations": [
+    {
+      "id": "fc549e08-daf7-4dd1-8cf0-49cbf3f0bb92",
+      "name": "Price element missing for Diesel and E5",
+      "brand": "Brand",
+      "street": "Street",
+      "place": "Place",
+      "lat": 52.4161,
+      "lng": 10.7517,
+      "dist": 1.6,
+      "e10": 1.229,
+      "isOpen": true,
+      "houseNumber": "221",
+      "postCode": 38440
+    }
+  ]
+}
