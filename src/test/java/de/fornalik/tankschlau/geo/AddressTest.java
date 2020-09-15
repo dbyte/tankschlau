@@ -82,6 +82,22 @@ class AddressTest {
   }
 
   @Test
+  void createFromJson_acceptsEmptyHouseNumber() {
+    // given
+    Pair<JsonResponseFixture, JsonObject> fixtures =
+        JsonResponseFixture.createFirstStationFromJsonFile(
+            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_HOUSENUM_AND_BRAND);
+
+    JsonObject jsonFirstStationFixture = fixtures.getRight();
+
+    // when
+    Address actualAddress = Address.createFromJson(jsonFirstStationFixture);
+
+    // then
+    assertEquals("", actualAddress.getHouseNumber());
+  }
+
+  @Test
   void createFromJson_returnsEmptyOptionalGeoObjectIfAllGeoElementsAreMissing() {
     // given
     Pair<JsonResponseFixture, JsonObject> fixtures =

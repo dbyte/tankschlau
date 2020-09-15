@@ -69,6 +69,22 @@ class PetrolStationsJsonAdapterTest {
   }
 
   @Test
+  void read_oneStation_acceptsEmptyBrand() {
+    // given
+    JsonObject jsonFixture = JsonResponseFixture.createFromJsonFile(
+        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_HOUSENUM_AND_BRAND).getRight();
+
+    // when
+    ArrayList<PetrolStation> actualPetrolStations = gson.fromJson(
+        jsonFixture,
+        (Type) PetrolStation.class);
+
+    // then
+    assertEquals("", actualPetrolStations.get(0).brand);
+    assertEquals(0, petrolStationsJsonAdapter.getErrorMessages().size());
+  }
+
+  @Test
   void read_noStations_returnsEmptyArrayOnMissingStationsElement() {
     // given
     JsonObject jsonFixture = JsonResponseFixture
@@ -103,7 +119,7 @@ class PetrolStationsJsonAdapterTest {
   }
 
   @Test
-  void read_multi_17HappyStations() {
+  void read_multipleStations_happy() {
     // given
     Pair<JsonResponseFixture, JsonObject> fixtures = JsonResponseFixture.createFromJsonFile(
         FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_17HappyStations);
@@ -124,7 +140,7 @@ class PetrolStationsJsonAdapterTest {
   }
 
   @Test
-  void read_multi_discardsTwoInvalidStationsAndKeepsTwoValidOnes() {
+  void read_multipleStations_discardsTwoInvalidStationsAndKeepsTwoValidOnes() {
     // given
     Pair<JsonResponseFixture, JsonObject> fixtures = JsonResponseFixture.createFromJsonFile(
         FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_2INVALID_2VALID);

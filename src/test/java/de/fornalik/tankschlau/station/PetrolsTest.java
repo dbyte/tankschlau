@@ -44,7 +44,6 @@ class PetrolsTest {
         JsonResponseFixture.createFirstStationFromJsonFile(
             FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_DIESEL_AND_E5);
 
-    JsonResponseFixture fixture = fixtures.getLeft();
     JsonObject jsonStationFix = fixtures.getRight();
 
     // when
@@ -62,7 +61,6 @@ class PetrolsTest {
         JsonResponseFixture.createFirstStationFromJsonFile(
             FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_ZERO_PRICE_DIESEL_AND_E10);
 
-    JsonResponseFixture fixture = fixtures.getLeft();
     JsonObject jsonStationFix = fixtures.getRight();
 
     // when
