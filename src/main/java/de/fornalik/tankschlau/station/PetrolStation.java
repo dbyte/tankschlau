@@ -35,7 +35,7 @@ public class PetrolStation {
 
   public Optional<Double> getPetrolPrice(PetrolType petrolType) {
     return Petrols
-        .getPetrol(petrols, petrolType)
+        .findPetrol(petrols, petrolType)
         .map(petrol -> petrol.price);
   }
 

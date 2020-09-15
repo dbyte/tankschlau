@@ -37,10 +37,9 @@ public class Petrols {
   }
 
   /**
-   * Use for sorting a {@link Petrol} Set, based on the order of values defined in Enum
-   * {@link PetrolType} and price. The array will get sorted based on the order in which the enum
-   * values
-   * are defined.
+   * Use for sorting a {@link Petrol} Set, based on the order of values defined in enum
+   * {@link PetrolType} and price. The array gets sorted based on the order in which the enum
+   * values are defined.
    *
    * @param petrols List of {@link Petrol}s. Empty List if given petrols are null.
    */
@@ -49,10 +48,10 @@ public class Petrols {
     ArrayList<Petrol> petrolsList = new ArrayList<>(petrols);
 
     class ComparatorByOrdinalPetrolTypeAndPrice implements Comparator<Petrol> {
-      public int compare(Petrol emp1, Petrol emp2) {
+      public int compare(Petrol petrolA, Petrol petrolB) {
         return new CompareToBuilder()
-            .append(emp1.type.ordinal(), emp2.type.ordinal())
-            .append(emp1.price, emp2.price)
+            .append(petrolA.type.ordinal(), petrolB.type.ordinal())
+            .append(petrolA.price, petrolB.price)
             .toComparison();
       }
     }
@@ -64,14 +63,16 @@ public class Petrols {
   /**
    * Finds a {@link Petrol} object for a {@link PetrolType} in a list of petrols.
    *
-   * @param petrols    Set of {@link Petrol} to search in
+   * @param in    Set of {@link Petrol} to search in
    * @param petrolType Type of petrol we search for, assuming it's unique within the collection.
    * @return Optional {@link Petrol} object or Optional empty if not found.
    * @throws PetrolsDuplicateException If we found {@link PetrolType} duplicates in the list.
    */
-  public static Optional<Petrol> getPetrol(Set<Petrol> petrols, PetrolType petrolType) {
-    List<Petrol> foundPetrols = petrols.stream()
-        .filter(petrol -> petrol.type.equals(petrolType))
+  public static Optional<Petrol> findPetrol(Set<Petrol> in, PetrolType petrolType) {
+    if (in == null || petrolType == null) return Optional.empty();
+
+    List<Petrol> foundPetrols = in.stream()
+        .filter(petrol -> petrol.type == petrolType)
         .collect(Collectors.toCollection(ArrayList::new));
 
     int countResults = foundPetrols.size();

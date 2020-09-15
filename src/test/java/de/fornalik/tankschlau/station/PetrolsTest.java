@@ -5,13 +5,12 @@ import de.fornalik.tankschlau.helpers.response.FixtureFiles;
 import de.fornalik.tankschlau.helpers.response.JsonResponseFixture;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PetrolsTest {
 
@@ -102,7 +101,7 @@ class PetrolsTest {
     // when
     ArrayList<Petrol> actualSortedPetrols =
         (ArrayList<Petrol>) Petrols.getSortedByPetrolTypeAndPrice(
-        unsortedPetrols);
+            unsortedPetrols);
 
     // then
     // Expected order: 1st sorted by order of PetrolType definitions, then by price
@@ -110,7 +109,70 @@ class PetrolsTest {
   }
 
   @Test
-  void getPetrol() {
+  void getSortedByPetrolTypeAndPrice_returnsEmptyListIfNullSetIsPassed() {
+    // when
+    List<Petrol> actualSortedPetrols = Petrols.getSortedByPetrolTypeAndPrice(null);
+
+    // then
+    assertNotNull(actualSortedPetrols);
+    assertEquals(0, actualSortedPetrols.size());
+  }
+
+  @ParameterizedTest
+  @CsvSource(value = {
+      "DIESEL; 0.997",
+      "E10; 1.229",
+      "E5; 1.05"},
+      delimiter = ';')
+  void findPetrol_happy(String expectedPetrolTypeStr, double expectedPrice) {
+    // given
+    PetrolType expectedPetrolType = PetrolType.valueOf(expectedPetrolTypeStr);
+    Petrol expectedPetrol = new Petrol(expectedPetrolType, expectedPrice);
+
+    HashSet<Petrol> givenPetrols = new HashSet<>();
+    givenPetrols.add(new Petrol(PetrolType.DIESEL, 0.997));
+    givenPetrols.add(new Petrol(PetrolType.E10, 1.229));
+    givenPetrols.add(new Petrol(PetrolType.E5, 1.05));
+
+    // when
+    Optional<Petrol> foundPetrol = Petrols.findPetrol(givenPetrols, expectedPetrolType);
+
+    // then
+    // noinspection OptionalGetWithoutIsPresent
+    assertSame(expectedPetrol.type, foundPetrol.get().type);
+    assertEquals(expectedPetrol.price, foundPetrol.get().price);
+  }
+
+  @ParameterizedTest
+  @CsvSource(value = {"E10", "E5"}, delimiter = ';')
+  void findPetrol_ReturnsEmptyOptionalIfNotFound(String unexpectedPetrolTypeStr) {
+    // given
+    PetrolType expectedPetrolType = PetrolType.valueOf(unexpectedPetrolTypeStr);
+
+    HashSet<Petrol> givenPetrols = new HashSet<>();
+    givenPetrols.add(new Petrol(PetrolType.DIESEL, 1.11));
+
+    // when
+    Optional<Petrol> foundPetrol = Petrols.findPetrol(givenPetrols, expectedPetrolType);
+
+    // then
+    assertEquals(Optional.empty(), foundPetrol);
+  }
+
+  @Test
+  void findPetrol_ReturnsEmptyOptionalIfAnyGivenArgumentIsNull() {
+    // given
+    HashSet<Petrol> givenPetrols = new HashSet<>();
+    givenPetrols.add(new Petrol(PetrolType.DIESEL, 1.11));
+    // when
+    Optional<Petrol> foundPetrol = Petrols.findPetrol(givenPetrols, null);
+    // then
+    assertEquals(Optional.empty(), foundPetrol);
+
+    // given, when
+    foundPetrol = Petrols.findPetrol(null, PetrolType.E5);
+    // then
+    assertEquals(Optional.empty(), foundPetrol);
   }
 
 }
