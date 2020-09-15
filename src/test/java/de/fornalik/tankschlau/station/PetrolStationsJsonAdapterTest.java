@@ -122,4 +122,28 @@ class PetrolStationsJsonAdapterTest {
     assertEquals(0, petrolStationsJsonAdapter.getErrorMessages().size());
     objectFixture.assertEquals(actualPetrolStations);
   }
+
+  @Test
+  void read_multi_discardsTwoInvalidStationsAndKeepsTwoValidOnes() {
+    // given
+    Pair<JsonResponseFixture, JsonObject> fixtures = JsonResponseFixture.createFromJsonFile(
+        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_2INVALID_2VALID);
+
+    JsonResponseFixture objectFixture = fixtures.getLeft();
+    JsonObject jsonFixture = fixtures.getRight();
+
+    // when
+    ArrayList<PetrolStation> actualValidPetrolStations = gson.fromJson(
+        jsonFixture,
+        (Type) PetrolStation.class);
+
+    // then
+    // Expect that 2 valid stations have been created.
+    assertEquals(2, actualValidPetrolStations.size());
+
+    // Expect exactly 2 collected error messages (of the 2 invalid fixtured stations)
+    assertEquals(2, petrolStationsJsonAdapter.getErrorMessages().size());
+
+    objectFixture.assertEquals(actualValidPetrolStations);
+  }
 }
