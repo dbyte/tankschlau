@@ -6,9 +6,12 @@ import de.fornalik.tankschlau.helpers.response.JsonResponseFixture;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 class PetrolsTest {
 
@@ -74,7 +77,36 @@ class PetrolsTest {
   // endregion
 
   @Test
-  void getAsSortedListByPetrolType() {
+  void getSortedByPetrolTypeAndPrice_sortsByOrderOfPetrolTypeCasesAndThenPrice() {
+    // given
+
+    // Expected order definition : 1st sorted by order of PetrolType definitions, then by price
+    ArrayList<Petrol> expectedSortedPetrols = new ArrayList<>();
+    expectedSortedPetrols.add(new Petrol(PetrolType.DIESEL, 0.078));
+    expectedSortedPetrols.add(new Petrol(PetrolType.DIESEL, 5.459));
+    expectedSortedPetrols.add(new Petrol(PetrolType.E5, 1.789));
+    expectedSortedPetrols.add(new Petrol(PetrolType.E5, 2.567));
+    expectedSortedPetrols.add(new Petrol(PetrolType.E5, 3.234));
+    expectedSortedPetrols.add(new Petrol(PetrolType.E10, 1.450));
+    expectedSortedPetrols.add(new Petrol(PetrolType.E10, 1.496));
+
+    Set<Petrol> unsortedPetrols = new HashSet<>();
+    unsortedPetrols.add(new Petrol(PetrolType.E5, 3.234));
+    unsortedPetrols.add(new Petrol(PetrolType.DIESEL, 5.459));
+    unsortedPetrols.add(new Petrol(PetrolType.E10, 1.496));
+    unsortedPetrols.add(new Petrol(PetrolType.E5, 2.567));
+    unsortedPetrols.add(new Petrol(PetrolType.DIESEL, 0.078));
+    unsortedPetrols.add(new Petrol(PetrolType.E5, 1.789));
+    unsortedPetrols.add(new Petrol(PetrolType.E10, 1.450));
+
+    // when
+    ArrayList<Petrol> actualSortedPetrols =
+        (ArrayList<Petrol>) Petrols.getSortedByPetrolTypeAndPrice(
+        unsortedPetrols);
+
+    // then
+    // Expected order: 1st sorted by order of PetrolType definitions, then by price
+    assertIterableEquals(expectedSortedPetrols, actualSortedPetrols);
   }
 
   @Test

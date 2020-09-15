@@ -43,6 +43,4 @@ public class Petrol {
         .append("price", price)
         .toString();
   }
-
-
 }

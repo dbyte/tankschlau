@@ -2,6 +2,7 @@ package de.fornalik.tankschlau.station;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,15 +38,26 @@ public class Petrols {
 
   /**
    * Use for sorting a {@link Petrol} Set, based on the order of values defined in Enum
-   * {@link PetrolType}. The array will get sorted based on the order in which the enum values
+   * {@link PetrolType} and price. The array will get sorted based on the order in which the enum
+   * values
    * are defined.
    *
    * @param petrols List of {@link Petrol}s. Empty List if given petrols are null.
    */
-  public static List<Petrol> getAsSortedListByPetrolType(Set<Petrol> petrols) {
+  public static List<Petrol> getSortedByPetrolTypeAndPrice(Set<Petrol> petrols) {
     if (petrols == null) return new ArrayList<>();
     ArrayList<Petrol> petrolsList = new ArrayList<>(petrols);
-    petrolsList.sort(Comparator.comparingInt(petrol -> petrol.type.ordinal()));
+
+    class ComparatorByOrdinalPetrolTypeAndPrice implements Comparator<Petrol> {
+      public int compare(Petrol emp1, Petrol emp2) {
+        return new CompareToBuilder()
+            .append(emp1.type.ordinal(), emp2.type.ordinal())
+            .append(emp1.price, emp2.price)
+            .toComparison();
+      }
+    }
+
+    petrolsList.sort(new ComparatorByOrdinalPetrolTypeAndPrice());
     return petrolsList;
   }
 
