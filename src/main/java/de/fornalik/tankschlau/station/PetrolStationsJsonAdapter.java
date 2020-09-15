@@ -88,10 +88,10 @@ public class PetrolStationsJsonAdapter extends TypeAdapter<List<PetrolStation>> 
     // 2. Build a new petrol station, by filling in previously created data and handling
     // custom types.
     return PetrolStationBuilder.create(adaptUUID(station))
-        .setBrand(partialPetrolStation.brand)
-        .setIsOpen(partialPetrolStation.isOpen)
-        .setPetrols(Petrols.createFromJson(station))
-        .setAddress(Address.createFromJson(station)) //throws
+        .withBrand(partialPetrolStation.brand)
+        .withIsOpen(partialPetrolStation.isOpen)
+        .withPetrols(Petrols.createFromJson(station))
+        .withAddress(Address.createFromJson(station)) //throws
         .build();
   }
 

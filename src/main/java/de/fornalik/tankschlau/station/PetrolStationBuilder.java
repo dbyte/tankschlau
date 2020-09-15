@@ -33,18 +33,18 @@ public class PetrolStationBuilder {
         petrols);
   }
 
-  public PetrolStationBuilder setBrand(String brand) {
+  public PetrolStationBuilder withBrand(String brand) {
     this.brand = Objects.requireNonNull(brand, "brand" + MUST_NOT_BE_NULL);
 
     return this;
   }
 
-  public PetrolStationBuilder setIsOpen(boolean isOpen) {
+  public PetrolStationBuilder withIsOpen(boolean isOpen) {
     this.isOpen = isOpen;
     return this;
   }
 
-  public PetrolStationBuilder setPetrols(Set<Petrol> petrols) {
+  public PetrolStationBuilder withPetrols(Set<Petrol> petrols) {
     this.petrols = Objects.requireNonNull((HashSet<Petrol>) petrols, "petrol" + MUST_NOT_BE_NULL);
     return this;
   }
@@ -66,7 +66,7 @@ public class PetrolStationBuilder {
     return this;
   }
 
-  public PetrolStationBuilder setAddress(Address address) {
+  public PetrolStationBuilder withAddress(Address address) {
     this.address = Objects.requireNonNull(address, "address" + MUST_NOT_BE_NULL);
     return this;
   }
