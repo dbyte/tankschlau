@@ -1,41 +1,26 @@
 package de.fornalik.tankschlau.station;
 
-import de.fornalik.tankschlau.geo.Address;
+import de.fornalik.tankschlau.helpers.mocks.MockHelperForPetrolStation;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 
 class PetrolStationTest {
-
-  private static UUID uuidFixture;
-  private static Address addressMock;
-  private static Petrol petrolMock1, petrolMock2;
-  private static Set<Petrol> petrolsFixture;
+  private static MockHelperForPetrolStation mockHelp;
 
   @BeforeAll
   static void beforeAll() {
-    PetrolStationTest.uuidFixture = UUID.fromString("fb48f03e-c16e-435d-a845-6e235612f88f");
-    PetrolStationTest.addressMock = mock(Address.class);
-    PetrolStationTest.petrolMock1 = mock(Petrol.class);
-    PetrolStationTest.petrolMock2 = mock(Petrol.class);
-    PetrolStationTest.petrolsFixture = new HashSet<>();
-    petrolsFixture.add(petrolMock1);
-    petrolsFixture.add(petrolMock1);
+    PetrolStationTest.mockHelp = new MockHelperForPetrolStation();
   }
 
   @AfterAll
   static void afterAll() {
-    uuidFixture = null;
-    addressMock = null;
-    petrolMock1 = null;
-    petrolMock2 = null;
+    PetrolStationTest.mockHelp = null;
   }
 
   // region Constructor tests
@@ -44,19 +29,19 @@ class PetrolStationTest {
   void constructor_happy() {
     // given, when
     PetrolStation sut = new PetrolStation(
-        uuidFixture,
+        mockHelp.uuidFixture,
         "brand",
         true,
-        addressMock,
-        petrolsFixture
+        mockHelp.addressMock,
+        mockHelp.petrolsFixture
     );
 
     // then
-    assertEquals(uuidFixture, sut.uuid);
+    assertEquals(mockHelp.uuidFixture, sut.uuid);
     assertEquals("brand", sut.brand);
     assertTrue(sut.isOpen);
-    assertEquals(addressMock, sut.address);
-    assertEquals(petrolsFixture, sut.getPetrols());
+    assertEquals(mockHelp.addressMock, sut.address);
+    assertEquals(mockHelp.petrolsFixture, sut.getPetrols());
   }
 
   @Test
@@ -66,24 +51,24 @@ class PetrolStationTest {
         null,
         "brand",
         true,
-        addressMock,
-        petrolsFixture
+        mockHelp.addressMock,
+        mockHelp.petrolsFixture
     );
 
     Runnable callWithNullBrand = () -> new PetrolStation(
-        uuidFixture,
+        mockHelp.uuidFixture,
         null,
         true,
-        addressMock,
-        petrolsFixture
+        mockHelp.addressMock,
+        mockHelp.petrolsFixture
     );
 
     Runnable callWithNullAddress = () -> new PetrolStation(
-        uuidFixture,
+        mockHelp.uuidFixture,
         "brand",
         true,
         null,
-        petrolsFixture
+        mockHelp.petrolsFixture
     );
 
     // when, then
@@ -102,10 +87,10 @@ class PetrolStationTest {
   @Test
   void constructor_doesNotThrowOnGivenNullPetrols() {
     Runnable callWithNullPetrols = () -> new PetrolStation(
-        uuidFixture,
+        mockHelp.uuidFixture,
         "brand",
         true,
-        addressMock,
+        mockHelp.addressMock,
         null
     );
 
@@ -118,16 +103,12 @@ class PetrolStationTest {
   @Test
   void getPetrols_happy() {
     // given
-    Set<Petrol> expectedPetrols = new HashSet<>();
-    expectedPetrols.add(petrolMock1);
-    expectedPetrols.add(petrolMock2);
-
     PetrolStation petrolStation = PetrolStationBuilder
-        .create(uuidFixture)
+        .create(mockHelp.uuidFixture)
         .withBrand("Some Brand")
         .withIsOpen(true)
-        .withAddress(addressMock)
-        .withPetrols(expectedPetrols)
+        .withAddress(mockHelp.addressMock)
+        .withPetrols(mockHelp.petrolsFixture)
         .build();
 
     // when
@@ -143,10 +124,10 @@ class PetrolStationTest {
     Set<Petrol> petrols = new HashSet<>();
 
     PetrolStation petrolStation = new PetrolStation(
-        uuidFixture,
+        mockHelp.uuidFixture,
         "Some Brand",
         true,
-        addressMock,
+        mockHelp.addressMock,
         petrols
     );
 
