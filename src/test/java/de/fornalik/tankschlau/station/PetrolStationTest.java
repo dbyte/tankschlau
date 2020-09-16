@@ -119,6 +119,23 @@ class PetrolStationTest {
   }
 
   @Test
+  void getPetrols_returnsEmptyOptionalIfNoPetrolsAssigned() {
+    // given
+    PetrolStation petrolStation = PetrolStationBuilder
+        .create(mockHelp.uuidFixture)
+        .withBrand("Some Brand")
+        .withIsOpen(true)
+        .withAddress(mockHelp.addressMock)
+        .build();
+
+    // when
+    Set<Petrol> actualPetrols = petrolStation.getPetrols();
+
+    // then
+    assertEquals(0, actualPetrols.size());
+  }
+
+  @Test
   void toString_doesNotThrow() {
     // given
     Set<Petrol> petrols = new HashSet<>();
