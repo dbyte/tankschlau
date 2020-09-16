@@ -18,9 +18,9 @@ public class PetrolStation {
   /**
    * Constructor
    *
-   * @param uuid UUID of the station, given by API response - mandatory - not null
-   * @param brand Brand - can be empty String - not null
-   * @param isOpen Flags if station was open at API request time - default false
+   * @param uuid    UUID of the station, given by API response - mandatory - not null
+   * @param brand   Brand - can be empty String - not null
+   * @param isOpen  Flags if station was open at API request time - default false
    * @param address Address and its geographical data - mandatory
    * @param petrols The station's petrol data - nullable
    */
@@ -55,12 +55,10 @@ public class PetrolStation {
    *
    * @param type The {@link PetrolType} to search for.
    * @return An Optional when a {@link Petrol} object was found, else an empty Optional.
+   * @see Petrols#findPetrol(Set, PetrolType)
    */
   public Optional<Petrol> findPetrol(PetrolType type) {
-    return getPetrols()
-        .stream()
-        .filter(p -> p.type == type)
-        .findFirst();
+    return Petrols.findPetrol(petrols, type);
   }
 
   @Override

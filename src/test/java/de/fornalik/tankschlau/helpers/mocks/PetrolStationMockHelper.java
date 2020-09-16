@@ -3,7 +3,9 @@ package de.fornalik.tankschlau.helpers.mocks;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.station.Petrol;
 import de.fornalik.tankschlau.station.PetrolStation;
+import de.fornalik.tankschlau.station.PetrolType;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -26,10 +28,20 @@ public class PetrolStationMockHelper {
     this.petrolMock1 = mock(Petrol.class);
     this.petrolMock2 = mock(Petrol.class);
 
-    this.petrolsFixture = new HashSet<>();
-    petrolsFixture.add(petrolMock1);
-    petrolsFixture.add(petrolMock2);
+    this.petrolsFixture = new HashSet<>(createPetrolsFixture());
 
     this.petrolStationMock = mock(PetrolStation.class);
+  }
+
+  private Set<Petrol> createPetrolsFixture() {
+    Set<Petrol> petrolsFixture = new HashSet<>();
+    double price = 0.0;
+
+    for (PetrolType type : PetrolType.values()) {
+      price += 1.11;
+      petrolsFixture.add(new Petrol(type, price));
+    }
+
+    return petrolsFixture;
   }
 }

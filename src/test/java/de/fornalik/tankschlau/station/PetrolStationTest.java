@@ -2,10 +2,16 @@ package de.fornalik.tankschlau.station;
 
 import de.fornalik.tankschlau.helpers.mocks.PetrolStationMockHelper;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -103,36 +109,62 @@ class PetrolStationTest {
   @Test
   void getPetrols_happy() {
     // given
-    PetrolStation petrolStation = PetrolStationBuilder
-        .create(mockHelp.uuidFixture)
-        .withBrand("Some Brand")
-        .withIsOpen(true)
-        .withAddress(mockHelp.addressMock)
-        .withPetrols(mockHelp.petrolsFixture)
-        .build();
+    PetrolStation petrolStation = new PetrolStation(
+        mockHelp.uuidFixture,
+        "Some Brand",
+        true,
+        mockHelp.addressMock,
+        mockHelp.petrolsFixture
+    );
 
     // when
     Set<Petrol> actualPetrols = petrolStation.getPetrols();
 
     // then
-    assertEquals(2, actualPetrols.size());
+    assertEquals(mockHelp.petrolsFixture.size(), actualPetrols.size());
   }
 
   @Test
   void getPetrols_returnsEmptyOptionalIfNoPetrolsAssigned() {
     // given
-    PetrolStation petrolStation = PetrolStationBuilder
-        .create(mockHelp.uuidFixture)
-        .withBrand("Some Brand")
-        .withIsOpen(true)
-        .withAddress(mockHelp.addressMock)
-        .build();
+    PetrolStation petrolStation = new PetrolStation(
+        mockHelp.uuidFixture,
+        "Some Brand",
+        true,
+        mockHelp.addressMock,
+        null
+    );
 
     // when
     Set<Petrol> actualPetrols = petrolStation.getPetrols();
 
     // then
     assertEquals(0, actualPetrols.size());
+  }
+
+  @Test
+  void findPetrol_happy() {
+    /* Note that findPetrol delegates to utility method Petrols.findPetrol which has several
+    tests on it. So we just do one happy path here */
+
+    // given
+    PetrolStation petrolStation = new PetrolStation(
+        mockHelp.uuidFixture,
+        "Some Brand",
+        true,
+        mockHelp.addressMock,
+        mockHelp.petrolsFixture
+    );
+
+    // when
+    Optional<Petrol> actualPetrol = petrolStation.findPetrol(PetrolType.DIESEL);
+    // then
+    Assertions.assertTrue(actualPetrol.isPresent());
+
+    // when
+    actualPetrol = petrolStation.findPetrol(null);
+    // then
+    Assertions.assertFalse(actualPetrol.isPresent());
   }
 
   @Test
