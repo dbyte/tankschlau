@@ -6,8 +6,11 @@ import com.google.gson.JsonObject;
 import de.fornalik.tankschlau.helpers.response.FixtureFiles;
 import de.fornalik.tankschlau.helpers.response.JsonResponseFixture;
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
+import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
@@ -50,6 +53,27 @@ class PetrolStationsJsonAdapterTest {
     assertEquals(1, actualPetrolStations.size());
     assertEquals(0, petrolStationsJsonAdapter.getErrorMessages().size());
     objectFixture.assertEquals(actualPetrolStations);
+  }
+
+  @Test
+  void read_oneStation_returnsEmptyArrayIfJsonArrayElementsAreNoJsonObjects() {
+    // given
+    PetrolStationsJsonAdapter sut = new PetrolStationsJsonAdapter();
+    FileReader reader = FixtureFiles.getFileReaderForResource(
+        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_STATIONS_ARRAY_IS_STRING_ARRAY);
+
+    // when
+    ArrayList<PetrolStation> actualPetrolStations = gson.fromJson(
+        reader,
+        (Type) PetrolStation.class);
+
+    // then
+    // Expect an empty PetrolStation array.
+    assertEquals(0, actualPetrolStations.size());
+
+    // Expect that one message is logged for each of the 3 JsonStrings in the
+    // JsonArray of the fixture.
+    assertEquals(3, petrolStationsJsonAdapter.getErrorMessages().size());
   }
 
   @Test
@@ -161,5 +185,16 @@ class PetrolStationsJsonAdapterTest {
     assertEquals(2, petrolStationsJsonAdapter.getErrorMessages().size());
 
     objectFixture.assertEquals(actualValidPetrolStations);
+  }
+
+  @Test
+  void write_throwsUnsupportedOperationException() {
+    // given
+    PetrolStationsJsonAdapter adapter = new PetrolStationsJsonAdapter();
+
+    // when then
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> adapter.write(null, null));
   }
 }

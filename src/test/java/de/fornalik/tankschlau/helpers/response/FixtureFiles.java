@@ -51,6 +51,8 @@ public class FixtureFiles {
   public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_ZERO_PRICE_DIESEL_AND_E10 =
       TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR + "ZeroPriceForDieselAndE10.json";
 
+  public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_STATIONS_ARRAY_IS_STRING_ARRAY =
+      TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR + "StationsArrayWithJsonStringsInsteadOfJsonObjects.json";
 
   private FixtureFiles() {
   }
