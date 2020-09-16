@@ -8,6 +8,7 @@ import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.station.Petrol;
 import de.fornalik.tankschlau.station.PetrolStation;
+import de.fornalik.tankschlau.station.PetrolStationBuilder;
 import de.fornalik.tankschlau.station.PetrolType;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Assertions;
@@ -87,6 +88,43 @@ public class JsonResponseFixture {
         .getAsJsonObject();
 
     return Pair.of(responseFixture.getLeft(), jsonFirstStationOfStationArrayFixture);
+  }
+
+  /**
+   * Converts the generated stations List of type {@link StationDTO} to List<PetrolStation>
+   *
+   * @return A List of PetrolStation objects.
+   */
+  public List<PetrolStation> convertToPetrolStations() {
+    List<PetrolStation> petrolStations = new ArrayList<>();
+
+    for (StationDTO dto : stations) {
+      Geo geo = new Geo(dto.lat, dto.lng, dto.distanceKm);
+
+      Address address = new Address(
+          dto.name,
+          dto.street,
+          dto.houseNumber,
+          dto.city,
+          dto.postCode,
+          geo);
+
+      Set<Petrol> petrols = new HashSet<>();
+      petrols.add(new Petrol(PetrolType.DIESEL, dto.diesel));
+      petrols.add(new Petrol(PetrolType.E10, dto.e10));
+      petrols.add(new Petrol(PetrolType.E5, dto.e5));
+
+      petrolStations.add(
+          PetrolStationBuilder
+              .create(dto.uuid)
+              .withBrand(dto.brand)
+              .withIsOpen(dto.isOpen)
+              .withAddress(address)
+              .withPetrols(petrols)
+              .build());
+    }
+
+    return petrolStations;
   }
 
   // region assertEqual helpers

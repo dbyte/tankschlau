@@ -1,6 +1,5 @@
 package de.fornalik.tankschlau.station;
 
-import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.helpers.response.FixtureFiles;
 import de.fornalik.tankschlau.helpers.response.JsonResponseFixture;
@@ -8,7 +7,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 class PetrolStationsTest {
 
@@ -16,24 +17,20 @@ class PetrolStationsTest {
   @EnumSource(PetrolType.class)
   void sortByPriceAndDistanceForPetrolType_happy(PetrolType givenPetrolType) {
     // given
-    List<PetrolStation> givenPetrolStations, actualPetrolStations;
-
     JsonResponseFixture fixtureHelper = JsonResponseFixture
         .createFromJsonFile(
             FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_30STATIONS_HAPPY)
         .getLeft();
 
-    // Convert from fixture-stations to a List of PetrolStations.
-    givenPetrolStations = new ArrayList<>();
-    fixtureHelper.stations.forEach(
-        (fixt) -> givenPetrolStations.add(this.helpCreateFromStationDTO(fixt)));
+    // Convert from fixture-stations to a List of real PetrolStation objects.
+    List<PetrolStation> givenPetrolStations = fixtureHelper.convertToPetrolStations();
 
     /* Scramble the order of Array elements, so we can test if it gets sorted as expected by
     the method under test. */
     Collections.shuffle(givenPetrolStations);
 
     // when
-    actualPetrolStations = PetrolStations
+    List<PetrolStation> actualPetrolStations = PetrolStations
         .sortByPriceAndDistanceForPetrolType(givenPetrolStations, givenPetrolType);
 
     // then
@@ -71,31 +68,6 @@ class PetrolStationsTest {
 
       Assertions.fail(failureMessage);
     }
-  }
-
-  private PetrolStation helpCreateFromStationDTO(JsonResponseFixture.StationDTO dto) {
-    Geo geo = new Geo(dto.lat, dto.lng, dto.distanceKm);
-
-    Address address = new Address(
-        dto.name,
-        dto.street,
-        dto.houseNumber,
-        dto.city,
-        dto.postCode,
-        geo);
-
-    Set<Petrol> petrols = new HashSet<>();
-    petrols.add(new Petrol(PetrolType.DIESEL, dto.diesel));
-    petrols.add(new Petrol(PetrolType.E10, dto.e10));
-    petrols.add(new Petrol(PetrolType.E5, dto.e5));
-
-    return PetrolStationBuilder
-        .create(dto.uuid)
-        .withBrand(dto.brand)
-        .withIsOpen(dto.isOpen)
-        .withAddress(address)
-        .withPetrols(petrols)
-        .build();
   }
 
   private double helpGetPriceForSort(PetrolStation forPetrolStation, PetrolType forPetrolType) {
