@@ -54,6 +54,9 @@ public class FixtureFiles {
   public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_STATIONS_ARRAY_IS_STRING_ARRAY =
       TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR + "StationsArrayWithJsonStringsInsteadOfJsonObjects.json";
 
+  public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_30STATIONS_SORTEDBY_PRICE_FOR_DIESEL =
+      TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR + "30Stations_sortedByPrice_forTypeDiesel.json";
+
   private FixtureFiles() {
   }
 
