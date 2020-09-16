@@ -1,6 +1,6 @@
 package de.fornalik.tankschlau.station;
 
-import de.fornalik.tankschlau.helpers.mocks.PetrolStationTestHelper;
+import de.fornalik.tankschlau.helpers.PetrolStationTestHelper;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;

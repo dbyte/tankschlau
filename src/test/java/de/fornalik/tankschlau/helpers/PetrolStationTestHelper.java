@@ -1,4 +1,4 @@
-package de.fornalik.tankschlau.helpers.mocks;
+package de.fornalik.tankschlau.helpers;
 
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.station.Petrol;
