@@ -9,14 +9,14 @@ import java.util.UUID;
 
 import static org.mockito.Mockito.mock;
 
-public class MockHelperForPetrolStation {
+public class PetrolStationMockHelper {
 
   public final UUID uuidFixture;
   public final Address addressMock;
   public final Petrol petrolMock1, petrolMock2;
   public final Set<Petrol> petrolsFixture;
 
-  public MockHelperForPetrolStation() {
+  public PetrolStationMockHelper() {
     this.uuidFixture = UUID.fromString("fb48f03e-c16e-435d-a845-6e235612f88f");
 
     this.addressMock = mock(Address.class);
