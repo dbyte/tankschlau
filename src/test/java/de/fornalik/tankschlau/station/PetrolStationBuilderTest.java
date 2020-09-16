@@ -1,6 +1,6 @@
 package de.fornalik.tankschlau.station;
 
-import de.fornalik.tankschlau.helpers.mocks.PetrolStationMockHelper;
+import de.fornalik.tankschlau.helpers.mocks.PetrolStationTestHelper;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -10,11 +10,11 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PetrolStationBuilderTest {
-  private static PetrolStationMockHelper mockHelp;
+  private static PetrolStationTestHelper mockHelp;
 
   @BeforeAll
   static void beforeAll() {
-    PetrolStationBuilderTest.mockHelp = new PetrolStationMockHelper();
+    PetrolStationBuilderTest.mockHelp = new PetrolStationTestHelper();
   }
 
   @AfterAll

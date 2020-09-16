@@ -1,14 +1,10 @@
 package de.fornalik.tankschlau.station;
 
-import de.fornalik.tankschlau.helpers.mocks.PetrolStationMockHelper;
+import de.fornalik.tankschlau.helpers.mocks.PetrolStationTestHelper;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -17,11 +13,11 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PetrolStationTest {
-  private static PetrolStationMockHelper mockHelp;
+  private static PetrolStationTestHelper mockHelp;
 
   @BeforeAll
   static void beforeAll() {
-    PetrolStationTest.mockHelp = new PetrolStationMockHelper();
+    PetrolStationTest.mockHelp = new PetrolStationTestHelper();
   }
 
   @AfterAll
