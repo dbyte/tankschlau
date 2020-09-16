@@ -1,8 +1,8 @@
 package de.fornalik.tankschlau.station;
 
+import de.fornalik.tankschlau.util.MyToStringBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.Objects;
 
@@ -38,7 +38,7 @@ public class Petrol {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this)
+    return new MyToStringBuilder(this)
         .append("type", type)
         .append("price", price)
         .toString();

@@ -44,23 +44,6 @@ public class PetrolStations {
     List<PetrolStation> stationsCopy = new ArrayList<>(stations);
     stationsCopy.sort(new PriceComparator());
 
-    stationsCopy.forEach((elem) -> {
-      System.out.print(
-          elem.getPetrols()
-              .stream()
-              .filter(c -> c.type == PetrolType.DIESEL)
-              .findFirst()
-              .toString());
-
-      System.out.print(
-          " Distance " +
-          elem.address.getGeo()
-              .flatMap(Geo::getDistance)
-              .orElse(9999.99));
-
-      System.out.println();
-    });
-
     return stationsCopy;
   }
 }

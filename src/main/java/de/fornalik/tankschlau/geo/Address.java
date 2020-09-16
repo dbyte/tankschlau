@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
+import de.fornalik.tankschlau.util.MyToStringBuilder;
 import de.fornalik.tankschlau.util.StringLegalizer;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -67,8 +67,9 @@ public class Address {
    *
    * @param in The {@link JsonObject} from which to convert to an {@link Address}
    * @return Instance of {@link Address}
-   * @throws com.google.gson.JsonParseException if Address is invalid from a point of business rules as
-   * checked by {@link #isValid()}.
+   * @throws com.google.gson.JsonParseException if Address is invalid from a point of business
+   * rules as
+   *                                            checked by {@link #isValid()}.
    */
   public static Address createFromJson(JsonObject in) {
     Objects.requireNonNull(in, "JsonObject must not be null.");
@@ -165,7 +166,7 @@ public class Address {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this)
+    return new MyToStringBuilder(this)
         .append("name", name)
         .append("street", street)
         .append("houseNumber", houseNumber)

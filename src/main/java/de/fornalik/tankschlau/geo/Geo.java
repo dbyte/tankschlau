@@ -3,9 +3,9 @@ package de.fornalik.tankschlau.geo;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
+import de.fornalik.tankschlau.util.MyToStringBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -120,7 +120,7 @@ public class Geo {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this)
+    return new MyToStringBuilder(this)
         .append("latitude", latitude)
         .append("longitude", longitude)
         .append("distance", distance)

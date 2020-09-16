@@ -2,7 +2,7 @@ package de.fornalik.tankschlau.station;
 
 import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.geo.Address;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import de.fornalik.tankschlau.util.MyToStringBuilder;
 
 import java.util.*;
 
@@ -63,7 +63,7 @@ public class PetrolStation {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this)
+    return new MyToStringBuilder(this)
         .append("uuid", uuid)
         .append("brand", brand)
         .append("isOpen", isOpen)
