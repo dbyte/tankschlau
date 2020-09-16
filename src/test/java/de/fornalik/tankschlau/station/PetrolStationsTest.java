@@ -1,44 +1,40 @@
 package de.fornalik.tankschlau.station;
 
-import com.google.gson.JsonObject;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.helpers.response.FixtureFiles;
 import de.fornalik.tankschlau.helpers.response.JsonResponseFixture;
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.util.*;
 
 class PetrolStationsTest {
 
-  @Test
-  void sortByPriceForPetrolType_happy() {
+  @ParameterizedTest
+  @EnumSource(PetrolType.class)
+  void sortByPriceAndDistanceForPetrolType_happy(PetrolType givenPetrolType) {
     // given
-    ArrayList<PetrolStation> givenPetrolStations, expectedPetrolStations;
-    List<PetrolStation> actualPetrolStations;
+    List<PetrolStation> givenPetrolStations, actualPetrolStations;
 
-    Pair<JsonResponseFixture, JsonObject> fixtures =
-        JsonResponseFixture.createFromJsonFile(
-            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_30STATIONS_SORTEDBY_PRICE_FOR_DIESEL);
-
-    JsonResponseFixture fixtureHelper = fixtures.getLeft();
-    JsonObject jsonFixture = fixtures.getRight();
+    JsonResponseFixture fixtureHelper = JsonResponseFixture
+        .createFromJsonFile(
+            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_30STATIONS_HAPPY)
+        .getLeft();
 
     // Convert from fixture-stations to a List of PetrolStations.
-    expectedPetrolStations = new ArrayList<>();
+    givenPetrolStations = new ArrayList<>();
     fixtureHelper.stations.forEach(
-        (fixt) -> expectedPetrolStations.add(createFromStationDTO(fixt)));
+        (fixt) -> givenPetrolStations.add(this.helpCreateFromStationDTO(fixt)));
 
     /* Scramble the order of Array elements, so we can test if it gets sorted as expected by
     the method under test. */
-    givenPetrolStations = new ArrayList<>(expectedPetrolStations);
     Collections.shuffle(givenPetrolStations);
 
     // when
     actualPetrolStations = PetrolStations
-        .sortByPriceForPetrolType(givenPetrolStations, PetrolType.DIESEL);
+        .sortByPriceAndDistanceForPetrolType(givenPetrolStations, givenPetrolType);
 
     // then
     Iterator<PetrolStation> iter = actualPetrolStations.listIterator();
@@ -48,47 +44,36 @@ class PetrolStationsTest {
       if (!iter.hasNext()) break;
       PetrolStation stationB = iter.next();
 
-      double priceA = stationA.getPetrols()
-          .stream()
-          .filter(p -> p.type == PetrolType.DIESEL)
-          .findFirst()
-          .map(p -> p.price)
-          .orElse(9999.99);
+      double priceA = this.helpGetPriceForSort(stationA, givenPetrolType);
+      double priceB = this.helpGetPriceForSort(stationB, givenPetrolType);
 
-      double priceB = stationB.getPetrols()
-          .stream()
-          .filter(p -> p.type == PetrolType.DIESEL)
-          .findFirst()
-          .map(p -> p.price)
-          .orElse(9999.99);
+      double distanceA = helpGetDistanceForSort(stationA);
+      double distanceB = helpGetDistanceForSort(stationB);
 
-      double distanceA = stationA.address.getGeo()
-          .flatMap(Geo::getDistance)
-          .orElse(9999.99);
+      // Expect that priceB is greater than or equal to priceA ...
+      boolean isProperlySorted = priceA <= priceB;
 
-      double distanceB = stationB.address.getGeo()
-          .flatMap(Geo::getDistance)
-          .orElse(9999.99);
+      // ... or expect that there are 2 stations with same price and distance, where we can't
+      // determine which of them comes first in the sort order.
+      boolean isLegalIndefinableSorted = (priceA == priceB) && (distanceA == distanceB);
+      if (isProperlySorted || isLegalIndefinableSorted)
+        continue;
 
+      // Fail case
+      this.helpPrintSortResult(actualPetrolStations, givenPetrolType);
 
-      /* When there are 2 stations with same price and distance, we can't determine which of
-      them comes first in the sort order, which is perfectly OK. */
-      boolean isProperlySortedPrice = priceA <= priceB;
-      boolean isLegalIndefinableSort = (priceA == priceB) && (distanceA == distanceB);
+      String failureMessage = String.format(
+          "TEST FAILED!\n"
+              + "stationA (uuid %s) is not properly sorted to stationB (uuid %s).\n"
+              + "priceA: %f, distanceA: %f compared to next priceB: %f, distanceB: %f "
+              + "is a wrong sort order.",
+          stationA.uuid, stationB.uuid, priceA, distanceA, priceB, distanceB);
 
-      if (!isProperlySortedPrice && !isLegalIndefinableSort) {
-        printSortResult(actualPetrolStations);
-
-        String failureMessage = String.format(
-            "priceA: %f, distanceA: %f --- priceB: %f, distanceB: %f",
-            priceA, distanceA, priceB, distanceB);
-
-        Assertions.fail(failureMessage);
-      }
+      Assertions.fail(failureMessage);
     }
   }
 
-  private PetrolStation createFromStationDTO(JsonResponseFixture.StationDTO dto) {
+  private PetrolStation helpCreateFromStationDTO(JsonResponseFixture.StationDTO dto) {
     Geo geo = new Geo(dto.lat, dto.lng, dto.distanceKm);
 
     Address address = new Address(
@@ -113,11 +98,30 @@ class PetrolStationsTest {
         .build();
   }
 
+  private double helpGetPriceForSort(PetrolStation forPetrolStation, PetrolType forPetrolType) {
+    return forPetrolStation.getPetrols()
+        .stream()
+        .filter(p -> p.type == forPetrolType)
+        .findFirst()
+        .map(p -> p.price)
+        .orElse(9999.99);
+  }
+
+  private double helpGetDistanceForSort(PetrolStation forPetrolStation) {
+    return forPetrolStation.address.getGeo()
+        .flatMap(Geo::getDistance)
+        .orElse(9999.99);
+  }
+
   // Use for better orientation if sorting failed.
-  private void printSortResult(List<PetrolStation> actualPetrolStations) {
+  private void helpPrintSortResult(
+      List<PetrolStation> actualPetrolStations,
+      PetrolType forPetrolType) {
+
     actualPetrolStations.forEach((elem) -> {
+      System.out.println("Sorted for petrol type " + forPetrolType + ":");
       System.out.print("PETROL > ");
-      System.out.print(Petrols.findPetrol(elem.getPetrols(), PetrolType.DIESEL));
+      System.out.print(Petrols.findPetrol(elem.getPetrols(), forPetrolType));
       System.out.print(" | DISTANCE > " + elem.address.getGeo().flatMap(Geo::getDistance));
       System.out.println();
     });

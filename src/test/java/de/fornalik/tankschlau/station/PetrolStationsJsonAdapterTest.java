@@ -146,7 +146,7 @@ class PetrolStationsJsonAdapterTest {
   void read_multipleStations_happy() {
     // given
     Pair<JsonResponseFixture, JsonObject> fixtures = JsonResponseFixture.createFromJsonFile(
-        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_17HappyStations);
+        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_17STATIONS_HAPPY);
 
     JsonResponseFixture objectFixture = fixtures.getLeft();
     JsonObject jsonFixture = fixtures.getRight();

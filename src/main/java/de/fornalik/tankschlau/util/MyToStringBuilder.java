@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
  * Customized apache.commons.lang3 {@link ToStringBuilder} used by this application.
+ *
  * @see ToStringBuilder
  */
 public class MyToStringBuilder extends ToStringBuilder {
@@ -28,7 +29,10 @@ class MyToStringStyle extends ToStringStyle {
     super();
   }
 
-  public static synchronized MyToStringStyle getInstance() {
+  /**
+   * @return Thread-safe-lazy-loading singleton of MyToStringStyle.
+   */
+  static synchronized MyToStringStyle getInstance() {
     if (instance == null)
       instance = new MyToStringStyle();
 
