@@ -28,12 +28,15 @@ public class OkHttpClientImpl implements HttpClient {
 
     okhttp3.HttpUrl url = createUrl();
     okhttp3.Request okhttpRequest = createRequest(url);
-    okhttp3.Response okhttpResponse = callServer(okhttpRequest);
+    okhttp3.Response okhttpResponse = callServer(okhttpRequest); //throws
 
-    if (okhttpResponse.body() != null)
+    if (okhttpResponse.body() != null) {
       response.setBodyString(okhttpResponse.body().string());
-    else
-      response.setErrorMessage(getErrorMessage(okhttpResponse));
+
+    } else {
+      String message = "Body of response is null. " + getDetails(okhttpResponse);
+      throw new IOException(message);
+    }
 
     return response;
   }
@@ -59,14 +62,13 @@ public class OkHttpClientImpl implements HttpClient {
   private okhttp3.Response callServer(okhttp3.Request okhttpRequest) throws IOException {
     OkHttpClient okHttpClient = new OkHttpClient();
     Call call = okHttpClient.newCall(okhttpRequest);
-    return call.execute();
+    return call.execute(); // throws
   }
 
-  private String getErrorMessage(okhttp3.Response okhttpResponse) {
-    return "Body of http response object is null. "
-        + "HTTP status message: "
+  private String getDetails(okhttp3.Response okhttpResponse) {
+    return "HTTP status message: "
         + okhttpResponse.message()
-        + "\nResponse headers: \n"
+        + "\nResponse headers:\n"
         + okhttpResponse.headers().toString();
   }
 }
