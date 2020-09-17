@@ -12,9 +12,11 @@ import java.util.Optional;
  * okhttp3 implementation of the {@link HttpClient} interface.
  */
 public class OkHttpClientImpl implements HttpClient {
+  private static OkHttpClient okHttpClientSingleton;
   private Request request;
 
   public OkHttpClientImpl() {
+    createOkHttpClientSingleton();
   }
 
   @Override
@@ -60,8 +62,7 @@ public class OkHttpClientImpl implements HttpClient {
   }
 
   private okhttp3.Response callServer(okhttp3.Request okhttpRequest) throws IOException {
-    OkHttpClient okHttpClient = new OkHttpClient();
-    Call call = okHttpClient.newCall(okhttpRequest);
+    Call call = okHttpClientSingleton.newCall(okhttpRequest);
     return call.execute(); // throws
   }
 
@@ -70,5 +71,10 @@ public class OkHttpClientImpl implements HttpClient {
         + okhttpResponse.message()
         + "\nResponse headers:\n"
         + okhttpResponse.headers().toString();
+  }
+
+  private void createOkHttpClientSingleton() {
+    if (OkHttpClientImpl.okHttpClientSingleton == null)
+      OkHttpClientImpl.okHttpClientSingleton = new OkHttpClient();
   }
 }
