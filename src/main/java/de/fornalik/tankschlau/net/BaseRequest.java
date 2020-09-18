@@ -18,12 +18,12 @@ public abstract class BaseRequest implements Request {
   }
 
   @Override
-  public String getMethod() {
+  public String getHttpMethod() {
     return httpMethod;
   }
 
   @Override
-  public void setMethod(String in) {
+  public void setHttpMethod(String in) {
     this.httpMethod = in;
   }
 

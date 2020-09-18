@@ -6,6 +6,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
 
+/**
+ * Implementation of {@link BaseRequest} for web service Tankerkoenig.de
+ */
 public class TankerkoenigRequest extends BaseRequest {
   private static final String BASE_URL = "https://creativecommons.tankerkoenig.de/json/list.php?";
   private static final String HTTP_METHOD = "GET";
@@ -15,6 +18,14 @@ public class TankerkoenigRequest extends BaseRequest {
 
   private TankerkoenigRequest() {}
 
+  /**
+   * Factory method, creates a new HTTP request object for web service Tankerkoenig.de
+   *
+   * @param geo The user's geographical data and maximum search radius im km to search for petrol
+   *            stations in the user's neighbourhood.
+   * @return A new {@link TankerkoenigRequest} object, ready for use within a {@link Request}.
+   * @throws MalformedURLException If the base URL is invalid.
+   */
   public static TankerkoenigRequest create(Geo geo) throws MalformedURLException {
     TankerkoenigRequest instance = new TankerkoenigRequest();
 
@@ -27,7 +38,7 @@ public class TankerkoenigRequest extends BaseRequest {
 
   private void setBaseData() throws MalformedURLException {
     super.setBaseUrl(new URL(BASE_URL));
-    super.setMethod(HTTP_METHOD);
+    super.setHttpMethod(HTTP_METHOD);
     super.addHeader("Accept", ACCEPT_JSON);
   }
 

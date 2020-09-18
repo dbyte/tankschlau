@@ -9,16 +9,16 @@ import java.util.Map;
 public interface Request {
 
   /**
-   * Get HTTP request method previously set by {@link #setMethod(String)}
+   * Get HTTP request method previously set by {@link #setHttpMethod(String)}
    *
    * @return ex. "GET" or "POST"
    */
-  String getMethod();
+  String getHttpMethod();
 
   /**
    * @param method "GET" or "POST"
    */
-  void setMethod(String method);
+  void setHttpMethod(String method);
 
   /**
    * @return ex. https://creativecommons.tankerkoenig.de/json/list.php?
