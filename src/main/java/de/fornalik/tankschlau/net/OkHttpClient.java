@@ -1,8 +1,5 @@
 package de.fornalik.tankschlau.net;
 
-import okhttp3.Call;
-import okhttp3.HttpUrl;
-
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
@@ -49,8 +46,8 @@ public class OkHttpClient implements HttpClient {
   }
 
   private okhttp3.HttpUrl createUrl() {
-    HttpUrl.Builder urlBuilder = Objects
-        .requireNonNull(HttpUrl.parse(request.getBaseUrl().toString()))
+    okhttp3.HttpUrl.Builder urlBuilder = Objects
+        .requireNonNull(okhttp3.HttpUrl.parse(request.getBaseUrl().toString()))
         .newBuilder();
 
     request.getUrlParameters().forEach(urlBuilder::addQueryParameter);
@@ -67,7 +64,7 @@ public class OkHttpClient implements HttpClient {
   }
 
   private okhttp3.Response callServer(okhttp3.Request okhttpRequest) throws IOException {
-    Call call = okHttpClientSingleton.newCall(okhttpRequest);
+    okhttp3.Call call = okHttpClientSingleton.newCall(okhttpRequest);
     return call.execute(); // throws
   }
 
