@@ -2,6 +2,7 @@ package de.fornalik.tankschlau.station;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
 import de.fornalik.tankschlau.geo.Geo;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
@@ -15,18 +16,18 @@ import java.util.List;
  */
 public class PetrolStations {
 
-  // TODO unit tests
-
   /**
    * Creates a List of {@link PetrolStation} from a given JSON string.
    *
-   * @param in JSON string from which to convert.
+   * @param in          JSON string from which to convert.
+   * @param gsonAdapter The (customized) Gson {@link TypeAdapter} adapter that will be used for
+   *                    conversion (which should have been initialized once at application start).
    * @return A List of {@link PetrolStation}.
    */
-  public static List<PetrolStation> createFromJsonString(String in) {
-    PetrolStationsJsonAdapter petrolStationsJsonAdapter = new PetrolStationsJsonAdapter();
+  // TODO unit tests
+  public static List<PetrolStation> createFromJsonString(String in, TypeAdapter<?> gsonAdapter) {
     Gson gson = new GsonBuilder()
-        .registerTypeAdapter(PetrolStation.class, petrolStationsJsonAdapter)
+        .registerTypeAdapter(PetrolStation.class, gsonAdapter)
         .create();
 
     return gson.fromJson(in, (Type) PetrolStation.class);
