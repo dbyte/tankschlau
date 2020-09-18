@@ -1,6 +1,8 @@
-package de.fornalik.tankschlau.net;
+package de.fornalik.tankschlau.webserviceapi;
 
 import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.net.BaseRequest;
+import de.fornalik.tankschlau.net.Request;
 
 import java.net.MalformedURLException;
 import java.net.URL;

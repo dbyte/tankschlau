@@ -4,6 +4,7 @@ import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolStations;
 import de.fornalik.tankschlau.station.PetrolStationsJsonAdapter;
+import de.fornalik.tankschlau.webserviceapi.TankerkoenigRequest;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -20,10 +21,10 @@ class OkHttpClientTest {
     PetrolStationsJsonAdapter gsonAdapter = new PetrolStationsJsonAdapter();
     Request request = TankerkoenigRequest.create(userLocation);
 
-    HttpClient okhttpClient = new OkHttpClient();
+    HttpClient httpClient = new OkHttpClient();
 
     // when
-    Response actualResponse = okhttpClient.newCall(request);
+    Response actualResponse = httpClient.newCall(request);
 
     // then
     assertNotNull(actualResponse);
