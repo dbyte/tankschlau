@@ -17,7 +17,7 @@ class PetrolsTest {
   // region createFromJson Tests
   /*
   The underlying implementation of this factory method is subject to the corresponding
-  adapter unit, so we just do a basic happy path test here.
+  adapter unit, so we just do basic testing here.
   */
 
   @Test
