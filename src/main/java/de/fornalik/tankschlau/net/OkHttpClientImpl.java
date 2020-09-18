@@ -26,6 +26,11 @@ public class OkHttpClientImpl implements HttpClient {
   }
 
   @Override
+  public Response newCall(final Request request) throws IOException {
+    return this.newCall(request, ResponseImpl.create());
+  }
+
+  @Override
   public Response newCall(final Request request, Response response) throws IOException {
     this.request = request;
 

@@ -21,4 +21,12 @@ public interface HttpClient {
    * @throws IOException If something went wrong while handling communication etc.
    */
   Response newCall(Request request, Response response) throws IOException;
+
+  /**
+   * @param request A configured {@link Request} object.
+   * @return see {@link #newCall(Request, Response)}
+   * @throws IOException see {@link #newCall(Request, Response)}
+   * @see #newCall(Request, Response)
+   */
+  Response newCall(final Request request) throws IOException;
 }
