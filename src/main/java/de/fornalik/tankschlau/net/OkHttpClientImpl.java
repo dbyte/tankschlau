@@ -12,6 +12,7 @@ import java.util.Optional;
  * okhttp3 implementation of the {@link HttpClient} interface.
  */
 public class OkHttpClientImpl implements HttpClient {
+
   private static OkHttpClient okHttpClientSingleton;
   private Request request;
 
@@ -74,6 +75,7 @@ public class OkHttpClientImpl implements HttpClient {
   }
 
   private void createOkHttpClientSingleton() {
+    // Singleton for OkHttpClient as recommended by okhttp crew.
     if (OkHttpClientImpl.okHttpClientSingleton == null)
       OkHttpClientImpl.okHttpClientSingleton = new OkHttpClient();
   }

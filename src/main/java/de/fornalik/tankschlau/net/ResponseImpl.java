@@ -3,11 +3,11 @@ package de.fornalik.tankschlau.net;
 import java.util.Optional;
 
 public class ResponseImpl implements Response {
+
   private String bodyString;
   private String errorMessage;
 
-  private ResponseImpl() {
-  }
+  private ResponseImpl() {}
 
   /**
    * Default factory which creates a ready-for-use Response.

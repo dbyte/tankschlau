@@ -16,7 +16,7 @@ public interface Request {
   String getMethod();
 
   /**
-   * @param  method "GET" or "POST"
+   * @param method "GET" or "POST"
    */
   void setMethod(String method);
 
@@ -35,7 +35,8 @@ public interface Request {
 
   /**
    * Adds a URL parameter if HTTP method is GET.
-   * Results in UTF-8 encoded query string which is then added to the requests existing URL parameters.
+   * Results in UTF-8 encoded query string which is then added to the requests existing URL
+   * parameters.
    *
    * @param key   ex. "sort"
    * @param value ex. "price"

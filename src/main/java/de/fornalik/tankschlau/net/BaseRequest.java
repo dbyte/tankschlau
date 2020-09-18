@@ -4,13 +4,17 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RequestImpl implements Request {
+/**
+ * Abstract HTTP request class with base functionalities.
+ */
+public abstract class BaseRequest implements Request {
+
   private final Map<String, String> urlParameters = new HashMap<>();
   private final Map<String, String> headers = new HashMap<>();
   private URL baseUrl;
   private String httpMethod = "";
 
-  public RequestImpl() {
+  protected BaseRequest() {
   }
 
   @Override
