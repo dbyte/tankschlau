@@ -62,7 +62,7 @@ public class OkHttpClient implements HttpClient {
   private okhttp3.Request createRequest(okhttp3.HttpUrl url) {
     okhttp3.Request.Builder okhttpRequestBuilder = new okhttp3.Request.Builder()
         .url(url.toString())
-        .method(request.getHttpMethod(), null);
+        .method(request.getHttpMethod().name(), null);
 
     request.getHeaders().forEach(okhttpRequestBuilder::addHeader);
     return okhttpRequestBuilder.build();

@@ -9,16 +9,16 @@ import java.util.Map;
 public interface Request {
 
   /**
-   * Get HTTP request method previously set by {@link #setHttpMethod(String)}
+   * Get HTTP request method previously set by {@link #setHttpMethod(HttpMethod)}
    *
    * @return ex. "GET" or "POST"
    */
-  String getHttpMethod();
+  HttpMethod getHttpMethod();
 
   /**
    * @param method "GET" or "POST"
    */
-  void setHttpMethod(String method);
+  void setHttpMethod(HttpMethod method);
 
   /**
    * @return ex. https://creativecommons.tankerkoenig.de/json/list.php?
@@ -66,4 +66,11 @@ public interface Request {
    * added by {@link #addHeader(String, String)}.
    */
   Map<String, String> getHeaders();
+
+  /**
+   * Literals used to define the method of an HTTP request.
+   */
+  enum HttpMethod {
+    GET, POST
+  }
 }

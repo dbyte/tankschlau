@@ -12,18 +12,18 @@ public abstract class BaseRequest implements Request {
   private final Map<String, String> urlParameters = new HashMap<>();
   private final Map<String, String> headers = new HashMap<>();
   private URL baseUrl;
-  private String httpMethod = "";
+  private HttpMethod httpMethod;
 
   protected BaseRequest() {
   }
 
   @Override
-  public String getHttpMethod() {
+  public HttpMethod getHttpMethod() {
     return httpMethod;
   }
 
   @Override
-  public void setHttpMethod(String in) {
+  public void setHttpMethod(HttpMethod in) {
     this.httpMethod = in;
   }
 

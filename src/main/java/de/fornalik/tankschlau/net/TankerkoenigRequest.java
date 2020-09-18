@@ -11,7 +11,7 @@ import java.util.Objects;
  */
 public class TankerkoenigRequest extends BaseRequest {
   private static final String BASE_URL = "https://creativecommons.tankerkoenig.de/json/list.php?";
-  private static final String HTTP_METHOD = "GET";
+  private static final HttpMethod HTTP_METHOD = HttpMethod.GET;
   private static final String ACCEPT_JSON = "application/json; charset=utf-8";
   private static final String DEMO_API_KEY = "00000000-0000-0000-0000-000000000002";
   private Geo geo;
