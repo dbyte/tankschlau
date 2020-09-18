@@ -72,7 +72,6 @@ public class Geo {
    * <br><b>set null if there is no user address or if we weren't able to calc his geo data.</>
    *
    * @param km Distance to User's address or null
-   * @throws InvalidGeoDataException if an invalid distance was given
    */
   public void setDistance(Double km) {
     throwOnInvalidDistance();

@@ -1,5 +1,6 @@
 package de.fornalik.tankschlau.net;
 
+import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolStations;
 import de.fornalik.tankschlau.station.PetrolStationsJsonAdapter;
@@ -11,17 +12,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class OkHttpClientTest {
-  private static final String DEMO_API_KEY = "00000000-0000-0000-0000-000000000002";
 
   @Test
   void newCall_happy() throws IOException {
     // given
+    Geo userLocation = new Geo(52.52099975265203, 13.43803882598877, 5.0);
     PetrolStationsJsonAdapter gsonAdapter = new PetrolStationsJsonAdapter();
-    Request request = PetrolStationNeighbourhoodRequest.create(
-        52.52099975265203,
-        13.43803882598877,
-        5,
-        DEMO_API_KEY);
+    Request request = TankerkoenigRequest.create(userLocation);
 
     HttpClient okhttpClient = new OkHttpClient();
 
