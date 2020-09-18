@@ -2,6 +2,9 @@ package de.fornalik.tankschlau.net;
 
 import java.util.Optional;
 
+/**
+ * Implementation for server responses which provide a somewhat textual format. Might be JSON, too.
+ */
 public class StringResponse implements Response {
   private String body;
   private String errorMessage;
@@ -9,7 +12,7 @@ public class StringResponse implements Response {
   private StringResponse() {}
 
   /**
-   * Default factory which creates a ready-for-use Response.
+   * Default factory. Creates a ready-for-use Response.
    */
   public static StringResponse create() {
     return new StringResponse();
