@@ -1,8 +1,11 @@
 package de.fornalik.tankschlau.station;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import de.fornalik.tankschlau.geo.Geo;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -12,12 +15,29 @@ import java.util.List;
  */
 public class PetrolStations {
 
+  // TODO unit tests
+
+  /**
+   * Creates a List of {@link PetrolStation} from a given JSON string.
+   *
+   * @param in JSON string from which to convert.
+   * @return A List of {@link PetrolStation}.
+   */
+  public static List<PetrolStation> createFromJsonString(String in) {
+    PetrolStationsJsonAdapter petrolStationsJsonAdapter = new PetrolStationsJsonAdapter();
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapter(PetrolStation.class, petrolStationsJsonAdapter)
+        .create();
+
+    return gson.fromJson(in, (Type) PetrolStation.class);
+  }
+
   /**
    * Creates a copy of the incoming List of {@link PetrolStation}, sorts the copy by
    * price and distance and returns it.
    *
    * @param stations List of {@link PetrolStation} to sort.
-   * @param type The {@link PetrolType} for which to sort the petrol stations.
+   * @param type     The {@link PetrolType} for which to sort the petrol stations.
    * @return A shallow copy of stations, sorted by price, then distance.
    */
   public static List<PetrolStation> sortByPriceAndDistanceForPetrolType(
@@ -48,13 +68,13 @@ public class PetrolStations {
 
   private static double getPriceForSort(PetrolStation station, PetrolType type) {
     return station.findPetrol(type)
-        .map((petrol) -> petrol.price)
-        .orElse(9999.99);
+                  .map((petrol) -> petrol.price)
+                  .orElse(9999.99);
   }
 
   private static double getDistanceForSort(PetrolStation station) {
     return station.address.getGeo()
-        .flatMap(Geo::getDistance)
-        .orElse(9999.99);
+                          .flatMap(Geo::getDistance)
+                          .orElse(9999.99);
   }
 }
