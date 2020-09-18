@@ -2,6 +2,7 @@ package de.fornalik.tankschlau.station;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.TypeAdapter;
 import de.fornalik.tankschlau.geo.Geo;
 import org.apache.commons.lang3.builder.CompareToBuilder;
@@ -23,14 +24,35 @@ public class PetrolStations {
    * @param gsonAdapter The (customized) Gson {@link TypeAdapter} adapter that will be used for
    *                    conversion (which should have been initialized once at application start).
    * @return A List of {@link PetrolStation}.
+   * @throws IllegalArgumentException If gsonAdapter is not an instance of
+   *                                  {@link PetrolStationsJsonAdapter}
    */
   // TODO unit tests
-  public static List<PetrolStation> createFromJsonString(String in, TypeAdapter<?> gsonAdapter) {
+  public static List<PetrolStation> createFromJson(String in, TypeAdapter<?> gsonAdapter) {
+    if (in == null)
+      return new ArrayList<>();
+
+    if (!(gsonAdapter instanceof PetrolStationsJsonAdapter))
+      throw new IllegalArgumentException(
+          "Argument must be an instance of " + PetrolStationsJsonAdapter.class);
+
     Gson gson = new GsonBuilder()
         .registerTypeAdapter(PetrolStation.class, gsonAdapter)
         .create();
 
     return gson.fromJson(in, (Type) PetrolStation.class);
+  }
+
+  /**
+   * Creates a List of {@link PetrolStation} from a given {@link JsonObject}.
+   *
+   * @param in          {@link JsonObject} from which to convert.
+   * @param gsonAdapter see {@link #createFromJson(String, TypeAdapter)}
+   * @return see {@link #createFromJson(String, TypeAdapter)}
+   * @see #createFromJson(String, TypeAdapter)
+   */
+  public static List<PetrolStation> createFromJson(JsonObject in, TypeAdapter<?> gsonAdapter) {
+    return createFromJson(in.toString(), gsonAdapter);
   }
 
   /**

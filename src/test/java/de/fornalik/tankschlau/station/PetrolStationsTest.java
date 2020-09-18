@@ -1,9 +1,14 @@
 package de.fornalik.tankschlau.station;
 
+import com.google.gson.JsonObject;
+import com.google.gson.TypeAdapter;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.helpers.response.FixtureFiles;
 import de.fornalik.tankschlau.helpers.response.JsonResponseFixture;
-import org.junit.jupiter.api.Assertions;
+import org.apache.commons.lang3.tuple.Pair;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -11,7 +16,78 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 class PetrolStationsTest {
+  private static TypeAdapter<?> petrolStationsAdapter;
+
+  @BeforeAll
+  static void beforeAll() {
+    petrolStationsAdapter = new PetrolStationsJsonAdapter();
+  }
+
+  @AfterAll
+  static void afterAll() {
+    petrolStationsAdapter = null;
+  }
+
+  // region createFromJson Tests
+  /*
+  The underlying implementation of this factory method is subject to the corresponding
+  adapter unit, so we just do some basic test on its own code paths here.
+  */
+
+  @Test
+  void createFromJson_doesCreateAllPetrolStations() {
+    // given
+    Pair<JsonResponseFixture, JsonObject> fixtures =
+        JsonResponseFixture.createFirstStationFromJsonFile(
+            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_30STATIONS_HAPPY);
+
+    JsonResponseFixture fixtureHelp = fixtures.getLeft();
+    JsonObject jsonResponseFix = fixtures.getRight();
+
+    // when
+    List<PetrolStation> actualPetrolStations = PetrolStations
+        .createFromJson(jsonResponseFix, petrolStationsAdapter);
+
+    // then
+    fixtureHelp.assertEquals(actualPetrolStations);
+  }
+
+  @Test
+  void createFromJson_returnsEmptyArrayOnMissingJsonInput() {
+    // given
+    Pair<JsonResponseFixture, JsonObject> fixtures =
+        JsonResponseFixture.createFirstStationFromJsonFile(
+            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_30STATIONS_HAPPY);
+
+    JsonObject jsonResponseFix = fixtures.getRight();
+
+    // when
+    List<PetrolStation> actualPetrolStations = PetrolStations
+        .createFromJson(new JsonObject(), petrolStationsAdapter);
+
+    // then
+    assertEquals(0, actualPetrolStations.size());
+  }
+
+  @Test
+  void createFromJson_throwsOnNonMatchingAdapterInstanceArgument() {
+    // given
+    Pair<JsonResponseFixture, JsonObject> fixtures =
+        JsonResponseFixture.createFirstStationFromJsonFile(
+            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
+
+    JsonObject jsonResponseFix = fixtures.getRight();
+
+    // when, then
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> PetrolStations.createFromJson(jsonResponseFix, null));
+  }
+
+  // endregion
 
   @ParameterizedTest
   @EnumSource(PetrolType.class)
@@ -66,23 +142,23 @@ class PetrolStationsTest {
               + "is a wrong sort order.",
           stationA.uuid, stationB.uuid, priceA, distanceA, priceB, distanceB);
 
-      Assertions.fail(failureMessage);
+      fail(failureMessage);
     }
   }
 
   private double helpGetPriceForSort(PetrolStation forPetrolStation, PetrolType forPetrolType) {
     return forPetrolStation.getPetrols()
-        .stream()
-        .filter(p -> p.type == forPetrolType)
-        .findFirst()
-        .map(p -> p.price)
-        .orElse(9999.99);
+                           .stream()
+                           .filter(p -> p.type == forPetrolType)
+                           .findFirst()
+                           .map(p -> p.price)
+                           .orElse(9999.99);
   }
 
   private double helpGetDistanceForSort(PetrolStation forPetrolStation) {
     return forPetrolStation.address.getGeo()
-        .flatMap(Geo::getDistance)
-        .orElse(9999.99);
+                                   .flatMap(Geo::getDistance)
+                                   .orElse(9999.99);
   }
 
   // Use for better orientation if sorting failed.
