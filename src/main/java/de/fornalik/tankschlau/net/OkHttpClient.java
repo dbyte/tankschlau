@@ -2,7 +2,6 @@ package de.fornalik.tankschlau.net;
 
 import okhttp3.Call;
 import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -11,12 +10,12 @@ import java.util.Optional;
 /**
  * okhttp3 implementation of the {@link HttpClient} interface.
  */
-public class OkHttpClientImpl implements HttpClient {
+public class OkHttpClient implements HttpClient {
 
-  private static OkHttpClient okHttpClientSingleton;
+  private static okhttp3.OkHttpClient okHttpClientSingleton;
   private Request request;
 
-  public OkHttpClientImpl() {
+  public OkHttpClient() {
     createOkHttpClientSingleton();
   }
 
@@ -81,7 +80,7 @@ public class OkHttpClientImpl implements HttpClient {
 
   private void createOkHttpClientSingleton() {
     // Singleton for OkHttpClient as recommended by okhttp crew.
-    if (OkHttpClientImpl.okHttpClientSingleton == null)
-      OkHttpClientImpl.okHttpClientSingleton = new OkHttpClient();
+    if (OkHttpClient.okHttpClientSingleton == null)
+      OkHttpClient.okHttpClientSingleton = new okhttp3.OkHttpClient();
   }
 }
