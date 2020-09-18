@@ -23,11 +23,12 @@ public class OkHttpClient implements HttpClient {
 
   @Override
   public Response newCall(final Request request) throws IOException {
-    return this.newCall(request, ResponseImpl.create());
+    return this.newCall(request, StringResponse.create());
   }
 
   @Override
-  public Response newCall(final Request request, Response response) throws IOException {
+  public Response newCall(final Request request, Response response)
+      throws IOException {
     this.request = request;
 
     okhttp3.HttpUrl url = createUrl();
@@ -35,7 +36,11 @@ public class OkHttpClient implements HttpClient {
     okhttp3.Response okhttpResponse = callServer(okhttpRequest); //throws
 
     if (okhttpResponse.body() != null) {
-      response.setBodyString(okhttpResponse.body().string());
+      if (response instanceof StringResponse)
+        response.setBody(okhttpResponse.body().string());
+      else
+        throw new UnsupportedOperationException(
+            "response.setBody not implemented for incoming type of Response.");
 
     } else {
       String message = "Body of response is null. " + getDetails(okhttpResponse);

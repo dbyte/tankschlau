@@ -27,12 +27,13 @@ public interface Response {
    * {@link #getErrorMessage()} should return the message which prevented the body from
    * being converted to string.
    */
-  Optional<String> getBodyString();
+  <T> Optional<T> getBody();
 
   /**
    * Sets the final string data.
    *
-   * @param data Some string
+   * @param <T>  The type of data.
+   * @param data Some data of type T.
    */
-  void setBodyString(String data);
+  <T> void setBody(T data);
 }

@@ -28,10 +28,10 @@ class OkHttpClientTest {
     // then
     assertNotNull(actualResponse);
     assertFalse(actualResponse.getErrorMessage().isPresent());
-    assertTrue(actualResponse.getBodyString().isPresent());
+    assertTrue(actualResponse.getBody().isPresent());
 
     List<PetrolStation> petrolStations = PetrolStations.createFromJson(
-        actualResponse.getBodyString().get(), gsonAdapter);
+        actualResponse.getBody().get().toString(), gsonAdapter);
 
     System.out.println(petrolStations);
   }
