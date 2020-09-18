@@ -72,19 +72,26 @@ public class Geo {
    * <br><b>set null if there is no user address or if we weren't able to calc his geo data.</>
    *
    * @param km Distance to User's address or null
-   * @throws IllegalArgumentException if an invalid distance was given
+   * @throws InvalidGeoDataException if an invalid distance was given
    */
-  public void setDistance(Double km) throws InvalidGeoDataException {
-    // null is permitted here as it is always returned as an Optional by design.
-    if (km != null && km < 0.0) throw new InvalidGeoDataException("Distance must be >= 0.0");
+  public void setDistance(Double km) {
+    throwOnInvalidDistance();
     this.distance = km;
   }
 
-  /**
-   * @throws InvalidGeoDataException if lat/lon are out of geographical constraints
-   * @see <a href="https://stackoverflow.com/a/47188298">stackoverflow.com 47188298</a>
-   */
+  private void throwOnInvalidDistance() throws InvalidGeoDataException {
+    /* null is perfectly valid here as it is always returned as an Optional by design
+    and as a distance value is not mandatory by business rule. */
+    if (this.distance == null)
+      return;
+
+    if (this.distance < 0.0)
+      throw new InvalidGeoDataException("Geographical distance must be >= 0.0 km.");
+  }
+
   private void throwOnInvalidCoordinates() throws InvalidGeoDataException {
+    /* Throws InvalidGeoDataException if lat/lon are out of geographical constraints
+    See also https://stackoverflow.com/a/47188298 */
     if (latitude < -85.05112878 || latitude > 85.05112878
         || longitude < -180.0 || longitude > 180.0)
       throw new InvalidGeoDataException(
