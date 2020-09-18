@@ -27,7 +27,6 @@ public class PetrolStations {
    * @throws IllegalArgumentException If gsonAdapter is not an instance of
    *                                  {@link PetrolStationsJsonAdapter}
    */
-  // TODO unit tests
   public static List<PetrolStation> createFromJson(String in, TypeAdapter<?> gsonAdapter) {
     if (in == null)
       return new ArrayList<>();
