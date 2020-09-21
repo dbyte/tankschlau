@@ -5,8 +5,12 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.TypeAdapter;
 import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.net.HttpClient;
+import de.fornalik.tankschlau.net.Request;
+import de.fornalik.tankschlau.net.Response;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -17,6 +21,20 @@ import java.util.List;
  */
 public class PetrolStations {
 
+  public static List<PetrolStation> createFromWebService(
+      HttpClient httpClient,
+      Request request,
+      TypeAdapter<?> gsonAdapter) throws IOException {
+
+    Response response = httpClient.newCall(request);
+
+    return PetrolStations.createFromJson(
+        response
+            .getBody()
+            .orElse(new ArrayList<>())
+            .toString(), gsonAdapter);
+  }
+
   /**
    * Creates a List of {@link PetrolStation} from a given JSON string.
    *
@@ -26,6 +44,7 @@ public class PetrolStations {
    * @return A List of {@link PetrolStation}.
    * @throws IllegalArgumentException If gsonAdapter is not an instance of
    *                                  {@link PetrolStationsJsonAdapter}
+   * @throws IllegalStateException    If Gson finds an invalid JSON object
    */
   public static List<PetrolStation> createFromJson(String in, TypeAdapter<?> gsonAdapter) {
     if (in == null)

@@ -78,7 +78,7 @@ class AddressTest {
 
     // then
     assertNotNull(actualAddress);
-    responseFixture.assertEquals(actualAddress, 0);
+    responseFixture.assertEqualsIgnoringSort(actualAddress, 0);
   }
 
   @Test

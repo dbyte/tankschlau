@@ -5,6 +5,10 @@ import com.google.gson.TypeAdapter;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.helpers.response.FixtureFiles;
 import de.fornalik.tankschlau.helpers.response.JsonResponseFixture;
+import de.fornalik.tankschlau.net.HttpClient;
+import de.fornalik.tankschlau.net.OkHttpClient;
+import de.fornalik.tankschlau.net.Request;
+import de.fornalik.tankschlau.net.Response;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -12,23 +16,80 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class PetrolStationsTest {
-  private static TypeAdapter<?> petrolStationsAdapter;
+  private static TypeAdapter<?> petrolStationsGsonAdapter;
+  private static HttpClient httpClientMock;
+  private static Request requestMock;
+  private static Response responseMock;
 
   @BeforeAll
   static void beforeAll() {
-    petrolStationsAdapter = new PetrolStationsJsonAdapter();
+    petrolStationsGsonAdapter = new PetrolStationsJsonAdapter();
+    httpClientMock = mock(OkHttpClient.class);
+    requestMock = mock(Request.class);
+    responseMock = mock(Response.class);
   }
 
   @AfterAll
   static void afterAll() {
-    petrolStationsAdapter = null;
+    petrolStationsGsonAdapter = null;
+  }
+
+  /*
+  The underlying implementation of this factory method is subject to the corresponding
+  net and web service units, so we just do some basic test on its own code paths here.
+  */
+
+  @Test
+  void createFromWebService_happy()
+  throws IOException {
+    // given
+    Pair<JsonResponseFixture, JsonObject> fixtures =
+        JsonResponseFixture.createFromJsonFile(
+            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
+
+    JsonResponseFixture fixtureHelp = fixtures.getLeft();
+    String jsonStringResponse = fixtures.getRight().toString();
+
+    when(responseMock.getBody()).thenReturn(Optional.of(jsonStringResponse));
+    when(httpClientMock.newCall(requestMock)).thenReturn(responseMock);
+
+    // when
+    List<PetrolStation> actualPetrolStations = PetrolStations.createFromWebService(
+        httpClientMock,
+        requestMock,
+        petrolStationsGsonAdapter);
+
+    // then
+    fixtureHelp.assertEqualsIgnoringSort(actualPetrolStations);
+  }
+
+  @Test
+  void createFromWebService_returnsEmptyPetrolStationsArrayOnEmptyJsonResponse()
+  throws IOException {
+    // given
+    String jsonStringResponse = "{}";
+    when(responseMock.getBody()).thenReturn(Optional.of(jsonStringResponse));
+    when(httpClientMock.newCall(requestMock)).thenReturn(responseMock);
+
+    // when
+    List<PetrolStation> actualPetrolStations = PetrolStations.createFromWebService(
+        httpClientMock,
+        requestMock,
+        petrolStationsGsonAdapter);
+
+    // then
+    assertEquals(0, actualPetrolStations.size());
   }
 
   // region createFromJson Tests
@@ -41,18 +102,18 @@ class PetrolStationsTest {
   void createFromJson_doesCreateAllPetrolStations() {
     // given
     Pair<JsonResponseFixture, JsonObject> fixtures =
-        JsonResponseFixture.createFirstStationFromJsonFile(
-            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_30STATIONS_HAPPY);
+        JsonResponseFixture.createFromJsonFile(
+            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
 
     JsonResponseFixture fixtureHelp = fixtures.getLeft();
     JsonObject jsonResponseFix = fixtures.getRight();
 
     // when
     List<PetrolStation> actualPetrolStations = PetrolStations
-        .createFromJson(jsonResponseFix, petrolStationsAdapter);
+        .createFromJson(jsonResponseFix, petrolStationsGsonAdapter);
 
     // then
-    fixtureHelp.assertEquals(actualPetrolStations);
+    fixtureHelp.assertEqualsIgnoringSort(actualPetrolStations);
   }
 
   @Test
@@ -60,13 +121,13 @@ class PetrolStationsTest {
     // given
     Pair<JsonResponseFixture, JsonObject> fixtures =
         JsonResponseFixture.createFirstStationFromJsonFile(
-            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_30STATIONS_HAPPY);
+            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
 
     JsonObject jsonResponseFix = fixtures.getRight();
 
     // when
     List<PetrolStation> actualPetrolStations = PetrolStations
-        .createFromJson(new JsonObject(), petrolStationsAdapter);
+        .createFromJson(new JsonObject(), petrolStationsGsonAdapter);
 
     // then
     assertEquals(0, actualPetrolStations.size());
@@ -95,7 +156,7 @@ class PetrolStationsTest {
     // given
     JsonResponseFixture fixtureHelper = JsonResponseFixture
         .createFromJsonFile(
-            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_30STATIONS_HAPPY)
+            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY)
         .getLeft();
 
     // Convert from fixture-stations to a List of real PetrolStation objects.

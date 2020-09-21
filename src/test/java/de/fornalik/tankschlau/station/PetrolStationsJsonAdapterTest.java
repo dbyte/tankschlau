@@ -52,7 +52,7 @@ class PetrolStationsJsonAdapterTest {
     assertNotNull(actualPetrolStations);
     assertEquals(1, actualPetrolStations.size());
     assertEquals(0, petrolStationsJsonAdapter.getErrorMessages().size());
-    objectFixture.assertEquals(actualPetrolStations);
+    objectFixture.assertEqualsIgnoringSort(actualPetrolStations);
   }
 
   @Test
@@ -160,7 +160,7 @@ class PetrolStationsJsonAdapterTest {
     assertNotNull(actualPetrolStations);
     assertEquals(17, actualPetrolStations.size());
     assertEquals(0, petrolStationsJsonAdapter.getErrorMessages().size());
-    objectFixture.assertEquals(actualPetrolStations);
+    objectFixture.assertEqualsIgnoringSort(actualPetrolStations);
   }
 
   @Test
@@ -183,8 +183,6 @@ class PetrolStationsJsonAdapterTest {
 
     // Expect exactly 2 collected error messages (of the 2 invalid fixtured stations)
     assertEquals(2, petrolStationsJsonAdapter.getErrorMessages().size());
-
-    objectFixture.assertEquals(actualValidPetrolStations);
   }
 
   @Test

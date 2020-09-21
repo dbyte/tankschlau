@@ -75,7 +75,7 @@ class GeoTest {
 
     // then
     assertNotNull(actualGeo);
-    responseFixture.assertEquals(actualGeo, 0);
+    responseFixture.assertEqualsIgnoringSort(actualGeo, 0);
   }
 
   @Test

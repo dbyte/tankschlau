@@ -129,9 +129,10 @@ public class JsonResponseFixture {
 
   // region assertEqual helpers
 
-  public void assertEquals(List<PetrolStation> petrolStations) {
+  public void assertEqualsIgnoringSort(List<PetrolStation> petrolStations) {
     Objects.requireNonNull(petrolStations);
-    petrolStations.forEach(this::assertEquals);
+    Assertions.assertEquals(this.stations.size(), petrolStations.size());
+    petrolStations.forEach(this::assertEqualsIgnoringSort);
   }
 
   /**
@@ -139,7 +140,7 @@ public class JsonResponseFixture {
    *
    * @param petrolStation The {@link PetrolStation} to be checked for deep value equality.
    */
-  public void assertEquals(PetrolStation petrolStation) {
+  public void assertEqualsIgnoringSort(PetrolStation petrolStation) {
     /* Preconditions for running the test. Note these checks are not subject to the test itself.
     Thus, we don't use Junit assertions here. */
 
@@ -147,9 +148,9 @@ public class JsonResponseFixture {
 
     // Find required JsonResponseFixture for the PetrolStation under test.
     StationDTO fixture = stations.stream()
-        .filter(fixt -> fixt.uuid.equals(petrolStation.uuid))
-        .findFirst()
-        .orElse(null);
+                                 .filter(fixt -> fixt.uuid.equals(petrolStation.uuid))
+                                 .findFirst()
+                                 .orElse(null);
 
     assert fixture != null;
 
@@ -160,10 +161,10 @@ public class JsonResponseFixture {
     Assertions.assertEquals(fixture.isOpen, petrolStation.isOpen);
 
     Assertions.assertNotNull(petrolStation.address);
-    this.assertEquals(petrolStation.address, stations.indexOf(fixture));
+    this.assertEqualsIgnoringSort(petrolStation.address, stations.indexOf(fixture));
 
     Set<Petrol> actualPetrols = new HashSet<>(petrolStation.getPetrols());
-    this.assertEquals(actualPetrols, stations.indexOf(fixture));
+    this.assertEqualsIgnoringSort(actualPetrols, stations.indexOf(fixture));
   }
 
   /**
@@ -173,7 +174,7 @@ public class JsonResponseFixture {
    * @param addressUnderTest The Address object to test for equality with the generated fixture.
    * @param fixtureIdx       Array index of the generated PetrolStation fixture to compare with.
    */
-  public void assertEquals(Address addressUnderTest, int fixtureIdx) {
+  public void assertEqualsIgnoringSort(Address addressUnderTest, int fixtureIdx) {
     /* Preconditions for running the test. Note these checks are not subject to the test itself.
     Thus, we don't use Junit assertions here. */
 
@@ -191,7 +192,7 @@ public class JsonResponseFixture {
     Assertions.assertEquals(fixture.city, addressUnderTest.getCity());
     Assertions.assertEquals(fixture.postCode, addressUnderTest.getPostCode());
 
-    this.assertEquals(addressUnderTest.getGeo().orElse(null), fixtureIdx);
+    this.assertEqualsIgnoringSort(addressUnderTest.getGeo().orElse(null), fixtureIdx);
   }
 
   /**
@@ -202,7 +203,7 @@ public class JsonResponseFixture {
    *                     explicitly <b>allowed</b>, respecting equality checks of Optional.empty().
    * @param fixtureIdx   Array index of the generated PetrolStation fixture to compare with.
    */
-  public void assertEquals(Geo geoUnderTest, int fixtureIdx) {
+  public void assertEqualsIgnoringSort(Geo geoUnderTest, int fixtureIdx) {
     Optional<Geo> optGeoUnderTest = Optional.ofNullable(geoUnderTest);
 
     // Get station by given index
@@ -211,14 +212,17 @@ public class JsonResponseFixture {
 
     // Begin test
 
-    Assertions.assertEquals(Optional.of(fixture.lat),
-                            optGeoUnderTest.map(g -> g.latitude));
+    Assertions.assertEquals(
+        Optional.of(fixture.lat),
+        optGeoUnderTest.map(g -> g.latitude));
 
-    Assertions.assertEquals(Optional.of(fixture.lng),
-                            optGeoUnderTest.map(g -> g.longitude));
+    Assertions.assertEquals(
+        Optional.of(fixture.lng),
+        optGeoUnderTest.map(g -> g.longitude));
 
-    Assertions.assertEquals(Optional.ofNullable(fixture.distanceKm),
-                            optGeoUnderTest.flatMap(Geo::getDistance));
+    Assertions.assertEquals(
+        Optional.ofNullable(fixture.distanceKm),
+        optGeoUnderTest.flatMap(Geo::getDistance));
   }
 
   /**
@@ -226,7 +230,7 @@ public class JsonResponseFixture {
    *                   generated Petrols fixture.
    * @param fixtureIdx Array index of the generated PetrolStation fixture to compare with.
    */
-  public void assertEquals(Set<Petrol> petrolSet, int fixtureIdx) {
+  public void assertEqualsIgnoringSort(Set<Petrol> petrolSet, int fixtureIdx) {
     assert petrolSet != null;
 
     // Get station by given index

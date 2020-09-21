@@ -74,17 +74,17 @@ public class Geo {
    * @param km Distance to User's address or null
    */
   public void setDistance(Double km) {
-    throwOnInvalidDistance();
+    throwOnInvalidDistance(km);
     this.distance = km;
   }
 
-  private void throwOnInvalidDistance() throws InvalidGeoDataException {
+  private void throwOnInvalidDistance(Double km) throws InvalidGeoDataException {
     /* null is perfectly valid here as it is always returned as an Optional by design
     and as a distance value is not mandatory by business rule. */
-    if (this.distance == null)
+    if (km == null)
       return;
 
-    if (this.distance < 0.0)
+    if (km < 0.0)
       throw new InvalidGeoDataException("Geographical distance must be >= 0.0 km.");
   }
 
