@@ -16,9 +16,18 @@ import java.util.List;
 import java.util.Set;
 
 public class TankSchlau {
+  DefaultListModel<String> model;
 
   public static void main(String[] args) {
-    DefaultListModel<String> model = new DefaultListModel<>();
+    SwingUtilities.invokeLater(() -> {
+      TankSchlau app = new TankSchlau();
+      app.initGui();
+      app.updateList();
+    });
+  }
+
+  private void initGui() {
+    model = new DefaultListModel<>();
 
     JFrame frame = new JFrame(TankSchlau.class.getSimpleName());
     JList<String> list = new JList<>(model);
@@ -29,8 +38,13 @@ public class TankSchlau {
 
     frame.add(scrollPane);
     frame.setSize(650, 900);
-    frame.setVisible(true);
+    frame.setLocationRelativeTo(null);  // *** this will center your app ***
+    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+    frame.setVisible(true);
+  }
+
+  private void updateList() {
     model.addElement("Preise werden abgefragt, bitte warten...");
 
     // Run a new dispatch queue thread for the web service request/response.
@@ -62,11 +76,9 @@ public class TankSchlau {
         e.printStackTrace();
       }
     });
-
-    System.out.println("Waiting for server response...");
   }
 
-  private static List<PetrolStation> updatePetrolStations() throws IOException {
+  private List<PetrolStation> updatePetrolStations() throws IOException {
     // given
     Geo userLocation = new Geo(52.408306, 10.77200, 5.0);
     PetrolStationsJsonAdapter gsonAdapter = new PetrolStationsJsonAdapter();
@@ -75,6 +87,7 @@ public class TankSchlau {
     HttpClient httpClient = new OkHttpClient();
 
     // when
+    System.out.println("Waiting for server response...");
     Response actualResponse = httpClient.newCall(request);
 
     // then
@@ -85,7 +98,7 @@ public class TankSchlau {
             .toString(), gsonAdapter);
   }
 
-  private static void populateListModel(PetrolStation station, DefaultListModel<String> model) {
+  private void populateListModel(PetrolStation station, DefaultListModel<String> model) {
     String stationName = station.address.getName();
     String open = station.isOpen ? "jetzt geöffnet" : "geschlossen";
     double distanceKm = station.address.getGeo().flatMap(Geo::getDistance).orElse(0.0);
