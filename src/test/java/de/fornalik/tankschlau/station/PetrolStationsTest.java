@@ -51,7 +51,7 @@ class PetrolStationsTest {
   */
 
   @Test
-  void createFromWebService_happy()
+  void createFromWebService_createsAllStationsFromResponse()
   throws IOException {
     // given
     Pair<JsonResponseFixture, JsonObject> fixtures =
