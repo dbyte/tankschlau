@@ -24,8 +24,7 @@ public interface HttpClient {
    * @return The populated {@link Response} object which was passed to this method.
    * @throws IOException If something went wrong while handling communication etc.
    */
-  Response newCall(final Request request, Response response)
-      throws IOException;
+  Response newCall(final Request request, Response response) throws IOException;
 
   /**
    * Calls the web service and defaults to convert its response body to a
