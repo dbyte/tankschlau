@@ -14,7 +14,7 @@ public interface HttpClient {
   Optional<Request> getRequest();
 
   /**
-   * Calls the web service and extracts its response body by invoking
+   * Calls the web service synchronously and extracts its response body by invoking
    * {@link Response#setBody(Object)}, while the type of the body depends on the passed instance
    * of an implementation of {@link Response}).
    *
