@@ -10,6 +10,7 @@ import de.fornalik.tankschlau.webserviceapi.TankerkoenigRequest;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Set;
 
@@ -20,14 +21,13 @@ public class TankSchlau {
 
   DefaultListModel<String> model;
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws MalformedURLException {
+    TankSchlau app = new TankSchlau();
+    Request request = TankerkoenigRequest.create(new Geo(52.408306, 10.77200, 5.0));
+
     SwingUtilities.invokeLater(() -> {
-
-      TankSchlau app = new TankSchlau();
-      Geo forGeo = new Geo(52.408306, 10.77200, 5.0);
-
       app.initGui();
-      app.updateList(forGeo, PetrolType.DIESEL);
+      app.updateList(request, PetrolType.DIESEL);
     });
   }
 
@@ -49,15 +49,13 @@ public class TankSchlau {
     frame.setVisible(true);
   }
 
-  private void updateList(Geo forGeo, PetrolType sortedFor) {
+  private void updateList(Request request, PetrolType sortedFor) {
     model.addElement("Preise werden abgefragt, bitte warten...");
 
     // Run a new dispatch queue thread for the web service request/response.
     EventQueue.invokeLater(() -> {
 
       try {
-        Request request = TankerkoenigRequest.create(forGeo);
-
         List<PetrolStation> petrolStations = PetrolStations.createFromWebService(
             globalHttpClient,
             request,
