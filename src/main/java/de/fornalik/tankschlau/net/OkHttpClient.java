@@ -27,8 +27,7 @@ public class OkHttpClient implements HttpClient {
   }
 
   @Override
-  public Response newCall(final Request request, Response response)
-      throws IOException {
+  public Response newCall(final Request request, Response response) throws IOException {
     this.request = request;
 
     okhttp3.HttpUrl url = createUrl();
