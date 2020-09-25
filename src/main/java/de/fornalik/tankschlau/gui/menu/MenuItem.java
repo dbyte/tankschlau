@@ -1,4 +1,4 @@
-package de.fornalik.tankschlau.gui;
+package de.fornalik.tankschlau.gui.menu;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 /**
- * Base class for all menu items within the TankSchlau application.
+ * Base class for all menu items within the application.
  */
 abstract class MenuItem extends JMenuItem {
   protected final int keyEvent;

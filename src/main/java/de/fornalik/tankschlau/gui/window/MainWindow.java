@@ -1,7 +1,8 @@
-package de.fornalik.tankschlau.gui;
+package de.fornalik.tankschlau.gui.window;
 
 import de.fornalik.tankschlau.TankSchlau;
 import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.gui.menu.MainMenuBar;
 import de.fornalik.tankschlau.net.Request;
 import de.fornalik.tankschlau.station.*;
 import org.apache.commons.lang3.SystemUtils;

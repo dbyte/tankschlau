@@ -1,14 +1,14 @@
-package de.fornalik.tankschlau.gui;
+package de.fornalik.tankschlau.gui.menu;
 
 import de.fornalik.tankschlau.TankSchlau;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 
-class MainMenuBar extends JMenuBar {
+public class MainMenuBar extends JMenuBar {
   JFrame mainFrame;
 
-  MainMenuBar(JFrame mainFrame) {
+  public MainMenuBar(JFrame mainFrame) {
     this.mainFrame = mainFrame;
     this.init();
   }

@@ -1,4 +1,4 @@
-package de.fornalik.tankschlau.gui;
+package de.fornalik.tankschlau.gui.menu;
 
 import de.fornalik.tankschlau.TankSchlau;
 
@@ -8,6 +8,9 @@ import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.Optional;
 
+/**
+ * Closes the window which currently has focus.
+ */
 class CloseWindowMenuItem extends MenuItem {
 
   CloseWindowMenuItem() {

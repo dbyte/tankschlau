@@ -2,7 +2,7 @@ package de.fornalik.tankschlau;
 
 import com.google.gson.TypeAdapter;
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.gui.MainWindow;
+import de.fornalik.tankschlau.gui.window.MainWindow;
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.OkHttpClient;
 import de.fornalik.tankschlau.net.Request;

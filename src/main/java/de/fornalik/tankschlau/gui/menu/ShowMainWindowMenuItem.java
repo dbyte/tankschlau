@@ -1,4 +1,4 @@
-package de.fornalik.tankschlau.gui;
+package de.fornalik.tankschlau.gui.menu;
 
 import de.fornalik.tankschlau.TankSchlau;
 
@@ -6,6 +6,9 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
+/**
+ * Switches the main frame window visible if not visible.
+ */
 class ShowMainWindowMenuItem extends MenuItem {
   private final JFrame mainFrame;
 
