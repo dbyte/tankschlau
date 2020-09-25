@@ -4,7 +4,6 @@ import de.fornalik.tankschlau.TankSchlau;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.Request;
 import de.fornalik.tankschlau.station.*;
-import de.fornalik.tankschlau.util.Localization;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
@@ -49,7 +48,7 @@ public class MainWindow extends JFrame {
   }
 
   public void updateList(Request request, PetrolType sortedFor) {
-    model.addElement(Localization.get("PriceRequestRunning"));
+    model.addElement(TankSchlau.L10N.get("PriceRequestRunning"));
 
     // Run a new dispatch queue thread for the web service request/response.
     EventQueue.invokeLater(() -> {
@@ -69,7 +68,7 @@ public class MainWindow extends JFrame {
 
         model.addElement(
             "********** "
-                + Localization.get("CurrentPricesSortedBy", sortedFor.name())
+                + TankSchlau.L10N.get("CurrentPricesSortedBy", sortedFor.name())
                 + " **********");
 
         model.addElement(" ");
@@ -80,7 +79,7 @@ public class MainWindow extends JFrame {
       catch (Exception e) {
         model.add(
             1,
-            Localization.get("ErrorWhileRequestingPrices", e.getClass().getTypeName()));
+            TankSchlau.L10N.get("ErrorWhileRequestingPrices", e.getClass().getTypeName()));
 
         model.add(2, e.getMessage());
         e.printStackTrace();
@@ -90,7 +89,8 @@ public class MainWindow extends JFrame {
 
   private void populateListModel(PetrolStation station) {
     String stationName = station.address.getName();
-    String open = station.isOpen ? Localization.get("NowOpen") : Localization.get("NowClosed");
+    String open = station.isOpen ? TankSchlau.L10N.get("NowOpen") : TankSchlau.L10N.get(
+        "NowClosed");
     double distanceKm = station.address.getGeo().flatMap(Geo::getDistance).orElse(0.0);
 
     Set<Petrol> petrolsUnsorted = station.getPetrols();
@@ -98,7 +98,7 @@ public class MainWindow extends JFrame {
 
     model.addElement(stationName + " - " + open);
     petrols.forEach((petrol) -> model.addElement(petrol.type.name() + "\t\t" + petrol.price));
-    model.addElement(Localization.get("KmAway", distanceKm));
+    model.addElement(TankSchlau.L10N.get("KmAway", distanceKm));
     model.addElement("\t");
   }
 }

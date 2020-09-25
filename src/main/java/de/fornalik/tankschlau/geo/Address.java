@@ -68,8 +68,7 @@ public class Address {
    * @param in The {@link JsonObject} from which to convert to an {@link Address}
    * @return Instance of {@link Address}
    * @throws com.google.gson.JsonParseException if Address is invalid from a point of business
-   * rules as
-   *                                            checked by {@link #isValid()}.
+   *                                            rules as checked by {@link #isValid()}.
    */
   public static Address createFromJson(JsonObject in) {
     Objects.requireNonNull(in, "JsonObject must not be null.");

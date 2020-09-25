@@ -1,6 +1,6 @@
 package de.fornalik.tankschlau.gui;
 
-import de.fornalik.tankschlau.util.Localization;
+import de.fornalik.tankschlau.TankSchlau;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,12 +18,14 @@ class MainMenuBar extends JMenuBar {
 
   void init() {
     // "File" menu
-    JMenu fileMenu = new JMenu(Localization.get("File"));
+    JMenu fileMenu = new JMenu(TankSchlau.L10N.get("File"));
     fileMenu.setMnemonic(KeyEvent.VK_F);
 
-    // region cmd + W: Hides active focused window if present.
+    // region "Close window" menu item
 
-    JMenuItem itemClose = new JMenuItem(Localization.get("CloseWindow"));
+    JMenuItem itemClose = new JMenuItem(TankSchlau.L10N.get("CloseWindow"));
+
+    // Shortcut cmd + W: Hides active focused window if present.
     KeyStroke strokeCmdW = KeyStroke.getKeyStroke(
         KeyEvent.VK_W,
         Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
@@ -35,14 +37,16 @@ class MainMenuBar extends JMenuBar {
           .filter(Window::isFocused)
           .findFirst();
 
-      window.ifPresent(w -> w.setVisible(false));
+      window.ifPresent((w) -> w.setVisible(false));
     });
 
     // endregion
 
-    // region cmd + N: Shows main window if it's not visible
+    // region "Show main window" menu item
 
-    JMenuItem itemNewMain = new JMenuItem(Localization.get("ShowMainWindow"));
+    JMenuItem itemNewMain = new JMenuItem(TankSchlau.L10N.get("ShowMainWindow"));
+
+    // Shortcut cmd + N: Shows main window if it's not visible
     KeyStroke strokeCmdN = KeyStroke.getKeyStroke(
         KeyEvent.VK_N,
         Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
