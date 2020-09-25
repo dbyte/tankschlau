@@ -48,7 +48,7 @@ public class MainWindow extends JFrame {
   }
 
   public void updateList(Request request, PetrolType sortedFor) {
-    model.addElement(TankSchlau.L10N.get("PriceRequestRunning"));
+    model.addElement(TankSchlau.L10N.get("msg.PriceRequestRunning"));
 
     // Run a new dispatch queue thread for the web service request/response.
     EventQueue.invokeLater(() -> {
@@ -68,7 +68,7 @@ public class MainWindow extends JFrame {
 
         model.addElement(
             "********** "
-                + TankSchlau.L10N.get("CurrentPricesSortedBy", sortedFor.name())
+                + TankSchlau.L10N.get("msg.CurrentPricesSortedBy", sortedFor.name())
                 + " **********");
 
         model.addElement(" ");
@@ -79,7 +79,7 @@ public class MainWindow extends JFrame {
       catch (Exception e) {
         model.add(
             1,
-            TankSchlau.L10N.get("ErrorWhileRequestingPrices", e.getClass().getTypeName()));
+            TankSchlau.L10N.get("msg.ErrorWhileRequestingPrices", e.getClass().getTypeName()));
 
         model.add(2, e.getMessage());
         e.printStackTrace();
@@ -89,8 +89,8 @@ public class MainWindow extends JFrame {
 
   private void populateListModel(PetrolStation station) {
     String stationName = station.address.getName();
-    String open = station.isOpen ? TankSchlau.L10N.get("NowOpen") : TankSchlau.L10N.get(
-        "NowClosed");
+    String open = station.isOpen ? TankSchlau.L10N.get("msg.NowOpen") : TankSchlau.L10N.get(
+        "msg.NowClosed");
     double distanceKm = station.address.getGeo().flatMap(Geo::getDistance).orElse(0.0);
 
     Set<Petrol> petrolsUnsorted = station.getPetrols();
@@ -98,7 +98,7 @@ public class MainWindow extends JFrame {
 
     model.addElement(stationName + " - " + open);
     petrols.forEach((petrol) -> model.addElement(petrol.type.name() + "\t\t" + petrol.price));
-    model.addElement(TankSchlau.L10N.get("KmAway", distanceKm));
+    model.addElement(TankSchlau.L10N.get("msg.KmAway", distanceKm));
     model.addElement("\t");
   }
 }

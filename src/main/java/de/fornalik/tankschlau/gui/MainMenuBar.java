@@ -18,12 +18,12 @@ class MainMenuBar extends JMenuBar {
 
   void init() {
     // "File" menu
-    JMenu fileMenu = new JMenu(TankSchlau.L10N.get("File"));
+    JMenu fileMenu = new JMenu(TankSchlau.L10N.get("menu.File"));
     fileMenu.setMnemonic(KeyEvent.VK_F);
 
     // region "Close window" menu item
 
-    JMenuItem itemClose = new JMenuItem(TankSchlau.L10N.get("CloseWindow"));
+    JMenuItem itemClose = new JMenuItem(TankSchlau.L10N.get("menu.CloseWindow"));
 
     // Shortcut cmd + W: Hides active focused window if present.
     KeyStroke strokeCmdW = KeyStroke.getKeyStroke(
@@ -44,7 +44,7 @@ class MainMenuBar extends JMenuBar {
 
     // region "Show main window" menu item
 
-    JMenuItem itemNewMain = new JMenuItem(TankSchlau.L10N.get("ShowMainWindow"));
+    JMenuItem itemNewMain = new JMenuItem(TankSchlau.L10N.get("menu.ShowMainWindow"));
 
     // Shortcut cmd + N: Shows main window if it's not visible
     KeyStroke strokeCmdN = KeyStroke.getKeyStroke(
