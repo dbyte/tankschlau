@@ -6,7 +6,8 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 /**
- * Utility class for predefined localized strings.
+ * ResourceBundle/Locale facade for localized strings. This is meant to be handled like a
+ * Singleton - instantiate a single object for the lifecycle of the application.
  */
 public class Localization {
   private final ResourceBundle bundle;
@@ -15,12 +16,8 @@ public class Localization {
     this.bundle = ResourceBundle.getBundle("LocaleStrings", locale);
   }
 
-  public Localization() {
-    this(Locale.GERMAN);
-  }
-
   /**
-   * Gets the locale string, depending on language settings.
+   * Gets the locale string, depending on {@link Locale} language settings.
    *
    * @param key  Unique key (residing in ResourceBundle.properties) to identify the string we
    *             want to get.
@@ -40,7 +37,7 @@ public class Localization {
   }
 
   /**
-   * Gets the locale string, depending on language settings.
+   * Gets the locale string, depending on {@link Locale} language settings.
    * Simple version of {@link #get(String, Object...)}, without placeholders.
    *
    * @param key see {@link #get(String, Object...)}
