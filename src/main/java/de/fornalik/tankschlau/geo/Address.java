@@ -88,7 +88,7 @@ public class Address {
    * @param name Sets name of a person or company. When passing null, it becomes an empty String.
    */
   public void setName(String name) {
-    this.name = StringLegalizer.init(name).nullToEmpty().safeTrim().end();
+    this.name = StringLegalizer.create(name).nullToEmpty().safeTrim().end();
   }
 
   public String getStreet() {
@@ -100,7 +100,7 @@ public class Address {
    * @throws StringLegalizer.ValueException if we passed null or an empty String
    */
   public void setStreet(String street) {
-    this.street = StringLegalizer.init(street).safeTrim().mandatory().end();
+    this.street = StringLegalizer.create(street).safeTrim().mandatory().end();
   }
 
   public String getHouseNumber() {
@@ -111,7 +111,7 @@ public class Address {
    * @param houseNumber Sets house number. When passing null, it becomes an empty String.
    */
   public void setHouseNumber(String houseNumber) {
-    this.houseNumber = StringLegalizer.init(houseNumber).nullToEmpty().safeTrim().end();
+    this.houseNumber = StringLegalizer.create(houseNumber).nullToEmpty().safeTrim().end();
   }
 
   public String getCity() {
@@ -123,7 +123,7 @@ public class Address {
    * @throws StringLegalizer.ValueException if we passed null or an empty String
    */
   public void setCity(String city) {
-    this.city = StringLegalizer.init(city).safeTrim().mandatory().end();
+    this.city = StringLegalizer.create(city).safeTrim().mandatory().end();
   }
 
   public String getPostCode() {
@@ -135,7 +135,7 @@ public class Address {
    * @throws StringLegalizer.ValueException if we passed null or an empty String
    */
   public void setPostCode(String postCode) {
-    this.postCode = StringLegalizer.init(postCode).safeTrim().mandatory().end();
+    this.postCode = StringLegalizer.create(postCode).safeTrim().mandatory().end();
   }
 
   /**

@@ -13,13 +13,13 @@ public class StringLegalizer {
   }
 
   /**
-   * Use to start a new string verification/legalization.
+   * Static factory, use to start a new string verification/legalization.
    * After chaining one ore more methods of this class, call {@code end()}
    *
    * @param s The String to legalize/validate
    * @return A new instance of StringLegalizer for method chaining.
    */
-  public static StringLegalizer init(String s) {
+  public static StringLegalizer create(String s) {
     return new StringLegalizer(s);
   }
 
