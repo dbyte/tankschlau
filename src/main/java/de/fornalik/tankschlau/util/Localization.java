@@ -2,6 +2,7 @@ package de.fornalik.tankschlau.util;
 
 import java.text.MessageFormat;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -46,8 +47,14 @@ public class Localization {
    */
   public String get(String key, Object... args) {
     Objects.requireNonNull(key, "Parameter 'key' must not be null.");
+    String pattern;
 
-    String pattern = bundle.getString(key);
+    try {
+      pattern = bundle.getString(key);
+    }
+    catch (MissingResourceException e) {
+      return "*** Localized string not found for key '" + key + "' ***";
+    }
 
     if (args == null)
       return pattern;

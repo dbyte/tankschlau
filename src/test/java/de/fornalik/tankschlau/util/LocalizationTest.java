@@ -71,4 +71,18 @@ class LocalizationTest {
     assertThrows(NullPointerException.class, () -> sutEnglish.get(null));
     assertThrows(NullPointerException.class, () -> sutGerman.get(null));
   }
+
+  @Test
+  void get_returnsErrorStringIfGivenKeyNotExists() {
+    // given
+    String actualLocalizedText;
+
+    // when
+    actualLocalizedText = sutEnglish.get("DoesNotExist");
+
+    // then
+    assertEquals(
+        "*** Localized string not found for key 'DoesNotExist' ***",
+        actualLocalizedText);
+  }
 }
