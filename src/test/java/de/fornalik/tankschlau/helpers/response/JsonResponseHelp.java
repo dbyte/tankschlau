@@ -24,7 +24,7 @@ import java.util.function.Function;
  * All fields are public mutable for testing purposes. Also, all primitives are wrapped
  * to be able to null them for testing purposes.
  */
-public class JsonResponseFixture {
+public class JsonResponseHelp {
 
   @SerializedName("ok") public Boolean ok;
   @SerializedName("license") public String license;
@@ -32,31 +32,31 @@ public class JsonResponseFixture {
   @SerializedName("status") public String status;
   @SerializedName("stations") public ArrayList<StationDTO> stations;
 
-  private JsonResponseFixture() {
+  private JsonResponseHelp() {
     stations = new ArrayList<>();
   }
 
   /**
    * Creates two test-fixture objects by reading a JSON response fixture file.<br/>
-   * 1) a JsonResponseFixture which we can use e.g. for equality checks.<br/>
+   * 1) a JsonResponseHelp which we can use e.g. for equality checks.<br/>
    * 2) a {@link JsonObject} of the JSON file fixture.
    *
    * @param resName Resource path as String. Note that the implicit resource root path must not
    *                be included here.
-   * @return Pair of JsonResponseFixture and JsonObject which is produced by reading a
+   * @return Pair of JsonResponseHelp and JsonObject which is produced by reading a
    * JSON test-fixture resource file. Decompose by using .getLeft() and getRight(), see
    * {@link Pair#getLeft()} resp. {@link Pair#getRight()} <br/>
-   * left: resulting fixture as instance of JsonResponseFixture <br/>
+   * left: resulting fixture as instance of JsonResponseHelp <br/>
    * right: resulting fixture as instance of JsonObject
    */
-  public static Pair<JsonResponseFixture, JsonObject> createFromJsonFile(String resName) {
+  public static Pair<JsonResponseHelp, JsonObject> createFromJsonFile(String resName) {
     Objects.requireNonNull(resName);
 
     FileReader reader1 = FixtureFiles.getFileReaderForResource(resName);
     FileReader reader2 = FixtureFiles.getFileReaderForResource(resName);
     Gson gson = new Gson();
 
-    JsonResponseFixture objectFixture = gson.fromJson(reader1, JsonResponseFixture.class);
+    JsonResponseHelp objectFixture = gson.fromJson(reader1, JsonResponseHelp.class);
     JsonObject jsonFixture = (JsonObject) JsonParser.parseReader(reader2);
 
     return Pair.of(objectFixture, jsonFixture);
@@ -66,28 +66,28 @@ public class JsonResponseFixture {
    * Creates two test-fixture objects by reading a JSON response fixture file.<br/>
    * The returned JSON of this method does only include the <b>first station</b> of the response!
    * <p>
-   * 1) a JsonResponseFixture which we can use e.g. for equality checks.<br/>
+   * 1) a JsonResponseHelp which we can use e.g. for equality checks.<br/>
    * 2) a {@link JsonObject} of the <b>first station</b> found within the JSON file fixture.
    *
-   * @return {@link Pair#getLeft()}: JsonResponseFixture which we can use e.g. for equality
+   * @return {@link Pair#getLeft()}: JsonResponseHelp which we can use e.g. for equality
    * checks.<br/>
    * {@link Pair#getRight()}: a {@link JsonObject} of the <b>first {@link PetrolStation}</b>
    * found within the JSON file fixture.
    * @see #createFromJsonFile(String resName)
    */
-  public static Pair<JsonResponseFixture, JsonObject> createFirstStationFromJsonFile(String resName) {
+  public static Pair<JsonResponseHelp, JsonObject> createFirstStationFromJsonFile(String resName) {
     Objects.requireNonNull(resName);
 
-    Pair<JsonResponseFixture, JsonObject> responseFixture = createFromJsonFile(resName);
+    Pair<JsonResponseHelp, JsonObject> responseHelp = createFromJsonFile(resName);
 
-    assert responseFixture.getRight().getAsJsonArray("stations") != null;
+    assert responseHelp.getRight().getAsJsonArray("stations") != null;
 
-    JsonObject jsonFirstStationOfStationArrayFixture = responseFixture.getRight()
-        .getAsJsonArray("stations")
-        .get(0)
-        .getAsJsonObject();
+    JsonObject jsonFirstStationOfStationArrayFixture = responseHelp.getRight()
+                                                                   .getAsJsonArray("stations")
+                                                                   .get(0)
+                                                                   .getAsJsonObject();
 
-    return Pair.of(responseFixture.getLeft(), jsonFirstStationOfStationArrayFixture);
+    return Pair.of(responseHelp.getLeft(), jsonFirstStationOfStationArrayFixture);
   }
 
   /**
@@ -136,7 +136,7 @@ public class JsonResponseFixture {
   }
 
   /**
-   * Deep check for value equality of a JsonResponseFixture with a {@link PetrolStation}.
+   * Deep check for value equality of a JsonResponseHelp with a {@link PetrolStation}.
    *
    * @param petrolStation The {@link PetrolStation} to be checked for deep value equality.
    */
@@ -146,7 +146,7 @@ public class JsonResponseFixture {
 
     assert petrolStation != null;
 
-    // Find required JsonResponseFixture for the PetrolStation under test.
+    // Find required JsonResponseHelp for the PetrolStation under test.
     StationDTO fixture = stations.stream()
                                  .filter(fixt -> fixt.uuid.equals(petrolStation.uuid))
                                  .findFirst()

@@ -2,7 +2,7 @@ package de.fornalik.tankschlau.station;
 
 import com.google.gson.JsonObject;
 import de.fornalik.tankschlau.helpers.response.FixtureFiles;
-import de.fornalik.tankschlau.helpers.response.JsonResponseFixture;
+import de.fornalik.tankschlau.helpers.response.JsonResponseHelp;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,12 +23,12 @@ class PetrolsTest {
   @Test
   void createFromJson_doesCreateAllPetrols() {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures =
-        JsonResponseFixture.createFirstStationFromJsonFile(
+    Pair<JsonResponseHelp, JsonObject> responseHelp =
+        JsonResponseHelp.createFirstStationFromJsonFile(
             FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
 
-    JsonResponseFixture fixture = fixtures.getLeft();
-    JsonObject jsonStationFix = fixtures.getRight();
+    JsonResponseHelp fixture = responseHelp.getLeft();
+    JsonObject jsonStationFix = responseHelp.getRight();
 
     // when
     Set<Petrol> actualPetrols = Petrols.createFromJson(jsonStationFix);
@@ -40,11 +40,11 @@ class PetrolsTest {
   @Test
   void createFromJson_doesNotCreatePetrolsForMissingPrices() {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures =
-        JsonResponseFixture.createFirstStationFromJsonFile(
+    Pair<JsonResponseHelp, JsonObject> responseHelp =
+        JsonResponseHelp.createFirstStationFromJsonFile(
             FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_DIESEL_AND_E5);
 
-    JsonObject jsonStationFix = fixtures.getRight();
+    JsonObject jsonStationFix = responseHelp.getRight();
 
     // when
     Set<Petrol> actualPetrols = Petrols.createFromJson(jsonStationFix);
@@ -57,11 +57,11 @@ class PetrolsTest {
   @Test
   void createFromJson_doesNotCreatePetrolsWithZeroPrice() {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures =
-        JsonResponseFixture.createFirstStationFromJsonFile(
+    Pair<JsonResponseHelp, JsonObject> responseHelp =
+        JsonResponseHelp.createFirstStationFromJsonFile(
             FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_ZERO_PRICE_DIESEL_AND_E10);
 
-    JsonObject jsonStationFix = fixtures.getRight();
+    JsonObject jsonStationFix = responseHelp.getRight();
 
     // when
     Set<Petrol> actualPetrols = Petrols.createFromJson(jsonStationFix);

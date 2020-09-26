@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.TypeAdapter;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.helpers.response.FixtureFiles;
-import de.fornalik.tankschlau.helpers.response.JsonResponseFixture;
+import de.fornalik.tankschlau.helpers.response.JsonResponseHelp;
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.OkHttpClient;
 import de.fornalik.tankschlau.net.Request;
@@ -54,12 +54,12 @@ class PetrolStationsTest {
   void createFromWebService_createsAllStationsFromResponse()
   throws IOException {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures =
-        JsonResponseFixture.createFromJsonFile(
+    Pair<JsonResponseHelp, JsonObject> responseHelp =
+        JsonResponseHelp.createFromJsonFile(
             FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
 
-    JsonResponseFixture fixtureHelp = fixtures.getLeft();
-    String jsonStringResponse = fixtures.getRight().toString();
+    JsonResponseHelp fixtureHelp = responseHelp.getLeft();
+    String jsonStringResponse = responseHelp.getRight().toString();
 
     when(responseMock.getBody()).thenReturn(Optional.of(jsonStringResponse));
     when(httpClientMock.newCall(requestMock)).thenReturn(responseMock);
@@ -101,12 +101,12 @@ class PetrolStationsTest {
   @Test
   void createFromJson_doesCreateAllPetrolStations() {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures =
-        JsonResponseFixture.createFromJsonFile(
+    Pair<JsonResponseHelp, JsonObject> responseHelp =
+        JsonResponseHelp.createFromJsonFile(
             FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
 
-    JsonResponseFixture fixtureHelp = fixtures.getLeft();
-    JsonObject jsonResponseFix = fixtures.getRight();
+    JsonResponseHelp fixtureHelp = responseHelp.getLeft();
+    JsonObject jsonResponseFix = responseHelp.getRight();
 
     // when
     List<PetrolStation> actualPetrolStations = PetrolStations
@@ -119,11 +119,11 @@ class PetrolStationsTest {
   @Test
   void createFromJson_returnsEmptyArrayOnMissingJsonInput() {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures =
-        JsonResponseFixture.createFirstStationFromJsonFile(
+    Pair<JsonResponseHelp, JsonObject> responseHelp =
+        JsonResponseHelp.createFirstStationFromJsonFile(
             FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
 
-    JsonObject jsonResponseFix = fixtures.getRight();
+    JsonObject jsonResponseFix = responseHelp.getRight();
 
     // when
     List<PetrolStation> actualPetrolStations = PetrolStations
@@ -136,11 +136,11 @@ class PetrolStationsTest {
   @Test
   void createFromJson_throwsOnNonMatchingAdapterInstanceArgument() {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures =
-        JsonResponseFixture.createFirstStationFromJsonFile(
+    Pair<JsonResponseHelp, JsonObject> responseHelp =
+        JsonResponseHelp.createFirstStationFromJsonFile(
             FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
 
-    JsonObject jsonResponseFix = fixtures.getRight();
+    JsonObject jsonResponseFix = responseHelp.getRight();
 
     // when, then
     assertThrows(
@@ -154,7 +154,7 @@ class PetrolStationsTest {
   @EnumSource(PetrolType.class)
   void sortByPriceAndDistanceForPetrolType_happy(PetrolType givenPetrolType) {
     // given
-    JsonResponseFixture fixtureHelper = JsonResponseFixture
+    JsonResponseHelp fixtureHelper = JsonResponseHelp
         .createFromJsonFile(
             FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY)
         .getLeft();

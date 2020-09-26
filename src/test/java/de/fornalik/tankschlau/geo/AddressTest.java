@@ -2,7 +2,7 @@ package de.fornalik.tankschlau.geo;
 
 import com.google.gson.JsonObject;
 import de.fornalik.tankschlau.helpers.response.FixtureFiles;
-import de.fornalik.tankschlau.helpers.response.JsonResponseFixture;
+import de.fornalik.tankschlau.helpers.response.JsonResponseHelp;
 import de.fornalik.tankschlau.util.StringLegalizer;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
@@ -66,12 +66,12 @@ class AddressTest {
   @Test
   void createFromJson_happy() {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures =
-        JsonResponseFixture.createFirstStationFromJsonFile(
+    Pair<JsonResponseHelp, JsonObject> responseHelp =
+        JsonResponseHelp.createFirstStationFromJsonFile(
             FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
 
-    JsonResponseFixture responseFixture = fixtures.getLeft();
-    JsonObject jsonFirstStationFixture = fixtures.getRight();
+    JsonResponseHelp responseFixture = responseHelp.getLeft();
+    JsonObject jsonFirstStationFixture = responseHelp.getRight();
 
     // when
     Address actualAddress = Address.createFromJson(jsonFirstStationFixture);
@@ -84,11 +84,11 @@ class AddressTest {
   @Test
   void createFromJson_acceptsEmptyHouseNumber() {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures =
-        JsonResponseFixture.createFirstStationFromJsonFile(
+    Pair<JsonResponseHelp, JsonObject> responseHelp =
+        JsonResponseHelp.createFirstStationFromJsonFile(
             FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_HOUSENUM_AND_BRAND);
 
-    JsonObject jsonFirstStationFixture = fixtures.getRight();
+    JsonObject jsonFirstStationFixture = responseHelp.getRight();
 
     // when
     Address actualAddress = Address.createFromJson(jsonFirstStationFixture);
@@ -100,11 +100,11 @@ class AddressTest {
   @Test
   void createFromJson_returnsEmptyOptionalGeoObjectIfAllGeoElementsAreMissing() {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures =
-        JsonResponseFixture.createFirstStationFromJsonFile(
+    Pair<JsonResponseHelp, JsonObject> responseHelp =
+        JsonResponseHelp.createFirstStationFromJsonFile(
             FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_ALL_GEO_ELEM);
 
-    JsonObject jsonFirstStationFixture = fixtures.getRight();
+    JsonObject jsonFirstStationFixture = responseHelp.getRight();
 
     // when
     Address actualAddress = Address.createFromJson(jsonFirstStationFixture);

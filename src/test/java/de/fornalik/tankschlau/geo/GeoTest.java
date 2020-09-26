@@ -2,7 +2,7 @@ package de.fornalik.tankschlau.geo;
 
 import com.google.gson.JsonObject;
 import de.fornalik.tankschlau.helpers.response.FixtureFiles;
-import de.fornalik.tankschlau.helpers.response.JsonResponseFixture;
+import de.fornalik.tankschlau.helpers.response.JsonResponseHelp;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -63,12 +63,12 @@ class GeoTest {
   @Test
   void createFromJson_happy() {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures =
-        JsonResponseFixture.createFirstStationFromJsonFile(
-        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
+    Pair<JsonResponseHelp, JsonObject> responseHelp =
+        JsonResponseHelp.createFirstStationFromJsonFile(
+            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
 
-    JsonResponseFixture responseFixture = fixtures.getLeft();
-    JsonObject jsonFirstStationFixture = fixtures.getRight();
+    JsonResponseHelp responseFixture = responseHelp.getLeft();
+    JsonObject jsonFirstStationFixture = responseHelp.getRight();
 
     // when
     Geo actualGeo = Geo.createFromJson(jsonFirstStationFixture);
@@ -81,11 +81,11 @@ class GeoTest {
   @Test
   void createFromJson_doesHandleMissingDistanceElement() {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures =
-        JsonResponseFixture.createFirstStationFromJsonFile(
-        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_DIST_ELEM);
+    Pair<JsonResponseHelp, JsonObject> responseHelp =
+        JsonResponseHelp.createFirstStationFromJsonFile(
+            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_DIST_ELEM);
 
-    JsonObject jsonFirstStationFixture = fixtures.getRight();
+    JsonObject jsonFirstStationFixture = responseHelp.getRight();
 
     // when
     Geo actualGeo = Geo.createFromJson(jsonFirstStationFixture);
@@ -98,11 +98,11 @@ class GeoTest {
   @Test
   void createFromJson_setsLatLonToZeroOnMissingLatLonElements() {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures =
-        JsonResponseFixture.createFirstStationFromJsonFile(
-        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_LAT_LON_ELEM);
+    Pair<JsonResponseHelp, JsonObject> responseHelp =
+        JsonResponseHelp.createFirstStationFromJsonFile(
+            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_LAT_LON_ELEM);
 
-    JsonObject jsonFirstStationFixture = fixtures.getRight();
+    JsonObject jsonFirstStationFixture = responseHelp.getRight();
 
     // when
     Geo actualGeo = Geo.createFromJson(jsonFirstStationFixture);

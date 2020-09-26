@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import de.fornalik.tankschlau.helpers.response.FixtureFiles;
-import de.fornalik.tankschlau.helpers.response.JsonResponseFixture;
+import de.fornalik.tankschlau.helpers.response.JsonResponseHelp;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -33,12 +33,12 @@ class AddressJsonAdapterTest {
   @Test
   void read_happy() {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures =
-        JsonResponseFixture.createFirstStationFromJsonFile(
+    Pair<JsonResponseHelp, JsonObject> responseHelp =
+        JsonResponseHelp.createFirstStationFromJsonFile(
             FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
 
-    JsonResponseFixture objectFixture = fixtures.getLeft();
-    JsonObject jsonFixture = fixtures.getRight();
+    JsonResponseHelp objectFixture = responseHelp.getLeft();
+    JsonObject jsonFixture = responseHelp.getRight();
 
     // when
     Address actualAddress = gson.fromJson(jsonFixture, Address.class);
@@ -51,11 +51,11 @@ class AddressJsonAdapterTest {
   @Test
   void read_doesNotSetGeoIfAllGeoDataIsMissing() {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures =
-        JsonResponseFixture.createFirstStationFromJsonFile(
+    Pair<JsonResponseHelp, JsonObject> responseHelp =
+        JsonResponseHelp.createFirstStationFromJsonFile(
             FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_ALL_GEO_ELEM);
 
-    JsonObject jsonFixture = fixtures.getRight();
+    JsonObject jsonFixture = responseHelp.getRight();
 
     // when
     Address actualAddress = gson.fromJson(jsonFixture, Address.class);
@@ -67,11 +67,11 @@ class AddressJsonAdapterTest {
   @Test
   void read_doesSetGeoIfLatLonIsInJsonWhileDistanceIsMissing() {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures =
-        JsonResponseFixture.createFirstStationFromJsonFile(
+    Pair<JsonResponseHelp, JsonObject> responseHelp =
+        JsonResponseHelp.createFirstStationFromJsonFile(
             FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_DIST_ELEM);
 
-    JsonObject jsonFixture = fixtures.getRight();
+    JsonObject jsonFixture = responseHelp.getRight();
 
     // when
     Address actualAddress = gson.fromJson(jsonFixture, Address.class);
@@ -83,11 +83,11 @@ class AddressJsonAdapterTest {
   @Test
   void read_doesSetGeoAndSetsLatLonToZeroIfDistanceIsInJsonWhileLatLonIsMissing() {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures =
-        JsonResponseFixture.createFirstStationFromJsonFile(
+    Pair<JsonResponseHelp, JsonObject> responseHelp =
+        JsonResponseHelp.createFirstStationFromJsonFile(
             FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_LAT_LON_ELEM);
 
-    JsonObject jsonFixture = fixtures.getRight();
+    JsonObject jsonFixture = responseHelp.getRight();
 
     // when
     Address actualAddress = gson.fromJson(jsonFixture, Address.class);
@@ -103,11 +103,11 @@ class AddressJsonAdapterTest {
   @Test
   void read_throwsJsonParseExceptionIfMandatoryDataAreMissing() {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures =
-        JsonResponseFixture.createFirstStationFromJsonFile(
+    Pair<JsonResponseHelp, JsonObject> responseHelp =
+        JsonResponseHelp.createFirstStationFromJsonFile(
             FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_STREET_AND_PLACE_AND_POSTCODE);
 
-    JsonObject jsonFixture = fixtures.getRight();
+    JsonObject jsonFixture = responseHelp.getRight();
 
     // when then
     assertThrows(

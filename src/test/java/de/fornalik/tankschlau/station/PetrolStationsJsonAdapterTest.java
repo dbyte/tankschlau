@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import de.fornalik.tankschlau.helpers.response.FixtureFiles;
-import de.fornalik.tankschlau.helpers.response.JsonResponseFixture;
+import de.fornalik.tankschlau.helpers.response.JsonResponseHelp;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -37,11 +37,11 @@ class PetrolStationsJsonAdapterTest {
   @Test
   void read_oneStation_happy() {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures = JsonResponseFixture.createFromJsonFile(
+    Pair<JsonResponseHelp, JsonObject> responseHelp = JsonResponseHelp.createFromJsonFile(
         FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
 
-    JsonResponseFixture objectFixture = fixtures.getLeft();
-    JsonObject jsonFixture = fixtures.getRight();
+    JsonResponseHelp objectFixture = responseHelp.getLeft();
+    JsonObject jsonFixture = responseHelp.getRight();
 
     // when
     ArrayList<PetrolStation> actualPetrolStations = gson.fromJson(
@@ -79,7 +79,7 @@ class PetrolStationsJsonAdapterTest {
   @Test
   void read_oneStation_returnsEmptyArrayOnMissingIdElement() {
     // given
-    JsonObject jsonFixture = JsonResponseFixture.createFromJsonFile(
+    JsonObject jsonFixture = JsonResponseHelp.createFromJsonFile(
         FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_MISSING_ID_ELEM).getRight();
 
     // when
@@ -95,7 +95,7 @@ class PetrolStationsJsonAdapterTest {
   @Test
   void read_oneStation_acceptsEmptyBrand() {
     // given
-    JsonObject jsonFixture = JsonResponseFixture.createFromJsonFile(
+    JsonObject jsonFixture = JsonResponseHelp.createFromJsonFile(
         FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_HOUSENUM_AND_BRAND).getRight();
 
     // when
@@ -111,7 +111,7 @@ class PetrolStationsJsonAdapterTest {
   @Test
   void read_noStations_returnsEmptyArrayOnMissingStationsElement() {
     // given
-    JsonObject jsonFixture = JsonResponseFixture
+    JsonObject jsonFixture = JsonResponseHelp
         .createFromJsonFile(
             FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_STATIONS_ELEM)
         .getRight();
@@ -129,7 +129,7 @@ class PetrolStationsJsonAdapterTest {
   @Test
   void read_emptyStations_returnsEmptyArrayOnEmptyStationsJsonArray() {
     // given
-    JsonObject jsonFixture = JsonResponseFixture.createFromJsonFile(
+    JsonObject jsonFixture = JsonResponseHelp.createFromJsonFile(
         FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_STATION_ARRAY).getRight();
 
     // when
@@ -145,11 +145,11 @@ class PetrolStationsJsonAdapterTest {
   @Test
   void read_multipleStations_happy() {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures = JsonResponseFixture.createFromJsonFile(
+    Pair<JsonResponseHelp, JsonObject> responseHelp = JsonResponseHelp.createFromJsonFile(
         FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_17STATIONS_HAPPY);
 
-    JsonResponseFixture objectFixture = fixtures.getLeft();
-    JsonObject jsonFixture = fixtures.getRight();
+    JsonResponseHelp objectFixture = responseHelp.getLeft();
+    JsonObject jsonFixture = responseHelp.getRight();
 
     // when
     ArrayList<PetrolStation> actualPetrolStations = gson.fromJson(
@@ -166,11 +166,10 @@ class PetrolStationsJsonAdapterTest {
   @Test
   void read_multipleStations_discardsTwoInvalidStationsAndKeepsTwoValidOnes() {
     // given
-    Pair<JsonResponseFixture, JsonObject> fixtures = JsonResponseFixture.createFromJsonFile(
+    Pair<JsonResponseHelp, JsonObject> responseHelp = JsonResponseHelp.createFromJsonFile(
         FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_2INVALID_2VALID);
 
-    JsonResponseFixture objectFixture = fixtures.getLeft();
-    JsonObject jsonFixture = fixtures.getRight();
+    JsonObject jsonFixture = responseHelp.getRight();
 
     // when
     ArrayList<PetrolStation> actualValidPetrolStations = gson.fromJson(
