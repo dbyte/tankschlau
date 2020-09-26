@@ -12,8 +12,27 @@ import java.util.ResourceBundle;
 public class Localization {
   private final ResourceBundle bundle;
 
-  public Localization(Locale locale) {
+  /**
+   * Configure app for the given language/region.
+   *
+   * @param locale   language token, ex. use {@link Locale#GERMAN}
+   * @param baseName Base name of the properties {@link ResourceBundle}
+   * @see #Localization(Locale)
+   */
+  public Localization(Locale locale, String baseName) {
     this.bundle = ResourceBundle.getBundle("LocaleStrings", locale);
+  }
+
+  /**
+   * Configure app for the given language/region. The implicit {@link ResourceBundle} base name
+   * for this constructor is "LocaleStrings". Take the overloaded constructor to explicitly
+   * set a different base name.
+   *
+   * @param locale language token, ex. use {@link Locale#GERMAN}
+   * @see #Localization(Locale, String)
+   */
+  public Localization(Locale locale) {
+    this(locale, "LocaleStrings");
   }
 
   /**
