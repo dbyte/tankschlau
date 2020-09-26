@@ -13,26 +13,26 @@ public class Localization {
   private final ResourceBundle bundle;
 
   /**
-   * Configure app for the given language/region.
+   * Configure app for the given language/region, which have been defined within the given
+   * {@link ResourceBundle}.
    *
-   * @param locale   language token, ex. use {@link Locale#GERMAN}
-   * @param baseName Base name of the properties {@link ResourceBundle}
+   * @param bundle Target {@link ResourceBundle} enclosing the property files
    * @see #Localization(Locale)
    */
-  public Localization(Locale locale, String baseName) {
-    this.bundle = ResourceBundle.getBundle("LocaleStrings", locale);
+  public Localization(ResourceBundle bundle) {
+    this.bundle = bundle;
   }
 
   /**
-   * Configure app for the given language/region. The implicit {@link ResourceBundle} base name
-   * for this constructor is "LocaleStrings". Take the overloaded constructor to explicitly
-   * set a different base name.
+   * Configure app for the given language/region. The implicit {@link ResourceBundle} bundle
+   * for this constructor is "/resources/LocaleStrings". Take the overloaded constructor to
+   * explicitly set a different bundle.
    *
    * @param locale language token, ex. use {@link Locale#GERMAN}
-   * @see #Localization(Locale, String)
+   * @see #Localization(ResourceBundle)
    */
   public Localization(Locale locale) {
-    this(locale, "LocaleStrings");
+    this(ResourceBundle.getBundle("LocaleStrings", locale));
   }
 
   /**
