@@ -71,19 +71,61 @@ class StringLegalizerTest {
     // when
     legalizer = legalizer.safeTrim();
 
-    // when then
+    // then
     assertNull(legalizer.getString());
   }
 
   @Test
-  void mandatory() {
+  void mandatory_throwsIfGivenStringIsNull() {
+    // given
+    legalizer = StringLegalizer.create(null);
+
+    // when then
+    assertThrows(StringLegalizer.ValueException.class, () -> legalizer.mandatory());
   }
 
   @Test
-  void nullToEmpty() {
+  void mandatory_throwsIfGivenStringIsEmpty() {
+    // given
+    givenString = "";
+    legalizer = StringLegalizer.create(givenString);
+
+    // when then
+    assertThrows(StringLegalizer.ValueException.class, () -> legalizer.mandatory());
   }
 
   @Test
-  void end() {
+  void mandatory_doesNotThrowIfGivenStringIsNotEmpty() {
+    // given
+    givenString = "This is a non empty string";
+    legalizer = StringLegalizer.create(givenString);
+
+    // when then
+    assertDoesNotThrow(() -> legalizer.mandatory());
+  }
+
+  @Test
+  void nullToEmpty_resultsInModifyingNullStringToEmptyString() {
+    // given
+    legalizer = StringLegalizer.create(null);
+
+    // when
+    legalizer = legalizer.nullToEmpty();
+
+    // then
+    assertEquals("", legalizer.getString());
+  }
+
+  @Test
+  void end_returnsTheLegalizedString() {
+    // given
+    givenString = "Expected to be the returned string";
+    legalizer = StringLegalizer.create(givenString);
+
+    // when
+    String actualReturnedString = legalizer.safeTrim().end();
+
+    // then
+    assertEquals("Expected to be the returned string", actualReturnedString);
   }
 }
