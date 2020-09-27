@@ -23,16 +23,20 @@ public class StringLegalizer {
     return new StringLegalizer(s);
   }
 
+  public String getString() {
+    return string;
+  }
+
   /**
    * Use to strip whitespace at start and end of a String.
-   * If the given String is null, nothing is executed.
+   * If the given String is null, nothing is executed and the string remains null.
    *
    * @return Trimmed String
    */
   public StringLegalizer safeTrim() {
     string = Optional.ofNullable(string)
-        .map(String::trim)
-        .orElse(string);
+                     .map(String::trim)
+                     .orElse(string);
 
     return this;
   }
@@ -62,6 +66,7 @@ public class StringLegalizer {
 
   /**
    * Finalize legalization and return the final String.
+   *
    * @return The final validated/legalized String.
    */
   public String end() {
