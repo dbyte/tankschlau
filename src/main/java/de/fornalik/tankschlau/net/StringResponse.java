@@ -3,7 +3,8 @@ package de.fornalik.tankschlau.net;
 import java.util.Optional;
 
 /**
- * Implementation for server responses which provide a somewhat textual format. Might be JSON, too.
+ * Implementation for a server's {@link Response} which provide a somewhat textual format.
+ * Might be JSON, for example.
  */
 public class StringResponse implements Response {
   private String body;
