@@ -75,6 +75,17 @@ class BaseRequestTest {
   }
 
   @Test
-  void addHeader_XXXX() {
+  void addHeader_addsMapElementsProperly() {
+    // given
+    String givenValue01 = "application/json; charset=utf-8";
+    String givenValue02 = "no-cache";
+
+    // when
+    concreteRequestMock.addHeader("Accept", givenValue01);
+    concreteRequestMock.addHeader("Cache-Control", givenValue02);
+
+    // then
+    assertEquals(givenValue01, concreteRequestMock.getHeaders().get("Accept"));
+    assertEquals(givenValue02, concreteRequestMock.getHeaders().get("Cache-Control"));
   }
 }
