@@ -1,6 +1,8 @@
 package de.fornalik.tankschlau.net;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +41,17 @@ public abstract class BaseRequest implements Request {
 
   @Override
   public void addUrlParameter(String key, String value) {
-    this.urlParameters.put(key, value);
+    String encodedValue;
+
+    try {
+      encodedValue = URLEncoder.encode(value, "UTF-8");
+
+    }
+    catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e.getMessage());
+    }
+
+    this.urlParameters.put(key, encodedValue);
   }
 
   @Override
