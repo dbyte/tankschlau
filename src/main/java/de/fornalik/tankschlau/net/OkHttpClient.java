@@ -12,8 +12,19 @@ public class OkHttpClient implements HttpClient {
   private static okhttp3.OkHttpClient okHttpClientSingleton;
   private Request request;
 
+  /**
+   * This constructor should be the only one being used in production.
+   */
   public OkHttpClient() {
-    createOkHttpClientSingleton();
+    this.createOkHttpClientSingleton();
+  }
+
+  /**
+   * This constructor should only be used for testing purposes as it does not rely on
+   * a one time instantiation of the underlying {@link okhttp3.OkHttpClient}.
+   */
+  public OkHttpClient(okhttp3.OkHttpClient okHttp3Client) {
+    OkHttpClient.okHttpClientSingleton = okHttp3Client;
   }
 
   @Override
@@ -39,7 +50,8 @@ public class OkHttpClient implements HttpClient {
         response.setBody(okhttpResponse.body().string());
       else
         throw new UnsupportedOperationException(
-            "response.setBody not implemented for incoming type of Response.");
+            "response.setBody not implemented for incoming type of Response: "
+                + response.getClass().getTypeName());
 
     } else {
       String message = "Body of response is null. " + getDetails(okhttpResponse);
