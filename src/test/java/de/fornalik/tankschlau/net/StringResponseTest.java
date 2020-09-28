@@ -2,6 +2,8 @@ package de.fornalik.tankschlau.net;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -10,8 +12,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class StringResponseTest {
 
   @Test
-  void create_returnsNewInstanceWhichIsInheritedFromResponseInterface() {
+  void create_returnsProperlyInitializedInstance() {
+    // when
     Response response = StringResponse.create();
+
+    // then
+    assertEquals(Optional.empty(), response.getBody());
+    assertEquals(Optional.empty(), response.getErrorMessage());
   }
 
   @Test
