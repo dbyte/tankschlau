@@ -96,8 +96,8 @@ class AddressJsonAdapterTest {
     assertNotEquals(Optional.empty(), actualAddress.getGeo());
 
     //noinspection OptionalGetWithoutIsPresent
-    assertEquals(0.0, actualAddress.getGeo().get().latitude);
-    assertEquals(0.0, actualAddress.getGeo().get().longitude);
+    assertEquals(0.0, actualAddress.getGeo().get().getLatitude());
+    assertEquals(0.0, actualAddress.getGeo().get().getLongitude());
   }
 
   @Test

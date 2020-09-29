@@ -48,8 +48,8 @@ public class TankerkoenigRequest extends BaseRequest {
     Double maxSearchRadius = geo.getDistance()
                                 .orElseThrow(SearchRadiusException::new);
 
-    super.addUrlParameter("lat", Double.valueOf(geo.latitude).toString());
-    super.addUrlParameter("lng", Double.valueOf(geo.longitude).toString());
+    super.addUrlParameter("lat", Double.valueOf(geo.getLatitude()).toString());
+    super.addUrlParameter("lng", Double.valueOf(geo.getLongitude()).toString());
     super.addUrlParameter("rad", maxSearchRadius.toString());
 
     /* As we sort data ourselves, always request "all" petrol types. Per web service API definition

@@ -109,8 +109,8 @@ class GeoTest {
 
     // then
     assertNotNull(actualGeo);
-    assertEquals(0.0, actualGeo.latitude);
-    assertEquals(0.0, actualGeo.longitude);
+    assertEquals(0.0, actualGeo.getLatitude());
+    assertEquals(0.0, actualGeo.getLongitude());
   }
 
   @Test

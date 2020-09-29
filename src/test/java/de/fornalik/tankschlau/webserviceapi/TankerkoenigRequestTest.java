@@ -37,9 +37,13 @@ class TankerkoenigRequestTest {
 
     assertEquals("application/json; charset=utf-8", actualRequest.getHeaders().get("Accept"));
 
-    assertEquals(geoFixture.latitude, Double.valueOf(actualRequest.getUrlParameters().get("lat")));
+    assertEquals(
+        geoFixture.getLatitude(),
+        Double.valueOf(actualRequest.getUrlParameters().get("lat")));
 
-    assertEquals(geoFixture.longitude, Double.valueOf(actualRequest.getUrlParameters().get("lng")));
+    assertEquals(
+        geoFixture.getLongitude(),
+        Double.valueOf(actualRequest.getUrlParameters().get("lng")));
 
     assertEquals(
         geoFixture.getDistance(),

@@ -14,8 +14,8 @@ import java.util.Optional;
  * Geographical data such as latitude, longitude, distance to a different {@link Geo} object etc.
  */
 public class Geo {
-  @SerializedName("lat") public final double latitude;
-  @SerializedName("lng") public final double longitude;
+  @SerializedName("lat") private final double latitude;
+  @SerializedName("lng") private final double longitude;
   @SerializedName("dist") private Double distance;
 
   /**
@@ -131,6 +131,14 @@ public class Geo {
         .append("longitude", longitude)
         .append("distance", distance)
         .toString();
+  }
+
+  public double getLatitude() {
+    return latitude;
+  }
+
+  public double getLongitude() {
+    return longitude;
   }
 
   /**

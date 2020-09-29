@@ -3,7 +3,6 @@ package de.fornalik.tankschlau.geo;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import de.fornalik.tankschlau.util.StringLegalizer;
 
 /**
  * {@link Gson} converter which handles (de)serialization to an instance of {@link Address}
@@ -30,8 +29,8 @@ public class AddressJsonAdapter extends TypeAdapter<Address> {
     /* 2b. Gson provides double default 0.0 if it does not find expected properties within the JSON.
     Within an Address, our Geo instance is optional/nullable for the case that no geo data exist.
     Let's check for that and only set Address.geo when we got data for it. */
-    if (partialGeo.latitude != 0.0
-        || partialGeo.longitude != 0.0
+    if (partialGeo.getLatitude() != 0.0
+        || partialGeo.getLongitude() != 0.0
         || partialGeo.getDistance().isPresent())
       address.setGeo(Geo.createFromJson(jsonObject));
 

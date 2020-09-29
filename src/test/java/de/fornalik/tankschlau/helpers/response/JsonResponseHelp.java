@@ -214,11 +214,11 @@ public class JsonResponseHelp {
 
     Assertions.assertEquals(
         Optional.of(fixture.lat),
-        optGeoUnderTest.map(g -> g.latitude));
+        optGeoUnderTest.map(Geo::getLatitude));
 
     Assertions.assertEquals(
         Optional.of(fixture.lng),
-        optGeoUnderTest.map(g -> g.longitude));
+        optGeoUnderTest.map(Geo::getLongitude));
 
     Assertions.assertEquals(
         Optional.ofNullable(fixture.distanceKm),
