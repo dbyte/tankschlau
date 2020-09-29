@@ -24,7 +24,7 @@ public class TankerkoenigRequest extends BaseRequest {
    * Factory method, creates a new HTTP request object for web service Tankerkoenig.de
    *
    * @param geo The user's geographical data and maximum search radius im km to search for petrol
-   *            stations in the user's neighbourhood.
+   *            stations in the neighbourhood.
    * @return A new {@link TankerkoenigRequest} object, ready for use within a {@link Request}.
    * @throws MalformedURLException If the base URL is invalid.
    */
@@ -62,9 +62,8 @@ public class TankerkoenigRequest extends BaseRequest {
 
   public static class SearchRadiusException extends IllegalStateException {
     protected SearchRadiusException() {
-      super(
-          "Maximum distance radius (km), used for petrol station "
-              + "search in your neighbourhood, must not be null.");
+      super("Maximum distance radius (km), used for searching petrol stations "
+                + "in the user's neighbourhood, must not be null.");
     }
   }
 }
