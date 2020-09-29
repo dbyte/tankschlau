@@ -61,6 +61,9 @@ class UserPreferencesTest {
 
   @Test
   void writeUserAddress_writesProperly() {
+    // given
+    Mockito.when(addressMock.getGeo()).thenReturn(Optional.empty());
+
     // when
     prefs.writeUserAddress(addressMock);
     Address actualAddress = prefs.readUserAddress();
@@ -71,19 +74,21 @@ class UserPreferencesTest {
     assertEquals(addressMock.getPostCode(), actualAddress.getPostCode());
     assertEquals(addressMock.getStreet(), actualAddress.getStreet());
     assertEquals(addressMock.getHouseNumber(), actualAddress.getHouseNumber());
-
-    assertTrue(actualAddress.getGeo().isPresent());
-    Geo actualGeo = actualAddress.getGeo().get();
-    assert addressMock.getGeo().isPresent();
-
-    assertEquals(addressMock.getGeo().get().getLatitude(), actualGeo.getLatitude());
-    assertEquals(addressMock.getGeo().get().getLongitude(), actualGeo.getLongitude());
-    assertEquals(addressMock.getGeo().get().getDistance(), actualGeo.getDistance());
   }
 
   @Test
-    // TODO
   void writeUserGeo() {
+    // when
+    prefs.writeUserGeo(geoMock);
+    Optional<Geo> optionalGeo = prefs.readUserGeo();
+
+    // then
+    assertTrue(optionalGeo.isPresent());
+    Geo actualGeo = optionalGeo.get();
+
+    assertEquals(geoMock.getLatitude(), actualGeo.getLatitude());
+    assertEquals(geoMock.getLongitude(), actualGeo.getLongitude());
+    assertEquals(geoMock.getDistance(), actualGeo.getDistance());
   }
 
   @ParameterizedTest
