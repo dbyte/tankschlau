@@ -4,6 +4,7 @@ import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.station.PetrolType;
 
+import java.awt.geom.Point2D;
 import java.util.Optional;
 import java.util.prefs.Preferences;
 
@@ -46,17 +47,29 @@ public class UserPreferences {
   }
 
   public Optional<Geo> readUserGeo() {
-    double lat = javaPref.getDouble("geo.latitude", -9999.99);
-    double lon = javaPref.getDouble("geo.longitude", -9999.99);
-    if (lat == -9999.99 || lon == -9999.99)
+    Optional<Point2D> latLon = readLatLon();
+    if (!latLon.isPresent())
       return Optional.empty();
 
-    Double distance = javaPref.getDouble("geo.distance", -9999.99);
-    distance = distance != -9999.99 ? distance : null;
+    double lat = latLon.get().getX();
+    double lon = latLon.get().getY();
+
+    double maybeDistance = javaPref.getDouble("geo.distance", -9999.99);
+    Double distance = maybeDistance != -9999.99 ? maybeDistance : null;
 
     Geo geo = new Geo(lat, lon, distance);
 
     return Optional.of(geo);
+  }
+
+  private Optional<Point2D> readLatLon() {
+    double lat = javaPref.getDouble("geo.latitude", -9999.99);
+    double lon = javaPref.getDouble("geo.longitude", -9999.99);
+
+    if (lat == -9999.99 || lon == -9999.99)
+      return Optional.empty();
+
+    return Optional.of(new Point2D.Double(lat, lon));
   }
 
   public void writeUserGeo(Geo geo) {
