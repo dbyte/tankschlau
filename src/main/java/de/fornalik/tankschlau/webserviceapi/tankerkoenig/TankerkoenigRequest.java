@@ -1,4 +1,4 @@
-package de.fornalik.tankschlau.webserviceapi;
+package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.BaseRequest;
