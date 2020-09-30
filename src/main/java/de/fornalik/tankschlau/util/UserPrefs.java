@@ -99,6 +99,9 @@ public class UserPrefs {
     Set<String> keysToCheckSet;
 
     try {
+      if (!realPrefs.nodeExists(""))
+        return true;
+
       registeredKeysSet = new HashSet<>(Arrays.asList(realPrefs.keys()));
       keysToCheckSet = new HashSet<>(Arrays.asList(keysToCheck));
     }

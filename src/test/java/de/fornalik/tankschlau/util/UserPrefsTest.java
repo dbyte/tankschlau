@@ -3,10 +3,7 @@ package de.fornalik.tankschlau.util;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.station.PetrolType;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mockito;
@@ -49,14 +46,14 @@ class UserPrefsTest {
   }
 
   @BeforeEach
-  void setUp() throws BackingStoreException {
-    Class<?> thisClazz = this.getClass();
+  void setUpEach() {
+    prefs = new UserPrefs(this.getClass());
+  }
 
-    // Clear the node of possible persisted preferences ...
-    new UserPrefs(thisClazz).getRealPrefs().removeNode();
-
-    // ... and start with a fresh one.
-    prefs = new UserPrefs(thisClazz);
+  @AfterEach
+  void tearDownEach() throws BackingStoreException {
+    // Delete node of persisted test-preferences
+    prefs.getRealPrefs().removeNode();
   }
 
   @Test
