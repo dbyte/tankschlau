@@ -1,22 +1,22 @@
 package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 
-import de.fornalik.tankschlau.webserviceapi.ApiKey;
+import de.fornalik.tankschlau.webserviceapi.ApiKeyStore;
 
 import java.util.Optional;
 
 public class TankerkoenigApiKey {
   private static final String IDENTIFIER = "apiKey.tankerkoenig";
-  ApiKey apiKeyProvider;
+  ApiKeyStore apiKeyStore;
 
-  public TankerkoenigApiKey(ApiKey apiKeyProvider) {
-    this.apiKeyProvider = apiKeyProvider;
+  public TankerkoenigApiKey(ApiKeyStore apiKeyStore) {
+    this.apiKeyStore = apiKeyStore;
   }
 
   public Optional<String> read() {
-    return apiKeyProvider.read(IDENTIFIER);
+    return apiKeyStore.read(IDENTIFIER);
   }
 
   public void write(String apiKey) {
-    apiKeyProvider.write(IDENTIFIER, apiKey);
+    apiKeyStore.write(IDENTIFIER, apiKey);
   }
 }

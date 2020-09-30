@@ -5,15 +5,15 @@ import de.fornalik.tankschlau.util.UserPrefs;
 import java.util.Optional;
 
 /**
- * Implementation for API keys which access {@link UserPrefs} to read and write encrypted API keys.
+ * Implementation for {@link UserPrefs} based API key storage.
  *
  * @implNote Note this implementation is a <span style="color:red;">security risk</span>
  * in spite of using crypto, and therefore should only be used for demo and testing purposes.
  */
-public class UserPrefsApiKey implements ApiKey {
+public class UserPrefsApiKeyStore implements ApiKeyStore {
   private final UserPrefs userPrefs;
 
-  public UserPrefsApiKey(UserPrefs userPrefs) {
+  public UserPrefsApiKeyStore(UserPrefs userPrefs) {
     this.userPrefs = userPrefs;
   }
 
