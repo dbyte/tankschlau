@@ -49,7 +49,7 @@ class UserPrefsTest {
 
   @BeforeEach
   void setUpEach() {
-    // It's important here to use a class within a different package than
+    // It's important to use a class within a different package than
     // de.fornalik.tankschlau.util - otherwise we would overwrite production preferences.
     prefs = new UserPrefs(UserPrefsFakeNode.class);
   }
