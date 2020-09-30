@@ -6,6 +6,7 @@ import de.fornalik.tankschlau.station.PetrolType;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 
 import java.util.Optional;
@@ -75,19 +76,13 @@ class UserPrefsTest {
     assertEquals(addressMock.getHouseNumber(), actualAddress.get().getHouseNumber());
   }
 
-  @Test
-  void readAddress_returnsEmptyOptionalIfAddressPrefsDoNotExist() {
-    // when
-    Optional<Address> actualAddress = prefs.readAddress();
-
-    // then
-    assertEquals(Optional.empty(), actualAddress);
-  }
-
-  @Test
-  void readAddress_returnsEmptyOptionalIfNodeDoesNotExist() throws BackingStoreException {
+  @ParameterizedTest
+  @ValueSource(booleans = {false, true})
+  void readAddress_returnsEmptyOptionalIfAddressPrefsDoNotExist(boolean removeNode)
+  throws BackingStoreException {
     // given
-    prefs.getRealPrefs().removeNode();
+    if (removeNode)
+      prefs.getRealPrefs().removeNode();
 
     // when
     Optional<Address> actualAddress = prefs.readAddress();
@@ -111,19 +106,13 @@ class UserPrefsTest {
     assertEquals(geoMock.getDistance(), actualGeo.getDistance());
   }
 
-  @Test
-  void readGeo_returnsEmptyOptionalIfGeoLatLonDoNotExist() {
-    // when
-    Optional<Geo> actualGeo = prefs.readGeo();
-
-    // then
-    assertEquals(Optional.empty(), actualGeo);
-  }
-
-  @Test
-  void readGeo_returnsEmptyOptionalIfNodeDoesNotExist() throws BackingStoreException {
+  @ParameterizedTest
+  @ValueSource(booleans = {false, true})
+  void readGeo_returnsEmptyOptionalIfGeoLatLonDoNotExist(boolean removeNode)
+  throws BackingStoreException {
     // given
-    prefs.getRealPrefs().removeNode();
+    if (removeNode)
+      prefs.getRealPrefs().removeNode();
 
     // when
     Optional<Geo> actualGeo = prefs.readGeo();
@@ -144,8 +133,14 @@ class UserPrefsTest {
     assertEquals(givenPetrolType, actualPetrolType.get());
   }
 
-  @Test
-  void readPreferredPetrolType_returnsEmptyOptionalIfPrefDoesNotExist() {
+  @ParameterizedTest
+  @ValueSource(booleans = {false, true})
+  void readPreferredPetrolType_returnsEmptyOptionalIfPrefDoesNotExist(boolean removeNode)
+  throws BackingStoreException {
+    // given
+    if (removeNode)
+      prefs.getRealPrefs().removeNode();
+
     // when
     Optional<PetrolType> actualPetrolType = prefs.readPreferredPetrolType();
 
@@ -154,15 +149,31 @@ class UserPrefsTest {
   }
 
   @Test
-  void readPreferredPetrolType_returnsEmptyOptionalIfNodeDoesNotExist()
-  throws BackingStoreException {
+  void writeEncryptedApiKey_writesProperly() {
     // given
-    prefs.getRealPrefs().removeNode();
+    String userPrefToken = "apiKey.tankerkoenig";
+    String givenApiKey = "1234-some-api-key-5678";
 
     // when
-    Optional<PetrolType> actualPetrolType = prefs.readPreferredPetrolType();
+    prefs.writeEncryptedApiKey("apiKey.tankerkoenig", givenApiKey);
 
     // then
-    assertEquals(Optional.empty(), actualPetrolType);
+    assertTrue(prefs.readEncryptedApiKey(userPrefToken).isPresent());
+    assertEquals(givenApiKey, prefs.readEncryptedApiKey(userPrefToken).get());
+  }
+
+  @ParameterizedTest
+  @ValueSource(booleans = {false, true})
+  void readEncryptedApiKey_returnsEmptyOptionalIfPrefDoesNotExist(boolean removeNode)
+  throws BackingStoreException {
+    // given
+    if (removeNode)
+      prefs.getRealPrefs().removeNode();
+
+    // when
+    Optional<String> actualApiKey = prefs.readEncryptedApiKey("pref_does_not_exist");
+
+    // then
+    assertEquals(Optional.empty(), actualApiKey);
   }
 }
