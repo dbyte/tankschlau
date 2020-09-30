@@ -3,8 +3,18 @@ package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 import de.fornalik.tankschlau.webserviceapi.ApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.ApiKeyStore;
 
+// TODO unit tests
+
+/**
+ * Implementation for API key handling of the tankerkoenig.de web service
+ */
 public class TankerkoenigApiKeyManager extends ApiKeyManager {
 
+  /**
+   * Constructor
+   *
+   * @param apiKeyStore Storage strategy for the API key.
+   */
   public TankerkoenigApiKeyManager(ApiKeyStore apiKeyStore) {
     super(apiKeyStore, "apiKey.tankerkoenig");
   }
