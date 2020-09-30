@@ -8,14 +8,14 @@ import java.awt.geom.Point2D;
 import java.util.Optional;
 import java.util.prefs.Preferences;
 
-public class UserPreferences {
+public class UserPrefs {
   private final Preferences realPrefs;
 
-  public UserPreferences() {
+  public UserPrefs() {
     this.realPrefs = Preferences.userNodeForPackage(this.getClass());
   }
 
-  public UserPreferences(Class<?> clazz) {
+  public UserPrefs(Class<?> clazz) {
     this.realPrefs = Preferences.userNodeForPackage(clazz);
   }
 

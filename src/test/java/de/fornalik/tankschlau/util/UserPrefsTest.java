@@ -18,12 +18,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Tests for UserPreferences. We execute combined write/read tests.
+ * Tests for UserPrefs. We execute combined write/read tests.
  */
-class UserPreferencesTest {
+class UserPrefsTest {
   private static Address addressMock;
   private static Geo geoMock;
-  private UserPreferences prefs;
+  private UserPrefs prefs;
 
   @BeforeAll
   static void beforeAll() {
@@ -53,10 +53,10 @@ class UserPreferencesTest {
     Class<?> thisClazz = this.getClass();
 
     // Clear the node of possible persisted preferences ...
-    new UserPreferences(thisClazz).getRealPrefs().removeNode();
+    new UserPrefs(thisClazz).getRealPrefs().removeNode();
 
     // ... and start with a fresh one.
-    prefs = new UserPreferences(thisClazz);
+    prefs = new UserPrefs(thisClazz);
   }
 
   @Test
