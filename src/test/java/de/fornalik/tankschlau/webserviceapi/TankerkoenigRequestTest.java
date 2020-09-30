@@ -18,12 +18,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * be directly tested in unit tests for {@link de.fornalik.tankschlau.net.BaseRequest}
  */
 class TankerkoenigRequestTest {
-  private BaseApiKey apiKeyManagerMock;
+  private ApiKeyManager apiKeyManagerMock;
   private Geo geoFixture;
 
   @BeforeEach
   void setUp() {
-    this.apiKeyManagerMock = Mockito.mock(BaseApiKey.class);
+    this.apiKeyManagerMock = Mockito.mock(ApiKeyManager.class);
     this.geoFixture = new Geo(53.1234, 48.5678, 12.0);
 
     Mockito.when(apiKeyManagerMock.read()).thenReturn(Optional.of("000-abc-def-111"));

@@ -11,10 +11,10 @@ import de.fornalik.tankschlau.station.PetrolStationsJsonAdapter;
 import de.fornalik.tankschlau.station.PetrolType;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.UserPrefs;
+import de.fornalik.tankschlau.webserviceapi.ApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.ApiKeyStore;
-import de.fornalik.tankschlau.webserviceapi.BaseApiKey;
 import de.fornalik.tankschlau.webserviceapi.UserPrefsApiKeyStore;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigApiKey;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigRequest;
 
 import java.net.MalformedURLException;
@@ -30,8 +30,8 @@ public class TankSchlau {
       new PetrolStationsJsonAdapter();
 
   private static final ApiKeyStore API_KEY_STORE = new UserPrefsApiKeyStore(USER_PREFS);
-  public static final BaseApiKey TANKERKOENIG_APIKEY_MANAGER =
-      new TankerkoenigApiKey(API_KEY_STORE);
+  public static final ApiKeyManager TANKERKOENIG_APIKEY_MANAGER =
+      new TankerkoenigApiKeyManager(API_KEY_STORE);
 
   // Start application
   public static void main(String[] args) throws MalformedURLException {

@@ -1,11 +1,11 @@
 package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 
+import de.fornalik.tankschlau.webserviceapi.ApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.ApiKeyStore;
-import de.fornalik.tankschlau.webserviceapi.BaseApiKey;
 
-public class TankerkoenigApiKey extends BaseApiKey {
+public class TankerkoenigApiKeyManager extends ApiKeyManager {
 
-  public TankerkoenigApiKey(ApiKeyStore apiKeyStore) {
+  public TankerkoenigApiKeyManager(ApiKeyStore apiKeyStore) {
     super(apiKeyStore, "apiKey.tankerkoenig");
   }
 

@@ -5,11 +5,11 @@ import de.fornalik.tankschlau.util.StringLegalizer;
 import java.util.Objects;
 import java.util.Optional;
 
-public abstract class BaseApiKey {
+public abstract class ApiKeyManager {
   protected final String id;
   protected final ApiKeyStore apiKeyStore;
 
-  protected BaseApiKey(ApiKeyStore apiKeyStore, String id) {
+  protected ApiKeyManager(ApiKeyStore apiKeyStore, String id) {
     this.apiKeyStore = Objects.requireNonNull(apiKeyStore);
     this.id = StringLegalizer.create(id).mandatory().end();
   }
