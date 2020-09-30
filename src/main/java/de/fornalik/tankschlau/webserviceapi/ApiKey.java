@@ -1,9 +1,11 @@
 package de.fornalik.tankschlau.webserviceapi;
 
+import java.util.Optional;
+
 /**
  * Interface for web service API key implementations.
  */
-interface ApiKey {
+public interface ApiKey {
 
   /**
    * Reads an API key.
@@ -11,7 +13,7 @@ interface ApiKey {
    * @param which A token to identify which API key to return.
    * @return Decrypted API key
    */
-  String read(String which);
+  Optional<String> read(String which);
 
   /**
    * Writes an API, which should be encrypted by the implementation.

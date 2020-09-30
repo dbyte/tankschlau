@@ -11,7 +11,9 @@ import de.fornalik.tankschlau.station.PetrolStationsJsonAdapter;
 import de.fornalik.tankschlau.station.PetrolType;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.UserPrefs;
-import de.fornalik.tankschlau.webserviceapi.TankerkoenigRequest;
+import de.fornalik.tankschlau.webserviceapi.ApiKey;
+import de.fornalik.tankschlau.webserviceapi.UserPrefsApiKey;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigRequest;
 
 import java.net.MalformedURLException;
 import java.util.List;
@@ -19,11 +21,12 @@ import java.util.Locale;
 
 public class TankSchlau {
   // Configuration
+  public static final Localization L10N = new Localization(Locale.GERMAN);
   public static final UserPrefs userPrefs = new UserPrefs();
+  public static final ApiKey apiKeyProvider = new UserPrefsApiKey(userPrefs);
   public static final HttpClient globalHttpClient = new OkHttpClient();
   public static final TypeAdapter<List<PetrolStation>> globalJsonAdapter =
       new PetrolStationsJsonAdapter();
-  public static final Localization L10N = new Localization(Locale.GERMAN);
 
   // Start application
   public static void main(String[] args) throws MalformedURLException {

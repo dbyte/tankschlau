@@ -2,6 +2,7 @@ package de.fornalik.tankschlau.webserviceapi;
 
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.Request;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

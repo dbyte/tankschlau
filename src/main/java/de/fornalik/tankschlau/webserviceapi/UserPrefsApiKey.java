@@ -1,20 +1,36 @@
 package de.fornalik.tankschlau.webserviceapi;
 
+import de.fornalik.tankschlau.util.UserPrefs;
+
+import java.util.Optional;
+
 /**
- * Implementation for API keys which access {@link de.fornalik.tankschlau.util.UserPrefs}
- * to read and write encrypted API keys.
- * Note this implementation is a security risk and should only be used
+ * Implementation for API keys which access {@link UserPrefs} to read and write encrypted API keys.
+ *
+ * @implNote Note this implementation is a <span style="color:red;">security risk</span>
+ * in spite of using crypto, and therefore should only be used for demo and testing purposes.
  */
-public abstract class UserPrefsApiKey implements ApiKey {
+public class UserPrefsApiKey implements ApiKey {
+  private final UserPrefs userPrefs;
+
+  public UserPrefsApiKey(UserPrefs userPrefs) {
+    this.userPrefs = userPrefs;
+  }
 
   @Override
-  public String read(String userPrefKey) {
-    return null;
+  public Optional<String> read(String userPrefKey) {
+    return userPrefs.readEncryptedApiKey(userPrefKey).map(this::decrypt);
   }
 
   @Override
   public void write(String userPrefKey, String apiKey) {
+    String encrypted = encrypt(apiKey);
 
+    // Try clearing memory for unencrypted key as soon as possible
+    // noinspection UnusedAssignment
+    apiKey = null;
+
+    userPrefs.writeEncryptedApiKey(userPrefKey, encrypted);
   }
 
   // TODO
