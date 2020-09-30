@@ -12,7 +12,9 @@ import de.fornalik.tankschlau.station.PetrolType;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.UserPrefs;
 import de.fornalik.tankschlau.webserviceapi.ApiKeyStore;
+import de.fornalik.tankschlau.webserviceapi.BaseApiKey;
 import de.fornalik.tankschlau.webserviceapi.UserPrefsApiKeyStore;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigApiKey;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigRequest;
 
 import java.net.MalformedURLException;
@@ -30,12 +32,15 @@ public class TankSchlau {
 
   // Start application
   public static void main(String[] args) throws MalformedURLException {
+    // API key creation example
+    BaseApiKey tankerkoenigApiKey = new TankerkoenigApiKey(API_KEY_STORE);
+    String theApiKey = tankerkoenigApiKey.read().orElse(tankerkoenigApiKey.readDemoKey());
+
     // Write some user geo data to user prefs.
     USER_PREFS.writeGeo(new Geo(48.0348466, 11.9068076, 10.0));
 
     // Default Geo if no prefs exist.
     final Geo[] geo = {new Geo(52.408306, 10.77200, 5.0)};
-
     USER_PREFS.readGeo().ifPresent(g -> geo[0] = g);
 
     MainWindow mainWindow = new MainWindow();

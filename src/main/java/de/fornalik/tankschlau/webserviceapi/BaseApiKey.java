@@ -14,11 +14,13 @@ public abstract class BaseApiKey {
     this.id = StringLegalizer.create(id).mandatory().end();
   }
 
-  protected Optional<String> read() {
+  public Optional<String> read() {
     return apiKeyStore.read(id);
   }
 
-  protected void write(String apiKey) {
+  public abstract String readDemoKey();
+
+  public void write(String apiKey) {
     apiKeyStore.write(id, StringLegalizer.create(id).nullToEmpty().end());
   }
 }
