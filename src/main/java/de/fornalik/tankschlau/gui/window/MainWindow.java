@@ -56,9 +56,9 @@ public class MainWindow extends JFrame {
 
       try {
         List<PetrolStation> petrolStations = PetrolStations.createFromWebService(
-            TankSchlau.globalHttpClient,
+            TankSchlau.HTTP_CLIENT,
             request,
-            TankSchlau.globalJsonAdapter);
+            TankSchlau.PETROL_STATIONS_JSON_ADAPTER);
 
         model.remove(0);
         System.out.println("Response ready.");

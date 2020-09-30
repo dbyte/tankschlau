@@ -24,8 +24,8 @@ public class TankSchlau {
   public static final Localization L10N = new Localization(Locale.GERMAN);
   public static final UserPrefs USER_PREFS = new UserPrefs();
   public static final ApiKeyStore API_KEY_STORE = new UserPrefsApiKeyStore(USER_PREFS);
-  public static final HttpClient globalHttpClient = new OkHttpClient();
-  public static final TypeAdapter<List<PetrolStation>> globalJsonAdapter =
+  public static final HttpClient HTTP_CLIENT = new OkHttpClient();
+  public static final TypeAdapter<List<PetrolStation>> PETROL_STATIONS_JSON_ADAPTER =
       new PetrolStationsJsonAdapter();
 
   // Start application
