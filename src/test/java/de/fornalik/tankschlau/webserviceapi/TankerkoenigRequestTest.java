@@ -64,6 +64,14 @@ class TankerkoenigRequestTest {
   }
 
   @Test
+  void create_throwsOnNullApiKeyManager() {
+    // when then
+    assertThrows(
+        NullPointerException.class,
+        () -> TankerkoenigRequest.create(null, geoFixture));
+  }
+
+  @Test
   void create_throwsOnMissingDistance() {
     // given
     geoFixture.setDistance(null);
