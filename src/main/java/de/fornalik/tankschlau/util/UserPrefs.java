@@ -11,6 +11,10 @@ import java.util.Set;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+/**
+ * This class is responsible for the administration of reading & writing user preferences
+ * from & to the local OS user preferences.
+ */
 public class UserPrefs {
   private final Preferences realPrefs;
 
@@ -92,6 +96,23 @@ public class UserPrefs {
 
   public void writePreferredPetrolType(PetrolType type) {
     realPrefs.put("petrol.preferredType", type.toString());
+  }
+
+  // TODO unit test
+  public Optional<String> readEncryptedApiKey(String which) {
+    which = StringLegalizer.create(which).mandatory().end();
+
+    if (checkPrefsMissing(which))
+      return Optional.empty();
+
+    return Optional.ofNullable(realPrefs.get(which, null));
+  }
+
+  // TODO unit test
+  public void writeEncryptedApiKey(String which, String apiKey) {
+    which = StringLegalizer.create(which).mandatory().end();
+    apiKey = StringLegalizer.create(apiKey).mandatory().end();
+    realPrefs.put(which, apiKey);
   }
 
   private boolean checkPrefsMissing(String... keysToCheck) {
