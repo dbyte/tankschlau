@@ -18,19 +18,19 @@ public class UserPrefsApiKeyStore implements ApiKeyStore {
   }
 
   @Override
-  public Optional<String> read(String identifier) {
-    return userPrefs.readEncryptedApiKey(identifier).map(this::decrypt);
+  public Optional<String> read(String id) {
+    return userPrefs.readEncryptedApiKey(id).map(this::decrypt);
   }
 
   @Override
-  public void write(String identifier, String apiKey) {
+  public void write(String id, String apiKey) {
     String encrypted = encrypt(apiKey);
 
     // Try clearing memory for unencrypted key as soon as possible
     // noinspection UnusedAssignment
     apiKey = null;
 
-    userPrefs.writeEncryptedApiKey(identifier, encrypted);
+    userPrefs.writeEncryptedApiKey(id, encrypted);
   }
 
   // TODO

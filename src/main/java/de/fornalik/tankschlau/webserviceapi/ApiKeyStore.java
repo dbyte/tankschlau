@@ -10,16 +10,16 @@ public interface ApiKeyStore {
   /**
    * Reads an API key from the store.
    *
-   * @param identifier A token to identify which API key to return from the storage.
+   * @param id A token to identify which API key to return from the storage.
    * @return Decrypted value of the API key
    */
-  Optional<String> read(String identifier);
+  Optional<String> read(String id);
 
   /**
    * Writes an API key (which should be encrypted by implementation) to the store.
    *
-   * @param identifier A token to identify which API key to write into the storage.
-   * @param apiKey     The value of the API key
+   * @param id     A token to identify which API key to write into the storage.
+   * @param apiKey The value of the API key
    */
-  void write(String identifier, String apiKey);
+  void write(String id, String apiKey);
 }

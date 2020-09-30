@@ -19,7 +19,7 @@ public class UserPrefs {
   private final Preferences realPrefs;
 
   public UserPrefs() {
-    this.realPrefs = Preferences.userNodeForPackage(this.getClass());
+    this(UserPrefs.class);
   }
 
   public UserPrefs(Class<?> clazz) {
@@ -98,20 +98,20 @@ public class UserPrefs {
     realPrefs.put("petrol.preferredType", type.toString());
   }
 
-  public Optional<String> readEncryptedApiKey(String which) {
-    which = StringLegalizer.create(which).mandatory().end();
+  public Optional<String> readEncryptedApiKey(String id) {
+    id = StringLegalizer.create(id).mandatory().end();
 
-    if (checkPrefsMissing(which))
+    if (checkPrefsMissing(id))
       return Optional.empty();
 
-    return Optional.ofNullable(realPrefs.get(which, null));
+    return Optional.ofNullable(realPrefs.get(id, null));
   }
 
-  public void writeEncryptedApiKey(String which, String apiKey) {
-    which = StringLegalizer.create(which).mandatory().end();
+  public void writeEncryptedApiKey(String id, String apiKey) {
+    id = StringLegalizer.create(id).mandatory().end();
     apiKey = StringLegalizer.create(apiKey).mandatory().end();
 
-    realPrefs.put(which, apiKey);
+    realPrefs.put(id, apiKey);
   }
 
   private boolean checkPrefsMissing(String... keysToCheck) {
