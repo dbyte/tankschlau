@@ -60,27 +60,28 @@ class UserPrefsTest {
   }
 
   @Test
-  void writeUserAddress_writesProperly() {
+  void writeAddress_writesProperly() {
     // given
     Mockito.when(addressMock.getGeo()).thenReturn(Optional.empty());
 
     // when
-    prefs.writeUserAddress(addressMock);
-    Address actualAddress = prefs.readUserAddress();
+    prefs.writeAddress(addressMock);
+    Optional<Address> actualAddress = prefs.readAddress();
 
     // then
-    assertEquals(addressMock.getName(), actualAddress.getName());
-    assertEquals(addressMock.getCity(), actualAddress.getCity());
-    assertEquals(addressMock.getPostCode(), actualAddress.getPostCode());
-    assertEquals(addressMock.getStreet(), actualAddress.getStreet());
-    assertEquals(addressMock.getHouseNumber(), actualAddress.getHouseNumber());
+    assertTrue(actualAddress.isPresent());
+    assertEquals(addressMock.getName(), actualAddress.get().getName());
+    assertEquals(addressMock.getCity(), actualAddress.get().getCity());
+    assertEquals(addressMock.getPostCode(), actualAddress.get().getPostCode());
+    assertEquals(addressMock.getStreet(), actualAddress.get().getStreet());
+    assertEquals(addressMock.getHouseNumber(), actualAddress.get().getHouseNumber());
   }
 
   @Test
-  void writeUserGeo() {
+  void writeGeo_writesProperly() {
     // when
-    prefs.writeUserGeo(geoMock);
-    Optional<Geo> optionalGeo = prefs.readUserGeo();
+    prefs.writeGeo(geoMock);
+    Optional<Geo> optionalGeo = prefs.readGeo();
 
     // then
     assertTrue(optionalGeo.isPresent());
@@ -96,9 +97,10 @@ class UserPrefsTest {
   void writePreferredPetrolType_writesProperly(PetrolType givenPetrolType) {
     // when
     prefs.writePreferredPetrolType(givenPetrolType);
-    PetrolType actualPetrolType = prefs.readPreferredPetrolType();
+    Optional<PetrolType> actualPetrolType = prefs.readPreferredPetrolType();
 
     // then
-    assertEquals(givenPetrolType, actualPetrolType);
+    assertTrue(actualPetrolType.isPresent());
+    assertEquals(givenPetrolType, actualPetrolType.get());
   }
 }

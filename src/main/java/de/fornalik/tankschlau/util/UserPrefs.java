@@ -4,8 +4,11 @@ import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.station.PetrolType;
 
-import java.awt.geom.Point2D;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 public class UserPrefs {
@@ -23,7 +26,10 @@ public class UserPrefs {
     return realPrefs;
   }
 
-  public Address readUserAddress() {
+  public Optional<Address> readAddress() {
+    if (checkPrefsMissing("address.street", "address.city", "address.postCode"))
+      return Optional.empty();
+
     Address address = new Address(
         realPrefs.get("address.name", ""),
         realPrefs.get("address.street", ""),
@@ -32,58 +38,75 @@ public class UserPrefs {
         realPrefs.get("address.postCode", ""),
         null);
 
-    readUserGeo().ifPresent(address::setGeo);
+    readGeo().ifPresent(address::setGeo);
 
-    return address;
+    return Optional.of(address);
   }
 
-  public void writeUserAddress(Address address) {
+  public void writeAddress(Address address) {
     realPrefs.put("address.name", address.getName());
     realPrefs.put("address.street", address.getStreet());
     realPrefs.put("address.houseNumber", address.getHouseNumber());
     realPrefs.put("address.city", address.getCity());
     realPrefs.put("address.postCode", address.getPostCode());
-    address.getGeo().ifPresent(this::writeUserGeo);
+    address.getGeo().ifPresent(this::writeGeo);
   }
 
-  public Optional<Geo> readUserGeo() {
-    Optional<Point2D> latLon = readLatLon();
-    if (!latLon.isPresent())
+  public Optional<Geo> readGeo() {
+    Optional<Geo> geo = readGeoLatLon();
+
+    if (!geo.isPresent())
       return Optional.empty();
 
-    double lat = latLon.get().getX();
-    double lon = latLon.get().getY();
+    if (checkPrefsMissing("geo.distance"))
+      return geo;
 
-    double maybeDistance = realPrefs.getDouble("geo.distance", -9999.99);
-    Double distance = maybeDistance != -9999.99 ? maybeDistance : null;
+    geo.get().setDistance(realPrefs.getDouble("geo.distance", -9999.99));
 
-    Geo geo = new Geo(lat, lon, distance);
-
-    return Optional.of(geo);
+    return geo;
   }
 
-  private Optional<Point2D> readLatLon() {
+  private Optional<Geo> readGeoLatLon() {
+    if (checkPrefsMissing("geo.latitude", "geo.longitude"))
+      return Optional.empty();
+
     double lat = realPrefs.getDouble("geo.latitude", -9999.99);
     double lon = realPrefs.getDouble("geo.longitude", -9999.99);
 
-    if (lat == -9999.99 || lon == -9999.99)
-      return Optional.empty();
-
-    return Optional.of(new Point2D.Double(lat, lon));
+    return Optional.of(new Geo(lat, lon));
   }
 
-  public void writeUserGeo(Geo geo) {
+  public void writeGeo(Geo geo) {
     realPrefs.putDouble("geo.latitude", geo.getLatitude());
     realPrefs.putDouble("geo.longitude", geo.getLongitude());
     geo.getDistance().ifPresent(dist -> realPrefs.putDouble("geo.distance", dist));
   }
 
-  public PetrolType readPreferredPetrolType() {
-    String petrolTypeString = realPrefs.get("petrol.preferredType", PetrolType.E10.toString());
-    return PetrolType.valueOf(PetrolType.class, petrolTypeString);
+  public Optional<PetrolType> readPreferredPetrolType() {
+    if (checkPrefsMissing("petrol.preferredType"))
+      return Optional.empty();
+
+    String petrolTypeString = realPrefs.get("petrol.preferredType", null);
+    return Optional.of(PetrolType.valueOf(PetrolType.class, petrolTypeString));
   }
 
   public void writePreferredPetrolType(PetrolType type) {
     realPrefs.put("petrol.preferredType", type.toString());
+  }
+
+  private boolean checkPrefsMissing(String... keysToCheck) {
+    Set<String> registeredKeysSet;
+    Set<String> keysToCheckSet;
+
+    try {
+      registeredKeysSet = new HashSet<>(Arrays.asList(realPrefs.keys()));
+      keysToCheckSet = new HashSet<>(Arrays.asList(keysToCheck));
+    }
+    catch (BackingStoreException e) {
+      e.printStackTrace();
+      return true;
+    }
+
+    return !registeredKeysSet.containsAll(keysToCheckSet);
   }
 }
