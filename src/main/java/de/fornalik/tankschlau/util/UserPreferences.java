@@ -9,27 +9,27 @@ import java.util.Optional;
 import java.util.prefs.Preferences;
 
 public class UserPreferences {
-  private final Preferences javaPref;
+  private final Preferences realPrefs;
 
   public UserPreferences() {
-    this.javaPref = Preferences.userNodeForPackage(this.getClass());
+    this.realPrefs = Preferences.userNodeForPackage(this.getClass());
   }
 
   public UserPreferences(Class<?> clazz) {
-    this.javaPref = Preferences.userNodeForPackage(clazz);
+    this.realPrefs = Preferences.userNodeForPackage(clazz);
   }
 
-  public Preferences getJavaPref() {
-    return javaPref;
+  public Preferences getRealPrefs() {
+    return realPrefs;
   }
 
   public Address readUserAddress() {
     Address address = new Address(
-        javaPref.get("address.name", ""),
-        javaPref.get("address.street", ""),
-        javaPref.get("address.houseNumber", ""),
-        javaPref.get("address.city", ""),
-        javaPref.get("address.postCode", ""),
+        realPrefs.get("address.name", ""),
+        realPrefs.get("address.street", ""),
+        realPrefs.get("address.houseNumber", ""),
+        realPrefs.get("address.city", ""),
+        realPrefs.get("address.postCode", ""),
         null);
 
     readUserGeo().ifPresent(address::setGeo);
@@ -38,11 +38,11 @@ public class UserPreferences {
   }
 
   public void writeUserAddress(Address address) {
-    javaPref.put("address.name", address.getName());
-    javaPref.put("address.street", address.getStreet());
-    javaPref.put("address.houseNumber", address.getHouseNumber());
-    javaPref.put("address.city", address.getCity());
-    javaPref.put("address.postCode", address.getPostCode());
+    realPrefs.put("address.name", address.getName());
+    realPrefs.put("address.street", address.getStreet());
+    realPrefs.put("address.houseNumber", address.getHouseNumber());
+    realPrefs.put("address.city", address.getCity());
+    realPrefs.put("address.postCode", address.getPostCode());
     address.getGeo().ifPresent(this::writeUserGeo);
   }
 
@@ -54,7 +54,7 @@ public class UserPreferences {
     double lat = latLon.get().getX();
     double lon = latLon.get().getY();
 
-    double maybeDistance = javaPref.getDouble("geo.distance", -9999.99);
+    double maybeDistance = realPrefs.getDouble("geo.distance", -9999.99);
     Double distance = maybeDistance != -9999.99 ? maybeDistance : null;
 
     Geo geo = new Geo(lat, lon, distance);
@@ -63,8 +63,8 @@ public class UserPreferences {
   }
 
   private Optional<Point2D> readLatLon() {
-    double lat = javaPref.getDouble("geo.latitude", -9999.99);
-    double lon = javaPref.getDouble("geo.longitude", -9999.99);
+    double lat = realPrefs.getDouble("geo.latitude", -9999.99);
+    double lon = realPrefs.getDouble("geo.longitude", -9999.99);
 
     if (lat == -9999.99 || lon == -9999.99)
       return Optional.empty();
@@ -73,17 +73,17 @@ public class UserPreferences {
   }
 
   public void writeUserGeo(Geo geo) {
-    javaPref.putDouble("geo.latitude", geo.getLatitude());
-    javaPref.putDouble("geo.longitude", geo.getLongitude());
-    geo.getDistance().ifPresent(dist -> javaPref.putDouble("geo.distance", dist));
+    realPrefs.putDouble("geo.latitude", geo.getLatitude());
+    realPrefs.putDouble("geo.longitude", geo.getLongitude());
+    geo.getDistance().ifPresent(dist -> realPrefs.putDouble("geo.distance", dist));
   }
 
   public PetrolType readPreferredPetrolType() {
-    String petrolTypeString = javaPref.get("petrol.preferredType", PetrolType.E10.toString());
+    String petrolTypeString = realPrefs.get("petrol.preferredType", PetrolType.E10.toString());
     return PetrolType.valueOf(PetrolType.class, petrolTypeString);
   }
 
   public void writePreferredPetrolType(PetrolType type) {
-    javaPref.put("petrol.preferredType", type.toString());
+    realPrefs.put("petrol.preferredType", type.toString());
   }
 }

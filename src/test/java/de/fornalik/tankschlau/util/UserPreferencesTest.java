@@ -53,7 +53,7 @@ class UserPreferencesTest {
     Class<?> thisClazz = this.getClass();
 
     // Clear the node of possible persisted preferences ...
-    new UserPreferences(thisClazz).getJavaPref().removeNode();
+    new UserPreferences(thisClazz).getRealPrefs().removeNode();
 
     // ... and start with a fresh one.
     prefs = new UserPreferences(thisClazz);
