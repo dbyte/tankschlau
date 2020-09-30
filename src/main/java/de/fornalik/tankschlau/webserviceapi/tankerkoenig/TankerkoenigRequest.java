@@ -3,6 +3,7 @@ package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.BaseRequest;
 import de.fornalik.tankschlau.net.Request;
+import de.fornalik.tankschlau.webserviceapi.BaseApiKey;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -15,7 +16,7 @@ public class TankerkoenigRequest extends BaseRequest {
   private static final String BASE_URL = "https://creativecommons.tankerkoenig.de/json/list.php?";
   private static final HttpMethod HTTP_METHOD = HttpMethod.GET;
   private static final String ACCEPT_JSON = "application/json; charset=utf-8";
-  private static final String DEMO_API_KEY = "00000000-0000-0000-0000-000000000002";
+  private BaseApiKey apiKeyManager;
   private Geo geo;
 
   private TankerkoenigRequest() {}
@@ -28,10 +29,18 @@ public class TankerkoenigRequest extends BaseRequest {
    * @return A new {@link TankerkoenigRequest} object, ready for use within a {@link Request}.
    * @throws MalformedURLException If the base URL is invalid.
    */
-  public static TankerkoenigRequest create(Geo geo) throws MalformedURLException {
+  public static TankerkoenigRequest create(BaseApiKey apiKeyManager, Geo geo)
+  throws MalformedURLException {
     TankerkoenigRequest instance = new TankerkoenigRequest();
 
-    instance.geo = Objects.requireNonNull(geo, "Geographical data (geo) must not be null.");
+    instance.geo = Objects.requireNonNull(
+        geo,
+        "Geographical data (geo) must not be null.");
+
+    instance.apiKeyManager = Objects.requireNonNull(
+        apiKeyManager,
+        "apiKeyManager must not be null.");
+
     instance.setBaseData();
     instance.setUrlParameters();
 
@@ -57,7 +66,7 @@ public class TankerkoenigRequest extends BaseRequest {
     super.addUrlParameter("sort", "dist");
     super.addUrlParameter("type", "all");
 
-    super.addUrlParameter("apikey", DEMO_API_KEY);
+    super.addUrlParameter("apikey", apiKeyManager.read().orElse(apiKeyManager.readDemoKey()));
   }
 
   public static class SearchRadiusException extends IllegalStateException {

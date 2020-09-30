@@ -25,17 +25,16 @@ public class TankSchlau {
   // Configuration
   public static final Localization L10N = new Localization(Locale.GERMAN);
   public static final UserPrefs USER_PREFS = new UserPrefs();
-  public static final ApiKeyStore API_KEY_STORE = new UserPrefsApiKeyStore(USER_PREFS);
   public static final HttpClient HTTP_CLIENT = new OkHttpClient();
   public static final TypeAdapter<List<PetrolStation>> PETROL_STATIONS_JSON_ADAPTER =
       new PetrolStationsJsonAdapter();
 
+  private static final ApiKeyStore API_KEY_STORE = new UserPrefsApiKeyStore(USER_PREFS);
+  public static final BaseApiKey TANKERKOENIG_APIKEY_MANAGER =
+      new TankerkoenigApiKey(API_KEY_STORE);
+
   // Start application
   public static void main(String[] args) throws MalformedURLException {
-    // API key creation example
-    BaseApiKey tankerkoenigApiKey = new TankerkoenigApiKey(API_KEY_STORE);
-    String theApiKey = tankerkoenigApiKey.read().orElse(tankerkoenigApiKey.readDemoKey());
-
     // Write some user geo data to user prefs.
     USER_PREFS.writeGeo(new Geo(48.0348466, 11.9068076, 10.0));
 
@@ -44,7 +43,7 @@ public class TankSchlau {
     USER_PREFS.readGeo().ifPresent(g -> geo[0] = g);
 
     MainWindow mainWindow = new MainWindow();
-    Request request = TankerkoenigRequest.create(geo[0]);
+    Request request = TankerkoenigRequest.create(TANKERKOENIG_APIKEY_MANAGER, geo[0]);
 
     mainWindow.initGui();
     mainWindow.updateList(request, PetrolType.DIESEL);

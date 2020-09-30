@@ -5,6 +5,7 @@ import de.fornalik.tankschlau.net.Request;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.net.MalformedURLException;
 import java.util.Optional;
@@ -17,17 +18,24 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * be directly tested in unit tests for {@link de.fornalik.tankschlau.net.BaseRequest}
  */
 class TankerkoenigRequestTest {
+  private BaseApiKey apiKeyManagerMock;
   private Geo geoFixture;
 
   @BeforeEach
   void setUp() {
+    this.apiKeyManagerMock = Mockito.mock(BaseApiKey.class);
     this.geoFixture = new Geo(53.1234, 48.5678, 12.0);
+
+    Mockito.when(apiKeyManagerMock.read()).thenReturn(Optional.of("000-abc-def-111"));
   }
 
   @Test
   void create_constructsProperValues() throws MalformedURLException {
+    // given
+    assert apiKeyManagerMock.read().isPresent(); // pre-check proper test setup
+
     // when
-    TankerkoenigRequest actualRequest = TankerkoenigRequest.create(geoFixture);
+    TankerkoenigRequest actualRequest = TankerkoenigRequest.create(apiKeyManagerMock, geoFixture);
 
     // then
     assertEquals(
@@ -37,6 +45,10 @@ class TankerkoenigRequestTest {
     assertEquals(Request.HttpMethod.GET, actualRequest.getHttpMethod());
 
     assertEquals("application/json; charset=utf-8", actualRequest.getHeaders().get("Accept"));
+
+    assertEquals("dist", actualRequest.getUrlParameters().get("sort"));
+    assertEquals("all", actualRequest.getUrlParameters().get("type"));
+    assertEquals(apiKeyManagerMock.read().get(), actualRequest.getUrlParameters().get("apikey"));
 
     assertEquals(
         geoFixture.getLatitude(),
@@ -59,6 +71,6 @@ class TankerkoenigRequestTest {
     // when then
     assertThrows(
         TankerkoenigRequest.SearchRadiusException.class,
-        () -> TankerkoenigRequest.create(geoFixture));
+        () -> TankerkoenigRequest.create(apiKeyManagerMock, geoFixture));
   }
 }
