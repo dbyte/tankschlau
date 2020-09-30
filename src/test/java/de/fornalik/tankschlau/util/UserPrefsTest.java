@@ -53,7 +53,8 @@ class UserPrefsTest {
   @AfterEach
   void tearDownEach() throws BackingStoreException {
     // Delete node of persisted test-preferences
-    prefs.getRealPrefs().removeNode();
+    if (prefs.getRealPrefs().nodeExists(""))
+      prefs.getRealPrefs().removeNode();
   }
 
   @Test
@@ -75,6 +76,27 @@ class UserPrefsTest {
   }
 
   @Test
+  void readAddress_returnsEmptyOptionalIfAddressPrefsDoNotExist() {
+    // when
+    Optional<Address> actualAddress = prefs.readAddress();
+
+    // then
+    assertEquals(Optional.empty(), actualAddress);
+  }
+
+  @Test
+  void readAddress_returnsEmptyOptionalIfNodeDoesNotExist() throws BackingStoreException {
+    // given
+    prefs.getRealPrefs().removeNode();
+
+    // when
+    Optional<Address> actualAddress = prefs.readAddress();
+
+    // then
+    assertEquals(Optional.empty(), actualAddress);
+  }
+
+  @Test
   void writeGeo_writesProperly() {
     // when
     prefs.writeGeo(geoMock);
@@ -89,6 +111,27 @@ class UserPrefsTest {
     assertEquals(geoMock.getDistance(), actualGeo.getDistance());
   }
 
+  @Test
+  void readGeo_returnsEmptyOptionalIfGeoLatLonDoNotExist() {
+    // when
+    Optional<Geo> actualGeo = prefs.readGeo();
+
+    // then
+    assertEquals(Optional.empty(), actualGeo);
+  }
+
+  @Test
+  void readGeo_returnsEmptyOptionalIfNodeDoesNotExist() throws BackingStoreException {
+    // given
+    prefs.getRealPrefs().removeNode();
+
+    // when
+    Optional<Geo> actualGeo = prefs.readGeo();
+
+    // then
+    assertEquals(Optional.empty(), actualGeo);
+  }
+
   @ParameterizedTest
   @EnumSource(PetrolType.class)
   void writePreferredPetrolType_writesProperly(PetrolType givenPetrolType) {
@@ -99,5 +142,27 @@ class UserPrefsTest {
     // then
     assertTrue(actualPetrolType.isPresent());
     assertEquals(givenPetrolType, actualPetrolType.get());
+  }
+
+  @Test
+  void readPreferredPetrolType_returnsEmptyOptionalIfPrefDoesNotExist() {
+    // when
+    Optional<PetrolType> actualPetrolType = prefs.readPreferredPetrolType();
+
+    // then
+    assertEquals(Optional.empty(), actualPetrolType);
+  }
+
+  @Test
+  void readPreferredPetrolType_returnsEmptyOptionalIfNodeDoesNotExist()
+  throws BackingStoreException {
+    // given
+    prefs.getRealPrefs().removeNode();
+
+    // when
+    Optional<PetrolType> actualPetrolType = prefs.readPreferredPetrolType();
+
+    // then
+    assertEquals(Optional.empty(), actualPetrolType);
   }
 }
