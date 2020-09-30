@@ -98,7 +98,6 @@ public class UserPrefs {
     realPrefs.put("petrol.preferredType", type.toString());
   }
 
-  // TODO unit test
   public Optional<String> readEncryptedApiKey(String which) {
     which = StringLegalizer.create(which).mandatory().end();
 
@@ -108,10 +107,10 @@ public class UserPrefs {
     return Optional.ofNullable(realPrefs.get(which, null));
   }
 
-  // TODO unit test
   public void writeEncryptedApiKey(String which, String apiKey) {
     which = StringLegalizer.create(which).mandatory().end();
     apiKey = StringLegalizer.create(apiKey).mandatory().end();
+
     realPrefs.put(which, apiKey);
   }
 
