@@ -48,6 +48,6 @@ public abstract class ApiKeyManager {
    * @param apiKey The API key to write into the storage.
    */
   public void write(String apiKey) {
-    apiKeyStore.write(id, StringLegalizer.create(id).nullToEmpty().end());
+    apiKeyStore.write(id, StringLegalizer.create(apiKey).nullToEmpty().end());
   }
 }
