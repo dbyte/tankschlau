@@ -44,6 +44,7 @@ public class TankerkoenigRequest extends BaseRequest {
    *            stations in the neighbourhood.
    * @return A new {@link TankerkoenigRequest} object, ready for use within a {@link Request}.
    * @throws MalformedURLException If the base URL is invalid.
+   * @throws SearchRadiusException If distance value of {@link Geo} data is missing.
    */
   public static TankerkoenigRequest create(ApiKeyManager apiKeyManager, Geo geo)
   throws MalformedURLException {
@@ -64,25 +65,27 @@ public class TankerkoenigRequest extends BaseRequest {
   }
 
   private void setBaseData() throws MalformedURLException {
-    super.setBaseUrl(new URL(BASE_URL));
-    super.setHttpMethod(HTTP_METHOD);
-    super.addHeader("Accept", ACCEPT_JSON);
+    setBaseUrl(new URL(BASE_URL));
+    setHttpMethod(HTTP_METHOD);
+    addHeader("Accept", ACCEPT_JSON);
   }
 
   private void setUrlParameters() {
     Double maxSearchRadius = geo.getDistance()
                                 .orElseThrow(SearchRadiusException::new);
 
-    super.addUrlParameter("lat", Double.valueOf(geo.getLatitude()).toString());
-    super.addUrlParameter("lng", Double.valueOf(geo.getLongitude()).toString());
-    super.addUrlParameter("rad", maxSearchRadius.toString());
+    addUrlParameter("lat", Double.valueOf(geo.getLatitude()).toString());
+    addUrlParameter("lng", Double.valueOf(geo.getLongitude()).toString());
+    addUrlParameter("rad", maxSearchRadius.toString());
 
     /* As we sort data ourselves, always request "all" petrol types. Per web service API definition
     of Tankerkoenig.de, "sort" must be set to "dist" when requesting "type" with "all". */
-    super.addUrlParameter("sort", "dist");
-    super.addUrlParameter("type", "all");
+    addUrlParameter("sort", "dist");
+    addUrlParameter("type", "all");
 
-    super.addUrlParameter("apikey", apiKeyManager.read().orElse(apiKeyManager.readDemoKey()));
+    /* Only add API key if we got one. Tankerkoenig will inform us about a missing/invalid key
+    in its response, where we handle errors anyway. */
+    apiKeyManager.read().ifPresent(value -> addUrlParameter("apikey", value));
   }
 
   public static class SearchRadiusException extends IllegalStateException {
