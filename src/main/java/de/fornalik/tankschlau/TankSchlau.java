@@ -51,20 +51,19 @@ public class TankSchlau {
 
   // Start application
   public static void main(String[] args) throws MalformedURLException {
-    // Offer option to pass a tankerkoenig.de API key at startup which then gets persisted
+    // Offer option to pass a tankerkoenig.de API key at startup which we persist
     // in a specified storage.
     if (args.length >= 1)
       TANKERKOENIG_APIKEY_MANAGER.write(args[0]);
 
-    // Write some user geo data to user prefs.
-    USER_PREFS.writeGeo(new Geo(48.0348466, 11.9068076, 10.0));
+    // Example: Writing some user geo data to user prefs
+    // USER_PREFS.writeGeo(new Geo(52.4079755, 10.7725368, 8.0));
 
-    // Default Geo if no prefs exist.
-    final Geo[] geo = {new Geo(52.408306, 10.77200, 5.0)};
-    USER_PREFS.readGeo().ifPresent(g -> geo[0] = g);
+    Geo userGeo = USER_PREFS.readGeo().orElseThrow(
+        () -> new IllegalStateException("No preferences found for user geo data."));
 
     MainWindow mainWindow = new MainWindow();
-    Request request = TankerkoenigRequest.create(TANKERKOENIG_APIKEY_MANAGER, geo[0]);
+    Request request = TankerkoenigRequest.create(TANKERKOENIG_APIKEY_MANAGER, userGeo);
 
     mainWindow.initGui();
     mainWindow.updateList(request, PetrolType.DIESEL);
