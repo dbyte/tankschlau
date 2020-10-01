@@ -52,13 +52,6 @@ public abstract class ApiKeyManager {
   }
 
   /**
-   * Returns a demo key for the API. Can be used if no API key was set in storage yet.
-   *
-   * @return The demo API key.
-   */
-  public abstract String readDemoKey();
-
-  /**
    * Writes a given API key into the storage.
    *
    * @param apiKey The API key to write into the storage.
