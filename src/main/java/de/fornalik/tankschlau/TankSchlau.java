@@ -35,6 +35,11 @@ public class TankSchlau {
 
   // Start application
   public static void main(String[] args) throws MalformedURLException {
+    // Offer option to pass a tankerkoenig.de API key at startup which then gets persisted
+    // in a specified storage.
+    if (args.length >= 1)
+      TANKERKOENIG_APIKEY_MANAGER.write(args[0]);
+
     // Write some user geo data to user prefs.
     USER_PREFS.writeGeo(new Geo(48.0348466, 11.9068076, 10.0));
 
