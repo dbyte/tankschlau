@@ -49,7 +49,7 @@ class AddressTest {
   @Test
   void constructor_acceptsNullForGeo() {
     // when then
-    assertDoesNotThrow(() -> new Address("x", "y", "z", null));
+    assertDoesNotThrow(() -> new Address("x", "y", "z", (Geo) null));
   }
 
   @Test
@@ -249,9 +249,9 @@ class AddressTest {
     assertDoesNotThrow(addressWithNullGeo::toString);
 
     // given
-    final Geo fullGeo = new Geo(43.4,79.355,303.0);
+    final Geo fullGeo = new Geo(43.4, 79.355, 303.0);
     final Address completeAddress = new Address(
-    "a", "b", "1", "c", "80803", fullGeo);
+        "a", "b", "1", "c", "80803", fullGeo);
 
     // when then
     assertDoesNotThrow(completeAddress::toString);

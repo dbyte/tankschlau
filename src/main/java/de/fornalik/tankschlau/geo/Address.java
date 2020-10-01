@@ -40,7 +40,7 @@ public class Address {
    * @see #Address(String name, String street, String houseNumber, String city, String postCode, Geo geo)
    */
   public Address(String street, String city, String postCode) {
-    this(street, city, postCode, null);
+    this(street, "", city, postCode);
   }
 
   /**
@@ -50,6 +50,15 @@ public class Address {
    */
   public Address(String street, String city, String postCode, Geo geo) {
     this("", street, "", city, postCode, geo);
+  }
+
+  /**
+   * Constructor
+   *
+   * @see #Address(String name, String street, String houseNumber, String city, String postCode, Geo geo)
+   */
+  public Address(String street, String houseNumber, String city, String postCode) {
+    this("", street, houseNumber, city, postCode, null);
   }
 
   /**
