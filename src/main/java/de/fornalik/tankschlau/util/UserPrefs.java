@@ -98,7 +98,7 @@ public class UserPrefs {
     realPrefs.put("petrol.preferredType", type.toString());
   }
 
-  public Optional<String> readEncryptedApiKey(String id) {
+  public Optional<String> readApiKey(String id) {
     id = StringLegalizer.create(id).mandatory().end();
 
     if (checkPrefsMissing(id))
@@ -107,7 +107,7 @@ public class UserPrefs {
     return Optional.ofNullable(realPrefs.get(id, null));
   }
 
-  public void writeEncryptedApiKey(String id, String apiKey) {
+  public void writeApiKey(String id, String apiKey) {
     id = StringLegalizer.create(id).mandatory().end();
     apiKey = StringLegalizer.create(apiKey).mandatory().end();
 

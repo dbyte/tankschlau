@@ -152,29 +152,29 @@ class UserPrefsTest {
   }
 
   @Test
-  void writeEncryptedApiKey_writesProperly() {
+  void writeApiKey_writesProperly() {
     // given
     String userPrefToken = "apiKey.tankerkoenig";
     String givenApiKey = "1234-some-api-key-5678";
 
     // when
-    prefs.writeEncryptedApiKey("apiKey.tankerkoenig", givenApiKey);
+    prefs.writeApiKey("apiKey.tankerkoenig", givenApiKey);
 
     // then
-    assertTrue(prefs.readEncryptedApiKey(userPrefToken).isPresent());
-    assertEquals(givenApiKey, prefs.readEncryptedApiKey(userPrefToken).get());
+    assertTrue(prefs.readApiKey(userPrefToken).isPresent());
+    assertEquals(givenApiKey, prefs.readApiKey(userPrefToken).get());
   }
 
   @ParameterizedTest
   @ValueSource(booleans = {false, true})
-  void readEncryptedApiKey_returnsEmptyOptionalIfPrefDoesNotExist(boolean removeNode)
+  void readApiKey_returnsEmptyOptionalIfPrefDoesNotExist(boolean removeNode)
   throws BackingStoreException {
     // given
     if (removeNode)
       prefs.getRealPrefs().removeNode();
 
     // when
-    Optional<String> actualApiKey = prefs.readEncryptedApiKey("pref_does_not_exist");
+    Optional<String> actualApiKey = prefs.readApiKey("pref_does_not_exist");
 
     // then
     assertEquals(Optional.empty(), actualApiKey);

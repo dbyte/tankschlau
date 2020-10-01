@@ -11,12 +11,12 @@ public interface ApiKeyStore {
    * Reads an API key from the store.
    *
    * @param id A token to identify which API key to return from the storage.
-   * @return Decrypted value of the API key
+   * @return Value of the API key
    */
   Optional<String> read(String id);
 
   /**
-   * Writes an API key (which should be encrypted by implementation) to the store.
+   * Writes an API key to the store.
    *
    * @param id     A token to identify which API key to write into the storage.
    * @param apiKey The value of the API key
