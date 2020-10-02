@@ -60,6 +60,15 @@ public interface Request {
   void addUrlParameter(String key, String value);
 
   /**
+   * @param urlParameter An existing URL parameter which gets extended by the given
+   *                     string. The string won't be encoded.
+   * @param s            A string to append (unencoded) to the given URL parameter.
+   * @param encoding     ex. "UTF-8" {@link java.net.URLEncoder}, or null if the string must not
+   *                     be encoded.
+   */
+  void appendUrlString(String urlParameter, String s, String encoding);
+
+  /**
    * Getter for URL parameters.
    *
    * @return key/value pairs of all URL parameters which were previously

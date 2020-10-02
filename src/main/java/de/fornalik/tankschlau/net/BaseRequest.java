@@ -21,6 +21,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 /**
  * Abstract HTTP request class with base functionalities.
@@ -57,17 +58,38 @@ public abstract class BaseRequest implements Request {
 
   @Override
   public void addUrlParameter(String key, String value) {
-    String encodedValue;
+    String encodedValue = encodeString(value, "UTF-8");
+    this.urlParameters.put(key, encodedValue);
+  }
+
+  @Override
+  public void appendUrlString(String urlParameter, String s, String encoding) {
+    String existingValue = getUrlParameters().get(urlParameter);
+
+    if (existingValue == null)
+      throw new NoSuchElementException(
+          String.format("URL parameter %s does not exist.", urlParameter));
+
+    if (encoding != null)
+      s = encodeString(s, encoding);
+
+    String newValue = existingValue + s;
+
+    // Replace old value.
+    this.urlParameters.put(urlParameter, newValue);
+  }
+
+  private String encodeString(String s, String enc) {
+    String encodedString;
 
     try {
-      encodedValue = URLEncoder.encode(value, "UTF-8");
-
+      encodedString = URLEncoder.encode(s, enc);
     }
     catch (UnsupportedEncodingException e) {
       throw new RuntimeException(e.getMessage());
     }
 
-    this.urlParameters.put(key, encodedValue);
+    return encodedString;
   }
 
   @Override

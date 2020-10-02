@@ -72,16 +72,22 @@ public class GeocodingRequest extends BaseRequest {
 
   private void setUrlParameters() {
     addUrlParameter("region", "de");
-    addUrlParameter("address", processAddressQueryString());
+
+    addUrlParameter("address", processAddressQueryPart1());
+    appendUrlString("address", ",+", null);
+    appendUrlString("address", processAddressQueryPart2(), "UTF-8");
 
     /* Only add API key if we got one. Google will inform us about a missing/invalid key
     in its response, where we handle errors anyway. */
     apiKeyManager.read().ifPresent(value -> addUrlParameter("key", value));
   }
 
-  private String processAddressQueryString() {
-    return (address.getStreet() + " " + address.getHouseNumber()).trim()
-        + " "
-        + (address.getPostCode() + " " + address.getCity()).trim();
+  private String processAddressQueryPart1() {
+    return (address.getStreet() + " " + address.getHouseNumber()).trim();
   }
+
+  private String processAddressQueryPart2() {
+    return (address.getPostCode() + " " + address.getCity()).trim();
+  }
+
 }

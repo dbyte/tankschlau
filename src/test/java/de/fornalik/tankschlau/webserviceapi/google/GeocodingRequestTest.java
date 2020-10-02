@@ -69,7 +69,7 @@ class GeocodingRequestTest {
     assertEquals("de", actualRequest.getUrlParameters().get("region"));
 
     assertEquals(
-        "An+den+%C3%84ckern+2+38446+Wolfsburg",
+        "An+den+%C3%84ckern+2,+38446+Wolfsburg",
         actualRequest.getUrlParameters().get("address"));
 
     assertEquals(apiKeyManagerMock.read().get(), actualRequest.getUrlParameters().get("key"));
