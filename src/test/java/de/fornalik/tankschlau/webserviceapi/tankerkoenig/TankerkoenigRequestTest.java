@@ -89,7 +89,7 @@ class TankerkoenigRequestTest {
     TankerkoenigRequest actualRequest = TankerkoenigRequest.create(apiKeyManagerMock, geoFixture);
 
     // then
-    assertNull(actualRequest.getUrlParameters().get("key"));
+    assertNull(actualRequest.getUrlParameters().get("apikey"));
   }
 
   @Test
