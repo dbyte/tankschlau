@@ -17,12 +17,13 @@
 package de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response;
 
 import com.google.gson.JsonObject;
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.util.List;
+
 public abstract class JsonFixtureTestsuite {
-  protected Pair<JsonResponseHelp, JsonObject> responseHelp;
+  protected List<Object> responseHelp;
   protected JsonResponseHelp objectFixture;
   protected JsonObject jsonFixture;
 
@@ -42,13 +43,13 @@ public abstract class JsonFixtureTestsuite {
 
   protected void setupFixture(String resourceName) {
     responseHelp = JsonResponseHelp.createFromJsonFile(resourceName);
-    objectFixture = responseHelp.getLeft();
-    jsonFixture = responseHelp.getRight();
+    objectFixture = (JsonResponseHelp) responseHelp.get(0);
+    jsonFixture = (JsonObject) responseHelp.get(1);
   }
 
   protected void setupSingleFixture(String resourceName) {
     responseHelp = JsonResponseHelp.createFirstStationFromJsonFile(resourceName);
-    objectFixture = responseHelp.getLeft();
-    jsonFixture = responseHelp.getRight();
+    objectFixture = (JsonResponseHelp) responseHelp.get(0);
+    jsonFixture = (JsonObject) responseHelp.get(1);
   }
 }

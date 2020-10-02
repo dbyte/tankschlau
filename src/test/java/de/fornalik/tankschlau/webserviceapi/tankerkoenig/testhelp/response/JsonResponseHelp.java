@@ -27,7 +27,6 @@ import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolStationBuilder;
 import de.fornalik.tankschlau.station.PetrolType;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigResponseDto;
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Assertions;
 
 import java.io.FileReader;
@@ -61,13 +60,12 @@ public class JsonResponseHelp {
    *
    * @param resName Resource path as String. Note that the implicit resource root path must not
    *                be included here.
-   * @return Pair of JsonResponseHelp and JsonObject which is produced by reading a
-   * JSON test-fixture resource file. Decompose by using .getLeft() and getRight(), see
-   * {@link Pair#getLeft()} resp. {@link Pair#getRight()} <br/>
-   * left: resulting fixture as instance of JsonResponseHelp <br/>
-   * right: resulting fixture as instance of JsonObject
+   * @return Two objects! 1. JsonResponseHelp and 2. JsonObject which is produced by reading a
+   * JSON test-fixture resource file. Decompose by using .get(0) and get(1). <br>
+   * .get(0): resulting fixture as instance of JsonResponseHelp <br>
+   * .get(1): resulting fixture as instance of JsonObject <br>
    */
-  public static Pair<JsonResponseHelp, JsonObject> createFromJsonFile(String resName) {
+  public static List<Object> createFromJsonFile(String resName) {
     Objects.requireNonNull(resName);
 
     FileReader reader1 = FixtureFiles.getFileReaderForResource(resName);
@@ -77,7 +75,7 @@ public class JsonResponseHelp {
     JsonResponseHelp objectFixture = gson.fromJson(reader1, JsonResponseHelp.class);
     JsonObject jsonFixture = (JsonObject) JsonParser.parseReader(reader2);
 
-    return Pair.of(objectFixture, jsonFixture);
+    return Arrays.asList(objectFixture, jsonFixture);
   }
 
   /**
@@ -87,25 +85,26 @@ public class JsonResponseHelp {
    * 1) a JsonResponseHelp which we can use e.g. for equality checks.<br/>
    * 2) a {@link JsonObject} of the <b>first station</b> found within the JSON file fixture.
    *
-   * @return {@link Pair#getLeft()}: JsonResponseHelp which we can use e.g. for equality
-   * checks.<br/>
-   * {@link Pair#getRight()}: a {@link JsonObject} of the <b>first {@link PetrolStation}</b>
-   * found within the JSON file fixture.
+   * @return Two objects! <br/>
+   * 1. JsonResponseHelp which we can use e.g. for equality checks. <br/>
+   * 2. {@link JsonObject} of the <b>first {@link PetrolStation}</b> found within the
+   * JSON file fixture.
    * @see #createFromJsonFile(String resName)
    */
-  public static Pair<JsonResponseHelp, JsonObject> createFirstStationFromJsonFile(String resName) {
+  public static List<Object> createFirstStationFromJsonFile(String resName) {
     Objects.requireNonNull(resName);
 
-    Pair<JsonResponseHelp, JsonObject> responseHelp = createFromJsonFile(resName);
+    List<Object> responseHelp = createFromJsonFile(resName);
+    JsonObject jsonObject = (JsonObject) responseHelp.get(1);
 
-    assert responseHelp.getRight().getAsJsonArray("stations") != null;
+    assert jsonObject.getAsJsonArray("stations") != null;
 
-    JsonObject jsonFirstStationOfStationArrayFixture = responseHelp.getRight()
-                                                                   .getAsJsonArray("stations")
-                                                                   .get(0)
-                                                                   .getAsJsonObject();
+    JsonObject jsonFirstStationOfStationArrayFixture = jsonObject
+        .getAsJsonArray("stations")
+        .get(0)
+        .getAsJsonObject();
 
-    return Pair.of(responseHelp.getLeft(), jsonFirstStationOfStationArrayFixture);
+    return Arrays.asList(responseHelp.get(0), jsonFirstStationOfStationArrayFixture);
   }
 
   /**
