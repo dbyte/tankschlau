@@ -225,9 +225,7 @@ class PetrolStationsTest {
   }
 
   private void setupFixture(String resourceName) {
-    responseHelp = JsonResponseHelp.createFromJsonFile(
-        resourceName);
-
+    responseHelp = JsonResponseHelp.createFromJsonFile(resourceName);
     objectFixture = responseHelp.getLeft();
     jsonFixture = responseHelp.getRight();
   }
