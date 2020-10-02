@@ -35,11 +35,11 @@ public class UserPrefs {
   private final Preferences realPrefs;
 
   public UserPrefs() {
-    this(UserPrefs.class);
+    this("/de/fornalik/tankschlau");
   }
 
-  public UserPrefs(Class<?> clazz) {
-    this.realPrefs = Preferences.userNodeForPackage(clazz);
+  public UserPrefs(String node) {
+    this.realPrefs = Preferences.userRoot().node(node);
   }
 
   public Preferences getRealPrefs() {

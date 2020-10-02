@@ -3,7 +3,6 @@ package de.fornalik.tankschlau.util;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.station.PetrolType;
-import de.fornalik.tankschlau.util.userpref_testnode.UserPrefsFakeNode;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -51,12 +50,12 @@ class UserPrefsTest {
   void setUpEach() {
     // It's important to use a class within a different package than
     // de.fornalik.tankschlau.util - otherwise we would overwrite production preferences.
-    prefs = new UserPrefs(UserPrefsFakeNode.class);
+    prefs = new UserPrefs("/de/fornalik/tankschlau/unittest");
   }
 
   @AfterEach
   void tearDownEach() throws BackingStoreException {
-    // Delete node of persisted test-preferences
+    // Delete "/unittest" node of persisted test-preferences
     if (prefs.getRealPrefs().nodeExists(""))
       prefs.getRealPrefs().removeNode();
   }
