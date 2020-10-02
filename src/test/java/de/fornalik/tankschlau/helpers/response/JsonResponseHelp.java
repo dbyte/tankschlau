@@ -10,12 +10,15 @@ import de.fornalik.tankschlau.station.Petrol;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolStationBuilder;
 import de.fornalik.tankschlau.station.PetrolType;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigResponseDto;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Assertions;
 
 import java.io.FileReader;
 import java.util.*;
 import java.util.function.Function;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * PetrolStation factory for tests.
@@ -25,7 +28,6 @@ import java.util.function.Function;
  * to be able to null them for testing purposes.
  */
 public class JsonResponseHelp {
-
   @SerializedName("ok") public Boolean ok;
   @SerializedName("license") public String license;
   @SerializedName("data") public String data;
@@ -127,8 +129,21 @@ public class JsonResponseHelp {
     return petrolStations;
   }
 
-  // region assertEqual helpers
+  // region assertEqualsAll
 
+  public void assertEqualValues(TankerkoenigResponseDto responseDtoUnderTest) {
+    Objects.requireNonNull(responseDtoUnderTest);
+
+    assertEquals(this.ok, responseDtoUnderTest.isOk());
+    assertEquals(this.license, responseDtoUnderTest.getLicense());
+    assertEquals(this.status, responseDtoUnderTest.getStatus());
+  }
+
+  /**
+   * List version of {@link #assertEqualsIgnoringSort(PetrolStation)}.
+   *
+   * @param petrolStations The {@link PetrolStation} list to be checked for deep value equality.
+   */
   public void assertEqualsIgnoringSort(List<PetrolStation> petrolStations) {
     Objects.requireNonNull(petrolStations);
     Assertions.assertEquals(this.stations.size(), petrolStations.size());
@@ -177,7 +192,6 @@ public class JsonResponseHelp {
   public void assertEqualsIgnoringSort(Address addressUnderTest, int fixtureIdx) {
     /* Preconditions for running the test. Note these checks are not subject to the test itself.
     Thus, we don't use Junit assertions here. */
-
     assert addressUnderTest != null;
 
     // Get station by given index
@@ -244,14 +258,17 @@ public class JsonResponseHelp {
         .findFirst()
         .map(petr -> petr.price);
 
-    Assertions.assertEquals(Optional.ofNullable(fixture.diesel),
-                            actualPrice.apply(PetrolType.DIESEL));
+    Assertions.assertEquals(
+        Optional.ofNullable(fixture.diesel),
+        actualPrice.apply(PetrolType.DIESEL));
 
-    Assertions.assertEquals(Optional.ofNullable(fixture.e10),
-                            actualPrice.apply(PetrolType.E10));
+    Assertions.assertEquals(
+        Optional.ofNullable(fixture.e10),
+        actualPrice.apply(PetrolType.E10));
 
-    Assertions.assertEquals(Optional.ofNullable(fixture.e5),
-                            actualPrice.apply(PetrolType.E5));
+    Assertions.assertEquals(
+        Optional.ofNullable(fixture.e5),
+        actualPrice.apply(PetrolType.E5));
   }
 
   // endregion
