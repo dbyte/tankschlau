@@ -10,8 +10,8 @@ import org.mockito.Mockito;
 import java.net.MalformedURLException;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 /**
  * We only test for concrete implementation specific values here. All other behaviour should
@@ -61,6 +61,19 @@ class TankerkoenigRequestTest {
     assertEquals(
         geoFixture.getDistance(),
         Optional.of(Double.valueOf(actualRequest.getUrlParameters().get("rad"))));
+  }
+
+  @Test
+  void create_doesNotAppendApiKeyUrlParamIfNoApiKeyWasFound() throws MalformedURLException {
+    // given
+    assert apiKeyManagerMock.read().isPresent(); // pre-check proper test setup
+    when(apiKeyManagerMock.read()).thenReturn(Optional.empty());
+
+    // when
+    TankerkoenigRequest actualRequest = TankerkoenigRequest.create(apiKeyManagerMock, geoFixture);
+
+    // then
+    assertNull(actualRequest.getUrlParameters().get("key"));
   }
 
   @Test

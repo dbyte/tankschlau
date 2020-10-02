@@ -26,7 +26,7 @@ import org.mockito.Mockito;
 import java.net.MalformedURLException;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 /**
@@ -73,6 +73,38 @@ class GeocodingRequestTest {
         actualRequest.getUrlParameters().get("address"));
 
     assertEquals(apiKeyManagerMock.read().get(), actualRequest.getUrlParameters().get("key"));
+  }
+
+  @Test
+  void create_doesNotAppendApiKeyUrlParamIfNoApiKeyWasFound() throws MalformedURLException {
+    // given
+    assert apiKeyManagerMock.read().isPresent(); // pre-check proper test setup
+    when(apiKeyManagerMock.read()).thenReturn(Optional.empty());
+
+    // when
+    GeocodingRequest actualRequest = GeocodingRequest.create(apiKeyManagerMock, addressMock);
+
+    // then
+    assertNull(actualRequest.getUrlParameters().get("key"));
+  }
+
+  @Test
+  void create_throwsOnNullApiKeyManager() {
+    // when then
+    assertThrows(
+        NullPointerException.class,
+        () -> GeocodingRequest.create(null, addressMock));
+  }
+
+  @Test
+  void create_throwsOnNullAddress() {
+    // given
+    addressMock = null;
+
+    // when then
+    assertThrows(
+        NullPointerException.class,
+        () -> GeocodingRequest.create(apiKeyManagerMock, addressMock));
   }
 
   /*@Test
