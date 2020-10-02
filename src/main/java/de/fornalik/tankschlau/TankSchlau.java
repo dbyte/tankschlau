@@ -30,6 +30,7 @@ import de.fornalik.tankschlau.util.UserPrefs;
 import de.fornalik.tankschlau.webserviceapi.ApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.ApiKeyStore;
 import de.fornalik.tankschlau.webserviceapi.UserPrefsApiKeyStore;
+import de.fornalik.tankschlau.webserviceapi.google.GeocodingApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigRequest;
 
@@ -46,8 +47,12 @@ public class TankSchlau {
       new PetrolStationsJsonAdapter();
 
   private static final ApiKeyStore API_KEY_STORE = new UserPrefsApiKeyStore(USER_PREFS);
+
   public static final ApiKeyManager TANKERKOENIG_APIKEY_MANAGER =
       new TankerkoenigApiKeyManager(API_KEY_STORE);
+
+  public static final ApiKeyManager GEOCODING_APIKEY_MANAGER =
+      new GeocodingApiKeyManager(API_KEY_STORE);
 
   // Start application
   public static void main(String[] args) throws MalformedURLException {
@@ -55,6 +60,8 @@ public class TankSchlau {
     // in a specified storage.
     if (args.length >= 1)
       TANKERKOENIG_APIKEY_MANAGER.write(args[0]);
+    if (args.length >= 2)
+      GEOCODING_APIKEY_MANAGER.write(args[1]);
 
     // Example: Writing some user geo data to user prefs
     // USER_PREFS.writeGeo(new Geo(52.4079755, 10.7725368, 8.0));
