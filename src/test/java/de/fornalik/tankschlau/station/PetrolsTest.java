@@ -1,9 +1,7 @@
 package de.fornalik.tankschlau.station;
 
-import com.google.gson.JsonObject;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.FixtureFiles;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonResponseHelp;
-import org.apache.commons.lang3.tuple.Pair;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonFixtureTestsuite;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -12,7 +10,7 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PetrolsTest {
+class PetrolsTest extends JsonFixtureTestsuite {
 
   // region createFromJson Tests
   /*
@@ -23,31 +21,22 @@ class PetrolsTest {
   @Test
   void createFromJson_doesCreateAllPetrols() {
     // given
-    Pair<JsonResponseHelp, JsonObject> responseHelp =
-        JsonResponseHelp.createFirstStationFromJsonFile(
-            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
-
-    JsonResponseHelp fixture = responseHelp.getLeft();
-    JsonObject jsonStationFix = responseHelp.getRight();
+    setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
 
     // when
-    Set<Petrol> actualPetrols = Petrols.createFromJson(jsonStationFix);
+    Set<Petrol> actualPetrols = Petrols.createFromJson(jsonFixture);
 
     // then
-    fixture.assertEqualValuesIgnoringSort(actualPetrols, 0);
+    objectFixture.assertEqualValuesIgnoringSort(actualPetrols, 0);
   }
 
   @Test
   void createFromJson_doesNotCreatePetrolsForMissingPrices() {
     // given
-    Pair<JsonResponseHelp, JsonObject> responseHelp =
-        JsonResponseHelp.createFirstStationFromJsonFile(
-            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_DIESEL_AND_E5);
-
-    JsonObject jsonStationFix = responseHelp.getRight();
+    setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_DIESEL_AND_E5);
 
     // when
-    Set<Petrol> actualPetrols = Petrols.createFromJson(jsonStationFix);
+    Set<Petrol> actualPetrols = Petrols.createFromJson(jsonFixture);
 
     // then
     // Expect that only 1 Petrol was created, because 2 of them miss their price in JSON.
@@ -57,14 +46,10 @@ class PetrolsTest {
   @Test
   void createFromJson_doesNotCreatePetrolsWithZeroPrice() {
     // given
-    Pair<JsonResponseHelp, JsonObject> responseHelp =
-        JsonResponseHelp.createFirstStationFromJsonFile(
-            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_ZERO_PRICE_DIESEL_AND_E10);
-
-    JsonObject jsonStationFix = responseHelp.getRight();
+    setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_ZERO_PRICE_DIESEL_AND_E10);
 
     // when
-    Set<Petrol> actualPetrols = Petrols.createFromJson(jsonStationFix);
+    Set<Petrol> actualPetrols = Petrols.createFromJson(jsonFixture);
 
     // then
     // Expect that only 1 Petrol was created, because 2 of them have a 0.0 price JSON.

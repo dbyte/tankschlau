@@ -2,10 +2,8 @@ package de.fornalik.tankschlau.station;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.FixtureFiles;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonResponseHelp;
-import org.apache.commons.lang3.tuple.Pair;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonFixtureTestsuite;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -16,7 +14,7 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PetrolStationsJsonAdapterTest {
+class PetrolStationsJsonAdapterTest extends JsonFixtureTestsuite {
   private static Gson gson;
   private static PetrolStationsJsonAdapter petrolStationsJsonAdapter;
 
@@ -37,11 +35,7 @@ class PetrolStationsJsonAdapterTest {
   @Test
   void read_oneStation_happy() {
     // given
-    Pair<JsonResponseHelp, JsonObject> responseHelp = JsonResponseHelp.createFromJsonFile(
-        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
-
-    JsonResponseHelp objectFixture = responseHelp.getLeft();
-    JsonObject jsonFixture = responseHelp.getRight();
+    setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
 
     // when
     ArrayList<PetrolStation> actualPetrolStations = gson.fromJson(
@@ -58,7 +52,6 @@ class PetrolStationsJsonAdapterTest {
   @Test
   void read_oneStation_returnsEmptyArrayIfJsonArrayElementsAreNoJsonObjects() {
     // given
-    PetrolStationsJsonAdapter sut = new PetrolStationsJsonAdapter();
     FileReader reader = FixtureFiles.getFileReaderForResource(
         FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_STATIONS_ARRAY_IS_STRING_ARRAY);
 
@@ -79,8 +72,7 @@ class PetrolStationsJsonAdapterTest {
   @Test
   void read_oneStation_returnsEmptyArrayOnMissingIdElement() {
     // given
-    JsonObject jsonFixture = JsonResponseHelp.createFromJsonFile(
-        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_MISSING_ID_ELEM).getRight();
+    setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_MISSING_ID_ELEM);
 
     // when
     ArrayList<PetrolStation> actualPetrolStations = gson.fromJson(
@@ -95,8 +87,7 @@ class PetrolStationsJsonAdapterTest {
   @Test
   void read_oneStation_acceptsEmptyBrand() {
     // given
-    JsonObject jsonFixture = JsonResponseHelp.createFromJsonFile(
-        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_HOUSENUM_AND_BRAND).getRight();
+    setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_HOUSENUM_AND_BRAND);
 
     // when
     ArrayList<PetrolStation> actualPetrolStations = gson.fromJson(
@@ -111,10 +102,7 @@ class PetrolStationsJsonAdapterTest {
   @Test
   void read_noStations_returnsEmptyArrayOnMissingStationsElement() {
     // given
-    JsonObject jsonFixture = JsonResponseHelp
-        .createFromJsonFile(
-            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_STATIONS_ELEM)
-        .getRight();
+    setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_STATIONS_ELEM);
 
     // when
     ArrayList<PetrolStation> actualPetrolStations = gson.fromJson(
@@ -129,8 +117,7 @@ class PetrolStationsJsonAdapterTest {
   @Test
   void read_emptyStations_returnsEmptyArrayOnEmptyStationsJsonArray() {
     // given
-    JsonObject jsonFixture = JsonResponseHelp.createFromJsonFile(
-        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_STATION_ARRAY).getRight();
+    setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_STATION_ARRAY);
 
     // when
     ArrayList<PetrolStation> actualPetrolStations = gson.fromJson(
@@ -145,11 +132,7 @@ class PetrolStationsJsonAdapterTest {
   @Test
   void read_multipleStations_happy() {
     // given
-    Pair<JsonResponseHelp, JsonObject> responseHelp = JsonResponseHelp.createFromJsonFile(
-        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_17STATIONS_HAPPY);
-
-    JsonResponseHelp objectFixture = responseHelp.getLeft();
-    JsonObject jsonFixture = responseHelp.getRight();
+    setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_17STATIONS_HAPPY);
 
     // when
     ArrayList<PetrolStation> actualPetrolStations = gson.fromJson(
@@ -166,10 +149,7 @@ class PetrolStationsJsonAdapterTest {
   @Test
   void read_multipleStations_discardsTwoInvalidStationsAndKeepsTwoValidOnes() {
     // given
-    Pair<JsonResponseHelp, JsonObject> responseHelp = JsonResponseHelp.createFromJsonFile(
-        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_2INVALID_2VALID);
-
-    JsonObject jsonFixture = responseHelp.getRight();
+    setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_2INVALID_2VALID);
 
     // when
     ArrayList<PetrolStation> actualValidPetrolStations = gson.fromJson(
@@ -180,7 +160,7 @@ class PetrolStationsJsonAdapterTest {
     // Expect that 2 valid stations have been created.
     assertEquals(2, actualValidPetrolStations.size());
 
-    // Expect exactly 2 collected error messages (of the 2 invalid fixtured stations)
+    // Expect exactly 2 collected error messages (of the 2 invalid fixed stations)
     assertEquals(2, petrolStationsJsonAdapter.getErrorMessages().size());
   }
 

@@ -1,10 +1,8 @@
 package de.fornalik.tankschlau.geo;
 
-import com.google.gson.JsonObject;
 import de.fornalik.tankschlau.util.StringLegalizer;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.FixtureFiles;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonResponseHelp;
-import org.apache.commons.lang3.tuple.Pair;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonFixtureTestsuite;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -15,7 +13,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AddressTest {
+class AddressTest extends JsonFixtureTestsuite {
 
   @ParameterizedTest
   @CsvSource(value = {
@@ -66,32 +64,23 @@ class AddressTest {
   @Test
   void createFromJson_happy() {
     // given
-    Pair<JsonResponseHelp, JsonObject> responseHelp =
-        JsonResponseHelp.createFirstStationFromJsonFile(
-            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
-
-    JsonResponseHelp responseFixture = responseHelp.getLeft();
-    JsonObject jsonFirstStationFixture = responseHelp.getRight();
+    setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
 
     // when
-    Address actualAddress = Address.createFromJson(jsonFirstStationFixture);
+    Address actualAddress = Address.createFromJson(jsonFixture);
 
     // then
     assertNotNull(actualAddress);
-    responseFixture.assertEqualValues(actualAddress, 0);
+    objectFixture.assertEqualValues(actualAddress, 0);
   }
 
   @Test
   void createFromJson_acceptsEmptyHouseNumber() {
     // given
-    Pair<JsonResponseHelp, JsonObject> responseHelp =
-        JsonResponseHelp.createFirstStationFromJsonFile(
-            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_HOUSENUM_AND_BRAND);
-
-    JsonObject jsonFirstStationFixture = responseHelp.getRight();
+    setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_HOUSENUM_AND_BRAND);
 
     // when
-    Address actualAddress = Address.createFromJson(jsonFirstStationFixture);
+    Address actualAddress = Address.createFromJson(jsonFixture);
 
     // then
     assertEquals("", actualAddress.getHouseNumber());
@@ -100,14 +89,10 @@ class AddressTest {
   @Test
   void createFromJson_returnsEmptyOptionalGeoObjectIfAllGeoElementsAreMissing() {
     // given
-    Pair<JsonResponseHelp, JsonObject> responseHelp =
-        JsonResponseHelp.createFirstStationFromJsonFile(
-            FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_ALL_GEO_ELEM);
-
-    JsonObject jsonFirstStationFixture = responseHelp.getRight();
+    setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_ALL_GEO_ELEM);
 
     // when
-    Address actualAddress = Address.createFromJson(jsonFirstStationFixture);
+    Address actualAddress = Address.createFromJson(jsonFixture);
 
     // then
     assertNotNull(actualAddress);

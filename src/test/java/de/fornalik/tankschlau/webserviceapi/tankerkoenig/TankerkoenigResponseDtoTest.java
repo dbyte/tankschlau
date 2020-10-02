@@ -17,11 +17,9 @@
 package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import de.fornalik.tankschlau.station.PetrolStationsJsonAdapter;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.FixtureFiles;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonResponseHelp;
-import org.apache.commons.lang3.tuple.Pair;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonFixtureTestsuite;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,14 +27,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class TankerkoenigResponseDtoTest {
+class TankerkoenigResponseDtoTest extends JsonFixtureTestsuite {
   private static Gson gson;
   private static PetrolStationsJsonAdapter petrolStationsJsonAdapter;
-
   private TankerkoenigResponseDto actualTankerkoenigResponseDto;
-  private Pair<JsonResponseHelp, JsonObject> responseHelp;
-  private JsonResponseHelp objectFixture;
-  private JsonObject jsonFixture;
 
   @BeforeAll
   static void beforeAll() {
@@ -53,9 +47,6 @@ class TankerkoenigResponseDtoTest {
   @BeforeEach
   void setUp() {
     this.actualTankerkoenigResponseDto = null;
-    this.responseHelp = null;
-    this.objectFixture = null;
-    this.jsonFixture = null;
   }
 
   @Test
@@ -71,11 +62,5 @@ class TankerkoenigResponseDtoTest {
     // then
     assertNotNull(actualTankerkoenigResponseDto);
     objectFixture.assertEqualValues(actualTankerkoenigResponseDto);
-  }
-
-  private void setupFixture(String resourceName) {
-    responseHelp = JsonResponseHelp.createFromJsonFile(resourceName);
-    objectFixture = responseHelp.getLeft();
-    jsonFixture = responseHelp.getRight();
   }
 }

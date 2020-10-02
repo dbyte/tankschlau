@@ -8,8 +8,7 @@ import de.fornalik.tankschlau.net.OkHttpClient;
 import de.fornalik.tankschlau.net.Request;
 import de.fornalik.tankschlau.net.Response;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.FixtureFiles;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonResponseHelp;
-import org.apache.commons.lang3.tuple.Pair;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonFixtureTestsuite;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,16 +26,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class PetrolStationsTest {
+class PetrolStationsTest extends JsonFixtureTestsuite {
   private static TypeAdapter<?> petrolStationsGsonAdapter;
   private static HttpClient httpClientMock;
   private static Request requestMock;
   private static Response responseMock;
 
   private List<PetrolStation> actualPetrolStations;
-  private Pair<JsonResponseHelp, JsonObject> responseHelp;
-  private JsonResponseHelp objectFixture;
-  private JsonObject jsonFixture;
 
   @BeforeAll
   static void beforeAll() {
@@ -53,7 +49,6 @@ class PetrolStationsTest {
 
   @BeforeEach
   void setUp() {
-    responseHelp = null;
     actualPetrolStations = null;
   }
 
@@ -222,11 +217,5 @@ class PetrolStationsTest {
       System.out.print(" | DISTANCE > " + elem.address.getGeo().flatMap(Geo::getDistance));
       System.out.println();
     });
-  }
-
-  private void setupFixture(String resourceName) {
-    responseHelp = JsonResponseHelp.createFromJsonFile(resourceName);
-    objectFixture = responseHelp.getLeft();
-    jsonFixture = responseHelp.getRight();
   }
 }
