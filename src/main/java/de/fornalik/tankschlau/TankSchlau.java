@@ -56,7 +56,7 @@ public class TankSchlau {
 
   // Start application
   public static void main(String[] args) throws MalformedURLException {
-    // Offer option to pass a tankerkoenig.de API key at startup which we persist
+    // Offer option to pass a tankerkoenig- and geocoding-api-key at startup which we persist
     // in a specified storage.
     if (args.length >= 1)
       TANKERKOENIG_APIKEY_MANAGER.write(args[0]);

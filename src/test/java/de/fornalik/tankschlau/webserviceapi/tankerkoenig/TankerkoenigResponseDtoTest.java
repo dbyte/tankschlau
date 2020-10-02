@@ -18,9 +18,9 @@ package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import de.fornalik.tankschlau.helpers.response.FixtureFiles;
-import de.fornalik.tankschlau.helpers.response.JsonResponseHelp;
 import de.fornalik.tankschlau.station.PetrolStationsJsonAdapter;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.FixtureFiles;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonResponseHelp;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
