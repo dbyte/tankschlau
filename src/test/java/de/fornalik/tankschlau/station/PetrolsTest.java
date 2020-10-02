@@ -34,7 +34,7 @@ class PetrolsTest {
     Set<Petrol> actualPetrols = Petrols.createFromJson(jsonStationFix);
 
     // then
-    fixture.assertEqualsIgnoringSort(actualPetrols, 0);
+    fixture.assertEqualValuesIgnoringSort(actualPetrols, 0);
   }
 
   @Test

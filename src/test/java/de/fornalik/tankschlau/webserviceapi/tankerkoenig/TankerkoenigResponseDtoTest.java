@@ -38,14 +38,6 @@ class TankerkoenigResponseDtoTest {
   private JsonResponseHelp objectFixture;
   private JsonObject jsonFixture;
 
-  @BeforeEach
-  void setUp() {
-    this.actualTankerkoenigResponseDto = null;
-    this.responseHelp = null;
-    this.objectFixture = null;
-    this.jsonFixture = null;
-  }
-
   @BeforeAll
   static void beforeAll() {
     petrolStationsJsonAdapter = new PetrolStationsJsonAdapter();
@@ -56,6 +48,14 @@ class TankerkoenigResponseDtoTest {
   static void afterAll() {
     gson = null;
     petrolStationsJsonAdapter = null;
+  }
+
+  @BeforeEach
+  void setUp() {
+    this.actualTankerkoenigResponseDto = null;
+    this.responseHelp = null;
+    this.objectFixture = null;
+    this.jsonFixture = null;
   }
 
   @Test
@@ -74,9 +74,7 @@ class TankerkoenigResponseDtoTest {
   }
 
   private void setupFixture(String resourceName) {
-    responseHelp = JsonResponseHelp.createFromJsonFile(
-        resourceName);
-
+    responseHelp = JsonResponseHelp.createFromJsonFile(resourceName);
     objectFixture = responseHelp.getLeft();
     jsonFixture = responseHelp.getRight();
   }

@@ -140,14 +140,14 @@ public class JsonResponseHelp {
   }
 
   /**
-   * List version of {@link #assertEqualsIgnoringSort(PetrolStation)}.
+   * List version of {@link #assertEqualValues(PetrolStation)}.
    *
    * @param petrolStations The {@link PetrolStation} list to be checked for deep value equality.
    */
-  public void assertEqualsIgnoringSort(List<PetrolStation> petrolStations) {
+  public void assertEqualValuesIgnoringSort(List<PetrolStation> petrolStations) {
     Objects.requireNonNull(petrolStations);
     Assertions.assertEquals(this.stations.size(), petrolStations.size());
-    petrolStations.forEach(this::assertEqualsIgnoringSort);
+    petrolStations.forEach(this::assertEqualValues);
   }
 
   /**
@@ -155,7 +155,7 @@ public class JsonResponseHelp {
    *
    * @param petrolStation The {@link PetrolStation} to be checked for deep value equality.
    */
-  public void assertEqualsIgnoringSort(PetrolStation petrolStation) {
+  public void assertEqualValues(PetrolStation petrolStation) {
     /* Preconditions for running the test. Note these checks are not subject to the test itself.
     Thus, we don't use Junit assertions here. */
 
@@ -176,10 +176,10 @@ public class JsonResponseHelp {
     Assertions.assertEquals(fixture.isOpen, petrolStation.isOpen);
 
     Assertions.assertNotNull(petrolStation.address);
-    this.assertEqualsIgnoringSort(petrolStation.address, stations.indexOf(fixture));
+    this.assertEqualValues(petrolStation.address, stations.indexOf(fixture));
 
     Set<Petrol> actualPetrols = new HashSet<>(petrolStation.getPetrols());
-    this.assertEqualsIgnoringSort(actualPetrols, stations.indexOf(fixture));
+    this.assertEqualValuesIgnoringSort(actualPetrols, stations.indexOf(fixture));
   }
 
   /**
@@ -189,7 +189,7 @@ public class JsonResponseHelp {
    * @param addressUnderTest The Address object to test for equality with the generated fixture.
    * @param fixtureIdx       Array index of the generated PetrolStation fixture to compare with.
    */
-  public void assertEqualsIgnoringSort(Address addressUnderTest, int fixtureIdx) {
+  public void assertEqualValues(Address addressUnderTest, int fixtureIdx) {
     /* Preconditions for running the test. Note these checks are not subject to the test itself.
     Thus, we don't use Junit assertions here. */
     assert addressUnderTest != null;
@@ -206,7 +206,7 @@ public class JsonResponseHelp {
     Assertions.assertEquals(fixture.city, addressUnderTest.getCity());
     Assertions.assertEquals(fixture.postCode, addressUnderTest.getPostCode());
 
-    this.assertEqualsIgnoringSort(addressUnderTest.getGeo().orElse(null), fixtureIdx);
+    this.assertEqualValues(addressUnderTest.getGeo().orElse(null), fixtureIdx);
   }
 
   /**
@@ -217,7 +217,7 @@ public class JsonResponseHelp {
    *                     explicitly <b>allowed</b>, respecting equality checks of Optional.empty().
    * @param fixtureIdx   Array index of the generated PetrolStation fixture to compare with.
    */
-  public void assertEqualsIgnoringSort(Geo geoUnderTest, int fixtureIdx) {
+  public void assertEqualValues(Geo geoUnderTest, int fixtureIdx) {
     Optional<Geo> optGeoUnderTest = Optional.ofNullable(geoUnderTest);
 
     // Get station by given index
@@ -244,7 +244,7 @@ public class JsonResponseHelp {
    *                   generated Petrols fixture.
    * @param fixtureIdx Array index of the generated PetrolStation fixture to compare with.
    */
-  public void assertEqualsIgnoringSort(Set<Petrol> petrolSet, int fixtureIdx) {
+  public void assertEqualValuesIgnoringSort(Set<Petrol> petrolSet, int fixtureIdx) {
     assert petrolSet != null;
 
     // Get station by given index

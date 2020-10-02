@@ -78,7 +78,7 @@ class PetrolStationsTest {
         petrolStationsGsonAdapter);
 
     // then
-    objectFixture.assertEqualsIgnoringSort(actualPetrolStations);
+    objectFixture.assertEqualValuesIgnoringSort(actualPetrolStations);
   }
 
   @Test
@@ -115,7 +115,7 @@ class PetrolStationsTest {
         .createFromJson(jsonFixture, petrolStationsGsonAdapter);
 
     // then
-    objectFixture.assertEqualsIgnoringSort(actualPetrolStations);
+    objectFixture.assertEqualValuesIgnoringSort(actualPetrolStations);
   }
 
   @Test
