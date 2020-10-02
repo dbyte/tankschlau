@@ -19,7 +19,7 @@ package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 import com.google.gson.Gson;
 import de.fornalik.tankschlau.station.PetrolStationsJsonAdapter;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.FixtureFiles;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonFixtureTestsuite;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonResponseHelp;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,9 +27,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class TankerkoenigResponseDtoTest extends JsonFixtureTestsuite {
+class TankerkoenigResponseDtoTest {
   private static Gson gson;
   private static PetrolStationsJsonAdapter petrolStationsJsonAdapter;
+  private JsonResponseHelp fixture;
   private TankerkoenigResponseDto actualTankerkoenigResponseDto;
 
   @BeforeAll
@@ -46,21 +47,22 @@ class TankerkoenigResponseDtoTest extends JsonFixtureTestsuite {
 
   @BeforeEach
   void setUp() {
-    this.actualTankerkoenigResponseDto = null;
+    fixture = new JsonResponseHelp();
+    actualTankerkoenigResponseDto = null;
   }
 
   @Test
   void read_oneStation_happy() {
     // given
-    setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
+    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
 
     // when
     actualTankerkoenigResponseDto = gson.fromJson(
-        jsonFixture,
+        fixture.jsonFixture,
         TankerkoenigResponseDto.class);
 
     // then
     assertNotNull(actualTankerkoenigResponseDto);
-    objectFixture.assertEqualValues(actualTankerkoenigResponseDto);
+    fixture.assertEqualValues(actualTankerkoenigResponseDto);
   }
 }

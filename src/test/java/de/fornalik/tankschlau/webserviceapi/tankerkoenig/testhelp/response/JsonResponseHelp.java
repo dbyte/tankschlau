@@ -43,68 +43,53 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * to be able to null them for testing purposes.
  */
 public class JsonResponseHelp {
-  @SerializedName("ok") public Boolean ok;
-  @SerializedName("license") public String license;
-  @SerializedName("data") public String data;
-  @SerializedName("status") public String status;
-  @SerializedName("stations") public ArrayList<StationDTO> stations;
+  public ResponseDTO objectFixture;
+  public JsonObject jsonFixture;
 
-  private JsonResponseHelp() {
-    stations = new ArrayList<>();
+  public JsonResponseHelp() {
+    this.objectFixture = new ResponseDTO();
   }
 
   /**
-   * Creates two test-fixture objects by reading a JSON response fixture file.<br/>
-   * 1) a JsonResponseHelp which we can use e.g. for equality checks.<br/>
-   * 2) a {@link JsonObject} of the JSON file fixture.
+   * Computes two test-fixture objects by reading a JSON response fixture file.<br/>
+   * 1) {@link ResponseDTO} which we can use e.g. for equality checks.<br/>
+   * 2) {@link JsonObject} of the JSON file fixture.
    *
    * @param resName Resource path as String. Note that the implicit resource root path must not
    *                be included here.
-   * @return Two objects! 1. JsonResponseHelp and 2. JsonObject which is produced by reading a
-   * JSON test-fixture resource file. Decompose by using .get(0) and get(1). <br>
-   * .get(0): resulting fixture as instance of JsonResponseHelp <br>
-   * .get(1): resulting fixture as instance of JsonObject <br>
    */
-  public static List<Object> createFromJsonFile(String resName) {
+  public void setupFixture(String resName) {
     Objects.requireNonNull(resName);
 
     FileReader reader1 = FixtureFiles.getFileReaderForResource(resName);
     FileReader reader2 = FixtureFiles.getFileReaderForResource(resName);
+
     Gson gson = new Gson();
 
-    JsonResponseHelp objectFixture = gson.fromJson(reader1, JsonResponseHelp.class);
-    JsonObject jsonFixture = (JsonObject) JsonParser.parseReader(reader2);
-
-    return Arrays.asList(objectFixture, jsonFixture);
+    this.objectFixture = gson.fromJson(reader1, ResponseDTO.class);
+    this.jsonFixture = (JsonObject) JsonParser.parseReader(reader2);
   }
 
   /**
-   * Creates two test-fixture objects by reading a JSON response fixture file.<br/>
+   * Computes two test-fixture objects by reading a JSON response fixture file.<br/>
    * The returned JSON of this method does only include the <b>first station</b> of the response!
    * <p>
-   * 1) a JsonResponseHelp which we can use e.g. for equality checks.<br/>
-   * 2) a {@link JsonObject} of the <b>first station</b> found within the JSON file fixture.
+   * 1) {@link ResponseDTO} which we can use e.g. for equality checks.<br/>
+   * 2) {@link JsonObject} of the <b>first station</b> found within the JSON file fixture.
    *
-   * @return Two objects! <br/>
-   * 1. JsonResponseHelp which we can use e.g. for equality checks. <br/>
-   * 2. {@link JsonObject} of the <b>first {@link PetrolStation}</b> found within the
-   * JSON file fixture.
-   * @see #createFromJsonFile(String resName)
+   * @see #setupFixture(String resName)
    */
-  public static List<Object> createFirstStationFromJsonFile(String resName) {
+  public void setupSingleFixture(String resName) {
     Objects.requireNonNull(resName);
 
-    List<Object> responseHelp = createFromJsonFile(resName);
-    JsonObject jsonObject = (JsonObject) responseHelp.get(1);
+    setupFixture(resName);
 
-    assert jsonObject.getAsJsonArray("stations") != null;
+    assert this.jsonFixture.getAsJsonArray("stations") != null;
 
-    JsonObject jsonFirstStationOfStationArrayFixture = jsonObject
+    this.jsonFixture = this.jsonFixture
         .getAsJsonArray("stations")
         .get(0)
         .getAsJsonObject();
-
-    return Arrays.asList(responseHelp.get(0), jsonFirstStationOfStationArrayFixture);
   }
 
   /**
@@ -115,7 +100,7 @@ public class JsonResponseHelp {
   public List<PetrolStation> convertToPetrolStations() {
     List<PetrolStation> petrolStations = new ArrayList<>();
 
-    for (StationDTO dto : stations) {
+    for (StationDTO dto : objectFixture.stations) {
       Geo geo = new Geo(dto.lat, dto.lng, dto.distanceKm);
 
       Address address = new Address(
@@ -149,9 +134,9 @@ public class JsonResponseHelp {
   public void assertEqualValues(TankerkoenigResponseDto responseDtoUnderTest) {
     Objects.requireNonNull(responseDtoUnderTest);
 
-    assertEquals(this.ok, responseDtoUnderTest.isOk());
-    assertEquals(this.license, responseDtoUnderTest.getLicense());
-    assertEquals(this.status, responseDtoUnderTest.getStatus());
+    assertEquals(objectFixture.ok, responseDtoUnderTest.isOk());
+    assertEquals(objectFixture.license, responseDtoUnderTest.getLicense());
+    assertEquals(objectFixture.status, responseDtoUnderTest.getStatus());
   }
 
   /**
@@ -161,7 +146,7 @@ public class JsonResponseHelp {
    */
   public void assertEqualValuesIgnoringSort(List<PetrolStation> petrolStations) {
     Objects.requireNonNull(petrolStations);
-    Assertions.assertEquals(this.stations.size(), petrolStations.size());
+    Assertions.assertEquals(objectFixture.stations.size(), petrolStations.size());
     petrolStations.forEach(this::assertEqualValues);
   }
 
@@ -177,10 +162,10 @@ public class JsonResponseHelp {
     assert petrolStation != null;
 
     // Find required JsonResponseHelp for the PetrolStation under test.
-    StationDTO fixture = stations.stream()
-                                 .filter(fixt -> fixt.uuid.equals(petrolStation.uuid))
-                                 .findFirst()
-                                 .orElse(null);
+    StationDTO fixture = objectFixture.stations.stream()
+                                               .filter(fixt -> fixt.uuid.equals(petrolStation.uuid))
+                                               .findFirst()
+                                               .orElse(null);
 
     assert fixture != null;
 
@@ -191,10 +176,10 @@ public class JsonResponseHelp {
     Assertions.assertEquals(fixture.isOpen, petrolStation.isOpen);
 
     Assertions.assertNotNull(petrolStation.address);
-    this.assertEqualValues(petrolStation.address, stations.indexOf(fixture));
+    this.assertEqualValues(petrolStation.address, objectFixture.stations.indexOf(fixture));
 
     Set<Petrol> actualPetrols = new HashSet<>(petrolStation.getPetrols());
-    this.assertEqualValuesIgnoringSort(actualPetrols, stations.indexOf(fixture));
+    this.assertEqualValuesIgnoringSort(actualPetrols, objectFixture.stations.indexOf(fixture));
   }
 
   /**
@@ -210,7 +195,7 @@ public class JsonResponseHelp {
     assert addressUnderTest != null;
 
     // Get station by given index
-    StationDTO fixture = stations.get(fixtureIdx);
+    StationDTO fixture = objectFixture.stations.get(fixtureIdx);
     assert fixture != null;
 
     // Begin test
@@ -236,7 +221,7 @@ public class JsonResponseHelp {
     Optional<Geo> optGeoUnderTest = Optional.ofNullable(geoUnderTest);
 
     // Get station by given index
-    StationDTO fixture = stations.get(fixtureIdx);
+    StationDTO fixture = objectFixture.stations.get(fixtureIdx);
     assert fixture != null;
 
     // Begin test
@@ -263,7 +248,7 @@ public class JsonResponseHelp {
     assert petrolSet != null;
 
     // Get station by given index
-    StationDTO fixture = stations.get(fixtureIdx);
+    StationDTO fixture = objectFixture.stations.get(fixtureIdx);
     assert fixture != null;
 
     // Find price of object under test by given PetrolType
@@ -287,6 +272,18 @@ public class JsonResponseHelp {
   }
 
   // endregion
+
+  public static class ResponseDTO {
+    @SerializedName("ok") public Boolean ok;
+    @SerializedName("license") public String license;
+    @SerializedName("data") public String data;
+    @SerializedName("status") public String status;
+    @SerializedName("stations") public ArrayList<StationDTO> stations;
+
+    ResponseDTO() {
+      stations = new ArrayList<>();
+    }
+  }
 
   /**
    * Transfer class to easily convert a Tankerkoenig.de API JSON response file to a

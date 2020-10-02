@@ -1,7 +1,8 @@
 package de.fornalik.tankschlau.station;
 
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.FixtureFiles;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonFixtureTestsuite;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonResponseHelp;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -10,7 +11,13 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PetrolsTest extends JsonFixtureTestsuite {
+class PetrolsTest {
+  private JsonResponseHelp fixture;
+
+  @BeforeEach
+  void setUp() {
+    fixture = new JsonResponseHelp();
+  }
 
   // region createFromJson Tests
   /*
@@ -21,22 +28,22 @@ class PetrolsTest extends JsonFixtureTestsuite {
   @Test
   void createFromJson_doesCreateAllPetrols() {
     // given
-    setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
+    fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
 
     // when
-    Set<Petrol> actualPetrols = Petrols.createFromJson(jsonFixture);
+    Set<Petrol> actualPetrols = Petrols.createFromJson(fixture.jsonFixture);
 
     // then
-    objectFixture.assertEqualValuesIgnoringSort(actualPetrols, 0);
+    fixture.assertEqualValuesIgnoringSort(actualPetrols, 0);
   }
 
   @Test
   void createFromJson_doesNotCreatePetrolsForMissingPrices() {
     // given
-    setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_DIESEL_AND_E5);
+    fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_DIESEL_AND_E5);
 
     // when
-    Set<Petrol> actualPetrols = Petrols.createFromJson(jsonFixture);
+    Set<Petrol> actualPetrols = Petrols.createFromJson(fixture.jsonFixture);
 
     // then
     // Expect that only 1 Petrol was created, because 2 of them miss their price in JSON.
@@ -46,10 +53,10 @@ class PetrolsTest extends JsonFixtureTestsuite {
   @Test
   void createFromJson_doesNotCreatePetrolsWithZeroPrice() {
     // given
-    setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_ZERO_PRICE_DIESEL_AND_E10);
+    fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_ZERO_PRICE_DIESEL_AND_E10);
 
     // when
-    Set<Petrol> actualPetrols = Petrols.createFromJson(jsonFixture);
+    Set<Petrol> actualPetrols = Petrols.createFromJson(fixture.jsonFixture);
 
     // then
     // Expect that only 1 Petrol was created, because 2 of them have a 0.0 price JSON.

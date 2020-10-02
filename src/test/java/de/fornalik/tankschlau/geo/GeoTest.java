@@ -1,7 +1,8 @@
 package de.fornalik.tankschlau.geo;
 
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.FixtureFiles;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonFixtureTestsuite;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonResponseHelp;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -10,7 +11,14 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class GeoTest extends JsonFixtureTestsuite {
+class GeoTest {
+  private JsonResponseHelp fixture;
+
+  @BeforeEach
+  void setUp() {
+    fixture = new JsonResponseHelp();
+  }
+
   @Test
   void constructor_happy() {
     assertDoesNotThrow(() -> new Geo(-85.05112878, 64.03711, 23.56));
@@ -61,23 +69,23 @@ class GeoTest extends JsonFixtureTestsuite {
   @Test
   void createFromJson_happy() {
     // given
-    setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
+    fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
 
     // when
-    Geo actualGeo = Geo.createFromJson(jsonFixture);
+    Geo actualGeo = Geo.createFromJson(fixture.jsonFixture);
 
     // then
     assertNotNull(actualGeo);
-    objectFixture.assertEqualValues(actualGeo, 0);
+    fixture.assertEqualValues(actualGeo, 0);
   }
 
   @Test
   void createFromJson_doesHandleMissingDistanceElement() {
     // given
-    setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_DIST_ELEM);
+    fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_DIST_ELEM);
 
     // when
-    Geo actualGeo = Geo.createFromJson(jsonFixture);
+    Geo actualGeo = Geo.createFromJson(fixture.jsonFixture);
 
     // then
     assertNotNull(actualGeo);
@@ -87,10 +95,10 @@ class GeoTest extends JsonFixtureTestsuite {
   @Test
   void createFromJson_setsLatLonToZeroOnMissingLatLonElements() {
     // given
-    setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_LAT_LON_ELEM);
+    fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_LAT_LON_ELEM);
 
     // when
-    Geo actualGeo = Geo.createFromJson(jsonFixture);
+    Geo actualGeo = Geo.createFromJson(fixture.jsonFixture);
 
     // then
     assertNotNull(actualGeo);

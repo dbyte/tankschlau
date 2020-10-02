@@ -8,7 +8,7 @@ import de.fornalik.tankschlau.net.OkHttpClient;
 import de.fornalik.tankschlau.net.Request;
 import de.fornalik.tankschlau.net.Response;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.FixtureFiles;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonFixtureTestsuite;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonResponseHelp;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,12 +26,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class PetrolStationsTest extends JsonFixtureTestsuite {
+class PetrolStationsTest {
   private static TypeAdapter<?> petrolStationsGsonAdapter;
   private static HttpClient httpClientMock;
   private static Request requestMock;
   private static Response responseMock;
-
+  private JsonResponseHelp fixture;
   private List<PetrolStation> actualPetrolStations;
 
   @BeforeAll
@@ -49,6 +49,7 @@ class PetrolStationsTest extends JsonFixtureTestsuite {
 
   @BeforeEach
   void setUp() {
+    fixture = new JsonResponseHelp();
     actualPetrolStations = null;
   }
 
@@ -61,9 +62,9 @@ class PetrolStationsTest extends JsonFixtureTestsuite {
   void createFromWebService_createsAllStationsFromResponse()
   throws IOException {
     // given
-    setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
+    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
 
-    when(responseMock.getBody()).thenReturn(Optional.of(jsonFixture));
+    when(responseMock.getBody()).thenReturn(Optional.of(fixture.jsonFixture));
     when(httpClientMock.newCall(requestMock)).thenReturn(responseMock);
 
     // when
@@ -73,7 +74,7 @@ class PetrolStationsTest extends JsonFixtureTestsuite {
         petrolStationsGsonAdapter);
 
     // then
-    objectFixture.assertEqualValuesIgnoringSort(actualPetrolStations);
+    fixture.assertEqualValuesIgnoringSort(actualPetrolStations);
   }
 
   @Test
@@ -103,14 +104,14 @@ class PetrolStationsTest extends JsonFixtureTestsuite {
   @Test
   void createFromJson_doesCreateAllPetrolStations() {
     // given
-    setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
+    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
 
     // when
     actualPetrolStations = PetrolStations
-        .createFromJson(jsonFixture, petrolStationsGsonAdapter);
+        .createFromJson(fixture.jsonFixture, petrolStationsGsonAdapter);
 
     // then
-    objectFixture.assertEqualValuesIgnoringSort(actualPetrolStations);
+    fixture.assertEqualValuesIgnoringSort(actualPetrolStations);
   }
 
   @Test
@@ -126,12 +127,12 @@ class PetrolStationsTest extends JsonFixtureTestsuite {
   @Test
   void createFromJson_throwsOnNonMatchingAdapterInstanceArgument() {
     // given
-    setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
+    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
 
     // when, then
     assertThrows(
         IllegalArgumentException.class,
-        () -> PetrolStations.createFromJson(jsonFixture, null));
+        () -> PetrolStations.createFromJson(fixture.jsonFixture, null));
   }
 
   // endregion
@@ -140,10 +141,10 @@ class PetrolStationsTest extends JsonFixtureTestsuite {
   @EnumSource(PetrolType.class)
   void sortByPriceAndDistanceForPetrolType_happy(PetrolType givenPetrolType) {
     // given
-    setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
+    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
 
     // Convert from fixture-stations to a List of real PetrolStation objects.
-    List<PetrolStation> givenPetrolStations = objectFixture.convertToPetrolStations();
+    List<PetrolStation> givenPetrolStations = fixture.convertToPetrolStations();
 
     /* Scramble the order of Array elements, so we can test if it gets sorted as expected by
     the method under test. */

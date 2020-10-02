@@ -2,7 +2,8 @@ package de.fornalik.tankschlau.geo;
 
 import de.fornalik.tankschlau.util.StringLegalizer;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.FixtureFiles;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonFixtureTestsuite;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonResponseHelp;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -13,7 +14,13 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AddressTest extends JsonFixtureTestsuite {
+class AddressTest {
+  private JsonResponseHelp fixture;
+
+  @BeforeEach
+  void setUp() {
+    fixture = new JsonResponseHelp();
+  }
 
   @ParameterizedTest
   @CsvSource(value = {
@@ -64,23 +71,23 @@ class AddressTest extends JsonFixtureTestsuite {
   @Test
   void createFromJson_happy() {
     // given
-    setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
+    fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
 
     // when
-    Address actualAddress = Address.createFromJson(jsonFixture);
+    Address actualAddress = Address.createFromJson(fixture.jsonFixture);
 
     // then
     assertNotNull(actualAddress);
-    objectFixture.assertEqualValues(actualAddress, 0);
+    fixture.assertEqualValues(actualAddress, 0);
   }
 
   @Test
   void createFromJson_acceptsEmptyHouseNumber() {
     // given
-    setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_HOUSENUM_AND_BRAND);
+    fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_HOUSENUM_AND_BRAND);
 
     // when
-    Address actualAddress = Address.createFromJson(jsonFixture);
+    Address actualAddress = Address.createFromJson(fixture.jsonFixture);
 
     // then
     assertEquals("", actualAddress.getHouseNumber());
@@ -89,10 +96,10 @@ class AddressTest extends JsonFixtureTestsuite {
   @Test
   void createFromJson_returnsEmptyOptionalGeoObjectIfAllGeoElementsAreMissing() {
     // given
-    setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_ALL_GEO_ELEM);
+    fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_ALL_GEO_ELEM);
 
     // when
-    Address actualAddress = Address.createFromJson(jsonFixture);
+    Address actualAddress = Address.createFromJson(fixture.jsonFixture);
 
     // then
     assertNotNull(actualAddress);

@@ -3,9 +3,10 @@ package de.fornalik.tankschlau.station;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.FixtureFiles;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonFixtureTestsuite;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonResponseHelp;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileReader;
@@ -14,9 +15,10 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PetrolStationsJsonAdapterTest extends JsonFixtureTestsuite {
+class PetrolStationsJsonAdapterTest {
   private static Gson gson;
   private static PetrolStationsJsonAdapter petrolStationsJsonAdapter;
+  private JsonResponseHelp fixture;
 
   @BeforeAll
   static void beforeAll() {
@@ -32,21 +34,26 @@ class PetrolStationsJsonAdapterTest extends JsonFixtureTestsuite {
     petrolStationsJsonAdapter = null;
   }
 
+  @BeforeEach
+  void setUp() {
+    fixture = new JsonResponseHelp();
+  }
+
   @Test
   void read_oneStation_happy() {
     // given
-    setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
+    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
 
     // when
     ArrayList<PetrolStation> actualPetrolStations = gson.fromJson(
-        jsonFixture,
+        fixture.jsonFixture,
         (Type) PetrolStation.class);
 
     // then
     assertNotNull(actualPetrolStations);
     assertEquals(1, actualPetrolStations.size());
     assertEquals(0, petrolStationsJsonAdapter.getErrorMessages().size());
-    objectFixture.assertEqualValuesIgnoringSort(actualPetrolStations);
+    fixture.assertEqualValuesIgnoringSort(actualPetrolStations);
   }
 
   @Test
@@ -72,11 +79,11 @@ class PetrolStationsJsonAdapterTest extends JsonFixtureTestsuite {
   @Test
   void read_oneStation_returnsEmptyArrayOnMissingIdElement() {
     // given
-    setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_MISSING_ID_ELEM);
+    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_MISSING_ID_ELEM);
 
     // when
     ArrayList<PetrolStation> actualPetrolStations = gson.fromJson(
-        jsonFixture,
+        fixture.jsonFixture,
         (Type) PetrolStation.class);
 
     // then
@@ -87,11 +94,11 @@ class PetrolStationsJsonAdapterTest extends JsonFixtureTestsuite {
   @Test
   void read_oneStation_acceptsEmptyBrand() {
     // given
-    setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_HOUSENUM_AND_BRAND);
+    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_HOUSENUM_AND_BRAND);
 
     // when
     ArrayList<PetrolStation> actualPetrolStations = gson.fromJson(
-        jsonFixture,
+        fixture.jsonFixture,
         (Type) PetrolStation.class);
 
     // then
@@ -102,11 +109,11 @@ class PetrolStationsJsonAdapterTest extends JsonFixtureTestsuite {
   @Test
   void read_noStations_returnsEmptyArrayOnMissingStationsElement() {
     // given
-    setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_STATIONS_ELEM);
+    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_STATIONS_ELEM);
 
     // when
     ArrayList<PetrolStation> actualPetrolStations = gson.fromJson(
-        jsonFixture,
+        fixture.jsonFixture,
         (Type) PetrolStation.class);
 
     // then
@@ -117,11 +124,11 @@ class PetrolStationsJsonAdapterTest extends JsonFixtureTestsuite {
   @Test
   void read_emptyStations_returnsEmptyArrayOnEmptyStationsJsonArray() {
     // given
-    setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_STATION_ARRAY);
+    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_STATION_ARRAY);
 
     // when
     ArrayList<PetrolStation> actualPetrolStations = gson.fromJson(
-        jsonFixture,
+        fixture.jsonFixture,
         (Type) PetrolStation.class);
 
     // then
@@ -132,28 +139,28 @@ class PetrolStationsJsonAdapterTest extends JsonFixtureTestsuite {
   @Test
   void read_multipleStations_happy() {
     // given
-    setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_17STATIONS_HAPPY);
+    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_17STATIONS_HAPPY);
 
     // when
     ArrayList<PetrolStation> actualPetrolStations = gson.fromJson(
-        jsonFixture,
+        fixture.jsonFixture,
         (Type) PetrolStation.class);
 
     // then
     assertNotNull(actualPetrolStations);
     assertEquals(17, actualPetrolStations.size());
     assertEquals(0, petrolStationsJsonAdapter.getErrorMessages().size());
-    objectFixture.assertEqualValuesIgnoringSort(actualPetrolStations);
+    fixture.assertEqualValuesIgnoringSort(actualPetrolStations);
   }
 
   @Test
   void read_multipleStations_discardsTwoInvalidStationsAndKeepsTwoValidOnes() {
     // given
-    setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_2INVALID_2VALID);
+    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_2INVALID_2VALID);
 
     // when
     ArrayList<PetrolStation> actualValidPetrolStations = gson.fromJson(
-        jsonFixture,
+        fixture.jsonFixture,
         (Type) PetrolStation.class);
 
     // then
