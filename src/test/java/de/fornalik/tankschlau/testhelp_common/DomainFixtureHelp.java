@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response;
+package de.fornalik.tankschlau.testhelp_common;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;

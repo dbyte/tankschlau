@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response;
+package de.fornalik.tankschlau.testhelp_common;
 
 import java.io.FileReader;
 import java.io.IOException;

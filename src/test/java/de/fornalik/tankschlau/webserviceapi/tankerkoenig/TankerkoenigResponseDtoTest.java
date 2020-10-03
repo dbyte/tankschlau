@@ -18,8 +18,8 @@ package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 
 import com.google.gson.Gson;
 import de.fornalik.tankschlau.station.PetrolStationsJsonAdapter;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.DomainFixtureHelp;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.FixtureFiles;
+import de.fornalik.tankschlau.testhelp_common.DomainFixtureHelp;
+import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

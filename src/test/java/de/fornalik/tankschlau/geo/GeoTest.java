@@ -1,7 +1,7 @@
 package de.fornalik.tankschlau.geo;
 
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.DomainFixtureHelp;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.FixtureFiles;
+import de.fornalik.tankschlau.testhelp_common.DomainFixtureHelp;
+import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
