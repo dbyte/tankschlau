@@ -78,11 +78,12 @@ public class OkHttpClient implements HttpClient {
   }
 
   private okhttp3.HttpUrl createUrl() {
+
     okhttp3.HttpUrl.Builder urlBuilder = Objects
         .requireNonNull(okhttp3.HttpUrl.parse(request.getBaseUrl().toString()))
         .newBuilder();
 
-    request.getUrlParameters().forEach(urlBuilder::addQueryParameter);
+    request.getUrlParameters().forEach(urlBuilder::addEncodedQueryParameter);
     return urlBuilder.build();
   }
 
