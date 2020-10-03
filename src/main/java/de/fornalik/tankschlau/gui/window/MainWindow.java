@@ -19,19 +19,23 @@ package de.fornalik.tankschlau.gui.window;
 import de.fornalik.tankschlau.TankSchlau;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.gui.menu.MainMenuBar;
-import de.fornalik.tankschlau.net.Request;
 import de.fornalik.tankschlau.station.*;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigPetrolStationsDao;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Set;
 
 public class MainWindow extends JFrame {
+  private final TankerkoenigPetrolStationsDao petrolStationsDao =
+      new TankerkoenigPetrolStationsDao();
+
   private DefaultListModel<String> model;
 
-  public MainWindow() {
+  public MainWindow() throws MalformedURLException {
     super(de.fornalik.tankschlau.TankSchlau.class.getSimpleName());
   }
 
@@ -64,17 +68,16 @@ public class MainWindow extends JFrame {
     this.setVisible(true);
   }
 
-  public void updateList(Request request, PetrolType sortedFor) {
+  public void updateList(Geo geo, PetrolType sortedFor) {
     model.addElement(TankSchlau.L10N.get("msg.PriceRequestRunning"));
 
     // Run a new dispatch queue thread for the web service request/response.
     EventQueue.invokeLater(() -> {
 
       try {
-        List<PetrolStation> petrolStations = PetrolStations.createFromWebService(
-            TankSchlau.HTTP_CLIENT,
-            request,
-            TankSchlau.PETROL_STATIONS_JSON_ADAPTER);
+        List<PetrolStation> petrolStations = PetrolStations.getAllInNeighbourhood(
+            petrolStationsDao,
+            geo);
 
         model.remove(0);
         System.out.println("Response ready.");

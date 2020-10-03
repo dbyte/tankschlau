@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -92,5 +93,21 @@ class TankerkoenigPetrolStationsDaoTest {
     // then
     fixture.assertEqualValues(sut);
     fixture.assertEqualValuesIgnoringSort(actualPetrolStations);
+  }
+
+  @Test
+  void getAllInNeighbourhood_returnsEmptyPetrolStationsArrayOnEmptyJsonResponse()
+  throws IOException {
+    // given
+    String jsonStringResponse = "{}";
+
+    when(stringResponseMock.getBody()).thenReturn(Optional.of(jsonStringResponse));
+    when(httpClientMock.newCall(tankerkoenigRequestMock)).thenReturn(stringResponseMock);
+
+    // when
+    actualPetrolStations = sut.getAllInNeighbourhood(geoMock);
+
+    // then
+    assertEquals(0, actualPetrolStations.size());
   }
 }

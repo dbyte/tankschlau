@@ -21,9 +21,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.TypeAdapter;
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.net.HttpClient;
-import de.fornalik.tankschlau.net.Request;
-import de.fornalik.tankschlau.net.Response;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigPetrolStationsDao;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
 import java.io.IOException;
@@ -37,18 +35,10 @@ import java.util.List;
  */
 public class PetrolStations {
 
-  public static List<PetrolStation> createFromWebService(
-      HttpClient httpClient,
-      Request request,
-      TypeAdapter<?> gsonAdapter) throws IOException {
+  public static List<PetrolStation> getAllInNeighbourhood(
+      TankerkoenigPetrolStationsDao dao, Geo geo) throws IOException {
 
-    Response response = httpClient.newCall(request);
-
-    return PetrolStations.createFromJson(
-        response
-            .getBody()
-            .orElse(new ArrayList<>())
-            .toString(), gsonAdapter);
+    return dao.getAllInNeighbourhood(geo);
   }
 
   /**

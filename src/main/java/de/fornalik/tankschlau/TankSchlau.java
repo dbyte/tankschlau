@@ -73,6 +73,6 @@ public class TankSchlau {
     Request request = TankerkoenigRequest.create(TANKERKOENIG_APIKEY_MANAGER, userGeo);
 
     mainWindow.initGui();
-    mainWindow.updateList(request, PetrolType.DIESEL);
+    mainWindow.updateList(userGeo, PetrolType.DIESEL);
   }
 }

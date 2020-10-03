@@ -3,12 +3,9 @@ package de.fornalik.tankschlau.station;
 import com.google.gson.JsonObject;
 import com.google.gson.TypeAdapter;
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.net.HttpClient;
-import de.fornalik.tankschlau.net.OkHttpClient;
-import de.fornalik.tankschlau.net.Request;
-import de.fornalik.tankschlau.net.Response;
 import de.fornalik.tankschlau.testhelp_common.DomainFixtureHelp;
 import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigPetrolStationsDao;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +17,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -28,18 +24,12 @@ import static org.mockito.Mockito.when;
 
 class PetrolStationsTest {
   private static TypeAdapter<?> petrolStationsGsonAdapter;
-  private static HttpClient httpClientMock;
-  private static Request requestMock;
-  private static Response responseMock;
   private DomainFixtureHelp fixture;
   private List<PetrolStation> actualPetrolStations;
 
   @BeforeAll
   static void beforeAll() {
     petrolStationsGsonAdapter = new PetrolStationsJsonAdapter();
-    httpClientMock = mock(OkHttpClient.class);
-    requestMock = mock(Request.class);
-    responseMock = mock(Response.class);
   }
 
   @AfterAll
@@ -59,40 +49,20 @@ class PetrolStationsTest {
   */
 
   @Test
-  void createFromWebService_createsAllStationsFromResponse()
+  void getAllInNeighbourhood_callsDaoAndReturnsResultingPetrolStations()
   throws IOException {
     // given
-    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
+    TankerkoenigPetrolStationsDao daoMock = mock(TankerkoenigPetrolStationsDao.class);
+    Geo geoMock = mock(Geo.class);
 
-    when(responseMock.getBody()).thenReturn(Optional.of(fixture.jsonFixture));
-    when(httpClientMock.newCall(requestMock)).thenReturn(responseMock);
+    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
+    when(daoMock.getAllInNeighbourhood(geoMock)).thenReturn(fixture.convertToPetrolStations());
 
     // when
-    actualPetrolStations = PetrolStations.createFromWebService(
-        httpClientMock,
-        requestMock,
-        petrolStationsGsonAdapter);
+    actualPetrolStations = PetrolStations.getAllInNeighbourhood(daoMock, geoMock);
 
     // then
     fixture.assertEqualValuesIgnoringSort(actualPetrolStations);
-  }
-
-  @Test
-  void createFromWebService_returnsEmptyPetrolStationsArrayOnEmptyJsonResponse()
-  throws IOException {
-    // given
-    String jsonStringResponse = "{}";
-    when(responseMock.getBody()).thenReturn(Optional.of(jsonStringResponse));
-    when(httpClientMock.newCall(requestMock)).thenReturn(responseMock);
-
-    // when
-    actualPetrolStations = PetrolStations.createFromWebService(
-        httpClientMock,
-        requestMock,
-        petrolStationsGsonAdapter);
-
-    // then
-    assertEquals(0, actualPetrolStations.size());
   }
 
   // region createFromJson Tests
@@ -192,18 +162,20 @@ class PetrolStationsTest {
   }
 
   private double helpGetPriceForSort(PetrolStation forPetrolStation, PetrolType forPetrolType) {
-    return forPetrolStation.getPetrols()
-                           .stream()
-                           .filter(p -> p.type == forPetrolType)
-                           .findFirst()
-                           .map(p -> p.price)
-                           .orElse(9999.99);
+    return forPetrolStation
+        .getPetrols()
+        .stream()
+        .filter(p -> p.type == forPetrolType)
+        .findFirst()
+        .map(p -> p.price)
+        .orElse(9999.99);
   }
 
   private double helpGetDistanceForSort(PetrolStation forPetrolStation) {
-    return forPetrolStation.address.getGeo()
-                                   .flatMap(Geo::getDistance)
-                                   .orElse(9999.99);
+    return forPetrolStation.address
+        .getGeo()
+        .flatMap(Geo::getDistance)
+        .orElse(9999.99);
   }
 
   // Use for better orientation if sorting failed.
