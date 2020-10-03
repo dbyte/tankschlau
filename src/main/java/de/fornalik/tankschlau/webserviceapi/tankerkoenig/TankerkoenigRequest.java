@@ -38,21 +38,36 @@ public class TankerkoenigRequest extends BaseRequest {
   private TankerkoenigRequest() {}
 
   /**
-   * Factory method, creates a new HTTP request object for web service Tankerkoenig.de
+   * Creates a new default HTTP request object for web service Tankerkoenig.de. Use this
+   * if you don't have {@link Geo} data available yet and set them later.
    *
-   * @param geo The user's geographical data and maximum search radius im km to search for petrol
-   *            stations in the neighbourhood.
-   * @return A new {@link TankerkoenigRequest} object, ready for use within a {@link Request}.
+   * @param apiKeyManager Service which controls handling of the web service api key.
+   * @return A new default {@link TankerkoenigRequest} instance.
+   * @throws MalformedURLException If the base URL is invalid.
+   * @see TankerkoenigRequest#create(ApiKeyManager, Geo)
+   */
+  public static TankerkoenigRequest create(ApiKeyManager apiKeyManager)
+  throws MalformedURLException {
+    return TankerkoenigRequest.create(apiKeyManager, null);
+  }
+
+  /**
+   * Creates a new HTTP request object for web service Tankerkoenig.de to get
+   * petrol stations in the neighbourhood around the given geographical data.
+   *
+   * @param apiKeyManager Service which controls handling of the web service api key.
+   * @param geo           The user's geographical data and maximum search radius im km to search
+   *                      for petrol stations in the neighbourhood.
+   * @return A new {@link TankerkoenigRequest} instance, ready for use within a {@link Request}.
    * @throws MalformedURLException If the base URL is invalid.
    * @throws SearchRadiusException If distance value of {@link Geo} data is missing.
+   * @see TankerkoenigRequest#create(ApiKeyManager)
    */
   public static TankerkoenigRequest create(ApiKeyManager apiKeyManager, Geo geo)
   throws MalformedURLException {
     TankerkoenigRequest instance = new TankerkoenigRequest();
 
-    instance.geo = Objects.requireNonNull(
-        geo,
-        "Geographical data (geo) must not be null.");
+    instance.geo = geo; // nullable
 
     instance.apiKeyManager = Objects.requireNonNull(
         apiKeyManager,
@@ -64,6 +79,17 @@ public class TankerkoenigRequest extends BaseRequest {
     return instance;
   }
 
+  /**
+   * Sets or overwrites the geographical URL parameters for this request.
+   *
+   * @param geo {@link Geo} data, must not be null.
+   * @throws NullPointerException If given geo data is null.
+   */
+  public void setGeo(Geo geo) {
+    this.geo = Objects.requireNonNull(geo, "Geo must not be null.");
+    this.setGeoUrlParameters();
+  }
+
   private void setBaseData() throws MalformedURLException {
     setBaseUrl(new URL(BASE_URL));
     setHttpMethod(HTTP_METHOD);
@@ -71,12 +97,8 @@ public class TankerkoenigRequest extends BaseRequest {
   }
 
   private void setUrlParameters() {
-    Double maxSearchRadius = geo.getDistance()
-                                .orElseThrow(SearchRadiusException::new);
-
-    addUrlParameter("lat", Double.valueOf(geo.getLatitude()).toString());
-    addUrlParameter("lng", Double.valueOf(geo.getLongitude()).toString());
-    addUrlParameter("rad", maxSearchRadius.toString());
+    if (geo != null)
+      setGeoUrlParameters();
 
     /* As we sort data ourselves, always request "all" petrol types. Per web service API definition
     of Tankerkoenig.de, "sort" must be set to "dist" when requesting "type" with "all". */
@@ -86,6 +108,16 @@ public class TankerkoenigRequest extends BaseRequest {
     /* Only add API key if we got one. Tankerkoenig will inform us about a missing/invalid key
     in its response, where we handle errors anyway. */
     apiKeyManager.read().ifPresent(value -> addUrlParameter("apikey", value));
+  }
+
+  private void setGeoUrlParameters() {
+    Double maxSearchRadius = geo
+        .getDistance()
+        .orElseThrow(SearchRadiusException::new);
+
+    addUrlParameter("lat", Double.valueOf(geo.getLatitude()).toString());
+    addUrlParameter("lng", Double.valueOf(geo.getLongitude()).toString());
+    addUrlParameter("rad", maxSearchRadius.toString());
   }
 
   public static class SearchRadiusException extends IllegalStateException {

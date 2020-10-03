@@ -21,12 +21,12 @@ import de.fornalik.tankschlau.net.Request;
 import de.fornalik.tankschlau.webserviceapi.ApiKeyManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.net.MalformedURLException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -35,23 +35,71 @@ import static org.mockito.Mockito.when;
  */
 class TankerkoenigRequestTest {
   private ApiKeyManager apiKeyManagerMock;
-  private Geo geoFixture;
+  private Geo geoMock;
 
   @BeforeEach
   void setUp() {
-    this.apiKeyManagerMock = Mockito.mock(ApiKeyManager.class);
-    this.geoFixture = new Geo(53.1234, 48.5678, 12.0);
+    this.apiKeyManagerMock = mock(ApiKeyManager.class);
+    when(apiKeyManagerMock.read()).thenReturn(Optional.of("000-abc-def-111"));
 
-    Mockito.when(apiKeyManagerMock.read()).thenReturn(Optional.of("000-abc-def-111"));
+    this.geoMock = mock(Geo.class);
+    when(geoMock.getLatitude()).thenReturn(53.1234);
+    when(geoMock.getLongitude()).thenReturn(48.5678);
+    when(geoMock.getDistance()).thenReturn(Optional.of(12.0));
   }
 
   @Test
-  void create_constructsProperValues() throws MalformedURLException {
+  void create_withGeo_constructsProperValues() throws MalformedURLException {
     // given
     assert apiKeyManagerMock.read().isPresent(); // pre-check proper test setup
 
     // when
-    TankerkoenigRequest actualRequest = TankerkoenigRequest.create(apiKeyManagerMock, geoFixture);
+    TankerkoenigRequest actualRequest = TankerkoenigRequest.create(apiKeyManagerMock, geoMock);
+
+    // then
+
+    // Assert proper common values, independent of Geo values.
+    this.assert_create_constructsProperValues();
+
+    // Assert proper Geo values.
+    assertEquals(
+        geoMock.getLatitude(),
+        Double.valueOf(actualRequest.getUrlParameters().get("lat")));
+
+    assertEquals(
+        geoMock.getLongitude(),
+        Double.valueOf(actualRequest.getUrlParameters().get("lng")));
+
+    assertEquals(
+        geoMock.getDistance(),
+        Optional.of(Double.valueOf(actualRequest.getUrlParameters().get("rad"))));
+  }
+
+  @Test
+  void create_withoutGeo_constructsProperValues() throws MalformedURLException {
+    // given
+    assert apiKeyManagerMock.read().isPresent(); // pre-check proper test setup
+
+    // when
+    TankerkoenigRequest actualRequest = TankerkoenigRequest.create(apiKeyManagerMock);
+
+    // then
+
+    // Assert proper common values, independent of Geo values.
+    this.assert_create_constructsProperValues();
+
+    // Assert proper Geo values.
+    assertNull(actualRequest.getUrlParameters().get("lat"));
+    assertNull(actualRequest.getUrlParameters().get("lng"));
+    assertNull(actualRequest.getUrlParameters().get("rad"));
+  }
+
+  private void assert_create_constructsProperValues() throws MalformedURLException {
+    // given
+    assert apiKeyManagerMock.read().isPresent(); // pre-check proper test setup
+
+    // when
+    TankerkoenigRequest actualRequest = TankerkoenigRequest.create(apiKeyManagerMock);
 
     // then
     assertEquals(
@@ -65,18 +113,6 @@ class TankerkoenigRequestTest {
     assertEquals("dist", actualRequest.getUrlParameters().get("sort"));
     assertEquals("all", actualRequest.getUrlParameters().get("type"));
     assertEquals(apiKeyManagerMock.read().get(), actualRequest.getUrlParameters().get("apikey"));
-
-    assertEquals(
-        geoFixture.getLatitude(),
-        Double.valueOf(actualRequest.getUrlParameters().get("lat")));
-
-    assertEquals(
-        geoFixture.getLongitude(),
-        Double.valueOf(actualRequest.getUrlParameters().get("lng")));
-
-    assertEquals(
-        geoFixture.getDistance(),
-        Optional.of(Double.valueOf(actualRequest.getUrlParameters().get("rad"))));
   }
 
   @Test
@@ -86,7 +122,7 @@ class TankerkoenigRequestTest {
     when(apiKeyManagerMock.read()).thenReturn(Optional.empty());
 
     // when
-    TankerkoenigRequest actualRequest = TankerkoenigRequest.create(apiKeyManagerMock, geoFixture);
+    TankerkoenigRequest actualRequest = TankerkoenigRequest.create(apiKeyManagerMock, geoMock);
 
     // then
     assertNull(actualRequest.getUrlParameters().get("apikey"));
@@ -97,17 +133,49 @@ class TankerkoenigRequestTest {
     // when then
     assertThrows(
         NullPointerException.class,
-        () -> TankerkoenigRequest.create(null, geoFixture));
+        () -> TankerkoenigRequest.create(null, geoMock));
   }
 
   @Test
   void create_throwsOnMissingDistance() {
     // given
-    geoFixture.setDistance(null);
+    when(geoMock.getDistance()).thenReturn(Optional.empty());
 
     // when then
     assertThrows(
         TankerkoenigRequest.SearchRadiusException.class,
-        () -> TankerkoenigRequest.create(apiKeyManagerMock, geoFixture));
+        () -> TankerkoenigRequest.create(apiKeyManagerMock, geoMock));
+  }
+
+  @Test
+  void setGeo_doesSetUrlParametersProperly() throws MalformedURLException {
+    // given
+    TankerkoenigRequest actualRequest = TankerkoenigRequest.create(apiKeyManagerMock);
+
+    // when
+    actualRequest.setGeo(geoMock);
+
+    // then
+    // Assert proper Geo values.
+    assertEquals(
+        geoMock.getLatitude(),
+        Double.valueOf(actualRequest.getUrlParameters().get("lat")));
+
+    assertEquals(
+        geoMock.getLongitude(),
+        Double.valueOf(actualRequest.getUrlParameters().get("lng")));
+
+    assertEquals(
+        geoMock.getDistance(),
+        Optional.of(Double.valueOf(actualRequest.getUrlParameters().get("rad"))));
+  }
+
+  @Test
+  void setGeo_throwsImmediatelyOnNullArgument() throws MalformedURLException {
+    // given
+    TankerkoenigRequest actualRequest = TankerkoenigRequest.create(apiKeyManagerMock);
+
+    // when then
+    assertThrows(NullPointerException.class, () -> actualRequest.setGeo(null));
   }
 }
