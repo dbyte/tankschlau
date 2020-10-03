@@ -16,9 +16,20 @@
 
 package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.SerializedName;
+import de.fornalik.tankschlau.TankSchlau;
+import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.net.HttpClient;
+import de.fornalik.tankschlau.net.StringResponse;
 import de.fornalik.tankschlau.station.PetrolStation;
+import de.fornalik.tankschlau.station.PetrolStations;
+import de.fornalik.tankschlau.util.StringLegalizer;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,36 +37,72 @@ import java.util.List;
  * This is the target for JSON adapters which convert the response body to our ORM.
  */
 public class TankerkoenigPetrolStationsDao {
+  private final HttpClient httpClient;
+  private final TankerkoenigRequest request;
+  private final TypeAdapter<?> gsonAdapter;
   private TransactionInfo transactionInfo;
 
-  public TankerkoenigPetrolStationsDao() {
+  public TankerkoenigPetrolStationsDao() throws MalformedURLException {
+    this(
+        TankSchlau.HTTP_CLIENT,
+        TankSchlau.PETROL_STATIONS_JSON_ADAPTER,
+        TankerkoenigRequest.create(TankSchlau.TANKERKOENIG_APIKEY_MANAGER));
+  }
+
+  public TankerkoenigPetrolStationsDao(
+      HttpClient httpClient,
+      TypeAdapter<?> gsonAdapter,
+      TankerkoenigRequest request) {
+
+    this.httpClient = httpClient;
+    this.request = request;
+    this.gsonAdapter = gsonAdapter;
     this.transactionInfo = new TransactionInfo();
+  }
+
+  public List<PetrolStation> getAllInNeighbourhood(Geo geo) throws IOException {
+    this.request.setGeo(geo);
+
+    StringResponse response = (StringResponse) httpClient.newCall(request);
+    String body = response.getBody().orElse("");
+
+    if ("".equals(body))
+      return new ArrayList<>();
+
+    this.transactionInfo = new Gson().fromJson(body, TransactionInfo.class);
+
+    return PetrolStations.createFromJson(body, gsonAdapter);
   }
 
   public TransactionInfo getTransactionInfo() {
     return transactionInfo;
   }
 
+  @SuppressWarnings("unused")
   public static class TransactionInfo {
     @SerializedName("ok") private boolean ok;
     @SerializedName("license") private String license;
     @SerializedName("status") private String status;
-    @SerializedName("stations") private List<PetrolStation> petrolStations;
+    @SerializedName("message") private String message;
 
     public boolean isOk() {
       return ok;
     }
 
     public String getLicense() {
-      return license;
+      return nullToEmpty(license);
     }
 
     public String getStatus() {
-      return status;
+      return nullToEmpty(status);
     }
 
-    public List<PetrolStation> getPetrolStations() {
-      return petrolStations;
+    public String getMessage() {
+      return nullToEmpty(message);
+    }
+
+    private String nullToEmpty(String s) {
+      return StringLegalizer.create(s).nullToEmpty().end();
     }
   }
 }

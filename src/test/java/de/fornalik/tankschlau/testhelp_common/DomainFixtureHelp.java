@@ -131,14 +131,13 @@ public class DomainFixtureHelp {
 
   // region assertEqualsAll
 
-  public void assertEqualValues(TankerkoenigPetrolStationsDao responseDtoUnderTest) {
-    Objects.requireNonNull(responseDtoUnderTest);
+  public void assertEqualValues(TankerkoenigPetrolStationsDao petrolStationsDao) {
+    Objects.requireNonNull(petrolStationsDao);
 
-    assertEquals(objectFixture.ok, responseDtoUnderTest.getTransactionInfo().isOk());
-    assertEquals(objectFixture.license, responseDtoUnderTest.getTransactionInfo().getLicense());
-    assertEquals(objectFixture.status, responseDtoUnderTest.getTransactionInfo().getStatus());
-
-    assertEqualValuesIgnoringSort(responseDtoUnderTest.getTransactionInfo().getPetrolStations());
+    assertEquals(objectFixture.ok, petrolStationsDao.getTransactionInfo().isOk());
+    assertEquals(objectFixture.license, petrolStationsDao.getTransactionInfo().getLicense());
+    assertEquals(objectFixture.message, petrolStationsDao.getTransactionInfo().getMessage());
+    assertEquals(objectFixture.status, petrolStationsDao.getTransactionInfo().getStatus());
   }
 
   /**
@@ -164,10 +163,11 @@ public class DomainFixtureHelp {
     assert petrolStation != null;
 
     // Find required fixture for the PetrolStation under test.
-    StationDTO fixture = objectFixture.stations.stream()
-                                               .filter(fixt -> fixt.uuid.equals(petrolStation.uuid))
-                                               .findFirst()
-                                               .orElse(null);
+    StationDTO fixture = objectFixture.stations
+        .stream()
+        .filter(fixt -> fixt.uuid.equals(petrolStation.uuid))
+        .findFirst()
+        .orElse(null);
 
     assert fixture != null;
 
@@ -287,10 +287,15 @@ public class DomainFixtureHelp {
     @SerializedName("license") public String license;
     @SerializedName("data") public String data;
     @SerializedName("status") public String status;
+    @SerializedName("message") public String message;
     @SerializedName("stations") public ArrayList<StationDTO> stations;
 
     ResponseDTO() {
       stations = new ArrayList<>();
+
+      // As "message" is missing in JSON if no error occurred, it is by convention set
+      // to empty in our production DAO class. So we do same here.
+      message = "";
     }
   }
 

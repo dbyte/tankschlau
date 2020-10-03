@@ -16,7 +16,11 @@
 
 package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 
-import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
+import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.net.HttpClient;
+import de.fornalik.tankschlau.net.StringResponse;
+import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolStationsJsonAdapter;
 import de.fornalik.tankschlau.testhelp_common.DomainFixtureHelp;
 import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
@@ -24,45 +28,69 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class TankerkoenigPetrolStationsDaoTest {
-  private static Gson gson;
-  private static PetrolStationsJsonAdapter petrolStationsJsonAdapter;
+  private static Geo geoMock;
+
+  private TankerkoenigPetrolStationsDao sut;
+  private List<PetrolStation> actualPetrolStations;
+
   private DomainFixtureHelp fixture;
-  private TankerkoenigPetrolStationsDao actualTankerkoenigPetrolStationsDao;
+  private HttpClient httpClientMock;
+  private TankerkoenigRequest tankerkoenigRequestMock;
+  private StringResponse stringResponseMock;
 
   @BeforeAll
   static void beforeAll() {
-    petrolStationsJsonAdapter = new PetrolStationsJsonAdapter();
-    gson = new Gson();
+    geoMock = Mockito.mock(Geo.class);
+    when(geoMock.getDistance()).thenReturn(Optional.of(8.5));
+    when(geoMock.getLatitude()).thenReturn(52.4079755);
+    when(geoMock.getLongitude()).thenReturn(10.7725368);
   }
 
   @AfterAll
   static void afterAll() {
-    gson = null;
-    petrolStationsJsonAdapter = null;
+    geoMock = null;
   }
 
   @BeforeEach
   void setUp() {
     fixture = new DomainFixtureHelp();
-    actualTankerkoenigPetrolStationsDao = null;
+    actualPetrolStations = null;
+
+    TypeAdapter<List<PetrolStation>> petrolStationsJsonAdapter = new PetrolStationsJsonAdapter();
+
+    httpClientMock = mock(HttpClient.class);
+    tankerkoenigRequestMock = mock(TankerkoenigRequest.class);
+    stringResponseMock = mock(StringResponse.class);
+
+    sut = new TankerkoenigPetrolStationsDao(
+        httpClientMock,
+        petrolStationsJsonAdapter,
+        tankerkoenigRequestMock);
   }
 
   @Test
-  void read_oneStation_happy() {
+  void getAllInNeighbourhood_happy() throws IOException {
     // given
-    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
+    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_17STATIONS_HAPPY);
+
+    when(stringResponseMock.getBody()).thenReturn(Optional.of(fixture.jsonFixture.toString()));
+    when(httpClientMock.newCall(tankerkoenigRequestMock)).thenReturn(stringResponseMock);
 
     // when
-    actualTankerkoenigPetrolStationsDao = gson.fromJson(
-        fixture.jsonFixture,
-        TankerkoenigPetrolStationsDao.class);
+    actualPetrolStations = sut.getAllInNeighbourhood(geoMock);
 
     // then
-    assertNotNull(actualTankerkoenigPetrolStationsDao);
-    fixture.assertEqualValues(actualTankerkoenigPetrolStationsDao);
+    fixture.assertEqualValues(sut);
+    fixture.assertEqualValuesIgnoringSort(actualPetrolStations);
   }
 }
