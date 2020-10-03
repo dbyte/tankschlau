@@ -30,7 +30,7 @@ import java.util.Objects;
  * Implementation of {@link BaseRequest} for Google Geocoding web service.
  */
 public class GeocodingRequest extends BaseRequest {
-  private static final String BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json?";
+  private static final String BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json";
   private static final HttpMethod HTTP_METHOD = HttpMethod.GET;
   private static final String ACCEPT_JSON = "application/json; charset=utf-8";
   private ApiKeyManager apiKeyManager;
@@ -68,6 +68,7 @@ public class GeocodingRequest extends BaseRequest {
     setBaseUrl(new URL(BASE_URL));
     setHttpMethod(HTTP_METHOD);
     addHeader("Accept", ACCEPT_JSON);
+    addHeader("Accept-Language", "de");
   }
 
   private void setUrlParameters() {

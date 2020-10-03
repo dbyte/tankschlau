@@ -29,7 +29,7 @@ import java.util.Objects;
  * Implementation of {@link BaseRequest} for web service Tankerkoenig.de
  */
 public class TankerkoenigRequest extends BaseRequest {
-  private static final String BASE_URL = "https://creativecommons.tankerkoenig.de/json/list.php?";
+  private static final String BASE_URL = "https://creativecommons.tankerkoenig.de/json/list.php";
   private static final HttpMethod HTTP_METHOD = HttpMethod.GET;
   private static final String ACCEPT_JSON = "application/json; charset=utf-8";
   private ApiKeyManager apiKeyManager;
