@@ -97,6 +97,8 @@ public class PetrolStations {
       PetrolType type) {
 
     class PriceAndDistanceComparator implements Comparator<PetrolStation> {
+
+      @Override
       public int compare(PetrolStation stationA, PetrolStation stationB) {
 
         double priceA = getPriceForSort(stationA, type);
