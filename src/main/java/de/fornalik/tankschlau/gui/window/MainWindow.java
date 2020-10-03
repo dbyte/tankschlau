@@ -30,9 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 public class MainWindow extends JFrame {
-  private final TankerkoenigPetrolStationsDao petrolStationsDao =
-      new TankerkoenigPetrolStationsDao();
-
+  private final PetrolStationsDao petrolStationsDao = new TankerkoenigPetrolStationsDao();
   private DefaultListModel<String> model;
 
   public MainWindow() throws MalformedURLException {
@@ -81,6 +79,7 @@ public class MainWindow extends JFrame {
 
         model.remove(0);
         System.out.println("Response ready.");
+        System.out.println("License info: " + petrolStationsDao.getTransactionInfo().getLicense());
 
         petrolStations = PetrolStations.sortByPriceAndDistanceForPetrolType(
             petrolStations,

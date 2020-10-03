@@ -22,11 +22,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.station.Petrol;
-import de.fornalik.tankschlau.station.PetrolStation;
-import de.fornalik.tankschlau.station.PetrolStationBuilder;
-import de.fornalik.tankschlau.station.PetrolType;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigPetrolStationsDao;
+import de.fornalik.tankschlau.station.*;
 import org.junit.jupiter.api.Assertions;
 
 import java.io.FileReader;
@@ -38,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * Deals with test-fixtures for the common domain of this app.
  * <p>
- * Use for creating fixed data of {@link PetrolStation} and {@link TankerkoenigPetrolStationsDao}.
+ * Use for creating fixed data of {@link PetrolStation} and {@link PetrolStationsDao}.
  * All DTO fields are public mutable for testing purposes. Also, all primitives are wrapped
  * to be able to null them for testing purposes.
  */
@@ -131,7 +127,7 @@ public class DomainFixtureHelp {
 
   // region assertEqualsAll
 
-  public void assertEqualValues(TankerkoenigPetrolStationsDao petrolStationsDao) {
+  public void assertEqualValues(PetrolStationsDao petrolStationsDao) {
     Objects.requireNonNull(petrolStationsDao);
 
     assertEquals(objectFixture.ok, petrolStationsDao.getTransactionInfo().isOk());

@@ -18,14 +18,13 @@ package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.TankSchlau;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.StringResponse;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolStations;
-import de.fornalik.tankschlau.util.StringLegalizer;
+import de.fornalik.tankschlau.station.PetrolStationsDao;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -33,10 +32,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * DataTransferObject for tankerkoenig.de response.
- * This is the target for JSON adapters which convert the response body to our ORM.
+ * Petrol stations DAO implementation for tankerkoenig.de response.
  */
-public class TankerkoenigPetrolStationsDao {
+public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
   private final HttpClient httpClient;
   private final TankerkoenigRequest request;
   private final TypeAdapter<?> gsonAdapter;
@@ -60,6 +58,7 @@ public class TankerkoenigPetrolStationsDao {
     this.transactionInfo = new TransactionInfo();
   }
 
+  @Override
   public List<PetrolStation> getAllInNeighbourhood(Geo geo) throws IOException {
     this.request.setGeo(geo);
 
@@ -74,11 +73,12 @@ public class TankerkoenigPetrolStationsDao {
     return PetrolStations.createFromJson(body, gsonAdapter);
   }
 
+  @Override
   public TransactionInfo getTransactionInfo() {
     return transactionInfo;
   }
 
-  @SuppressWarnings("unused")
+/*  @SuppressWarnings("unused")
   public static class TransactionInfo {
     @SerializedName("ok") private boolean ok;
     @SerializedName("license") private String license;
@@ -104,5 +104,5 @@ public class TankerkoenigPetrolStationsDao {
     private String nullToEmpty(String s) {
       return StringLegalizer.create(s).nullToEmpty().end();
     }
-  }
+  }*/
 }

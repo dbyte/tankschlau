@@ -5,7 +5,6 @@ import com.google.gson.TypeAdapter;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.testhelp_common.DomainFixtureHelp;
 import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigPetrolStationsDao;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,7 +51,7 @@ class PetrolStationsTest {
   void getAllInNeighbourhood_callsDaoAndReturnsResultingPetrolStations()
   throws IOException {
     // given
-    TankerkoenigPetrolStationsDao daoMock = mock(TankerkoenigPetrolStationsDao.class);
+    PetrolStationsDao daoMock = mock(PetrolStationsDao.class);
     Geo geoMock = mock(Geo.class);
 
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);

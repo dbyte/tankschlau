@@ -21,7 +21,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.TypeAdapter;
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigPetrolStationsDao;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
 import java.io.IOException;
@@ -36,7 +35,7 @@ import java.util.List;
 public class PetrolStations {
 
   public static List<PetrolStation> getAllInNeighbourhood(
-      TankerkoenigPetrolStationsDao dao, Geo geo) throws IOException {
+      PetrolStationsDao dao, Geo geo) throws IOException {
 
     return dao.getAllInNeighbourhood(geo);
   }
