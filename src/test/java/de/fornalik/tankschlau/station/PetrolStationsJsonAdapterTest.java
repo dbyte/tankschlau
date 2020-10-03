@@ -2,8 +2,8 @@ package de.fornalik.tankschlau.station;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.DomainFixtureHelp;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.FixtureFiles;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonResponseHelp;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class PetrolStationsJsonAdapterTest {
   private static Gson gson;
   private static PetrolStationsJsonAdapter petrolStationsJsonAdapter;
-  private JsonResponseHelp fixture;
+  private DomainFixtureHelp fixture;
 
   @BeforeAll
   static void beforeAll() {
@@ -36,7 +36,7 @@ class PetrolStationsJsonAdapterTest {
 
   @BeforeEach
   void setUp() {
-    fixture = new JsonResponseHelp();
+    fixture = new DomainFixtureHelp();
   }
 
   @Test

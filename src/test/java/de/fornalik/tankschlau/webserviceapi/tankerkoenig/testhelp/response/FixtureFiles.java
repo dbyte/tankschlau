@@ -86,7 +86,7 @@ public class FixtureFiles {
   public static FileReader getFileReaderForResource(String name) {
     Objects.requireNonNull(name);
 
-    ClassLoader loader = JsonResponseHelp.class.getClassLoader();
+    ClassLoader loader = DomainFixtureHelp.class.getClassLoader();
     URL fileUrl = loader.getResource(name);
 
     if (fileUrl == null)

@@ -36,17 +36,17 @@ import java.util.function.Function;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * PetrolStation factory for tests.
+ * Deals with test-fixtures for the common domain of this app.
  * <p>
- * Use for creating fixed data of a {@link PetrolStation}.
- * All fields are public mutable for testing purposes. Also, all primitives are wrapped
+ * Use for creating fixed data of {@link PetrolStation} and {@link TankerkoenigResponseDto}.
+ * All DTO fields are public mutable for testing purposes. Also, all primitives are wrapped
  * to be able to null them for testing purposes.
  */
-public class JsonResponseHelp {
+public class DomainFixtureHelp {
   public ResponseDTO objectFixture;
   public JsonObject jsonFixture;
 
-  public JsonResponseHelp() {
+  public DomainFixtureHelp() {
     this.objectFixture = new ResponseDTO();
   }
 
@@ -66,8 +66,8 @@ public class JsonResponseHelp {
 
     Gson gson = new Gson();
 
-    this.objectFixture = gson.fromJson(reader1, ResponseDTO.class);
-    this.jsonFixture = (JsonObject) JsonParser.parseReader(reader2);
+    objectFixture = gson.fromJson(reader1, ResponseDTO.class);
+    jsonFixture = (JsonObject) JsonParser.parseReader(reader2);
   }
 
   /**
@@ -84,9 +84,9 @@ public class JsonResponseHelp {
 
     setupFixture(resName);
 
-    assert this.jsonFixture.getAsJsonArray("stations") != null;
+    assert jsonFixture.getAsJsonArray("stations") != null;
 
-    this.jsonFixture = this.jsonFixture
+    jsonFixture = jsonFixture
         .getAsJsonArray("stations")
         .get(0)
         .getAsJsonObject();
@@ -151,7 +151,7 @@ public class JsonResponseHelp {
   }
 
   /**
-   * Deep check for value equality of a JsonResponseHelp with a {@link PetrolStation}.
+   * Deep check for value equality of a fixture with a {@link PetrolStation}.
    *
    * @param petrolStation The {@link PetrolStation} to be checked for deep value equality.
    */
@@ -161,7 +161,7 @@ public class JsonResponseHelp {
 
     assert petrolStation != null;
 
-    // Find required JsonResponseHelp for the PetrolStation under test.
+    // Find required fixture for the PetrolStation under test.
     StationDTO fixture = objectFixture.stations.stream()
                                                .filter(fixt -> fixt.uuid.equals(petrolStation.uuid))
                                                .findFirst()
@@ -273,6 +273,13 @@ public class JsonResponseHelp {
 
   // endregion
 
+  /**
+   * Transfer class to easily convert a Tankerkoenig.de API JSON response file to a
+   * test-fixture response. Conversion is currently processed by the {@link Gson}
+   * library. <br>
+   * All DTO fields are public mutable for testing purposes. Also, all primitives are wrapped
+   * to be able to null them for testing purposes.
+   */
   public static class ResponseDTO {
     @SerializedName("ok") public Boolean ok;
     @SerializedName("license") public String license;
@@ -287,8 +294,10 @@ public class JsonResponseHelp {
 
   /**
    * Transfer class to easily convert a Tankerkoenig.de API JSON response file to a
-   * (petrol station) test-fixture instance. Conversion is currently processed by the {@link Gson}
-   * library.
+   * (petrol station) test-fixture. Conversion is currently processed by the {@link Gson}
+   * library. <br>
+   * All DTO fields are public mutable for testing purposes. Also, all primitives are wrapped
+   * to be able to null them for testing purposes.
    */
   public static class StationDTO {
     @SerializedName("id") public UUID uuid;

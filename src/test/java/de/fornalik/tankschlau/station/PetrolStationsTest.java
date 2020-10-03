@@ -7,8 +7,8 @@ import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.OkHttpClient;
 import de.fornalik.tankschlau.net.Request;
 import de.fornalik.tankschlau.net.Response;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.DomainFixtureHelp;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.FixtureFiles;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonResponseHelp;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +31,7 @@ class PetrolStationsTest {
   private static HttpClient httpClientMock;
   private static Request requestMock;
   private static Response responseMock;
-  private JsonResponseHelp fixture;
+  private DomainFixtureHelp fixture;
   private List<PetrolStation> actualPetrolStations;
 
   @BeforeAll
@@ -49,7 +49,7 @@ class PetrolStationsTest {
 
   @BeforeEach
   void setUp() {
-    fixture = new JsonResponseHelp();
+    fixture = new DomainFixtureHelp();
     actualPetrolStations = null;
   }
 

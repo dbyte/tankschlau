@@ -1,7 +1,7 @@
 package de.fornalik.tankschlau.geo;
 
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.DomainFixtureHelp;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.FixtureFiles;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonResponseHelp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,11 +12,11 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GeoTest {
-  private JsonResponseHelp fixture;
+  private DomainFixtureHelp fixture;
 
   @BeforeEach
   void setUp() {
-    fixture = new JsonResponseHelp();
+    fixture = new DomainFixtureHelp();
   }
 
   @Test

@@ -1,7 +1,7 @@
 package de.fornalik.tankschlau.station;
 
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.DomainFixtureHelp;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.FixtureFiles;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.testhelp.response.JsonResponseHelp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,11 +12,11 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PetrolsTest {
-  private JsonResponseHelp fixture;
+  private DomainFixtureHelp fixture;
 
   @BeforeEach
   void setUp() {
-    fixture = new JsonResponseHelp();
+    fixture = new DomainFixtureHelp();
   }
 
   // region createFromJson Tests
