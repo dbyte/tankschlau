@@ -21,7 +21,6 @@ import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.gui.window.MainWindow;
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.OkHttpClient;
-import de.fornalik.tankschlau.net.Request;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolStationsJsonAdapter;
 import de.fornalik.tankschlau.station.PetrolType;
@@ -32,7 +31,6 @@ import de.fornalik.tankschlau.webserviceapi.ApiKeyStore;
 import de.fornalik.tankschlau.webserviceapi.UserPrefsApiKeyStore;
 import de.fornalik.tankschlau.webserviceapi.google.GeocodingApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigApiKeyManager;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigRequest;
 
 import java.net.MalformedURLException;
 import java.util.List;
@@ -70,7 +68,6 @@ public class TankSchlau {
         () -> new IllegalStateException("No preferences found for user geo data."));
 
     MainWindow mainWindow = new MainWindow();
-    Request request = TankerkoenigRequest.create(TANKERKOENIG_APIKEY_MANAGER, userGeo);
 
     mainWindow.initGui();
     mainWindow.updateList(userGeo, PetrolType.DIESEL);
