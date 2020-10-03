@@ -26,7 +26,7 @@ import de.fornalik.tankschlau.station.Petrol;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolStationBuilder;
 import de.fornalik.tankschlau.station.PetrolType;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigResponseDto;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigPetrolStationsDao;
 import org.junit.jupiter.api.Assertions;
 
 import java.io.FileReader;
@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * Deals with test-fixtures for the common domain of this app.
  * <p>
- * Use for creating fixed data of {@link PetrolStation} and {@link TankerkoenigResponseDto}.
+ * Use for creating fixed data of {@link PetrolStation} and {@link TankerkoenigPetrolStationsDao}.
  * All DTO fields are public mutable for testing purposes. Also, all primitives are wrapped
  * to be able to null them for testing purposes.
  */
@@ -131,12 +131,14 @@ public class DomainFixtureHelp {
 
   // region assertEqualsAll
 
-  public void assertEqualValues(TankerkoenigResponseDto responseDtoUnderTest) {
+  public void assertEqualValues(TankerkoenigPetrolStationsDao responseDtoUnderTest) {
     Objects.requireNonNull(responseDtoUnderTest);
 
-    assertEquals(objectFixture.ok, responseDtoUnderTest.isOk());
-    assertEquals(objectFixture.license, responseDtoUnderTest.getLicense());
-    assertEquals(objectFixture.status, responseDtoUnderTest.getStatus());
+    assertEquals(objectFixture.ok, responseDtoUnderTest.getTransactionInfo().isOk());
+    assertEquals(objectFixture.license, responseDtoUnderTest.getTransactionInfo().getLicense());
+    assertEquals(objectFixture.status, responseDtoUnderTest.getTransactionInfo().getStatus());
+
+    assertEqualValuesIgnoringSort(responseDtoUnderTest.getTransactionInfo().getPetrolStations());
   }
 
   /**

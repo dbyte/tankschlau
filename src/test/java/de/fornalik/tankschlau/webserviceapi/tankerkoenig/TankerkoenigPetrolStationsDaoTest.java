@@ -27,11 +27,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class TankerkoenigResponseDtoTest {
+class TankerkoenigPetrolStationsDaoTest {
   private static Gson gson;
   private static PetrolStationsJsonAdapter petrolStationsJsonAdapter;
   private DomainFixtureHelp fixture;
-  private TankerkoenigResponseDto actualTankerkoenigResponseDto;
+  private TankerkoenigPetrolStationsDao actualTankerkoenigPetrolStationsDao;
 
   @BeforeAll
   static void beforeAll() {
@@ -48,7 +48,7 @@ class TankerkoenigResponseDtoTest {
   @BeforeEach
   void setUp() {
     fixture = new DomainFixtureHelp();
-    actualTankerkoenigResponseDto = null;
+    actualTankerkoenigPetrolStationsDao = null;
   }
 
   @Test
@@ -57,12 +57,12 @@ class TankerkoenigResponseDtoTest {
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
 
     // when
-    actualTankerkoenigResponseDto = gson.fromJson(
+    actualTankerkoenigPetrolStationsDao = gson.fromJson(
         fixture.jsonFixture,
-        TankerkoenigResponseDto.class);
+        TankerkoenigPetrolStationsDao.class);
 
     // then
-    assertNotNull(actualTankerkoenigResponseDto);
-    fixture.assertEqualValues(actualTankerkoenigResponseDto);
+    assertNotNull(actualTankerkoenigPetrolStationsDao);
+    fixture.assertEqualValues(actualTankerkoenigPetrolStationsDao);
   }
 }

@@ -25,25 +25,37 @@ import java.util.List;
  * DataTransferObject for tankerkoenig.de response.
  * This is the target for JSON adapters which convert the response body to our ORM.
  */
-public class TankerkoenigResponseDto {
-  @SerializedName("ok") private boolean ok;
-  @SerializedName("license") private String license;
-  @SerializedName("status") private String status;
-  @SerializedName("stations") private List<PetrolStation> petrolStations;
+public class TankerkoenigPetrolStationsDao {
+  private TransactionInfo transactionInfo;
 
-  public boolean isOk() {
-    return ok;
+  public TankerkoenigPetrolStationsDao() {
+    this.transactionInfo = new TransactionInfo();
   }
 
-  public String getLicense() {
-    return license;
+  public TransactionInfo getTransactionInfo() {
+    return transactionInfo;
   }
 
-  public String getStatus() {
-    return status;
-  }
+  public static class TransactionInfo {
+    @SerializedName("ok") private boolean ok;
+    @SerializedName("license") private String license;
+    @SerializedName("status") private String status;
+    @SerializedName("stations") private List<PetrolStation> petrolStations;
 
-  public List<PetrolStation> getPetrolStations() {
-    return petrolStations;
+    public boolean isOk() {
+      return ok;
+    }
+
+    public String getLicense() {
+      return license;
+    }
+
+    public String getStatus() {
+      return status;
+    }
+
+    public List<PetrolStation> getPetrolStations() {
+      return petrolStations;
+    }
   }
 }
