@@ -1,0 +1,103 @@
+{
+  "results": [
+    {
+      "address_components": [
+        {
+          "long_name": "71",
+          "short_name": "71",
+          "types": [
+            "street_number"
+          ]
+        },
+        {
+          "long_name": "Königsteiner Straße",
+          "short_name": "Königsteiner Str.",
+          "types": [
+            "route"
+          ]
+        },
+        {
+          "long_name": "Frankfurt am Main West",
+          "short_name": "Frankfurt am Main West",
+          "types": [
+            "political",
+            "sublocality",
+            "sublocality_level_1"
+          ]
+        },
+        {
+          "long_name": "Frankfurt am Main",
+          "short_name": "Frankfurt am Main",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Darmstadt",
+          "short_name": "DA",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Hessen",
+          "short_name": "HE",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Deutschland",
+          "short_name": "DE",
+          "types": [
+            "country",
+            "political"
+          ]
+        },
+        {
+          "long_name": "65929",
+          "short_name": "65929",
+          "types": [
+            "postal_code"
+          ]
+        }
+      ],
+      "formatted_address": "Königsteiner Str. 71, 65929 Frankfurt am Main, Deutschland",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 50.107905,
+            "lng": 8.541520999999999
+          },
+          "southwest": {
+            "lat": 50.10776629999999,
+            "lng": 8.5412818
+          }
+        },
+        "location": {
+          "lat": 50.1078234,
+          "lng": 8.5413809
+        },
+        "location_type": "ROOFTOP",
+        "viewport": {
+          "northeast": {
+            "lat": 50.1091846302915,
+            "lng": 8.542750380291503
+          },
+          "southwest": {
+            "lat": 50.1064866697085,
+            "lng": 8.540052419708498
+          }
+        }
+      },
+      "place_id": "ChIJL-96ybCgvUcR6Lv-noBfAHY",
+      "types": [
+        "premise"
+      ]
+    }
+  ],
+  "status": "OK"
+}

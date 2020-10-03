@@ -1,0 +1,88 @@
+{
+  "results": [
+    {
+      "address_components": [
+        {
+          "long_name": "Kurfürstendamm",
+          "short_name": "Kurfürstendamm",
+          "types": [
+            "route"
+          ]
+        },
+        {
+          "long_name": "Bezirk Charlottenburg-Wilmersdorf",
+          "short_name": "Bezirk Charlottenburg-Wilmersdorf",
+          "types": [
+            "political",
+            "sublocality",
+            "sublocality_level_1"
+          ]
+        },
+        {
+          "long_name": "Berlin",
+          "short_name": "Berlin",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Berlin",
+          "short_name": "Berlin",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Deutschland",
+          "short_name": "DE",
+          "types": [
+            "country",
+            "political"
+          ]
+        },
+        {
+          "long_name": "10707",
+          "short_name": "10707",
+          "types": [
+            "postal_code"
+          ]
+        }
+      ],
+      "formatted_address": "Kurfürstendamm, 10707 Berlin, Deutschland",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 52.5019781,
+            "lng": 13.3210899
+          },
+          "southwest": {
+            "lat": 52.4993822,
+            "lng": 13.3059791
+          }
+        },
+        "location": {
+          "lat": 52.5006049,
+          "lng": 13.3136007
+        },
+        "location_type": "GEOMETRIC_CENTER",
+        "viewport": {
+          "northeast": {
+            "lat": 52.5020291302915,
+            "lng": 13.3210899
+          },
+          "southwest": {
+            "lat": 52.4993311697085,
+            "lng": 13.3059791
+          }
+        }
+      },
+      "place_id": "EiZLdXJmw7xyc3RlbmRhbW0sIDEwNzA3IEJlcmxpbiwgR2VybWFueSIuKiwKFAoSCTf0KqjoUKhHEXCBC8bmbXjJEhQKEgkndgNc7lCoRxHg3D2VSSAhHA",
+      "types": [
+        "route"
+      ]
+    }
+  ],
+  "status": "OK"
+}

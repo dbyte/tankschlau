@@ -25,6 +25,9 @@ import java.util.Objects;
  * Utility class for test-fixture file handling.
  */
 public class FixtureFiles {
+
+  // region Tankerkoenig petrol stations responses
+
   public static final String TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR =
       "response_fixtures/tankerkoenig/neighbourhood/json/";
 
@@ -71,7 +74,34 @@ public class FixtureFiles {
       TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR + "ZeroPriceForDieselAndE10.json";
 
   public static final String TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_STATIONS_ARRAY_IS_STRING_ARRAY =
-      TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR + "StationsArrayWithJsonStringsInsteadOfJsonObjects.json";
+      TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR +
+          "StationsArrayWithJsonStringsInsteadOfJsonObjects.json";
+
+  // endregion
+  // region Google Geocoding responses
+
+  public static final String GOOGLE_GEO_RESPONSE_DIR =
+      "response_fixtures/google/geocoding/";
+
+  public static final String GOOGLE_GEO_RESPONSE_50_1078234_8_5413809_Rooftop =
+      GOOGLE_GEO_RESPONSE_DIR + "50_1078234_8_5413809_Rooftop.json";
+
+  public static final String GOOGLE_GEO_RESPONSE_52_39097_10_84663_Rooftop =
+      GOOGLE_GEO_RESPONSE_DIR + "52_39097_10_84663_Rooftop.json";
+
+  public static final String GOOGLE_GEO_RESPONSE_52_5006049_13_3136007_GeometricCenter =
+      GOOGLE_GEO_RESPONSE_DIR + "52_5006049_13_3136007_GeometricCenter.json";
+
+  public static final String GOOGLE_GEO_RESPONSE_52_9541353_8_2396026_Approximate =
+      GOOGLE_GEO_RESPONSE_DIR + "52_9541353_8_2396026_Approximate.json";
+
+  public static final String GOOGLE_GEO_RESPONSE_MissingApiKey =
+      GOOGLE_GEO_RESPONSE_DIR + "MissingApiKey.json";
+
+  public static final String GOOGLE_GEO_RESPONSE_ZeroResults =
+      GOOGLE_GEO_RESPONSE_DIR + "ZeroResults.json";
+
+  // endregion
 
   private FixtureFiles() {
   }

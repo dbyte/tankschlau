@@ -1,0 +1,89 @@
+{
+  "results": [
+    {
+      "address_components": [
+        {
+          "long_name": "26197",
+          "short_name": "26197",
+          "types": [
+            "postal_code"
+          ]
+        },
+        {
+          "long_name": "Huntlosen",
+          "short_name": "Huntlosen",
+          "types": [
+            "political",
+            "sublocality",
+            "sublocality_level_1"
+          ]
+        },
+        {
+          "long_name": "Großenkneten",
+          "short_name": "Großenkneten",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Oldenburg",
+          "short_name": "OL",
+          "types": [
+            "administrative_area_level_3",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Niedersachsen",
+          "short_name": "NDS",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Deutschland",
+          "short_name": "DE",
+          "types": [
+            "country",
+            "political"
+          ]
+        }
+      ],
+      "formatted_address": "26197 Großenkneten, Deutschland",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 53.01812899999999,
+            "lng": 8.341507099999999
+          },
+          "southwest": {
+            "lat": 52.869426,
+            "lng": 8.114379
+          }
+        },
+        "location": {
+          "lat": 52.9541353,
+          "lng": 8.2396026
+        },
+        "location_type": "APPROXIMATE",
+        "viewport": {
+          "northeast": {
+            "lat": 53.01812899999999,
+            "lng": 8.341507099999999
+          },
+          "southwest": {
+            "lat": 52.869426,
+            "lng": 8.114379
+          }
+        }
+      },
+      "place_id": "ChIJM4NWobAkt0cRAM87qnrPJhw",
+      "types": [
+        "postal_code"
+      ]
+    }
+  ],
+  "status": "OK"
+}
