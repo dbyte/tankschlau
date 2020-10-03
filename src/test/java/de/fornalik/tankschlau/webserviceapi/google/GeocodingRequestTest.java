@@ -106,15 +106,4 @@ class GeocodingRequestTest {
         NullPointerException.class,
         () -> GeocodingRequest.create(apiKeyManagerMock, addressMock));
   }
-
-  /*@Test
-  void create_XXX() throws IOException {
-    // given
-    final HttpClient HTTP_CLIENT = new OkHttpClient();
-
-    // when
-    GeocodingRequest actualRequest = GeocodingRequest.create(apiKeyManagerMock, addressMock);
-    Response response = HTTP_CLIENT.newCall(actualRequest);
-    System.out.println(response.getBody().get());
-  }*/
 }

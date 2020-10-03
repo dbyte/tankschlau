@@ -29,6 +29,9 @@ import java.util.List;
 public interface PetrolStationsDao {
 
   /**
+   * Gets a list of petrol stations around the user's neighbourhood, whereby neighbourhood
+   * is defined by the given {@link Geo} data of the user.
+   *
    * @param geo {@link Geo} instance. Its latitude & longitude should reflect the current
    *            location of the user. Its distance field should reflect the maximum search radius
    *            for petrol stations in the neighbourhood of the users current location.

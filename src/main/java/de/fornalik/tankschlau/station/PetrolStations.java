@@ -34,9 +34,15 @@ import java.util.List;
  */
 public class PetrolStations {
 
-  public static List<PetrolStation> getAllInNeighbourhood(
-      PetrolStationsDao dao, Geo geo) throws IOException {
-
+  /**
+   * Gets a list of petrol stations around the user's neighbourhood, whereby neighbourhood
+   * Basically, it's a wrapper for {@link PetrolStationsDao#getAllInNeighbourhood(Geo)}.
+   *
+   * @throws IOException If something went wrong while contacting the backing store of
+   *                     {@link PetrolStation}.
+   */
+  public static List<PetrolStation> getAllInNeighbourhood(PetrolStationsDao dao, Geo geo)
+  throws IOException {
     return dao.getAllInNeighbourhood(geo);
   }
 
