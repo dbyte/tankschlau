@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import de.fornalik.tankschlau.TankSchlau;
 import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.net.GeoRequest;
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.StringResponse;
 import de.fornalik.tankschlau.station.PetrolStation;
@@ -37,7 +38,7 @@ import java.util.List;
  */
 public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
   private final HttpClient httpClient;
-  private final TankerkoenigRequest request;
+  private final GeoRequest request;
   private final TypeAdapter<?> gsonAdapter;
   private TransactionInfo transactionInfo;
 
@@ -48,7 +49,7 @@ public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
    * {@link TankSchlau#PETROL_STATIONS_JSON_ADAPTER} and
    * {@link TankSchlau#TANKERKOENIG_APIKEY_MANAGER}. <br>
    *
-   * @see #TankerkoenigPetrolStationsDao(HttpClient, TypeAdapter, TankerkoenigRequest)
+   * @see #TankerkoenigPetrolStationsDao(HttpClient, TypeAdapter, GeoRequest)
    */
   public TankerkoenigPetrolStationsDao() {
     this(
@@ -62,15 +63,15 @@ public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
    * Dependency Injection variant of {@link #TankerkoenigPetrolStationsDao()}. <br>
    * <span style="color:yellow;">You should use this constructor in tests only.</span><br><br>
    *
-   * @param httpClient  Some HTTP client implementation.
-   * @param gsonAdapter Some Gson TypeAdapter implementation for petrol stations.
-   * @param request     Some TankerkoenigRequest implementation.
+   * @param httpClient  Some {@link HttpClient} implementation.
+   * @param gsonAdapter Some Gson {@link TypeAdapter} implementation for petrol stations.
+   * @param request     Some {@link GeoRequest} implementation.
    * @see #TankerkoenigPetrolStationsDao()
    */
   public TankerkoenigPetrolStationsDao(
       HttpClient httpClient,
       TypeAdapter<?> gsonAdapter,
-      TankerkoenigRequest request) {
+      GeoRequest request) {
 
     this.httpClient = httpClient;
     this.request = request;
@@ -80,7 +81,7 @@ public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
 
   @Override
   public List<PetrolStation> getAllInNeighbourhood(Geo geo) throws IOException {
-    this.request.setGeo(geo);
+    this.request.setGeoUrlParameters(geo);
 
     StringResponse response = (StringResponse) httpClient.newCall(request);
     String body = response.getBody().orElse("");

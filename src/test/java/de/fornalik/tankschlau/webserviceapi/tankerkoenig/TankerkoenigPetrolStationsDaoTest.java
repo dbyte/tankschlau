@@ -18,6 +18,7 @@ package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 
 import com.google.gson.TypeAdapter;
 import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.net.GeoRequest;
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.StringResponse;
 import de.fornalik.tankschlau.station.PetrolStation;
@@ -46,7 +47,7 @@ class TankerkoenigPetrolStationsDaoTest {
 
   private DomainFixtureHelp fixture;
   private HttpClient httpClientMock;
-  private TankerkoenigRequest tankerkoenigRequestMock;
+  private GeoRequest geoRequestMock;
   private StringResponse stringResponseMock;
 
   @BeforeAll
@@ -70,13 +71,13 @@ class TankerkoenigPetrolStationsDaoTest {
     TypeAdapter<List<PetrolStation>> petrolStationsJsonAdapter = new PetrolStationsJsonAdapter();
 
     httpClientMock = mock(HttpClient.class);
-    tankerkoenigRequestMock = mock(TankerkoenigRequest.class);
+    geoRequestMock = mock(GeoRequest.class);
     stringResponseMock = mock(StringResponse.class);
 
     sut = new TankerkoenigPetrolStationsDao(
         httpClientMock,
         petrolStationsJsonAdapter,
-        tankerkoenigRequestMock);
+        geoRequestMock);
   }
 
   @Test
@@ -85,7 +86,7 @@ class TankerkoenigPetrolStationsDaoTest {
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_17STATIONS_HAPPY);
 
     when(stringResponseMock.getBody()).thenReturn(Optional.of(fixture.jsonFixture.toString()));
-    when(httpClientMock.newCall(tankerkoenigRequestMock)).thenReturn(stringResponseMock);
+    when(httpClientMock.newCall(geoRequestMock)).thenReturn(stringResponseMock);
 
     // when
     actualPetrolStations = sut.getAllInNeighbourhood(geoMock);
@@ -102,7 +103,7 @@ class TankerkoenigPetrolStationsDaoTest {
     String jsonStringResponse = "{}";
 
     when(stringResponseMock.getBody()).thenReturn(Optional.of(jsonStringResponse));
-    when(httpClientMock.newCall(tankerkoenigRequestMock)).thenReturn(stringResponseMock);
+    when(httpClientMock.newCall(geoRequestMock)).thenReturn(stringResponseMock);
 
     // when
     actualPetrolStations = sut.getAllInNeighbourhood(geoMock);

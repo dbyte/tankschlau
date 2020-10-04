@@ -18,7 +18,7 @@ package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.BaseRequest;
-import de.fornalik.tankschlau.net.Request;
+import de.fornalik.tankschlau.net.GeoRequest;
 import de.fornalik.tankschlau.util.StringLegalizer;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 
@@ -27,7 +27,7 @@ import java.util.Objects;
 /**
  * Implementation of {@link BaseRequest} for web service Tankerkoenig.de
  */
-public class TankerkoenigRequest extends BaseRequest {
+public class TankerkoenigRequest extends GeoRequest {
   private static final String BASE_URL = "https://creativecommons.tankerkoenig.de/json/list.php";
   private static final HttpMethod HTTP_METHOD = HttpMethod.GET;
   private static final String ACCEPT_JSON = "application/json; charset=utf-8";
@@ -55,7 +55,7 @@ public class TankerkoenigRequest extends BaseRequest {
    * @param apiKeyManager Service which controls handling of the web service api key.
    * @param geo           The user's geographical data and maximum search radius im km to search
    *                      for petrol stations in the neighbourhood.
-   * @return A new {@link TankerkoenigRequest} instance, ready for use within a {@link Request}.
+   * @return A new {@link TankerkoenigRequest} instance.
    * @throws SearchRadiusException If distance value of {@link Geo} data is missing.
    * @see TankerkoenigRequest#create(ApiKeyManager)
    */
@@ -82,7 +82,18 @@ public class TankerkoenigRequest extends BaseRequest {
    */
   public void setGeo(Geo geo) {
     this.geo = Objects.requireNonNull(geo, "Geo must not be null.");
-    this.setGeoUrlParameters();
+    this.setGeoUrlParameters(this.geo);
+  }
+
+  @Override
+  public void setGeoUrlParameters(Geo geo) {
+    Double maxSearchRadius = geo
+        .getDistance()
+        .orElseThrow(SearchRadiusException::new);
+
+    addUrlParameter("lat", Double.valueOf(geo.getLatitude()).toString());
+    addUrlParameter("lng", Double.valueOf(geo.getLongitude()).toString());
+    addUrlParameter("rad", maxSearchRadius.toString());
   }
 
   private void setBaseData() {
@@ -93,7 +104,7 @@ public class TankerkoenigRequest extends BaseRequest {
 
   private void setUrlParameters() {
     if (geo != null)
-      setGeoUrlParameters();
+      setGeoUrlParameters(geo);
 
     /* As we sort data ourselves, always request "all" petrol types. Per web service API definition
     of Tankerkoenig.de, "sort" must be set to "dist" when requesting "type" with "all". */
@@ -103,16 +114,6 @@ public class TankerkoenigRequest extends BaseRequest {
     /* Only add API key if we got one. Tankerkoenig will inform us about a missing/invalid key
     in its response, where we handle errors anyway. */
     apiKeyManager.read().ifPresent(value -> addUrlParameter("apikey", value));
-  }
-
-  private void setGeoUrlParameters() {
-    Double maxSearchRadius = geo
-        .getDistance()
-        .orElseThrow(SearchRadiusException::new);
-
-    addUrlParameter("lat", Double.valueOf(geo.getLatitude()).toString());
-    addUrlParameter("lng", Double.valueOf(geo.getLongitude()).toString());
-    addUrlParameter("rad", maxSearchRadius.toString());
   }
 
   public static class SearchRadiusException extends IllegalStateException {
