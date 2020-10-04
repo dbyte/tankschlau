@@ -33,6 +33,8 @@ import java.util.List;
 
 /**
  * Petrol stations DAO implementation for tankerkoenig.de response.
+ *
+ * @see PetrolStationsDao
  */
 public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
   private final HttpClient httpClient;
@@ -40,6 +42,16 @@ public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
   private final TypeAdapter<?> gsonAdapter;
   private TransactionInfo transactionInfo;
 
+  /**
+   * Creates a new default {@link TankerkoenigPetrolStationsDao} object for the webservice. <br>
+   * <span style="color:yellow;">Use this constructor in production.</span><br><br>
+   * Implicitly uses the app's singletons {@link TankSchlau#HTTP_CLIENT},
+   * {@link TankSchlau#PETROL_STATIONS_JSON_ADAPTER} and
+   * {@link TankSchlau#TANKERKOENIG_APIKEY_MANAGER}. <br>
+   *
+   * @throws MalformedURLException If base URL of {@link TankerkoenigRequest} is invalid.
+   * @see #TankerkoenigPetrolStationsDao(HttpClient, TypeAdapter, TankerkoenigRequest)
+   */
   public TankerkoenigPetrolStationsDao() throws MalformedURLException {
     this(
         TankSchlau.HTTP_CLIENT,
@@ -47,6 +59,16 @@ public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
         TankerkoenigRequest.create(TankSchlau.TANKERKOENIG_APIKEY_MANAGER));
   }
 
+  /**
+   * Creates a new default {@link TankerkoenigPetrolStationsDao} object for the webservice. <br>
+   * Dependency Injection variant of {@link #TankerkoenigPetrolStationsDao()}. <br>
+   * <span style="color:yellow;">You should use this constructor in tests only.</span><br><br>
+   *
+   * @param httpClient  Some HTTP client implementation.
+   * @param gsonAdapter Some Gson TypeAdapter implementation for petrol stations.
+   * @param request     Some TankerkoenigRequest implementation.
+   * @see #TankerkoenigPetrolStationsDao()
+   */
   public TankerkoenigPetrolStationsDao(
       HttpClient httpClient,
       TypeAdapter<?> gsonAdapter,
