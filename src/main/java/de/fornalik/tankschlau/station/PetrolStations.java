@@ -38,6 +38,8 @@ public class PetrolStations {
    * Gets a list of petrol stations around the user's neighbourhood, whereby neighbourhood
    * Basically, it's a wrapper for {@link PetrolStationsDao#getAllInNeighbourhood(Geo)}.
    *
+   * @param dao Some {@link PetrolStationsDao} implementation.
+   * @param geo {@link Geo} data wrapping the user's current location.
    * @throws IOException If something went wrong while contacting the backing store of
    *                     {@link PetrolStation}.
    */
