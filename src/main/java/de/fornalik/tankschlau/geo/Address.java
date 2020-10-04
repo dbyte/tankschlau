@@ -22,7 +22,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.util.MyToStringBuilder;
 import de.fornalik.tankschlau.util.StringLegalizer;
-import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingClient;
+import de.fornalik.tankschlau.webserviceapi.common.GeocodingClient;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -182,13 +182,13 @@ public class Address {
   /**
    * Tries to determine and set latitude & longitude of this address by calling a geocoding
    * webservice with address data.
-   * Basically, it's a wrapper for {@link GoogleGeocodingClient#getGeo(Address)}.
+   * Basically, it's a wrapper for {@link GeocodingClient#getGeo(Address)}.
    *
    * @param geocodingClient Some implementation of a geocoding webservice.
    * @throws IOException If something went wrong while reading the response of the webservice or
    *                     while requesting the server.
    */
-  public void setGeo(GoogleGeocodingClient geocodingClient) throws IOException {
+  public void setGeo(GeocodingClient geocodingClient) throws IOException {
     geocodingClient.getGeo(this).ifPresent(this::setGeo);
   }
 

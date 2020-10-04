@@ -26,13 +26,17 @@ import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.AddressRequest;
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.StringResponse;
+import de.fornalik.tankschlau.webserviceapi.common.GeocodingClient;
 
 import java.io.IOException;
 import java.util.Optional;
 
 // TODO unit tests
 
-public class GoogleGeocodingClient {
+/**
+ * Implementation of {@link GeocodingClient} for Google Geocoding webservices.
+ */
+public class GoogleGeocodingClient implements GeocodingClient {
   private final HttpClient httpClient;
   private final AddressRequest request;
 
@@ -47,6 +51,7 @@ public class GoogleGeocodingClient {
     this.request = request;
   }
 
+  @Override
   public Optional<Geo> getGeo(Address address) throws IOException {
     request.setAddressUrlParameters(address);
 

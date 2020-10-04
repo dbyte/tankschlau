@@ -29,6 +29,7 @@ import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.UserPrefs;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyStore;
+import de.fornalik.tankschlau.webserviceapi.common.GeocodingClient;
 import de.fornalik.tankschlau.webserviceapi.common.UserPrefsApiKeyStore;
 import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingClient;
 
@@ -59,7 +60,7 @@ public class TankSchlau {
       GEOCODING_APIKEY_MANAGER.write(args[1]);
 
     // Example: Writing some user geo data to user prefs
-    processTestAddress();
+    // processTestAddress();
 
     Geo userGeo = USER_PREFS.readGeo().orElseThrow(
         () -> new IllegalStateException("No preferences found for user geo data."));
@@ -73,10 +74,11 @@ public class TankSchlau {
   // Example: Writing some user address and geo data to user prefs.
   private static void processTestAddress() {
     Address address = new Address("An den Äckern", "Wolfsburg", "38446");
-    GoogleGeocodingClient geocodingClient = new GoogleGeocodingClient();
+    GeocodingClient geocodingClient = new GoogleGeocodingClient();
 
     try {
       address.setGeo(geocodingClient);
+      address.getGeo().ifPresent(g -> g.setDistance(10.0));
     }
     catch (IOException e) {
       e.printStackTrace();
