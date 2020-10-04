@@ -20,8 +20,6 @@ import de.fornalik.tankschlau.util.UserPrefs;
 
 import java.util.Optional;
 
-// TODO unit tests
-
 /**
  * Implementation for {@link UserPrefs} based API key storage.
  *
