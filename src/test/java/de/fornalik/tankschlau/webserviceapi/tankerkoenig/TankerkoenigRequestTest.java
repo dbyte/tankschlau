@@ -33,11 +33,14 @@ import static org.mockito.Mockito.when;
  * be directly tested in unit tests for {@link de.fornalik.tankschlau.net.BaseRequest}
  */
 class TankerkoenigRequestTest {
+  private TankerkoenigRequest actualRequest;
   private ApiKeyManager apiKeyManagerMock;
   private Geo geoMock;
 
   @BeforeEach
   void setUp() {
+    this.actualRequest = null;
+
     this.apiKeyManagerMock = mock(ApiKeyManager.class);
     when(apiKeyManagerMock.read()).thenReturn(Optional.of("000-abc-def-111"));
 
@@ -48,57 +51,30 @@ class TankerkoenigRequestTest {
   }
 
   @Test
-  void create_withGeo_constructsProperValues() {
+  void create_constructsProperValues() {
     // given
     assert apiKeyManagerMock.read().isPresent(); // pre-check proper test setup
 
     // when
-    TankerkoenigRequest actualRequest = TankerkoenigRequest.create(apiKeyManagerMock, geoMock);
+    actualRequest = TankerkoenigRequest.create(apiKeyManagerMock);
 
     // then
 
-    // Assert proper common values, independent of Geo values.
+    // Assert proper common values.
     this.assert_create_constructsProperValues();
 
-    // Assert proper Geo values.
-    assertEquals(
-        geoMock.getLatitude(),
-        Double.valueOf(actualRequest.getUrlParameters().get("lat")));
-
-    assertEquals(
-        geoMock.getLongitude(),
-        Double.valueOf(actualRequest.getUrlParameters().get("lng")));
-
-    assertEquals(
-        geoMock.getDistance(),
-        Optional.of(Double.valueOf(actualRequest.getUrlParameters().get("rad"))));
-  }
-
-  @Test
-  void create_withoutGeo_constructsProperValues() {
-    // given
-    assert apiKeyManagerMock.read().isPresent(); // pre-check proper test setup
-
-    // when
-    TankerkoenigRequest actualRequest = TankerkoenigRequest.create(apiKeyManagerMock);
-
-    // then
-
-    // Assert proper common values, independent of Geo values.
-    this.assert_create_constructsProperValues();
-
-    // Assert proper Geo values.
+    // Assert that there are no Geo values after construction.
     assertNull(actualRequest.getUrlParameters().get("lat"));
     assertNull(actualRequest.getUrlParameters().get("lng"));
     assertNull(actualRequest.getUrlParameters().get("rad"));
   }
 
   private void assert_create_constructsProperValues() {
-    // given
-    assert apiKeyManagerMock.read().isPresent(); // pre-check proper test setup
+    // Precondition: Check if test is set up.
+    assert apiKeyManagerMock.read().isPresent();
 
-    // when
-    TankerkoenigRequest actualRequest = TankerkoenigRequest.create(apiKeyManagerMock);
+    // Precondition: actualRequest must be set up before at call side.
+    assert actualRequest != null;
 
     // then
     assertEquals(
@@ -121,7 +97,7 @@ class TankerkoenigRequestTest {
     when(apiKeyManagerMock.read()).thenReturn(Optional.empty());
 
     // when
-    TankerkoenigRequest actualRequest = TankerkoenigRequest.create(apiKeyManagerMock, geoMock);
+    actualRequest = TankerkoenigRequest.create(apiKeyManagerMock);
 
     // then
     assertNull(actualRequest.getUrlParameters().get("apikey"));
@@ -132,29 +108,23 @@ class TankerkoenigRequestTest {
     // when then
     assertThrows(
         NullPointerException.class,
-        () -> TankerkoenigRequest.create(null, geoMock));
+        () -> TankerkoenigRequest.create(null));
   }
 
   @Test
-  void create_throwsOnMissingDistance() {
+  void setGeoUrlParameters_doesSetUrlParametersProperly() {
     // given
-    when(geoMock.getDistance()).thenReturn(Optional.empty());
-
-    // when then
-    assertThrows(
-        TankerkoenigRequest.SearchRadiusException.class,
-        () -> TankerkoenigRequest.create(apiKeyManagerMock, geoMock));
-  }
-
-  @Test
-  void setGeo_doesSetUrlParametersProperly() {
-    // given
-    TankerkoenigRequest actualRequest = TankerkoenigRequest.create(apiKeyManagerMock);
+    assert apiKeyManagerMock.read().isPresent(); // pre-check proper test setup
+    actualRequest = TankerkoenigRequest.create(apiKeyManagerMock);
 
     // when
-    actualRequest.setGeo(geoMock);
+    actualRequest.setGeoUrlParameters(geoMock);
 
     // then
+
+    // Assert that proper common values are left untouched after geo computation.
+    this.assert_create_constructsProperValues();
+
     // Assert proper Geo values.
     assertEquals(
         geoMock.getLatitude(),
@@ -170,11 +140,23 @@ class TankerkoenigRequestTest {
   }
 
   @Test
-  void setGeo_throwsImmediatelyOnNullArgument() {
+  void setGeoUrlParameters_throwsOnMissingDistance() {
     // given
-    TankerkoenigRequest actualRequest = TankerkoenigRequest.create(apiKeyManagerMock);
+    actualRequest = TankerkoenigRequest.create(apiKeyManagerMock);
+    when(geoMock.getDistance()).thenReturn(Optional.empty());
 
     // when then
-    assertThrows(NullPointerException.class, () -> actualRequest.setGeo(null));
+    assertThrows(
+        TankerkoenigRequest.SearchRadiusException.class,
+        () -> actualRequest.setGeoUrlParameters(geoMock));
+  }
+
+  @Test
+  void setGeoUrlParameters_throwsImmediatelyOnNullArgument() {
+    // given
+    actualRequest = TankerkoenigRequest.create(apiKeyManagerMock);
+
+    // when then
+    assertThrows(NullPointerException.class, () -> actualRequest.setGeoUrlParameters(null));
   }
 }

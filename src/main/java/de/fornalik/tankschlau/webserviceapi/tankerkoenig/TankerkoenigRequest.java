@@ -32,61 +32,34 @@ public class TankerkoenigRequest extends GeoRequest {
   private static final HttpMethod HTTP_METHOD = HttpMethod.GET;
   private static final String ACCEPT_JSON = "application/json; charset=utf-8";
   private ApiKeyManager apiKeyManager;
-  private Geo geo;
 
   private TankerkoenigRequest() {}
-
-  /**
-   * Creates a new default HTTP request object for web service Tankerkoenig.de. Use this
-   * if you don't have {@link Geo} data available yet and set them later.
-   *
-   * @param apiKeyManager Service which controls handling of the web service api key.
-   * @return A new default {@link TankerkoenigRequest} instance.
-   * @see TankerkoenigRequest#create(ApiKeyManager, Geo)
-   */
-  public static TankerkoenigRequest create(ApiKeyManager apiKeyManager) {
-    return TankerkoenigRequest.create(apiKeyManager, null);
-  }
 
   /**
    * Creates a new HTTP request object for web service Tankerkoenig.de to get
    * petrol stations in the neighbourhood around the given geographical data.
    *
    * @param apiKeyManager Service which controls handling of the web service api key.
-   * @param geo           The user's geographical data and maximum search radius im km to search
-   *                      for petrol stations in the neighbourhood.
    * @return A new {@link TankerkoenigRequest} instance.
    * @throws SearchRadiusException If distance value of {@link Geo} data is missing.
-   * @see TankerkoenigRequest#create(ApiKeyManager)
    */
-  public static TankerkoenigRequest create(ApiKeyManager apiKeyManager, Geo geo) {
+  public static TankerkoenigRequest create(ApiKeyManager apiKeyManager) {
     TankerkoenigRequest instance = new TankerkoenigRequest();
-
-    instance.geo = geo; // nullable
 
     instance.apiKeyManager = Objects.requireNonNull(
         apiKeyManager,
         "apiKeyManager must not be null.");
 
     instance.setBaseData();
-    instance.setUrlParameters();
+    instance.setCommonUrlParameters();
 
     return instance;
   }
 
-  /**
-   * Sets or overwrites the geographical URL parameters for this request.
-   *
-   * @param geo {@link Geo} data, must not be null.
-   * @throws NullPointerException If given geo data is null.
-   */
-  public void setGeo(Geo geo) {
-    this.geo = Objects.requireNonNull(geo, "Geo must not be null.");
-    this.setGeoUrlParameters(this.geo);
-  }
-
   @Override
   public void setGeoUrlParameters(Geo geo) {
+    Objects.requireNonNull(geo, "Geo must not be null.");
+
     Double maxSearchRadius = geo
         .getDistance()
         .orElseThrow(SearchRadiusException::new);
@@ -102,10 +75,7 @@ public class TankerkoenigRequest extends GeoRequest {
     addHeader("Accept", ACCEPT_JSON);
   }
 
-  private void setUrlParameters() {
-    if (geo != null)
-      setGeoUrlParameters(geo);
-
+  private void setCommonUrlParameters() {
     /* As we sort data ourselves, always request "all" petrol types. Per web service API definition
     of Tankerkoenig.de, "sort" must be set to "dist" when requesting "type" with "all". */
     addUrlParameter("sort", "dist");
