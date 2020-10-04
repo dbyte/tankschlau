@@ -103,7 +103,7 @@ class TankerkoenigRequestTest {
 
     // then
     assertEquals(
-        "https://creativecommons.tankerkoenig.de/json/list.php?",
+        "https://creativecommons.tankerkoenig.de/json/list.php",
         actualRequest.getBaseUrl().toString());
 
     assertEquals(Request.HttpMethod.GET, actualRequest.getHttpMethod());

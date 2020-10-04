@@ -59,7 +59,7 @@ class GeocodingRequestTest {
 
     // then
     assertEquals(
-        "https://maps.googleapis.com/maps/api/geocode/json?",
+        "https://maps.googleapis.com/maps/api/geocode/json",
         actualRequest.getBaseUrl().toString());
 
     assertEquals(Request.HttpMethod.GET, actualRequest.getHttpMethod());
