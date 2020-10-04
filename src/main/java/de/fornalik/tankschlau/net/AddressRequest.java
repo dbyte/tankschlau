@@ -17,7 +17,6 @@
 package de.fornalik.tankschlau.net;
 
 import de.fornalik.tankschlau.geo.Address;
-import de.fornalik.tankschlau.geo.Geo;
 
 /**
  * Abstract HTTP request class with base functionalities and <b>additional hook</b> for generating
@@ -29,8 +28,9 @@ public abstract class AddressRequest extends BaseRequest {
   /**
    * Implementation should set or overwrite the address URL parameters for this request.
    *
-   * @param address The {@link Address} data. Its empty {@link Geo} object should be filled with the
-   *                resulting latitude & longitude by calling a geocoding webservice.
+   * @param address The {@link Address} data. Its {@link de.fornalik.tankschlau.geo.Geo}
+   *                object should be updated with the resulting latitude & longitude by calling a
+   *                geocoding webservice.
    * @throws NullPointerException If given address is null.
    */
   public abstract void setAddressUrlParameters(Address address);

@@ -17,7 +17,6 @@
 package de.fornalik.tankschlau.webserviceapi.google;
 
 import de.fornalik.tankschlau.geo.Address;
-import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.AddressRequest;
 import de.fornalik.tankschlau.net.Request;
 import de.fornalik.tankschlau.util.StringLegalizer;
@@ -54,13 +53,6 @@ public class GoogleGeocodingRequest extends AddressRequest {
     return instance;
   }
 
-  /**
-   * Sets or overwrites the address URL parameters for this request.
-   *
-   * @param address The user's address data. Its empty {@link Geo} object gets filled with the
-   *                resulting latitude & longitude by calling the service.
-   * @throws NullPointerException If given address is null.
-   */
   @Override
   public void setAddressUrlParameters(Address address) {
     Objects.requireNonNull(address, "Address must not be null.");
