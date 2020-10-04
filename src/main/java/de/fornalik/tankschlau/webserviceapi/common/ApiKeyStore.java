@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.fornalik.tankschlau.webserviceapi;
+package de.fornalik.tankschlau.webserviceapi.common;
 
 import java.util.Optional;
 

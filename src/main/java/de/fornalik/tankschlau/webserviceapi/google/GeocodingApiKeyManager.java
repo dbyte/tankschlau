@@ -16,8 +16,8 @@
 
 package de.fornalik.tankschlau.webserviceapi.google;
 
-import de.fornalik.tankschlau.webserviceapi.ApiKeyManager;
-import de.fornalik.tankschlau.webserviceapi.ApiKeyStore;
+import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
+import de.fornalik.tankschlau.webserviceapi.common.ApiKeyStore;
 
 // TODO unit tests
 

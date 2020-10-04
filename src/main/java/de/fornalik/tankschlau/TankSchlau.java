@@ -26,9 +26,9 @@ import de.fornalik.tankschlau.station.PetrolStationsJsonAdapter;
 import de.fornalik.tankschlau.station.PetrolType;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.UserPrefs;
-import de.fornalik.tankschlau.webserviceapi.ApiKeyManager;
-import de.fornalik.tankschlau.webserviceapi.ApiKeyStore;
-import de.fornalik.tankschlau.webserviceapi.UserPrefsApiKeyStore;
+import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
+import de.fornalik.tankschlau.webserviceapi.common.ApiKeyStore;
+import de.fornalik.tankschlau.webserviceapi.common.UserPrefsApiKeyStore;
 import de.fornalik.tankschlau.webserviceapi.google.GeocodingApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigApiKeyManager;
 

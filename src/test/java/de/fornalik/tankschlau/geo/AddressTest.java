@@ -8,7 +8,7 @@ import de.fornalik.tankschlau.net.StringResponse;
 import de.fornalik.tankschlau.testhelp_common.DomainFixtureHelp;
 import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
 import de.fornalik.tankschlau.util.StringLegalizer;
-import de.fornalik.tankschlau.webserviceapi.ApiKeyManager;
+import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -234,7 +234,7 @@ class AddressTest {
   }
 
   @Test
-  void setGeoFromWebService_xxx() throws IOException {
+  void setGeoFromWebService_doesSetExpectedData() throws IOException {
     // given
     Address address = new Address("An den Äckern", "2", "Wolfsburg", "38446");
     assert !address.getGeo().isPresent();

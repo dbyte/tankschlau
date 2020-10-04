@@ -20,7 +20,7 @@ import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.BaseRequest;
 import de.fornalik.tankschlau.net.Request;
-import de.fornalik.tankschlau.webserviceapi.ApiKeyManager;
+import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 
 import java.net.MalformedURLException;
 import java.net.URL;
