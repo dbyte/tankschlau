@@ -16,15 +16,13 @@
 
 package de.fornalik.tankschlau.geo;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
-import de.fornalik.tankschlau.TankSchlau;
-import de.fornalik.tankschlau.net.HttpClient;
-import de.fornalik.tankschlau.net.Request;
-import de.fornalik.tankschlau.net.StringResponse;
 import de.fornalik.tankschlau.util.MyToStringBuilder;
 import de.fornalik.tankschlau.util.StringLegalizer;
-import de.fornalik.tankschlau.webserviceapi.google.GeocodingRequest;
+import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingClient;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -183,61 +181,15 @@ public class Address {
 
   /**
    * Tries to determine and set latitude & longitude of this address by calling a geocoding
-   * webservice with address data. Uses app's default {@link TankSchlau#HTTP_CLIENT}
-   * and {@link TankSchlau#GEOCODING_APIKEY_MANAGER}. <br>
-   * <span style="color:yellow;">It is the variant to be used in production.</span>
+   * webservice with address data.
+   * Basically, it's a wrapper for {@link GoogleGeocodingClient#getGeo(Address)}.
    *
-   * @throws IOException If something went wrong while reading the response of the webservice.
-   */
-  public void setGeoFromWebService() throws IOException {
-    Request request = GeocodingRequest.create(TankSchlau.GEOCODING_APIKEY_MANAGER, this);
-    setGeoFromWebService(TankSchlau.HTTP_CLIENT, request);
-  }
-
-  /**
-   * Dependency Injection variant of {@link #setGeoFromWebService()}. <br>
-   * <span style="color:yellow;">It is the variant to be used in tests.</span>
-   *
-   * @param httpClient Some HTTP client implementation.
-   * @param request    Some {@link Request} implementation.
+   * @param geocodingClient Some implementation of a geocoding webservice.
    * @throws IOException If something went wrong while reading the response of the webservice or
    *                     while requesting the server.
    */
-  public void setGeoFromWebService(HttpClient httpClient, Request request)
-  throws IOException {
-    StringResponse response = (StringResponse) httpClient.newCall(request);
-
-    if (response == null)
-      throw new IOException("Response is null.");
-
-    if (!response.getBody().isPresent())
-      return;
-
-    try {
-      // Ride down the tree until reaching target data...
-      JsonObject geometry = JsonParser
-          .parseString(response.getBody().get())
-          .getAsJsonObject()
-          .getAsJsonArray("results")
-          .get(0)
-          .getAsJsonObject()
-          .get("geometry")
-          .getAsJsonObject();
-
-      JsonObject location = geometry.get("location").getAsJsonObject();
-      String locationType = geometry.get("location_type").getAsString();
-
-      Gson gson = new Gson();
-      this.setGeo(gson.fromJson(location, Geo.class));
-    }
-
-    catch (JsonParseException
-        | NullPointerException
-        | IllegalStateException
-        | IndexOutOfBoundsException e) {
-      System.err.println("Could not deserialize JSON.\n" + response.getBody().get() + "\n");
-      e.printStackTrace();
-    }
+  public void setGeo(GoogleGeocodingClient geocodingClient) throws IOException {
+    geocodingClient.getGeo(this).ifPresent(this::setGeo);
   }
 
   /**

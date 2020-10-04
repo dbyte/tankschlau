@@ -34,11 +34,13 @@ import static org.mockito.Mockito.when;
  * be directly tested in unit tests for {@link de.fornalik.tankschlau.net.BaseRequest}
  */
 class GeocodingRequestTest {
+  private GeocodingRequest actualRequest;
   private ApiKeyManager apiKeyManagerMock;
   private Address addressMock;
 
   @BeforeEach
   void setUp() {
+    this.actualRequest = null;
     this.apiKeyManagerMock = Mockito.mock(ApiKeyManager.class);
     when(apiKeyManagerMock.read()).thenReturn(Optional.of("222-hij-klm-333"));
 
@@ -55,7 +57,7 @@ class GeocodingRequestTest {
     assert apiKeyManagerMock.read().isPresent(); // pre-check proper test setup
 
     // when
-    GeocodingRequest actualRequest = GeocodingRequest.create(apiKeyManagerMock, addressMock);
+    actualRequest = GeocodingRequest.create(apiKeyManagerMock);
 
     // then
     assertEquals(
@@ -68,10 +70,6 @@ class GeocodingRequestTest {
 
     assertEquals("de", actualRequest.getUrlParameters().get("region"));
 
-    assertEquals(
-        "An+den+%C3%84ckern+2,+38446+Wolfsburg",
-        actualRequest.getUrlParameters().get("address"));
-
     assertEquals(apiKeyManagerMock.read().get(), actualRequest.getUrlParameters().get("key"));
   }
 
@@ -82,7 +80,7 @@ class GeocodingRequestTest {
     when(apiKeyManagerMock.read()).thenReturn(Optional.empty());
 
     // when
-    GeocodingRequest actualRequest = GeocodingRequest.create(apiKeyManagerMock, addressMock);
+    actualRequest = GeocodingRequest.create(apiKeyManagerMock);
 
     // then
     assertNull(actualRequest.getUrlParameters().get("key"));
@@ -93,17 +91,31 @@ class GeocodingRequestTest {
     // when then
     assertThrows(
         NullPointerException.class,
-        () -> GeocodingRequest.create(null, addressMock));
+        () -> GeocodingRequest.create(null));
   }
 
   @Test
-  void create_throwsOnNullAddress() {
+  void setAddressUrlParameters_setsParametersProperly() throws MalformedURLException {
     // given
-    addressMock = null;
+    actualRequest = GeocodingRequest.create(apiKeyManagerMock);
+
+    // when
+    actualRequest.setAddressUrlParameters(addressMock);
+
+    // then
+    assertEquals(
+        "An+den+%C3%84ckern+2,+38446+Wolfsburg",
+        actualRequest.getUrlParameters().get("address"));
+  }
+
+  @Test
+  void setAddressUrlParameters_throwsOnNullAddress() throws MalformedURLException {
+    // given
+    actualRequest = GeocodingRequest.create(apiKeyManagerMock);
 
     // when then
     assertThrows(
         NullPointerException.class,
-        () -> GeocodingRequest.create(apiKeyManagerMock, addressMock));
+        () -> actualRequest.setAddressUrlParameters(null));
   }
 }

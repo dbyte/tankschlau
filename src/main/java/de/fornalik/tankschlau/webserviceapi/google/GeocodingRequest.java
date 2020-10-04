@@ -34,34 +34,52 @@ public class GeocodingRequest extends BaseRequest {
   private static final HttpMethod HTTP_METHOD = HttpMethod.GET;
   private static final String ACCEPT_JSON = "application/json; charset=utf-8";
   private ApiKeyManager apiKeyManager;
-  private Address address;
 
   private GeocodingRequest() {}
 
   /**
    * Factory method, creates a new HTTP request object for Google Geocoding web service.
    *
-   * @param address The user's address data. Its empty {@link Geo} object gets filled with the
-   *                resulting latitude & longitude by calling the service.
    * @return {@link Address} object as in, ready for use which within a {@link Request}.
    * @throws MalformedURLException If the base URL is invalid.
    */
-  public static GeocodingRequest create(ApiKeyManager apiKeyManager, Address address)
+  public static GeocodingRequest create(ApiKeyManager apiKeyManager)
   throws MalformedURLException {
     GeocodingRequest instance = new GeocodingRequest();
-
-    instance.address = Objects.requireNonNull(
-        address,
-        "Address must not be null.");
 
     instance.apiKeyManager = Objects.requireNonNull(
         apiKeyManager,
         "apiKeyManager must not be null.");
 
     instance.setBaseData();
-    instance.setUrlParameters();
+    instance.setCommonUrlParameters();
 
     return instance;
+  }
+
+  /**
+   * Sets or overwrites the address URL parameters for this request.
+   *
+   * @param address The user's address data. Its empty {@link Geo} object gets filled with the
+   *                resulting latitude & longitude by calling the service.
+   * @throws NullPointerException If given address is null.
+   */
+  public void setAddressUrlParameters(Address address) {
+    Objects.requireNonNull(address, "Address must not be null.");
+
+    addUrlParameter(
+        "address",
+        (address.getStreet() + " " + address.getHouseNumber()).trim());
+
+    appendUrlString(
+        "address",
+        ",+",
+        null);
+
+    appendUrlString(
+        "address",
+        (address.getPostCode() + " " + address.getCity()).trim(),
+        "UTF-8");
   }
 
   private void setBaseData() throws MalformedURLException {
@@ -71,24 +89,11 @@ public class GeocodingRequest extends BaseRequest {
     addHeader("Accept-Language", "de");
   }
 
-  private void setUrlParameters() {
+  private void setCommonUrlParameters() {
     addUrlParameter("region", "de");
-
-    addUrlParameter("address", processAddressQueryPart1());
-    appendUrlString("address", ",+", null);
-    appendUrlString("address", processAddressQueryPart2(), "UTF-8");
 
     /* Only add API key if we got one. Google will inform us about a missing/invalid key
     in its response, where we handle errors anyway. */
     apiKeyManager.read().ifPresent(value -> addUrlParameter("key", value));
   }
-
-  private String processAddressQueryPart1() {
-    return (address.getStreet() + " " + address.getHouseNumber()).trim();
-  }
-
-  private String processAddressQueryPart2() {
-    return (address.getPostCode() + " " + address.getCity()).trim();
-  }
-
 }
