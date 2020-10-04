@@ -18,7 +18,7 @@ package de.fornalik.tankschlau.webserviceapi.google;
 
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.net.BaseRequest;
+import de.fornalik.tankschlau.net.AddressRequest;
 import de.fornalik.tankschlau.net.Request;
 import de.fornalik.tankschlau.util.StringLegalizer;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
@@ -26,9 +26,9 @@ import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 import java.util.Objects;
 
 /**
- * Implementation of {@link BaseRequest} for Google Geocoding web service.
+ * Implementation of {@link AddressRequest} for Google Geocoding web service.
  */
-public class GoogleGeocodingRequest extends BaseRequest {
+public class GoogleGeocodingRequest extends AddressRequest {
   private static final String BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json";
   private static final HttpMethod HTTP_METHOD = HttpMethod.GET;
   private static final String ACCEPT_JSON = "application/json; charset=utf-8";
@@ -61,6 +61,7 @@ public class GoogleGeocodingRequest extends BaseRequest {
    *                resulting latitude & longitude by calling the service.
    * @throws NullPointerException If given address is null.
    */
+  @Override
   public void setAddressUrlParameters(Address address) {
     Objects.requireNonNull(address, "Address must not be null.");
 

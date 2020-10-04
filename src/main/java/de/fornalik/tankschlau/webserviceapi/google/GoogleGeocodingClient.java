@@ -23,8 +23,8 @@ import com.google.gson.JsonParser;
 import de.fornalik.tankschlau.TankSchlau;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.net.AddressRequest;
 import de.fornalik.tankschlau.net.HttpClient;
-import de.fornalik.tankschlau.net.Request;
 import de.fornalik.tankschlau.net.StringResponse;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ import java.util.Optional;
 
 public class GoogleGeocodingClient {
   private final HttpClient httpClient;
-  private final Request request;
+  private final AddressRequest request;
 
   public GoogleGeocodingClient() {
     this(
@@ -42,13 +42,13 @@ public class GoogleGeocodingClient {
         GoogleGeocodingRequest.create(TankSchlau.GEOCODING_APIKEY_MANAGER));
   }
 
-  public GoogleGeocodingClient(HttpClient httpClient, Request request) {
+  public GoogleGeocodingClient(HttpClient httpClient, AddressRequest request) {
     this.httpClient = httpClient;
     this.request = request;
   }
 
   public Optional<Geo> getGeo(Address address) throws IOException {
-    ((GoogleGeocodingRequest) request).setAddressUrlParameters(address);
+    request.setAddressUrlParameters(address);
 
     StringResponse response = (StringResponse) httpClient.newCall(request);
 
