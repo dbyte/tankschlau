@@ -29,7 +29,9 @@ import java.util.prefs.Preferences;
 
 /**
  * This class is responsible for the administration of reading & writing user preferences
- * from & to the local OS user preferences.
+ * from & to the local OS user preferences. <br><br>
+ * <span style="color:orange;">Important: Each id should be completely lowercase (for
+ * Windows OS).</span>
  */
 public class UserPrefs {
   private final Preferences realPrefs;
@@ -47,15 +49,15 @@ public class UserPrefs {
   }
 
   public Optional<Address> readAddress() {
-    if (checkPrefsMissing("address.street", "address.city", "address.postCode"))
+    if (checkPrefsMissing("address.street", "address.city", "address.postcode"))
       return Optional.empty();
 
     Address address = new Address(
         realPrefs.get("address.name", ""),
         realPrefs.get("address.street", ""),
-        realPrefs.get("address.houseNumber", ""),
+        realPrefs.get("address.housenumber", ""),
         realPrefs.get("address.city", ""),
-        realPrefs.get("address.postCode", ""),
+        realPrefs.get("address.postcode", ""),
         null);
 
     readGeo().ifPresent(address::setGeo);
@@ -66,9 +68,9 @@ public class UserPrefs {
   public void writeAddress(Address address) {
     realPrefs.put("address.name", address.getName());
     realPrefs.put("address.street", address.getStreet());
-    realPrefs.put("address.houseNumber", address.getHouseNumber());
+    realPrefs.put("address.housenumber", address.getHouseNumber());
     realPrefs.put("address.city", address.getCity());
-    realPrefs.put("address.postCode", address.getPostCode());
+    realPrefs.put("address.postcode", address.getPostCode());
     address.getGeo().ifPresent(this::writeGeo);
   }
 
@@ -103,15 +105,15 @@ public class UserPrefs {
   }
 
   public Optional<PetrolType> readPreferredPetrolType() {
-    if (checkPrefsMissing("petrol.preferredType"))
+    if (checkPrefsMissing("petrol.preferredtype"))
       return Optional.empty();
 
-    String petrolTypeString = realPrefs.get("petrol.preferredType", null);
+    String petrolTypeString = realPrefs.get("petrol.preferredtype", null);
     return Optional.of(PetrolType.valueOf(PetrolType.class, petrolTypeString));
   }
 
   public void writePreferredPetrolType(PetrolType type) {
-    realPrefs.put("petrol.preferredType", type.toString());
+    realPrefs.put("petrol.preferredtype", type.toString());
   }
 
   public Optional<String> readApiKey(String id) {

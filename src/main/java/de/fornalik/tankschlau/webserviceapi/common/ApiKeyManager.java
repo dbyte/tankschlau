@@ -57,7 +57,7 @@ public class ApiKeyManager {
    * @return New instance of ApiKeyManager with a predefined {@link #id}.
    */
   public static ApiKeyManager createForPetrolStations(ApiKeyStore apiKeyStore) {
-    return new ApiKeyManager(apiKeyStore, "apiKey.tankerkoenig");
+    return new ApiKeyManager(apiKeyStore, "apikey.petrolstations");
   }
 
   /**
@@ -67,7 +67,7 @@ public class ApiKeyManager {
    * @return New instance of ApiKeyManager with a predefined {@link #id}.
    */
   public static ApiKeyManager createForGeocoding(ApiKeyStore apiKeyStore) {
-    return new ApiKeyManager(apiKeyStore, "apiKey.geoService");
+    return new ApiKeyManager(apiKeyStore, "apikey.geocoding");
   }
 
   /**
