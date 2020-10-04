@@ -16,6 +16,8 @@
 
 package de.fornalik.tankschlau.util;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Optional;
 
 /**
@@ -78,6 +80,22 @@ public class StringLegalizer {
 
     string = "";
     return this;
+  }
+
+  /**
+   * Convert a string to a {@link URL} by replacing the checked {@link MalformedURLException} to an
+   * unchecked {@link RuntimeException} when we don't want a bubbling up exception invasion.
+   *
+   * @return A validated {@link URL}.
+   * @throws RuntimeException If the string contains a malformed URL.
+   */
+  public URL toUrl() {
+    try {
+      return new URL(string);
+    }
+    catch (MalformedURLException e) {
+      throw new RuntimeException("Malformed URL: " + string, e);
+    }
   }
 
   /**

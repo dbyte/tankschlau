@@ -22,7 +22,6 @@ import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.net.MalformedURLException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,7 +48,7 @@ class TankerkoenigRequestTest {
   }
 
   @Test
-  void create_withGeo_constructsProperValues() throws MalformedURLException {
+  void create_withGeo_constructsProperValues() {
     // given
     assert apiKeyManagerMock.read().isPresent(); // pre-check proper test setup
 
@@ -76,7 +75,7 @@ class TankerkoenigRequestTest {
   }
 
   @Test
-  void create_withoutGeo_constructsProperValues() throws MalformedURLException {
+  void create_withoutGeo_constructsProperValues() {
     // given
     assert apiKeyManagerMock.read().isPresent(); // pre-check proper test setup
 
@@ -94,7 +93,7 @@ class TankerkoenigRequestTest {
     assertNull(actualRequest.getUrlParameters().get("rad"));
   }
 
-  private void assert_create_constructsProperValues() throws MalformedURLException {
+  private void assert_create_constructsProperValues() {
     // given
     assert apiKeyManagerMock.read().isPresent(); // pre-check proper test setup
 
@@ -116,7 +115,7 @@ class TankerkoenigRequestTest {
   }
 
   @Test
-  void create_doesNotAppendApiKeyUrlParamIfNoApiKeyWasFound() throws MalformedURLException {
+  void create_doesNotAppendApiKeyUrlParamIfNoApiKeyWasFound() {
     // given
     assert apiKeyManagerMock.read().isPresent(); // pre-check proper test setup
     when(apiKeyManagerMock.read()).thenReturn(Optional.empty());
@@ -148,7 +147,7 @@ class TankerkoenigRequestTest {
   }
 
   @Test
-  void setGeo_doesSetUrlParametersProperly() throws MalformedURLException {
+  void setGeo_doesSetUrlParametersProperly() {
     // given
     TankerkoenigRequest actualRequest = TankerkoenigRequest.create(apiKeyManagerMock);
 
@@ -171,7 +170,7 @@ class TankerkoenigRequestTest {
   }
 
   @Test
-  void setGeo_throwsImmediatelyOnNullArgument() throws MalformedURLException {
+  void setGeo_throwsImmediatelyOnNullArgument() {
     // given
     TankerkoenigRequest actualRequest = TankerkoenigRequest.create(apiKeyManagerMock);
 

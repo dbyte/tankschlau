@@ -27,7 +27,6 @@ import de.fornalik.tankschlau.station.PetrolStations;
 import de.fornalik.tankschlau.station.PetrolStationsDao;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,10 +48,9 @@ public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
    * {@link TankSchlau#PETROL_STATIONS_JSON_ADAPTER} and
    * {@link TankSchlau#TANKERKOENIG_APIKEY_MANAGER}. <br>
    *
-   * @throws MalformedURLException If base URL of {@link TankerkoenigRequest} is invalid.
    * @see #TankerkoenigPetrolStationsDao(HttpClient, TypeAdapter, TankerkoenigRequest)
    */
-  public TankerkoenigPetrolStationsDao() throws MalformedURLException {
+  public TankerkoenigPetrolStationsDao() {
     this(
         TankSchlau.HTTP_CLIENT,
         TankSchlau.PETROL_STATIONS_JSON_ADAPTER,

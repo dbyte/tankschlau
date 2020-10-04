@@ -23,7 +23,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.net.MalformedURLException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -52,7 +51,7 @@ class GeocodingRequestTest {
   }
 
   @Test
-  void create_constructsProperValues() throws MalformedURLException {
+  void create_constructsProperValues() {
     // given
     assert apiKeyManagerMock.read().isPresent(); // pre-check proper test setup
 
@@ -74,7 +73,7 @@ class GeocodingRequestTest {
   }
 
   @Test
-  void create_doesNotAppendApiKeyUrlParamIfNoApiKeyWasFound() throws MalformedURLException {
+  void create_doesNotAppendApiKeyUrlParamIfNoApiKeyWasFound() {
     // given
     assert apiKeyManagerMock.read().isPresent(); // pre-check proper test setup
     when(apiKeyManagerMock.read()).thenReturn(Optional.empty());
@@ -95,7 +94,7 @@ class GeocodingRequestTest {
   }
 
   @Test
-  void setAddressUrlParameters_setsParametersProperly() throws MalformedURLException {
+  void setAddressUrlParameters_setsParametersProperly() {
     // given
     actualRequest = GeocodingRequest.create(apiKeyManagerMock);
 
@@ -109,7 +108,7 @@ class GeocodingRequestTest {
   }
 
   @Test
-  void setAddressUrlParameters_throwsOnNullAddress() throws MalformedURLException {
+  void setAddressUrlParameters_throwsOnNullAddress() {
     // given
     actualRequest = GeocodingRequest.create(apiKeyManagerMock);
 

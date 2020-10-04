@@ -25,7 +25,6 @@ import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Set;
 
@@ -33,7 +32,7 @@ public class MainWindow extends JFrame {
   private final PetrolStationsDao petrolStationsDao = new TankerkoenigPetrolStationsDao();
   private DefaultListModel<String> model;
 
-  public MainWindow() throws MalformedURLException {
+  public MainWindow() {
     super(de.fornalik.tankschlau.TankSchlau.class.getSimpleName());
   }
 

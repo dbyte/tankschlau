@@ -28,7 +28,6 @@ import de.fornalik.tankschlau.net.Request;
 import de.fornalik.tankschlau.net.StringResponse;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.Optional;
 
 // TODO unit tests
@@ -37,7 +36,7 @@ public class GoogleGeocodingClient {
   private final HttpClient httpClient;
   private final Request request;
 
-  public GoogleGeocodingClient() throws MalformedURLException {
+  public GoogleGeocodingClient() {
     this(
         TankSchlau.HTTP_CLIENT,
         GeocodingRequest.create(TankSchlau.GEOCODING_APIKEY_MANAGER));

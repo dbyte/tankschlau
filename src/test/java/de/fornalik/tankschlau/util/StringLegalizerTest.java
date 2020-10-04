@@ -3,6 +3,8 @@ package de.fornalik.tankschlau.util;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.net.URL;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class StringLegalizerTest {
@@ -114,6 +116,28 @@ class StringLegalizerTest {
 
     // then
     assertEquals("", legalizer.getString());
+  }
+
+  @Test
+  void toUrl_doesReturnProperUrl() {
+    // given
+    String givenUrlString = "https://vote.com";
+    legalizer = StringLegalizer.create(givenUrlString);
+
+    // when
+    URL actualUrl = legalizer.toUrl();
+
+    // then
+    assertEquals(givenUrlString, actualUrl.toString());
+  }
+
+  @Test
+  void toUrl_throwsOnMalformedUrlString() {
+    // given
+    legalizer = StringLegalizer.create("trump://should-throw-runtime-error.always");
+
+    // when then
+    assertThrows(RuntimeException.class, () -> legalizer.toUrl());
   }
 
   @Test

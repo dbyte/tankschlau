@@ -19,10 +19,9 @@ package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.BaseRequest;
 import de.fornalik.tankschlau.net.Request;
+import de.fornalik.tankschlau.util.StringLegalizer;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -43,11 +42,9 @@ public class TankerkoenigRequest extends BaseRequest {
    *
    * @param apiKeyManager Service which controls handling of the web service api key.
    * @return A new default {@link TankerkoenigRequest} instance.
-   * @throws MalformedURLException If the base URL is invalid.
    * @see TankerkoenigRequest#create(ApiKeyManager, Geo)
    */
-  public static TankerkoenigRequest create(ApiKeyManager apiKeyManager)
-  throws MalformedURLException {
+  public static TankerkoenigRequest create(ApiKeyManager apiKeyManager) {
     return TankerkoenigRequest.create(apiKeyManager, null);
   }
 
@@ -59,12 +56,10 @@ public class TankerkoenigRequest extends BaseRequest {
    * @param geo           The user's geographical data and maximum search radius im km to search
    *                      for petrol stations in the neighbourhood.
    * @return A new {@link TankerkoenigRequest} instance, ready for use within a {@link Request}.
-   * @throws MalformedURLException If the base URL is invalid.
    * @throws SearchRadiusException If distance value of {@link Geo} data is missing.
    * @see TankerkoenigRequest#create(ApiKeyManager)
    */
-  public static TankerkoenigRequest create(ApiKeyManager apiKeyManager, Geo geo)
-  throws MalformedURLException {
+  public static TankerkoenigRequest create(ApiKeyManager apiKeyManager, Geo geo) {
     TankerkoenigRequest instance = new TankerkoenigRequest();
 
     instance.geo = geo; // nullable
@@ -90,8 +85,8 @@ public class TankerkoenigRequest extends BaseRequest {
     this.setGeoUrlParameters();
   }
 
-  private void setBaseData() throws MalformedURLException {
-    setBaseUrl(new URL(BASE_URL));
+  private void setBaseData() {
+    setBaseUrl(StringLegalizer.create(BASE_URL).mandatory().toUrl());
     setHttpMethod(HTTP_METHOD);
     addHeader("Accept", ACCEPT_JSON);
   }

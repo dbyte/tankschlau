@@ -20,10 +20,9 @@ import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.BaseRequest;
 import de.fornalik.tankschlau.net.Request;
+import de.fornalik.tankschlau.util.StringLegalizer;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -41,10 +40,8 @@ public class GeocodingRequest extends BaseRequest {
    * Factory method, creates a new HTTP request object for Google Geocoding web service.
    *
    * @return {@link Address} object as in, ready for use which within a {@link Request}.
-   * @throws MalformedURLException If the base URL is invalid.
    */
-  public static GeocodingRequest create(ApiKeyManager apiKeyManager)
-  throws MalformedURLException {
+  public static GeocodingRequest create(ApiKeyManager apiKeyManager) {
     GeocodingRequest instance = new GeocodingRequest();
 
     instance.apiKeyManager = Objects.requireNonNull(
@@ -82,8 +79,8 @@ public class GeocodingRequest extends BaseRequest {
         "UTF-8");
   }
 
-  private void setBaseData() throws MalformedURLException {
-    setBaseUrl(new URL(BASE_URL));
+  private void setBaseData() {
+    setBaseUrl(StringLegalizer.create(BASE_URL).mandatory().toUrl());
     setHttpMethod(HTTP_METHOD);
     addHeader("Accept", ACCEPT_JSON);
     addHeader("Accept-Language", "de");

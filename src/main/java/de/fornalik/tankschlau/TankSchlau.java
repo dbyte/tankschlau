@@ -32,7 +32,6 @@ import de.fornalik.tankschlau.webserviceapi.common.UserPrefsApiKeyStore;
 import de.fornalik.tankschlau.webserviceapi.google.GeocodingApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigApiKeyManager;
 
-import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Locale;
 
@@ -53,7 +52,7 @@ public class TankSchlau {
       new GeocodingApiKeyManager(API_KEY_STORE);
 
   // Start application
-  public static void main(String[] args) throws MalformedURLException {
+  public static void main(String[] args) {
     // Offer option to pass a tankerkoenig- and geocoding-api-key at startup which we persist
     // in a specified storage.
     if (args.length >= 1)
