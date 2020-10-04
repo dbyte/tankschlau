@@ -77,32 +77,4 @@ public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
   public TransactionInfo getTransactionInfo() {
     return transactionInfo;
   }
-
-/*  @SuppressWarnings("unused")
-  public static class TransactionInfo {
-    @SerializedName("ok") private boolean ok;
-    @SerializedName("license") private String license;
-    @SerializedName("status") private String status;
-    @SerializedName("message") private String message;
-
-    public boolean isOk() {
-      return ok;
-    }
-
-    public String getLicense() {
-      return nullToEmpty(license);
-    }
-
-    public String getStatus() {
-      return nullToEmpty(status);
-    }
-
-    public String getMessage() {
-      return nullToEmpty(message);
-    }
-
-    private String nullToEmpty(String s) {
-      return StringLegalizer.create(s).nullToEmpty().end();
-    }
-  }*/
 }
