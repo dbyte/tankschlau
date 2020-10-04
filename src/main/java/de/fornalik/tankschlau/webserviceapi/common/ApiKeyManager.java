@@ -21,8 +21,6 @@ import de.fornalik.tankschlau.util.StringLegalizer;
 import java.util.Objects;
 import java.util.Optional;
 
-// TODO unit tests
-
 /**
  * Class for API key handling.
  */
@@ -32,7 +30,6 @@ public class ApiKeyManager {
    * Token to unambiguously identify the api key within {@link #apiKeyStore}.
    */
   private final String id;
-
   /**
    * Storage strategy for the API key.
    */
@@ -68,6 +65,14 @@ public class ApiKeyManager {
    */
   public static ApiKeyManager createForGeocoding(ApiKeyStore apiKeyStore) {
     return new ApiKeyManager(apiKeyStore, "apikey.geocoding");
+  }
+
+  public ApiKeyStore getApiKeyStore() {
+    return apiKeyStore;
+  }
+
+  public String getId() {
+    return id;
   }
 
   /**
