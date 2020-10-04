@@ -1,18 +1,28 @@
 package de.fornalik.tankschlau.geo;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import de.fornalik.tankschlau.net.HttpClient;
+import de.fornalik.tankschlau.net.Request;
+import de.fornalik.tankschlau.net.StringResponse;
 import de.fornalik.tankschlau.testhelp_common.DomainFixtureHelp;
 import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
 import de.fornalik.tankschlau.util.StringLegalizer;
+import de.fornalik.tankschlau.webserviceapi.ApiKeyManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class AddressTest {
   private DomainFixtureHelp fixture;
@@ -221,6 +231,32 @@ class AddressTest {
 
     // then
     assertEquals(Optional.empty(), address.getGeo());
+  }
+
+  @Test
+  void setGeoFromWebService_xxx() throws IOException {
+    // given
+    Address address = new Address("An den Äckern", "2", "Wolfsburg", "38446");
+    assert !address.getGeo().isPresent();
+
+    FileReader reader =
+        FixtureFiles.getFileReaderForResource(FixtureFiles.GOOGLE_GEO_RESPONSE_50_1078234_8_5413809_Rooftop);
+    JsonObject jsonFixture = (JsonObject) JsonParser.parseReader(reader);
+
+    Request requestMock = mock(Request.class);
+    StringResponse responseMock = mock(StringResponse.class);
+    HttpClient httpClientMock = mock(HttpClient.class);
+    ApiKeyManager apiKeyManagerMock = mock(ApiKeyManager.class);
+
+    when(responseMock.getBody()).thenReturn(Optional.of(jsonFixture.toString()));
+    when(httpClientMock.newCall(requestMock)).thenReturn(responseMock);
+
+    // when
+    address.setGeoFromWebService(httpClientMock, requestMock);
+
+    // then
+    assertEquals(50.1078234, address.getGeo().get().getLatitude());
+    assertEquals(8.5413809, address.getGeo().get().getLongitude());
   }
 
   @Test
