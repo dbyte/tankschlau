@@ -153,11 +153,11 @@ class UserPrefsTest {
   @Test
   void writeApiKey_writesProperly() {
     // given
-    String userPrefToken = "apiKey.tankerkoenig";
+    String userPrefToken = "apikey.petrolstations";
     String givenApiKey = "1234-some-api-key-5678";
 
     // when
-    prefs.writeApiKey("apiKey.tankerkoenig", givenApiKey);
+    prefs.writeApiKey(userPrefToken, givenApiKey);
 
     // then
     assertTrue(prefs.readApiKey(userPrefToken).isPresent());
