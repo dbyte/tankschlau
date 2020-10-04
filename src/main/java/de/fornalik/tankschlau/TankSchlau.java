@@ -17,6 +17,7 @@
 package de.fornalik.tankschlau;
 
 import com.google.gson.TypeAdapter;
+import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.gui.window.MainWindow;
 import de.fornalik.tankschlau.net.HttpClient;
@@ -29,7 +30,9 @@ import de.fornalik.tankschlau.util.UserPrefs;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyStore;
 import de.fornalik.tankschlau.webserviceapi.common.UserPrefsApiKeyStore;
+import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingClient;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
@@ -40,12 +43,9 @@ public class TankSchlau {
   public static final HttpClient HTTP_CLIENT = new OkHttpClient();
   public static final TypeAdapter<List<PetrolStation>> PETROL_STATIONS_JSON_ADAPTER =
       new PetrolStationsJsonAdapter();
-
   private static final ApiKeyStore API_KEY_STORE = new UserPrefsApiKeyStore(USER_PREFS);
-
   public static final ApiKeyManager TANKERKOENIG_APIKEY_MANAGER =
       ApiKeyManager.createForPetrolStations(API_KEY_STORE);
-
   public static final ApiKeyManager GEOCODING_APIKEY_MANAGER =
       ApiKeyManager.createForGeocoding(API_KEY_STORE);
 
@@ -59,7 +59,7 @@ public class TankSchlau {
       GEOCODING_APIKEY_MANAGER.write(args[1]);
 
     // Example: Writing some user geo data to user prefs
-    // USER_PREFS.writeGeo(new Geo(52.4079755, 10.7725368, 8.0));
+    processTestAddress();
 
     Geo userGeo = USER_PREFS.readGeo().orElseThrow(
         () -> new IllegalStateException("No preferences found for user geo data."));
@@ -68,5 +68,20 @@ public class TankSchlau {
 
     mainWindow.initGui();
     mainWindow.updateList(userGeo, PetrolType.DIESEL);
+  }
+
+  // Example: Writing some user address and geo data to user prefs.
+  private static void processTestAddress() {
+    Address address = new Address("An den Äckern", "Wolfsburg", "38446");
+    GoogleGeocodingClient geocodingClient = new GoogleGeocodingClient();
+
+    try {
+      address.setGeo(geocodingClient);
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    USER_PREFS.writeAddress(address);
   }
 }
