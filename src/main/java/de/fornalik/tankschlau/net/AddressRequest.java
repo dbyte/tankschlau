@@ -22,7 +22,6 @@ import de.fornalik.tankschlau.geo.Address;
  * Abstract HTTP request class with base functionalities and <b>additional hook</b> for generating
  * proper URL request parameters for an {@link Address}.
  */
-// TODO unit test
 public abstract class AddressRequest extends BaseRequest {
 
   /**
