@@ -24,21 +24,50 @@ import java.util.Optional;
 // TODO unit tests
 
 /**
- * Abstract base class for API key handling.
+ * Class for API key handling.
  */
-public abstract class ApiKeyManager {
-  protected final String id;
-  protected final ApiKeyStore apiKeyStore;
+public class ApiKeyManager {
 
   /**
-   * Constructor
+   * Token to unambiguously identify the api key within {@link #apiKeyStore}.
+   */
+  private final String id;
+
+  /**
+   * Storage strategy for the API key.
+   */
+  private final ApiKeyStore apiKeyStore;
+
+  /**
+   * Constructor. In production, use static factory methods to get a new instance, for example
+   * {@link #createForGeocoding(ApiKeyStore)}, {@link #createForPetrolStations(ApiKeyStore)}.
    *
    * @param apiKeyStore Storage strategy for the API key.
    * @param id          Unique identifier for the API key within a sort of data collection.
    */
-  protected ApiKeyManager(ApiKeyStore apiKeyStore, String id) {
+  private ApiKeyManager(ApiKeyStore apiKeyStore, String id) {
     this.apiKeyStore = Objects.requireNonNull(apiKeyStore);
     this.id = StringLegalizer.create(id).mandatory().end();
+  }
+
+  /**
+   * Returns a new instance of ApiKeyManager for use with a petrol stations webservice.
+   *
+   * @param apiKeyStore Storage strategy for the API key.
+   * @return New instance of ApiKeyManager with a predefined {@link #id}.
+   */
+  public static ApiKeyManager createForPetrolStations(ApiKeyStore apiKeyStore) {
+    return new ApiKeyManager(apiKeyStore, "apiKey.tankerkoenig");
+  }
+
+  /**
+   * Returns a new instance of ApiKeyManager for use with a geocoding webservice.
+   *
+   * @param apiKeyStore Storage strategy for the API key.
+   * @return New instance of ApiKeyManager with a predefined {@link #id}.
+   */
+  public static ApiKeyManager createForGeocoding(ApiKeyStore apiKeyStore) {
+    return new ApiKeyManager(apiKeyStore, "apiKey.geoService");
   }
 
   /**

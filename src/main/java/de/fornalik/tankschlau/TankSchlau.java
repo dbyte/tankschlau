@@ -29,8 +29,6 @@ import de.fornalik.tankschlau.util.UserPrefs;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyStore;
 import de.fornalik.tankschlau.webserviceapi.common.UserPrefsApiKeyStore;
-import de.fornalik.tankschlau.webserviceapi.google.GeocodingApiKeyManager;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigApiKeyManager;
 
 import java.util.List;
 import java.util.Locale;
@@ -46,10 +44,10 @@ public class TankSchlau {
   private static final ApiKeyStore API_KEY_STORE = new UserPrefsApiKeyStore(USER_PREFS);
 
   public static final ApiKeyManager TANKERKOENIG_APIKEY_MANAGER =
-      new TankerkoenigApiKeyManager(API_KEY_STORE);
+      ApiKeyManager.createForPetrolStations(API_KEY_STORE);
 
   public static final ApiKeyManager GEOCODING_APIKEY_MANAGER =
-      new GeocodingApiKeyManager(API_KEY_STORE);
+      ApiKeyManager.createForGeocoding(API_KEY_STORE);
 
   // Start application
   public static void main(String[] args) {
