@@ -28,21 +28,21 @@ import java.util.Objects;
 /**
  * Implementation of {@link BaseRequest} for Google Geocoding web service.
  */
-public class GeocodingRequest extends BaseRequest {
+public class GoogleGeocodingRequest extends BaseRequest {
   private static final String BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json";
   private static final HttpMethod HTTP_METHOD = HttpMethod.GET;
   private static final String ACCEPT_JSON = "application/json; charset=utf-8";
   private ApiKeyManager apiKeyManager;
 
-  private GeocodingRequest() {}
+  private GoogleGeocodingRequest() {}
 
   /**
    * Factory method, creates a new HTTP request object for Google Geocoding web service.
    *
    * @return {@link Address} object as in, ready for use which within a {@link Request}.
    */
-  public static GeocodingRequest create(ApiKeyManager apiKeyManager) {
-    GeocodingRequest instance = new GeocodingRequest();
+  public static GoogleGeocodingRequest create(ApiKeyManager apiKeyManager) {
+    GoogleGeocodingRequest instance = new GoogleGeocodingRequest();
 
     instance.apiKeyManager = Objects.requireNonNull(
         apiKeyManager,

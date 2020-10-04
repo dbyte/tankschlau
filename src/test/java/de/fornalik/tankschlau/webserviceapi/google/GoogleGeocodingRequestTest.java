@@ -32,8 +32,8 @@ import static org.mockito.Mockito.when;
  * We only test for concrete implementation specific values here. All other behaviour should
  * be directly tested in unit tests for {@link de.fornalik.tankschlau.net.BaseRequest}
  */
-class GeocodingRequestTest {
-  private GeocodingRequest actualRequest;
+class GoogleGeocodingRequestTest {
+  private GoogleGeocodingRequest actualRequest;
   private ApiKeyManager apiKeyManagerMock;
   private Address addressMock;
 
@@ -56,7 +56,7 @@ class GeocodingRequestTest {
     assert apiKeyManagerMock.read().isPresent(); // pre-check proper test setup
 
     // when
-    actualRequest = GeocodingRequest.create(apiKeyManagerMock);
+    actualRequest = GoogleGeocodingRequest.create(apiKeyManagerMock);
 
     // then
     assertEquals(
@@ -79,7 +79,7 @@ class GeocodingRequestTest {
     when(apiKeyManagerMock.read()).thenReturn(Optional.empty());
 
     // when
-    actualRequest = GeocodingRequest.create(apiKeyManagerMock);
+    actualRequest = GoogleGeocodingRequest.create(apiKeyManagerMock);
 
     // then
     assertNull(actualRequest.getUrlParameters().get("key"));
@@ -90,13 +90,13 @@ class GeocodingRequestTest {
     // when then
     assertThrows(
         NullPointerException.class,
-        () -> GeocodingRequest.create(null));
+        () -> GoogleGeocodingRequest.create(null));
   }
 
   @Test
   void setAddressUrlParameters_setsParametersProperly() {
     // given
-    actualRequest = GeocodingRequest.create(apiKeyManagerMock);
+    actualRequest = GoogleGeocodingRequest.create(apiKeyManagerMock);
 
     // when
     actualRequest.setAddressUrlParameters(addressMock);
@@ -110,7 +110,7 @@ class GeocodingRequestTest {
   @Test
   void setAddressUrlParameters_throwsOnNullAddress() {
     // given
-    actualRequest = GeocodingRequest.create(apiKeyManagerMock);
+    actualRequest = GoogleGeocodingRequest.create(apiKeyManagerMock);
 
     // when then
     assertThrows(

@@ -39,7 +39,7 @@ public class GoogleGeocodingClient {
   public GoogleGeocodingClient() {
     this(
         TankSchlau.HTTP_CLIENT,
-        GeocodingRequest.create(TankSchlau.GEOCODING_APIKEY_MANAGER));
+        GoogleGeocodingRequest.create(TankSchlau.GEOCODING_APIKEY_MANAGER));
   }
 
   public GoogleGeocodingClient(HttpClient httpClient, Request request) {
@@ -48,7 +48,7 @@ public class GoogleGeocodingClient {
   }
 
   public Optional<Geo> getGeo(Address address) throws IOException {
-    ((GeocodingRequest) request).setAddressUrlParameters(address);
+    ((GoogleGeocodingRequest) request).setAddressUrlParameters(address);
 
     StringResponse response = (StringResponse) httpClient.newCall(request);
 
