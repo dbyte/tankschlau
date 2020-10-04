@@ -64,9 +64,20 @@ public class GoogleGeocodingClient {
   private Optional<Geo> parseJson(String s) {
     try {
       // Ride down the tree until we're reaching target data
-      JsonObject geometry = JsonParser
+      JsonObject root = JsonParser
           .parseString(s)
-          .getAsJsonObject()
+          .getAsJsonObject();
+
+      String status = root
+          .get("status")
+          .getAsString();
+
+      if (!"OK".equalsIgnoreCase(status)) {
+        System.err.println("Status is NOT OK: " + status);
+        return Optional.empty();
+      }
+
+      JsonObject geometry = root
           .getAsJsonArray("results")
           .get(0)
           .getAsJsonObject()
