@@ -32,18 +32,35 @@ import java.util.Optional;
 
 /**
  * Implementation of {@link GeocodingClient} for Google Geocoding webservices.
+ *
+ * @see
+ * <a href="https://developers.google.com/maps/documentation/geocoding/overview#GeocodingResponses">Google documentation: GeocodingResponses</a>
  */
 public class GoogleGeocodingClient implements GeocodingClient {
   private final HttpClient httpClient;
   private final AddressRequest request;
   private TransactionInfo transactionInfo;
 
+  /**
+   * <span style="color:yellow;">Use this constructor for production</span> as it implicitly
+   * uses predefined singleton dependencies defined at startup.
+   *
+   * @see #GoogleGeocodingClient(HttpClient, AddressRequest)
+   */
   public GoogleGeocodingClient() {
     this(
         TankSchlau.HTTP_CLIENT,
         GoogleGeocodingRequest.create(TankSchlau.GEOCODING_APIKEY_MANAGER));
   }
 
+  /**
+   * Dependency injection variant of {@link #GoogleGeocodingClient()},
+   * <span style="color:yellow;">e.g. for testing purposes.</span>
+   *
+   * @param httpClient Some implementation of {@link HttpClient} for interaction with webservice.
+   * @param request    Some implementation of {@link AddressRequest}, forming a concrete request.
+   * @see #GoogleGeocodingClient()
+   */
   public GoogleGeocodingClient(HttpClient httpClient, AddressRequest request) {
     this.httpClient = httpClient;
     this.request = request;
@@ -64,9 +81,10 @@ public class GoogleGeocodingClient implements GeocodingClient {
       transactionInfo.setMessage("Response is null.");
       return Optional.empty();
     }
+
     if (!response.getBody().isPresent()) {
-      transactionInfo.setStatus(StringResponse.class.getSimpleName() + "_BODY_NULL");
-      transactionInfo.setMessage("Response body is null.");
+      transactionInfo.setStatus(StringResponse.class.getSimpleName() + "_EMPTY_BODY");
+      transactionInfo.setMessage("Response body is empty.");
       return Optional.empty();
     }
 
@@ -96,29 +114,39 @@ public class GoogleGeocodingClient implements GeocodingClient {
     Optional<Geo> geo = Optional.empty();
 
     if (dto.results != null && dto.results.size() > 0) {
+      /* From here, we can trust that webservice has set values for latitude, longitude
+      and location type. */
       ResultDTO firstResult = dto.results.get(0);
       transactionInfo.setLocationType(firstResult.getLocationType());
       geo = Optional.of(firstResult.getAsGeo());
     }
 
-    // From here, we can rely on Google webservice has set values for status & message.
+    // From here, we can trust that webservice has set values for status & message.
     transactionInfo.setStatus(dto.status);
     transactionInfo.setMessage(dto.message);
 
     return geo;
   }
 
+  /**
+   * Object relational mapper for Gson. It must correlate with the root level json object
+   * of the Google Geocoding response.
+   */
   @SuppressWarnings({"unused", "FieldMayBeFinal", "MismatchedQueryAndUpdateOfCollection"})
   private static class ResponseDTO {
     @SerializedName("status") private String status;
     @SerializedName("error_message") private String message;
     @SerializedName("results") private ArrayList<ResultDTO> results;
 
-    ResponseDTO() {
+    private ResponseDTO() {
       results = new ArrayList<>();
     }
   }
 
+  /**
+   * Object relational mapper for Gson. It represents the json array "results" of the
+   * Google Geocoding response.
+   */
   @SuppressWarnings("unused")
   private static class ResultDTO {
     @SerializedName("geometry") private Geometry geometry;
@@ -131,12 +159,20 @@ public class GoogleGeocodingClient implements GeocodingClient {
       return geometry.locationType;
     }
 
+    /**
+     * Object relational mapper for Gson. It represents the "geometry" json object within one
+     * element of json array "results" of the Google Geocoding response.
+     */
     @SuppressWarnings("unused")
     private static class Geometry {
       @SerializedName("location") private Location location;
       @SerializedName("location_type") private String locationType;
     }
 
+    /**
+     * Object relational mapper for Gson. It represents the "location" json object within the
+     * json object "geometry" of the Google Geocoding response.
+     */
     @SuppressWarnings("unused")
     private static class Location {
       @SerializedName("lat") private Double latitude;
