@@ -83,7 +83,7 @@ public class GoogleGeocodingClient implements GeocodingClient {
     ResponseDTO dto = gson.fromJson(s, ResponseDTO.class);
 
     if (dto == null) {
-      transactionInfo.setStatus("JSON conversion failed.");
+      transactionInfo.setStatus(ResponseDTO.class.getSimpleName() + "_NULL");
       transactionInfo.setMessage("JSON string could not be converted. String is: " + s);
       return Optional.empty();
     }
@@ -113,14 +113,15 @@ public class GoogleGeocodingClient implements GeocodingClient {
     }
   }
 
+  @SuppressWarnings("unused")
   private static class ResultDTO {
-    @SerializedName("geometry") Geometry geometry;
+    @SerializedName("geometry") private Geometry geometry;
 
-    public Geo getAsGeo() {
+    private Geo getAsGeo() {
       return new Geo(geometry.location.latitude, geometry.location.longitude);
     }
 
-    public String getLocationType() {
+    private String getLocationType() {
       return geometry.locationType;
     }
 
