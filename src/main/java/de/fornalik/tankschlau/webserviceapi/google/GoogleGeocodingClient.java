@@ -39,7 +39,7 @@ import java.util.Optional;
 public class GoogleGeocodingClient implements GeocodingClient {
   private final HttpClient httpClient;
   private final AddressRequest request;
-  private final TransactionInfo transactionInfo;
+  private TransactionInfo transactionInfo;
 
   public GoogleGeocodingClient() {
     this(
@@ -56,6 +56,9 @@ public class GoogleGeocodingClient implements GeocodingClient {
   @Override
   public Optional<Geo> getGeo(Address address) throws IOException {
     request.setAddressUrlParameters(address);
+
+    // Reset state!
+    this.transactionInfo = new TransactionInfo();
 
     StringResponse response = (StringResponse) httpClient.newCall(request);
 

@@ -83,6 +83,9 @@ public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
   public List<PetrolStation> getAllInNeighbourhood(Geo geo) throws IOException {
     this.request.setGeoUrlParameters(geo);
 
+    // Reset state!
+    this.transactionInfo = new TransactionInfo();
+
     StringResponse response = (StringResponse) httpClient.newCall(request);
     String body = response.getBody().orElse("");
 
