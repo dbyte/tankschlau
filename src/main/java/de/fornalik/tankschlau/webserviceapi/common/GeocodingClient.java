@@ -16,8 +16,10 @@
 
 package de.fornalik.tankschlau.webserviceapi.common;
 
+import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.util.StringLegalizer;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -35,4 +37,58 @@ public interface GeocodingClient {
    *                     while requesting the server.
    */
   Optional<Geo> getGeo(Address address) throws IOException;
+
+  /**
+   * @return Some technical response data - sort of response summary or header data,
+   * depending on the concrete implementation.
+   */
+  TransactionInfo getTransactionInfo();
+
+  /**
+   * Provides some technical response data - sort of response summary or header data,
+   * depending on the concrete implementation.
+   */
+  @SuppressWarnings("unused")
+  class TransactionInfo {
+    @SerializedName("status") private String status;
+    @SerializedName("error_message") private String message;
+    @SerializedName("location_type") private String locationType;
+    private String license; // not included in current implementations, we generate it ourself.
+
+    public String getStatus() {
+      return nullToEmpty(status);
+    }
+
+    public void setStatus(String status) {
+      this.status = status;
+    }
+
+    public String getMessage() {
+      return nullToEmpty(message);
+    }
+
+    public void setMessage(String message) {
+      this.message = message;
+    }
+
+    public String getLocationType() {
+      return nullToEmpty(locationType);
+    }
+
+    public void setLocationType(String locationType) {
+      this.locationType = locationType;
+    }
+
+    public String getLicense() {
+      return nullToEmpty(license);
+    }
+
+    public void setLicense(String license) {
+      this.license = license;
+    }
+
+    private String nullToEmpty(String s) {
+      return StringLegalizer.create(s).nullToEmpty().end();
+    }
+  }
 }

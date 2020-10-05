@@ -39,6 +39,7 @@ import java.util.Optional;
 public class GoogleGeocodingClient implements GeocodingClient {
   private final HttpClient httpClient;
   private final AddressRequest request;
+  private final TransactionInfo transactionInfo;
 
   public GoogleGeocodingClient() {
     this(
@@ -49,6 +50,7 @@ public class GoogleGeocodingClient implements GeocodingClient {
   public GoogleGeocodingClient(HttpClient httpClient, AddressRequest request) {
     this.httpClient = httpClient;
     this.request = request;
+    this.transactionInfo = new TransactionInfo();
   }
 
   @Override
@@ -66,6 +68,11 @@ public class GoogleGeocodingClient implements GeocodingClient {
     return parseJson(response.getBody().get());
   }
 
+  @Override
+  public TransactionInfo getTransactionInfo() {
+    return transactionInfo;
+  }
+
   private Optional<Geo> parseJson(String s) {
     try {
       // Ride down the tree until we're reaching target data
@@ -73,12 +80,15 @@ public class GoogleGeocodingClient implements GeocodingClient {
           .parseString(s)
           .getAsJsonObject();
 
-      String status = root
-          .get("status")
-          .getAsString();
+      transactionInfo.setLicense("Geo data powered by Google.");
+      transactionInfo.setStatus(root.get("status").getAsString());
 
-      if (!"OK".equalsIgnoreCase(status)) {
-        System.err.println("Status is NOT OK: " + status);
+      if (root.get("error_message") != null)
+        // Element only exists when there was a server side error.
+        transactionInfo.setMessage(root.get("error_message").getAsString());
+
+      if (!"OK".equalsIgnoreCase(transactionInfo.getStatus())) {
+        System.err.println("Status is NOT OK: " + transactionInfo.getStatus());
         return Optional.empty();
       }
 
@@ -89,8 +99,8 @@ public class GoogleGeocodingClient implements GeocodingClient {
           .get("geometry")
           .getAsJsonObject();
 
+      transactionInfo.setLocationType(geometry.get("location_type").getAsString());
       JsonObject location = geometry.get("location").getAsJsonObject();
-      String locationType = geometry.get("location_type").getAsString();
 
       Gson gson = new Gson();
       return Optional.ofNullable(gson.fromJson(location, Geo.class));
