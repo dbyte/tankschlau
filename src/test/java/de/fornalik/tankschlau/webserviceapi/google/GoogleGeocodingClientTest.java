@@ -31,7 +31,6 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -45,6 +44,8 @@ class GoogleGeocodingClientTest {
   private Geo actualGeo;
   private GeocodingFixtureHelp fixture;
   private Address addressMock;
+
+  // region ***  SETUP  ***
 
   @BeforeAll
   static void beforeAll() {
@@ -68,6 +69,8 @@ class GoogleGeocodingClientTest {
     this.fixture = new GeocodingFixtureHelp();
   }
 
+  // endregion
+
   @Test
   void getGeo_xxxx() throws IOException {
     // given
@@ -77,13 +80,11 @@ class GoogleGeocodingClientTest {
     actualGeo = geocodingClient.getGeo(addressMock).get();
 
     // then
-    assertEquals(50.1078234, actualGeo.getLatitude());
-    assertEquals(8.5413809, actualGeo.getLongitude());
-    assertEquals(Optional.empty(), actualGeo.getDistance());
+    fixture.assertEqualValues(actualGeo);
   }
 
-  private void setupFixture(String filePath) throws IOException {
-    fixture.setupFixture(filePath);
+  private void setupFixture(String path) throws IOException {
+    fixture.setupFixture(path);
 
     when(stringResponseMock.getBody())
         .thenReturn(Optional.of(fixture.jsonFixture.toString()));
