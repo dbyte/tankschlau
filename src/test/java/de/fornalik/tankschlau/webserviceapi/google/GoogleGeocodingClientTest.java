@@ -83,7 +83,7 @@ class GoogleGeocodingClientTest {
   // endregion
 
   @Test
-  void getGeo_xxxx() throws IOException {
+  void getGeo_returnsProperData() throws IOException {
     // given
     setupFixture(FixtureFiles.GOOGLE_GEO_RESPONSE_50_1078234_8_5413809_Rooftop);
 
@@ -92,12 +92,18 @@ class GoogleGeocodingClientTest {
 
     // then
     fixture.assertEqualValues(actualGeo);
+  }
 
-    assertEquals(
-        fixture.objectFixture.results.get(0).getLocationType(),
-        geocodingClient.getTransactionInfo().getLocationType());
-    assertEquals(fixture.objectFixture.status, geocodingClient.getTransactionInfo().getStatus());
-    assertEquals(fixture.objectFixture.message, geocodingClient.getTransactionInfo().getMessage());
-    assertEquals("Geo data powered by Google.", geocodingClient.getTransactionInfo().getLicense());
+  @Test
+  void getGeo_setsProperTransactionInfo() throws IOException {
+    // given
+    setupFixture(FixtureFiles.GOOGLE_GEO_RESPONSE_50_1078234_8_5413809_Rooftop);
+
+    // when
+    actualGeo = geocodingClient.getGeo(addressMock).get();
+
+    // then
+    fixture.assertEqualValues(geocodingClient, true);
+    assertEquals("Geo data powered by Google.", geocodingClient.getLicenseString());
   }
 }
