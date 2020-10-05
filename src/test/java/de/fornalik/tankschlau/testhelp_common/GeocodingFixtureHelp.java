@@ -79,8 +79,10 @@ public class GeocodingFixtureHelp {
    * library. <br>
    * All DTO fields are public mutable for testing purposes. Also, all primitives are wrapped
    * to be able to null them for testing purposes.
+   *
+   * @see de.fornalik.tankschlau.webserviceapi.common.GeocodingClient
    */
-  private static class ResponseDTO {
+  public static class ResponseDTO {
     @SerializedName("status") public String status;
     @SerializedName("error_message") public String message;
     @SerializedName("results") public ArrayList<ResultDTO> results;
@@ -102,7 +104,7 @@ public class GeocodingFixtureHelp {
    * All DTO fields are public mutable for testing purposes. Also, all primitives are wrapped
    * to be able to null them for testing purposes.
    */
-  private static class ResultDTO {
+  public static class ResultDTO {
     @SerializedName("geometry") Geometry geometry;
 
     public Geo getAsGeo() {

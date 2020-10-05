@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -45,7 +46,7 @@ class GoogleGeocodingClientTest {
   private GeocodingFixtureHelp fixture;
   private Address addressMock;
 
-  // region ***  SETUP  ***
+  // region -----  SETUP  -----
 
   @BeforeAll
   static void beforeAll() {
@@ -69,6 +70,16 @@ class GoogleGeocodingClientTest {
     this.fixture = new GeocodingFixtureHelp();
   }
 
+  private void setupFixture(String path) throws IOException {
+    fixture.setupFixture(path);
+
+    when(stringResponseMock.getBody())
+        .thenReturn(Optional.of(fixture.jsonFixture.toString()));
+
+    when(httpClientMock.newCall(addressRequestMock))
+        .thenReturn(stringResponseMock);
+  }
+
   // endregion
 
   @Test
@@ -81,15 +92,12 @@ class GoogleGeocodingClientTest {
 
     // then
     fixture.assertEqualValues(actualGeo);
-  }
 
-  private void setupFixture(String path) throws IOException {
-    fixture.setupFixture(path);
-
-    when(stringResponseMock.getBody())
-        .thenReturn(Optional.of(fixture.jsonFixture.toString()));
-
-    when(httpClientMock.newCall(addressRequestMock))
-        .thenReturn(stringResponseMock);
+    assertEquals(
+        fixture.objectFixture.results.get(0).getLocationType(),
+        geocodingClient.getTransactionInfo().getLocationType());
+    assertEquals(fixture.objectFixture.status, geocodingClient.getTransactionInfo().getStatus());
+    assertEquals(fixture.objectFixture.message, geocodingClient.getTransactionInfo().getMessage());
+    assertEquals("Geo data powered by Google.", geocodingClient.getTransactionInfo().getLicense());
   }
 }
