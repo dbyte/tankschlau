@@ -26,7 +26,8 @@ import de.fornalik.tankschlau.testhelp_common.GeocodingFixtureHelp;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -82,10 +83,16 @@ class GoogleGeocodingClientTest {
 
   // endregion
 
-  @Test
-  void getGeo_returnsProperData() throws IOException {
+  @ParameterizedTest
+  @ValueSource(strings = {
+      FixtureFiles.GOOGLE_GEO_RESPONSE_50_1078234_8_5413809_Rooftop,
+      FixtureFiles.GOOGLE_GEO_RESPONSE_52_39097_10_84663_Rooftop,
+      FixtureFiles.GOOGLE_GEO_RESPONSE_52_5006049_13_3136007_GeometricCenter,
+      FixtureFiles.GOOGLE_GEO_RESPONSE_52_9541353_8_2396026_Approximate,
+  })
+  void getGeo_returnsProperGeoInstanceOnHappyResponse(String fixturePath) throws IOException {
     // given
-    setupFixture(FixtureFiles.GOOGLE_GEO_RESPONSE_50_1078234_8_5413809_Rooftop);
+    setupFixture(fixturePath);
 
     // when
     actualGeo = geocodingClient.getGeo(addressMock).get();
@@ -94,16 +101,51 @@ class GoogleGeocodingClientTest {
     fixture.assertEqualValues(actualGeo);
   }
 
-  @Test
-  void getGeo_setsProperTransactionInfo() throws IOException {
+  @ParameterizedTest
+  @ValueSource(strings = {
+      FixtureFiles.GOOGLE_GEO_RESPONSE_MissingApiKey,
+      FixtureFiles.GOOGLE_GEO_RESPONSE_ZeroResults
+  })
+  void getGeo_returnsEmptyGeoIfGoogleReportsError(String fixturePath) throws IOException {
     // given
-    setupFixture(FixtureFiles.GOOGLE_GEO_RESPONSE_50_1078234_8_5413809_Rooftop);
+    setupFixture(fixturePath);
+
+    // when then
+    assertEquals(Optional.empty(), geocodingClient.getGeo(addressMock));
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {
+      FixtureFiles.GOOGLE_GEO_RESPONSE_50_1078234_8_5413809_Rooftop,
+      FixtureFiles.GOOGLE_GEO_RESPONSE_52_5006049_13_3136007_GeometricCenter,
+      FixtureFiles.GOOGLE_GEO_RESPONSE_52_9541353_8_2396026_Approximate,
+  })
+  void getGeo_setsProperTransactionInfoOnHappyResponse(String fixturePath) throws IOException {
+    // given
+    setupFixture(fixturePath);
 
     // when
-    actualGeo = geocodingClient.getGeo(addressMock).get();
+    geocodingClient.getGeo(addressMock);
 
     // then
     fixture.assertEqualValues(geocodingClient, true);
+    assertEquals("Geo data powered by Google.", geocodingClient.getLicenseString());
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {
+      FixtureFiles.GOOGLE_GEO_RESPONSE_MissingApiKey,
+      FixtureFiles.GOOGLE_GEO_RESPONSE_ZeroResults
+  })
+  void getGeo_setsProperTransactionInfoIfGoogleReportsError(String fixturePath) throws IOException {
+    // given
+    setupFixture(fixturePath);
+
+    // when
+    geocodingClient.getGeo(addressMock);
+
+    // then
+    fixture.assertEqualValues(geocodingClient, false);
     assertEquals("Geo data powered by Google.", geocodingClient.getLicenseString());
   }
 }

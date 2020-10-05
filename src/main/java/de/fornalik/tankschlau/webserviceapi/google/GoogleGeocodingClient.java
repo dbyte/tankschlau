@@ -31,8 +31,6 @@ import de.fornalik.tankschlau.webserviceapi.common.GeocodingClient;
 import java.io.IOException;
 import java.util.Optional;
 
-// TODO unit tests
-
 /**
  * Implementation of {@link GeocodingClient} for Google Geocoding webservices.
  */
