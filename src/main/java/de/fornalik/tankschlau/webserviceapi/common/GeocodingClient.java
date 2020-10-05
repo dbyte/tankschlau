@@ -46,7 +46,7 @@ public interface GeocodingClient {
 
   /**
    * @return Licence string.
-   * @implNote Implement according to provider's terms of use.
+   * @implSpec Implement according to provider's terms of use!
    */
   String getLicenseString();
 
