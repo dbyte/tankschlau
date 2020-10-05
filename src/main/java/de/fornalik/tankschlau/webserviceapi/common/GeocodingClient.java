@@ -45,6 +45,12 @@ public interface GeocodingClient {
   TransactionInfo getTransactionInfo();
 
   /**
+   * @return Licence string.
+   * @implNote Implement according to provider's terms of use.
+   */
+  String getLicenseString();
+
+  /**
    * Provides some technical response data - sort of response summary or header data,
    * depending on the concrete implementation.
    */
@@ -53,7 +59,6 @@ public interface GeocodingClient {
     @SerializedName("status") private String status;
     @SerializedName("error_message") private String message;
     @SerializedName("location_type") private String locationType;
-    private String license; // not included in current implementations, we generate it ourself.
 
     public String getStatus() {
       return nullToEmpty(status);
@@ -77,14 +82,6 @@ public interface GeocodingClient {
 
     public void setLocationType(String locationType) {
       this.locationType = locationType;
-    }
-
-    public String getLicense() {
-      return nullToEmpty(license);
-    }
-
-    public void setLicense(String license) {
-      this.license = license;
     }
 
     private String nullToEmpty(String s) {

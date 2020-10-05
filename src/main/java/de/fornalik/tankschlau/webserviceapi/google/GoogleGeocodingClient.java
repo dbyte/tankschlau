@@ -73,6 +73,11 @@ public class GoogleGeocodingClient implements GeocodingClient {
     return transactionInfo;
   }
 
+  @Override
+  public String getLicenseString() {
+    return "Geo data powered by Google.";
+  }
+
   private Optional<Geo> parseJson(String s) {
     try {
       // Ride down the tree until we're reaching target data
@@ -80,7 +85,6 @@ public class GoogleGeocodingClient implements GeocodingClient {
           .parseString(s)
           .getAsJsonObject();
 
-      transactionInfo.setLicense("Geo data powered by Google.");
       transactionInfo.setStatus(root.get("status").getAsString());
 
       if (root.get("error_message") != null)
