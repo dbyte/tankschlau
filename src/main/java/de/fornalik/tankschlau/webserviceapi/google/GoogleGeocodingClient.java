@@ -59,11 +59,16 @@ public class GoogleGeocodingClient implements GeocodingClient {
 
     StringResponse response = (StringResponse) httpClient.newCall(request);
 
-    if (response == null)
-      throw new IOException("Response is null.");
-
-    if (!response.getBody().isPresent())
+    if (response == null) {
+      transactionInfo.setStatus(StringResponse.class.getSimpleName() + "_NULL");
+      transactionInfo.setMessage("Response is null.");
       return Optional.empty();
+    }
+    if (!response.getBody().isPresent()) {
+      transactionInfo.setStatus(StringResponse.class.getSimpleName() + "_BODY_NULL");
+      transactionInfo.setMessage("Response body is null.");
+      return Optional.empty();
+    }
 
     return parseJson(response.getBody().get());
   }
@@ -96,6 +101,7 @@ public class GoogleGeocodingClient implements GeocodingClient {
       geo = Optional.of(firstResult.getAsGeo());
     }
 
+    // From here, we can rely on Google webservice has set values for status & message.
     transactionInfo.setStatus(dto.status);
     transactionInfo.setMessage(dto.message);
 
