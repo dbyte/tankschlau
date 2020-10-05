@@ -17,9 +17,7 @@
 package de.fornalik.tankschlau.webserviceapi.google;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
+import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.TankSchlau;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
@@ -29,6 +27,7 @@ import de.fornalik.tankschlau.net.StringResponse;
 import de.fornalik.tankschlau.webserviceapi.common.GeocodingClient;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 /**
@@ -80,45 +79,61 @@ public class GoogleGeocodingClient implements GeocodingClient {
   }
 
   private Optional<Geo> parseJson(String s) {
-    try {
-      // Ride down the tree until we're reaching target data
-      JsonObject root = JsonParser
-          .parseString(s)
-          .getAsJsonObject();
+    Gson gson = new Gson();
+    ResponseDTO dto = gson.fromJson(s, ResponseDTO.class);
 
-      transactionInfo.setStatus(root.get("status").getAsString());
-
-      if (root.get("error_message") != null)
-        // Element only exists when there was a server side error.
-        transactionInfo.setMessage(root.get("error_message").getAsString());
-
-      if (!"OK".equalsIgnoreCase(transactionInfo.getStatus())) {
-        System.err.println("Status is NOT OK: " + transactionInfo.getStatus());
-        return Optional.empty();
-      }
-
-      JsonObject geometry = root
-          .getAsJsonArray("results")
-          .get(0)
-          .getAsJsonObject()
-          .get("geometry")
-          .getAsJsonObject();
-
-      transactionInfo.setLocationType(geometry.get("location_type").getAsString());
-      JsonObject location = geometry.get("location").getAsJsonObject();
-
-      Gson gson = new Gson();
-      return Optional.ofNullable(gson.fromJson(location, Geo.class));
+    if (dto == null) {
+      transactionInfo.setStatus("JSON conversion failed.");
+      transactionInfo.setMessage("JSON string could not be converted. String is: " + s);
+      return Optional.empty();
     }
 
-    catch (JsonParseException
-        | NullPointerException
-        | IllegalStateException
-        | IndexOutOfBoundsException e) {
-      System.err.println("Could not deserialize JSON.\n" + s + "\n");
-      e.printStackTrace();
+    Optional<Geo> geo = Optional.empty();
 
-      return Optional.empty();
+    if (dto.results != null && dto.results.size() > 0) {
+      ResultDTO firstResult = dto.results.get(0);
+      transactionInfo.setLocationType(firstResult.getLocationType());
+      geo = Optional.of(firstResult.getAsGeo());
+    }
+
+    transactionInfo.setStatus(dto.status);
+    transactionInfo.setMessage(dto.message);
+
+    return geo;
+  }
+
+  @SuppressWarnings({"unused", "FieldMayBeFinal", "MismatchedQueryAndUpdateOfCollection"})
+  private static class ResponseDTO {
+    @SerializedName("status") private String status;
+    @SerializedName("error_message") private String message;
+    @SerializedName("results") private ArrayList<ResultDTO> results;
+
+    ResponseDTO() {
+      results = new ArrayList<>();
+    }
+  }
+
+  private static class ResultDTO {
+    @SerializedName("geometry") Geometry geometry;
+
+    public Geo getAsGeo() {
+      return new Geo(geometry.location.latitude, geometry.location.longitude);
+    }
+
+    public String getLocationType() {
+      return geometry.locationType;
+    }
+
+    @SuppressWarnings("unused")
+    private static class Geometry {
+      @SerializedName("location") private Location location;
+      @SerializedName("location_type") private String locationType;
+    }
+
+    @SuppressWarnings("unused")
+    private static class Location {
+      @SerializedName("lat") private Double latitude;
+      @SerializedName("lng") private Double longitude;
     }
   }
 }
