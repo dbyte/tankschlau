@@ -68,7 +68,7 @@ public class DomainFixtureHelp {
 
   /**
    * Computes two test-fixture objects by reading a JSON response fixture file.<br/>
-   * The returned JSON of this method does only include the <b>first station</b> of the response!
+   * The generated JSON of this method does only include the <b>first station</b> of the response!
    * <p>
    * 1) {@link ResponseDTO} which we can use e.g. for equality checks.<br/>
    * 2) {@link JsonObject} of the <b>first station</b> found within the JSON file fixture.
@@ -125,7 +125,7 @@ public class DomainFixtureHelp {
     return petrolStations;
   }
 
-  // region assertEqualsAll
+  // region Assertions
 
   public void assertEqualValues(PetrolStationsDao petrolStationsDao) {
     Objects.requireNonNull(petrolStationsDao);
