@@ -1,10 +1,7 @@
 package de.fornalik.tankschlau.geo;
 
-import de.fornalik.tankschlau.testhelp_common.DomainFixtureHelp;
-import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
 import de.fornalik.tankschlau.util.StringLegalizer;
 import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingClient;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -19,12 +16,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class AddressTest {
-  private DomainFixtureHelp fixture;
-
-  @BeforeEach
-  void setUp() {
-    fixture = new DomainFixtureHelp();
-  }
 
   @ParameterizedTest
   @CsvSource(value = {
@@ -66,51 +57,6 @@ class AddressTest {
     // when then
     assertDoesNotThrow(() -> new Address("", "Street name", "", "City name", "Post code", null));
   }
-
-  // region createFromJson Tests
-
-  /* Tests for Address.createFromJson(JsonObject). The heavy load is currently done
-  by AddressJsonAdapter, which is not part of this unit and tested separately. */
-
-  @Test
-  void createFromJson_happy() {
-    // given
-    fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
-
-    // when
-    Address actualAddress = Address.createFromJson(fixture.jsonFixture);
-
-    // then
-    assertNotNull(actualAddress);
-    fixture.assertEqualValues(actualAddress, 0);
-  }
-
-  @Test
-  void createFromJson_acceptsEmptyHouseNumber() {
-    // given
-    fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_HOUSENUM_AND_BRAND);
-
-    // when
-    Address actualAddress = Address.createFromJson(fixture.jsonFixture);
-
-    // then
-    assertEquals("", actualAddress.getHouseNumber());
-  }
-
-  @Test
-  void createFromJson_returnsEmptyOptionalGeoObjectIfAllGeoElementsAreMissing() {
-    // given
-    fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_ALL_GEO_ELEM);
-
-    // when
-    Address actualAddress = Address.createFromJson(fixture.jsonFixture);
-
-    // then
-    assertNotNull(actualAddress);
-    assertEquals(Optional.empty(), actualAddress.getGeo());
-  }
-
-  // endregion
 
   @Test
   void setName_legalizesValue() {

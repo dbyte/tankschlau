@@ -16,15 +16,16 @@
 
 package de.fornalik.tankschlau;
 
-import com.google.gson.TypeAdapter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.gui.window.MainWindow;
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.OkHttpClient;
-import de.fornalik.tankschlau.station.PetrolStation;
-import de.fornalik.tankschlau.station.PetrolStationsJsonAdapter;
 import de.fornalik.tankschlau.station.PetrolType;
+import de.fornalik.tankschlau.station.Petrols;
+import de.fornalik.tankschlau.station.PetrolsJsonAdapter;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.UserPrefs;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
@@ -32,9 +33,10 @@ import de.fornalik.tankschlau.webserviceapi.common.ApiKeyStore;
 import de.fornalik.tankschlau.webserviceapi.common.GeocodingClient;
 import de.fornalik.tankschlau.webserviceapi.common.UserPrefsApiKeyStore;
 import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingClient;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigJsonAdapter;
 
+import javax.swing.*;
 import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 
 public class TankSchlau {
@@ -42,8 +44,14 @@ public class TankSchlau {
   public static final Localization L10N = new Localization(Locale.GERMAN);
   public static final UserPrefs USER_PREFS = new UserPrefs();
   public static final HttpClient HTTP_CLIENT = new OkHttpClient();
-  public static final TypeAdapter<List<PetrolStation>> PETROL_STATIONS_JSON_ADAPTER =
-      new PetrolStationsJsonAdapter();
+
+  public static final Gson JSON_PROVIDER = new GsonBuilder()
+      .registerTypeAdapter(Petrols.class, new PetrolsJsonAdapter())
+      .create();
+
+  public static final TankerkoenigJsonAdapter PETROL_STATIONS_JSON_ADAPTER =
+      new TankerkoenigJsonAdapter(JSON_PROVIDER);
+
   private static final ApiKeyStore API_KEY_STORE = new UserPrefsApiKeyStore(USER_PREFS);
   public static final ApiKeyManager TANKERKOENIG_APIKEY_MANAGER =
       ApiKeyManager.createForPetrolStations(API_KEY_STORE);
@@ -65,10 +73,13 @@ public class TankSchlau {
     Geo userGeo = USER_PREFS.readGeo().orElseThrow(
         () -> new IllegalStateException("No preferences found for user geo data."));
 
-    MainWindow mainWindow = new MainWindow();
-
-    mainWindow.initGui();
-    mainWindow.updateList(userGeo, PetrolType.DIESEL);
+    SwingUtilities.invokeLater(
+        () -> {
+          MainWindow mainWindow = new MainWindow();
+          mainWindow.initGui();
+          mainWindow.updateList(userGeo, PetrolType.DIESEL);
+        }
+    );
   }
 
   // Example: Writing some user address and geo data to user prefs.

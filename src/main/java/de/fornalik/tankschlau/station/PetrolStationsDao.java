@@ -64,6 +64,10 @@ public interface PetrolStationsDao {
       return ok;
     }
 
+    public void setOk(boolean ok) {
+      this.ok = ok;
+    }
+
     public String getLicense() {
       return nullToEmpty(license);
     }
@@ -72,8 +76,16 @@ public interface PetrolStationsDao {
       return nullToEmpty(status);
     }
 
+    public void setStatus(String status) {
+      this.status = status;
+    }
+
     public String getMessage() {
       return nullToEmpty(message);
+    }
+
+    public void setMessage(String message) {
+      this.message = message;
     }
 
     private String nullToEmpty(String s) {

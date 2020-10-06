@@ -33,7 +33,7 @@ public class PetrolStationBuilder {
   private Address address;
 
   private PetrolStationBuilder(UUID uuid) {
-    this.uuid = Objects.requireNonNull(uuid);
+    this.uuid = Objects.requireNonNull(uuid, "uuid" + MUST_NOT_BE_NULL);
   }
 
   public static PetrolStationBuilder create(UUID uuid) {

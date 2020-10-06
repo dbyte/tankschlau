@@ -16,15 +16,12 @@
 
 package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
 import de.fornalik.tankschlau.TankSchlau;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.GeoRequest;
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.StringResponse;
 import de.fornalik.tankschlau.station.PetrolStation;
-import de.fornalik.tankschlau.station.PetrolStations;
 import de.fornalik.tankschlau.station.PetrolStationsDao;
 
 import java.io.IOException;
@@ -39,7 +36,7 @@ import java.util.List;
 public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
   private final HttpClient httpClient;
   private final GeoRequest request;
-  private final TypeAdapter<?> gsonAdapter;
+  private final TankerkoenigJsonAdapter jsonAdapter;
   private TransactionInfo transactionInfo;
 
   /**
@@ -49,7 +46,7 @@ public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
    * {@link TankSchlau#PETROL_STATIONS_JSON_ADAPTER} and
    * {@link TankSchlau#TANKERKOENIG_APIKEY_MANAGER}. <br>
    *
-   * @see #TankerkoenigPetrolStationsDao(HttpClient, TypeAdapter, GeoRequest)
+   * @see #TankerkoenigPetrolStationsDao(HttpClient, TankerkoenigJsonAdapter, GeoRequest)
    */
   public TankerkoenigPetrolStationsDao() {
     this(
@@ -64,21 +61,22 @@ public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
    * <span style="color:yellow;">You should use this constructor in tests only.</span><br><br>
    *
    * @param httpClient  Some {@link HttpClient} implementation.
-   * @param gsonAdapter Some Gson {@link TypeAdapter} implementation for petrol stations.
+   * @param jsonAdapter Some json adapter implementation for petrol stations.
    * @param request     Some {@link GeoRequest} implementation.
    * @see #TankerkoenigPetrolStationsDao()
    */
   public TankerkoenigPetrolStationsDao(
       HttpClient httpClient,
-      TypeAdapter<?> gsonAdapter,
+      TankerkoenigJsonAdapter jsonAdapter,
       GeoRequest request) {
 
     this.httpClient = httpClient;
     this.request = request;
-    this.gsonAdapter = gsonAdapter;
+    this.jsonAdapter = jsonAdapter;
     this.transactionInfo = new TransactionInfo();
   }
 
+  // TODO new unit tests
   @Override
   public List<PetrolStation> getAllInNeighbourhood(Geo geo) throws IOException {
     this.request.setGeoUrlParameters(geo);
@@ -87,14 +85,36 @@ public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
     this.transactionInfo = new TransactionInfo();
 
     StringResponse response = (StringResponse) httpClient.newCall(request);
+
+    if (response == null) {
+      this.transactionInfo.setOk(false);
+      this.transactionInfo.setStatus(getClass().getSimpleName() + "_RESPONSE_NULL");
+      this.transactionInfo.setMessage("Response is null.");
+      return new ArrayList<>();
+    }
+
     String body = response.getBody().orElse("");
 
-    if ("".equals(body))
+    if ("".equals(body)) {
+      this.transactionInfo.setOk(false);
+      this.transactionInfo.setStatus(getClass().getSimpleName() + "_EMPTY_RESPONSE_BODY");
+      this.transactionInfo.setMessage("Response body is empty.");
       return new ArrayList<>();
+    }
 
-    this.transactionInfo = new Gson().fromJson(body, TransactionInfo.class);
+    /* At this point we assert a valid JSON document - well formed and determined
+    by the webservice's API. So all following processing should crash only if _we_
+    messed things up. */
 
-    return PetrolStations.createFromJson(body, gsonAdapter);
+    this.transactionInfo = TankSchlau.JSON_PROVIDER.fromJson(body, TransactionInfo.class);
+
+    if (!transactionInfo.isOk()) {
+      System.err.println("Log.Error: " + transactionInfo.getStatus());
+      System.err.println("Log.Error: " + transactionInfo.getMessage());
+      return new ArrayList<>();
+    }
+
+    return jsonAdapter.createPetrolStations(body);
   }
 
   @Override

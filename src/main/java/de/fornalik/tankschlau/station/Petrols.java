@@ -16,8 +16,6 @@
 
 package de.fornalik.tankschlau.station;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
 import java.util.*;
@@ -29,27 +27,6 @@ import java.util.stream.Collectors;
 public class Petrols {
 
   private Petrols() {
-  }
-
-  /**
-   * Creates a Set of petrols and their prices from a given {@link JsonObject}.
-   *
-   * @param in {@link JsonObject} from which to convert to a Set of Petrols.
-   * @return {@link Petrol} Set or empty Set if no petrol prices exist in the passed JSON.
-   */
-  public static Set<Petrol> createFromJson(JsonObject in) {
-    Set<Petrol> petrols = new HashSet<>();
-
-    for (PetrolType petrolType : PetrolType.values()) {
-      String jsonPetrolTypeKey = petrolType.getJsonKey();
-
-      JsonElement price = in.get(jsonPetrolTypeKey);
-      if (price == null || price.isJsonNull() || price.getAsDouble() <= 0.0) continue;
-
-      petrols.add(new Petrol(petrolType, price.getAsDouble()));
-    }
-
-    return petrols;
   }
 
   /**
@@ -79,7 +56,7 @@ public class Petrols {
   /**
    * Finds a {@link Petrol} object for a {@link PetrolType} in a list of petrols.
    *
-   * @param in    Set of {@link Petrol} to search in
+   * @param in         Set of {@link Petrol} to search in
    * @param petrolType Type of petrol we search for, assuming it's unique within the collection.
    * @return Optional {@link Petrol} object or Optional empty if not found.
    * @throws PetrolsDuplicateException If we found {@link PetrolType} duplicates in the list.
@@ -96,9 +73,10 @@ public class Petrols {
     // As petrols is a Set here, this should never happen. Being defensive, we handle it anyway.
     if (countResults >= 2)
       throw new PetrolsDuplicateException(
-          String.format("Critical error. Found %d duplicates for petrol type %s",
-                        countResults,
-                        petrolType));
+          String.format(
+              "Critical error. Found %d duplicates for petrol type %s",
+              countResults,
+              petrolType));
 
     return countResults > 0 ? Optional.of(foundPetrols.get(0)) : Optional.empty();
   }

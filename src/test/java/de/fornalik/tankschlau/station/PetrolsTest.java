@@ -1,7 +1,6 @@
 package de.fornalik.tankschlau.station;
 
 import de.fornalik.tankschlau.testhelp_common.DomainFixtureHelp;
-import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,52 +17,6 @@ class PetrolsTest {
   void setUp() {
     fixture = new DomainFixtureHelp();
   }
-
-  // region createFromJson Tests
-  /*
-  The underlying implementation of this factory method is subject to the corresponding
-  adapter unit, so we just do basic testing here.
-  */
-
-  @Test
-  void createFromJson_doesCreateAllPetrols() {
-    // given
-    fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
-
-    // when
-    Set<Petrol> actualPetrols = Petrols.createFromJson(fixture.jsonFixture);
-
-    // then
-    fixture.assertEqualValuesIgnoringSort(actualPetrols, 0);
-  }
-
-  @Test
-  void createFromJson_doesNotCreatePetrolsForMissingPrices() {
-    // given
-    fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_DIESEL_AND_E5);
-
-    // when
-    Set<Petrol> actualPetrols = Petrols.createFromJson(fixture.jsonFixture);
-
-    // then
-    // Expect that only 1 Petrol was created, because 2 of them miss their price in JSON.
-    assertEquals(1, actualPetrols.size());
-  }
-
-  @Test
-  void createFromJson_doesNotCreatePetrolsWithZeroPrice() {
-    // given
-    fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_ZERO_PRICE_DIESEL_AND_E10);
-
-    // when
-    Set<Petrol> actualPetrols = Petrols.createFromJson(fixture.jsonFixture);
-
-    // then
-    // Expect that only 1 Petrol was created, because 2 of them have a 0.0 price JSON.
-    assertEquals(1, actualPetrols.size());
-  }
-
-  // endregion
 
   @Test
   void getSortedByPetrolTypeAndPrice_sortsByOrderOfPetrolTypeCasesAndThenPrice() {

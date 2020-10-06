@@ -16,7 +16,6 @@
 
 package de.fornalik.tankschlau.webserviceapi.google;
 
-import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.TankSchlau;
 import de.fornalik.tankschlau.geo.Address;
@@ -101,13 +100,12 @@ public class GoogleGeocodingClient implements GeocodingClient {
     return "Geo data powered by Google.";
   }
 
-  private Optional<Geo> parseJson(String s) {
-    Gson gson = new Gson();
-    ResponseDTO dto = gson.fromJson(s, ResponseDTO.class);
+  private Optional<Geo> parseJson(String in) {
+    ResponseDTO dto = TankSchlau.JSON_PROVIDER.fromJson(in, ResponseDTO.class);
 
     if (dto == null) {
       transactionInfo.setStatus(ResponseDTO.class.getSimpleName() + "_NULL");
-      transactionInfo.setMessage("JSON string could not be converted. String is: " + s);
+      transactionInfo.setMessage("JSON string could not be converted. String is: " + in);
       return Optional.empty();
     }
 

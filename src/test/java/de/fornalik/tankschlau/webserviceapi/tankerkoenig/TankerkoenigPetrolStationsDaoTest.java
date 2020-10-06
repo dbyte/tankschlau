@@ -16,13 +16,15 @@
 
 package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 
-import com.google.gson.TypeAdapter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.GeoRequest;
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.StringResponse;
 import de.fornalik.tankschlau.station.PetrolStation;
-import de.fornalik.tankschlau.station.PetrolStationsJsonAdapter;
+import de.fornalik.tankschlau.station.Petrols;
+import de.fornalik.tankschlau.station.PetrolsJsonAdapter;
 import de.fornalik.tankschlau.testhelp_common.DomainFixtureHelp;
 import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
 import org.junit.jupiter.api.AfterAll;
@@ -40,6 +42,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class TankerkoenigPetrolStationsDaoTest {
+  private static Gson jsonProvider;
   private static Geo geoMock;
 
   private TankerkoenigPetrolStationsDao sut;
@@ -52,6 +55,10 @@ class TankerkoenigPetrolStationsDaoTest {
 
   @BeforeAll
   static void beforeAll() {
+    jsonProvider = new GsonBuilder()
+        .registerTypeAdapter(Petrols.class, new PetrolsJsonAdapter())
+        .create();
+
     geoMock = Mockito.mock(Geo.class);
     when(geoMock.getDistance()).thenReturn(Optional.of(8.5));
     when(geoMock.getLatitude()).thenReturn(52.4079755);
@@ -60,6 +67,7 @@ class TankerkoenigPetrolStationsDaoTest {
 
   @AfterAll
   static void afterAll() {
+    jsonProvider = null;
     geoMock = null;
   }
 
@@ -68,7 +76,7 @@ class TankerkoenigPetrolStationsDaoTest {
     fixture = new DomainFixtureHelp();
     actualPetrolStations = null;
 
-    TypeAdapter<List<PetrolStation>> petrolStationsJsonAdapter = new PetrolStationsJsonAdapter();
+    TankerkoenigJsonAdapter petrolStationsJsonAdapter = new TankerkoenigJsonAdapter(jsonProvider);
 
     httpClientMock = mock(HttpClient.class);
     geoRequestMock = mock(GeoRequest.class);

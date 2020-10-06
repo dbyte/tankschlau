@@ -1,12 +1,8 @@
 package de.fornalik.tankschlau.station;
 
-import com.google.gson.JsonObject;
-import com.google.gson.TypeAdapter;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.testhelp_common.DomainFixtureHelp;
 import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,24 +13,13 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class PetrolStationsTest {
-  private static TypeAdapter<?> petrolStationsGsonAdapter;
   private DomainFixtureHelp fixture;
   private List<PetrolStation> actualPetrolStations;
-
-  @BeforeAll
-  static void beforeAll() {
-    petrolStationsGsonAdapter = new PetrolStationsJsonAdapter();
-  }
-
-  @AfterAll
-  static void afterAll() {
-    petrolStationsGsonAdapter = null;
-  }
 
   @BeforeEach
   void setUp() {
@@ -63,48 +48,6 @@ class PetrolStationsTest {
     // then
     fixture.assertEqualValuesIgnoringSort(actualPetrolStations);
   }
-
-  // region createFromJson Tests
-  /*
-  The underlying implementation of this factory method is subject to the corresponding
-  adapter unit, so we just do some basic test on its own code paths here.
-  */
-
-  @Test
-  void createFromJson_doesCreateAllPetrolStations() {
-    // given
-    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
-
-    // when
-    actualPetrolStations = PetrolStations
-        .createFromJson(fixture.jsonFixture, petrolStationsGsonAdapter);
-
-    // then
-    fixture.assertEqualValuesIgnoringSort(actualPetrolStations);
-  }
-
-  @Test
-  void createFromJson_returnsEmptyArrayOnMissingJsonInput() {
-    // when
-    actualPetrolStations = PetrolStations
-        .createFromJson(new JsonObject(), petrolStationsGsonAdapter);
-
-    // then
-    assertEquals(0, actualPetrolStations.size());
-  }
-
-  @Test
-  void createFromJson_throwsOnNonMatchingAdapterInstanceArgument() {
-    // given
-    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
-
-    // when, then
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> PetrolStations.createFromJson(fixture.jsonFixture, null));
-  }
-
-  // endregion
 
   @ParameterizedTest
   @EnumSource(PetrolType.class)

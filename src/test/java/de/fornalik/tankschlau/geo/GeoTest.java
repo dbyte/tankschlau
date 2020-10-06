@@ -1,8 +1,5 @@
 package de.fornalik.tankschlau.geo;
 
-import de.fornalik.tankschlau.testhelp_common.DomainFixtureHelp;
-import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -12,12 +9,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GeoTest {
-  private DomainFixtureHelp fixture;
-
-  @BeforeEach
-  void setUp() {
-    fixture = new DomainFixtureHelp();
-  }
 
   @Test
   void constructor_happy() {
@@ -60,61 +51,6 @@ class GeoTest {
         () -> new Geo(1, 1, -0.01)
     );
   }
-
-  // region createFromJson Tests
-
-  /* Tests for Geo.createFromJson(JsonObject). The heavy load is currently done
-  by a default Gson adapter. */
-
-  @Test
-  void createFromJson_happy() {
-    // given
-    fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
-
-    // when
-    Geo actualGeo = Geo.createFromJson(fixture.jsonFixture);
-
-    // then
-    assertNotNull(actualGeo);
-    fixture.assertEqualValues(actualGeo, 0);
-  }
-
-  @Test
-  void createFromJson_doesHandleMissingDistanceElement() {
-    // given
-    fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_DIST_ELEM);
-
-    // when
-    Geo actualGeo = Geo.createFromJson(fixture.jsonFixture);
-
-    // then
-    assertNotNull(actualGeo);
-    assertEquals(Optional.empty(), actualGeo.getDistance());
-  }
-
-  @Test
-  void createFromJson_setsLatLonToZeroOnMissingLatLonElements() {
-    // given
-    fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_LAT_LON_ELEM);
-
-    // when
-    Geo actualGeo = Geo.createFromJson(fixture.jsonFixture);
-
-    // then
-    assertNotNull(actualGeo);
-    assertEquals(0.0, actualGeo.getLatitude());
-    assertEquals(0.0, actualGeo.getLongitude());
-  }
-
-  @Test
-  void createFromJson_doesThrowWhenPassingNullToIt() {
-    assertThrows(
-        NullPointerException.class,
-        () -> Geo.createFromJson(null)
-    );
-  }
-
-  // endregion
 
   @Test
   void getDistance_happy() {

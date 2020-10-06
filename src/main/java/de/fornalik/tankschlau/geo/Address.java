@@ -16,16 +16,12 @@
 
 package de.fornalik.tankschlau.geo;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.util.MyToStringBuilder;
 import de.fornalik.tankschlau.util.StringLegalizer;
 import de.fornalik.tankschlau.webserviceapi.common.GeocodingClient;
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Optional;
 
 public class Address {
@@ -87,24 +83,6 @@ public class Address {
     setCity(city);
     setPostCode(postCode);
     setGeo(geo);
-  }
-
-  /**
-   * Creates a new {@link Address} by de-serializing a given {@link JsonObject}.
-   *
-   * @param in The {@link JsonObject} from which to convert to an {@link Address}
-   * @return Instance of {@link Address}
-   * @throws com.google.gson.JsonParseException if Address is invalid from a point of business
-   *                                            rules as checked by {@link #isValid()}.
-   */
-  public static Address createFromJson(JsonObject in) {
-    Objects.requireNonNull(in, "JsonObject must not be null.");
-
-    Gson gson = new GsonBuilder()
-        .registerTypeAdapter(Address.class, new AddressJsonAdapter())
-        .create();
-
-    return gson.fromJson(in, Address.class);
   }
 
   public String getName() {

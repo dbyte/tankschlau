@@ -25,6 +25,7 @@ import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -77,8 +78,7 @@ public class MainWindow extends JFrame {
             geo);
 
         model.remove(0);
-        System.out.println("Response ready.");
-        System.out.println("License info: " + petrolStationsDao.getTransactionInfo().getLicense());
+        System.out.println("Response ready, info: " + petrolStationsDao.getTransactionInfo());
 
         petrolStations = PetrolStations.sortByPriceAndDistanceForPetrolType(
             petrolStations,
@@ -92,6 +92,15 @@ public class MainWindow extends JFrame {
         model.addElement(" ");
 
         petrolStations.forEach(this::populateListModel);
+      }
+
+      catch (IOException e) {
+        model.add(
+            1,
+            TankSchlau.L10N.get("msg.ErrorServerConnection", e.getClass().getTypeName()));
+
+        model.add(2, e.getMessage());
+        e.printStackTrace();
       }
 
       catch (Exception e) {
