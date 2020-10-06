@@ -78,7 +78,8 @@ public class MainWindow extends JFrame {
             geo);
 
         model.remove(0);
-        System.out.println("Response ready, info: " + petrolStationsDao.getTransactionInfo());
+        System.out.println("Response ready, status: " + petrolStationsDao.getTransactionInfo()
+                                                                         .getStatus());
 
         petrolStations = PetrolStations.sortByPriceAndDistanceForPetrolType(
             petrolStations,

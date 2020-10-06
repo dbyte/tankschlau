@@ -40,6 +40,7 @@ public class TankerkoenigJsonAdapter {
   }
 
   /**
+   * Creates objects of {@link PetrolStation} from the received JSON body of the webservice.
    * Note: We do not catch exceptions here as major preconditions should have been
    * checked at call side. If something crashes here, there's a severe problem, so we really
    * do want a crash.
@@ -52,6 +53,7 @@ public class TankerkoenigJsonAdapter {
    */
   List<PetrolStation> createPetrolStations(String jsonString) {
     if (jsonString == null || "".equals(jsonString)) {
+      // Replace msg with a logger.
       System.err.println("Log.Error: JSON string is null or empty: " + jsonString);
       return new ArrayList<>();
     }
@@ -62,6 +64,7 @@ public class TankerkoenigJsonAdapter {
         .get("stations");
 
     if (stationsJsonElement == null || !stationsJsonElement.isJsonArray()) {
+      // Replace msg with a logger.
       System.err.println("Log.Error: No stations found in JSON: " + jsonString);
       return new ArrayList<>();
     }
@@ -81,17 +84,29 @@ public class TankerkoenigJsonAdapter {
   }
 
   private PetrolStation createSinglePetrolStation(String jsonStr) {
-    /* 1. Parse primitives with Gson's default adapter */
-
     PetrolStation rawPetrolStation = jsonProvider.fromJson(jsonStr, PetrolStation.class);
-    Set<Petrol> petrols = jsonProvider.fromJson(jsonStr, (Type) Petrols.class);
+
+    // Build the final petrol station. The builder will throw if data do not match the
+    // business rules.
+    return PetrolStationBuilder
+        .create(rawPetrolStation.uuid)
+        .withBrand(rawPetrolStation.brand)
+        .withIsOpen(rawPetrolStation.isOpen)
+        .withPetrols(createPetrols(jsonStr))
+        .withAddress(createAddress(jsonStr))
+        .build();
+  }
+
+  private Set<Petrol> createPetrols(String jsonStr) {
+    return jsonProvider.fromJson(jsonStr, (Type) Petrols.class);
+  }
+
+  private Address createAddress(String jsonStr) {
     Address rawAddress = jsonProvider.fromJson(jsonStr, Address.class);
     Geo geo = jsonProvider.fromJson(jsonStr, Geo.class);
 
-    /* 2. Legalize to business contracts */
-
     // Legalize Address by passing it to its failable constructor.
-    Address legalizedAddress = new Address(
+    Address deserializedAddress = new Address(
         rawAddress.getName(),
         rawAddress.getStreet(),
         rawAddress.getHouseNumber(),
@@ -101,15 +116,8 @@ public class TankerkoenigJsonAdapter {
 
     // Validate Geo object and add it to address if valid.
     if (geo.getLatitude() != 0.0 || geo.getLongitude() != 0.0 || geo.getDistance().isPresent())
-      legalizedAddress.setGeo(geo);
+      deserializedAddress.setGeo(geo);
 
-    /* 3. Create the final business object */
-    return PetrolStationBuilder
-        .create(rawPetrolStation.uuid)
-        .withBrand(rawPetrolStation.brand)
-        .withIsOpen(rawPetrolStation.isOpen)
-        .withPetrols(petrols)
-        .withAddress(legalizedAddress)
-        .build();
+    return deserializedAddress;
   }
 }
