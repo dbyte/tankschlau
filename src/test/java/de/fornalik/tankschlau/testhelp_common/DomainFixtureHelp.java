@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class DomainFixtureHelp {
   public ResponseDTO objectFixture;
-  public JsonObject jsonFixture;
+  public String jsonFixture;
 
   public DomainFixtureHelp() {
     this.objectFixture = new ResponseDTO();
@@ -63,29 +63,7 @@ public class DomainFixtureHelp {
     Gson gson = new Gson();
 
     objectFixture = gson.fromJson(reader1, ResponseDTO.class);
-    jsonFixture = (JsonObject) JsonParser.parseReader(reader2);
-  }
-
-  /**
-   * Computes two test-fixture objects by reading a JSON response fixture file.<br/>
-   * The generated JSON of this method does only include the <b>first station</b> of the response!
-   * <p>
-   * 1) {@link ResponseDTO} which we can use e.g. for equality checks.<br/>
-   * 2) {@link JsonObject} of the <b>first station</b> found within the JSON file fixture.
-   *
-   * @see #setupFixture(String resName)
-   */
-  public void setupSingleFixture(String resName) {
-    Objects.requireNonNull(resName);
-
-    setupFixture(resName);
-
-    assert jsonFixture.getAsJsonArray("stations") != null;
-
-    jsonFixture = jsonFixture
-        .getAsJsonArray("stations")
-        .get(0)
-        .getAsJsonObject();
+    jsonFixture = JsonParser.parseReader(reader2).getAsJsonObject().toString();
   }
 
   /**

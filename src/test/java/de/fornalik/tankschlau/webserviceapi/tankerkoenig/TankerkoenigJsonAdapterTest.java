@@ -72,7 +72,7 @@ class TankerkoenigJsonAdapterTest {
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
 
     // when
-    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture.toString());
+    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture);
 
     // then
     assertNotNull(actualPetrolStations);
@@ -102,7 +102,7 @@ class TankerkoenigJsonAdapterTest {
     // when then
     Exception e = assertThrows(
         NullPointerException.class,
-        () -> sut.createPetrolStations(fixture.jsonFixture.toString()));
+        () -> sut.createPetrolStations(fixture.jsonFixture));
 
     assertEquals("uuid must not be null", e.getMessage());
   }
@@ -113,7 +113,7 @@ class TankerkoenigJsonAdapterTest {
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_DIESEL_AND_E5);
 
     // when
-    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture.toString());
+    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture);
 
     // then
     // Expect that only 1 Petrol was created, because 2 of them miss their price in JSON.
@@ -126,7 +126,7 @@ class TankerkoenigJsonAdapterTest {
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_ZERO_PRICE_DIESEL_AND_E10);
 
     // when
-    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture.toString());
+    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture);
 
     // then
     // Expect that only 1 Petrol was created, because 2 of them have a 0.0 price JSON.
@@ -139,7 +139,7 @@ class TankerkoenigJsonAdapterTest {
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_HOUSENUM_AND_BRAND);
 
     // when
-    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture.toString());
+    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture);
 
     // then
     assertEquals("", actualPetrolStations.get(0).brand);
@@ -151,7 +151,7 @@ class TankerkoenigJsonAdapterTest {
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_STATIONS_ELEM);
 
     // when
-    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture.toString());
+    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture);
 
     // then
     assertEquals(0, actualPetrolStations.size());
@@ -163,7 +163,7 @@ class TankerkoenigJsonAdapterTest {
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_STATION_ARRAY);
 
     // when
-    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture.toString());
+    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture);
 
     // then
     assertEquals(0, actualPetrolStations.size());
@@ -175,7 +175,7 @@ class TankerkoenigJsonAdapterTest {
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_HOUSENUM_AND_BRAND);
 
     // when
-    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture.toString());
+    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture);
 
     // then
     assertNotNull(actualPetrolStations.get(0).address);
@@ -190,7 +190,7 @@ class TankerkoenigJsonAdapterTest {
     // when then
     assertThrows(
         StringLegalizer.ValueException.class,
-        () -> sut.createPetrolStations(fixture.jsonFixture.toString()));
+        () -> sut.createPetrolStations(fixture.jsonFixture));
   }
 
   @Test
@@ -199,7 +199,7 @@ class TankerkoenigJsonAdapterTest {
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_ALL_GEO_ELEM);
 
     // when
-    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture.toString());
+    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture);
 
     // then
     assertNotNull(actualPetrolStations);
@@ -214,7 +214,7 @@ class TankerkoenigJsonAdapterTest {
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_DIST_ELEM);
 
     // when
-    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture.toString());
+    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture);
 
     // then
     assertNotNull(actualPetrolStations.get(0).address);
@@ -230,7 +230,7 @@ class TankerkoenigJsonAdapterTest {
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_LAT_LON_ELEM);
 
     // when
-    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture.toString());
+    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture);
 
     // then
     assertTrue(actualPetrolStations.get(0).address.getGeo().isPresent());
@@ -244,7 +244,7 @@ class TankerkoenigJsonAdapterTest {
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_17STATIONS_HAPPY);
 
     // when
-    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture.toString());
+    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture);
 
     // then
     assertNotNull(actualPetrolStations);

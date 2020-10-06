@@ -93,7 +93,7 @@ class TankerkoenigPetrolStationsDaoTest {
     // given
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_17STATIONS_HAPPY);
 
-    when(stringResponseMock.getBody()).thenReturn(Optional.of(fixture.jsonFixture.toString()));
+    when(stringResponseMock.getBody()).thenReturn(Optional.of(fixture.jsonFixture));
     when(httpClientMock.newCall(geoRequestMock)).thenReturn(stringResponseMock);
 
     // when
