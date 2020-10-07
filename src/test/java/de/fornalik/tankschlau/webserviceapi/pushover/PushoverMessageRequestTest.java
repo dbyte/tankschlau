@@ -21,6 +21,7 @@ import de.fornalik.tankschlau.net.OkHttpClient;
 import de.fornalik.tankschlau.net.Response;
 import de.fornalik.tankschlau.util.UserPrefs;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
+import de.fornalik.tankschlau.webserviceapi.common.MessageContent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -31,9 +32,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class PushoverMessageRequestTest {
-  UserPrefs userPrefsMock;
   private PushoverMessageRequest actualRequest;
+  private MessageContent messageContentMock;
+  private UserPrefs userPrefsMock;
   private ApiKeyManager apiKeyManagerMock;
+
 
   @BeforeEach
   void setUp() {
@@ -52,15 +55,21 @@ class PushoverMessageRequestTest {
 
     this.userPrefsMock = mock(UserPrefs.class);
     when(userPrefsMock.readPushMessengerUserId()).thenReturn(Optional.of(pmUserId));
+
+    this.messageContentMock = mock(MessageContent.class);
   }
 
   @Test
-  void testTheBest() throws IOException {
+  void integrationTest() throws IOException {
     // given
     actualRequest = new PushoverMessageRequest(apiKeyManagerMock, userPrefsMock);
 
+    when(messageContentMock.getTitle()).thenReturn("New price for station!");
+    when(messageContentMock.getMessage())
+        .thenReturn("UTF-8? Umlauts! ÖÄÜ öäü ß.\nThis should be a new line");
+
     // when
-    actualRequest.setMessage("UTF-8? Umlauts! ÖÄÜ öäü ß.");
+    actualRequest.setMessage(messageContentMock);
 
     // then
     HttpClient httpClient = new OkHttpClient();

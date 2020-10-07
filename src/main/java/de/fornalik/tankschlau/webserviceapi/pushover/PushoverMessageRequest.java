@@ -17,15 +17,16 @@
 package de.fornalik.tankschlau.webserviceapi.pushover;
 
 import de.fornalik.tankschlau.TankSchlau;
-import de.fornalik.tankschlau.net.PushMessageRequest;
+import de.fornalik.tankschlau.net.MessageRequest;
 import de.fornalik.tankschlau.util.StringLegalizer;
 import de.fornalik.tankschlau.util.UserPrefs;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
+import de.fornalik.tankschlau.webserviceapi.common.MessageContent;
 
 import java.util.Objects;
 
 // TODO unit test, javadoc
-public class PushoverMessageRequest extends PushMessageRequest {
+public class PushoverMessageRequest extends MessageRequest {
   private static final String BASE_URL = "https://api.pushover.net/1/messages.json";
 
   private final ApiKeyManager apiKeyManager;
@@ -70,8 +71,11 @@ public class PushoverMessageRequest extends PushMessageRequest {
   }
 
   @Override
-  public void setMessage(String message) {
-    message = StringLegalizer.create(message).safeTrim().nullToEmpty().end();
+  public void setMessage(MessageContent content) {
+    String title = StringLegalizer.create(content.getTitle()).safeTrim().mandatory().end();
+    String message = StringLegalizer.create(content.getMessage()).safeTrim().nullToEmpty().end();
+
+    addBodyParameter("title", title);
     addBodyParameter("message", message);
   }
 }

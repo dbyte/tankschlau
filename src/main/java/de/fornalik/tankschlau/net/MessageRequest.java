@@ -16,19 +16,20 @@
 
 package de.fornalik.tankschlau.net;
 
+import de.fornalik.tankschlau.webserviceapi.common.MessageContent;
+
 /**
  * Abstract HTTP request class with base functionalities and <b>additional hook</b> for generating
  * proper request parameters for a push message.
  */
 // TODO unit tests
-public abstract class PushMessageRequest extends BaseRequest {
+public abstract class MessageRequest extends BaseRequest {
 
   /**
-   * Implementation should set or overwrite the "message" for this request.
+   * Implementation should set or overwrite the "message" parameter with the new value for this
+   * request.
    *
-   * @param message The message string itself. Empty or null values should be allowed here by
-   *                each implementation.
-   * @throws NullPointerException If given message string is null.
+   * @param content Content of the message (title, text etc.).
    */
-  public abstract void setMessage(String message);
+  public abstract void setMessage(MessageContent content);
 }
