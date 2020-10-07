@@ -27,6 +27,7 @@ import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PetrolsJsonAdapterTest {
@@ -48,16 +49,41 @@ class PetrolsJsonAdapterTest {
   }
 
   @Test
-  void read_XXX() {
+  void read_happy() {
     // given
     fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
-    //JsonReader reader = new JsonReader(new StringReader(fixture.jsonFixture));
 
     // when
     actualPetrols = gson.fromJson(fixture.jsonFixture, (Type) Petrols.class);
 
     // then
     fixture.assertEqualValuesIgnoringSort(actualPetrols, 0);
+  }
+
+  @Test
+  void read_doesNotCreatePetrolsForMissingPrices() {
+    // given
+    fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_DIESEL_AND_E5);
+
+    // when
+    actualPetrols = gson.fromJson(fixture.jsonFixture, (Type) Petrols.class);
+
+    // then
+    // Expect that only 1 Petrol was created, because 2 of them miss their price in JSON.
+    assertEquals(1, actualPetrols.size());
+  }
+
+  @Test
+  void read_doesNotCreatePetrolsWithZeroPrice() {
+    // given
+    fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_ZERO_PRICE_DIESEL_AND_E10);
+
+    // when
+    actualPetrols = gson.fromJson(fixture.jsonFixture, (Type) Petrols.class);
+
+    // then
+    // Expect that only 1 Petrol was created, because 2 of them have a 0.0 price JSON.
+    assertEquals(1, actualPetrols.size());
   }
 
   @Test

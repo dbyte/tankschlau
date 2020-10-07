@@ -108,32 +108,6 @@ class TankerkoenigJsonAdapterTest {
   }
 
   @Test
-  void createFromJson_doesNotCreatePetrolsForMissingPrices() {
-    // given
-    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_DIESEL_AND_E5);
-
-    // when
-    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture);
-
-    // then
-    // Expect that only 1 Petrol was created, because 2 of them miss their price in JSON.
-    assertEquals(1, actualPetrolStations.get(0).getPetrols().size());
-  }
-
-  @Test
-  void createFromJson_doesNotCreatePetrolsWithZeroPrice() {
-    // given
-    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_ZERO_PRICE_DIESEL_AND_E10);
-
-    // when
-    actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture);
-
-    // then
-    // Expect that only 1 Petrol was created, because 2 of them have a 0.0 price JSON.
-    assertEquals(1, actualPetrolStations.get(0).getPetrols().size());
-  }
-
-  @Test
   void createPetrolStations_oneStation_acceptsEmptyBrand() {
     // given
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_HOUSENUM_AND_BRAND);
