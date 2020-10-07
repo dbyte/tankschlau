@@ -18,17 +18,17 @@ package de.fornalik.tankschlau.net;
 
 /**
  * Abstract HTTP request class with base functionalities and <b>additional hook</b> for generating
- * proper URL request parameters for a push message.
+ * proper request parameters for a push message.
  */
 // TODO unit tests
 public abstract class PushMessageRequest extends BaseRequest {
 
   /**
-   * Implementation should set or overwrite the "message" URL parameter for this request.
+   * Implementation should set or overwrite the "message" parameter for this request.
    *
    * @param message The message string itself.
    * @throws NullPointerException If given message string is null.
    */
-  public abstract void setMessageParameter(String message);
+  public abstract void setMessage(String message);
 
 }

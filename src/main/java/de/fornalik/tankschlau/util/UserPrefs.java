@@ -116,6 +116,21 @@ public class UserPrefs {
     realPrefs.put("petrol.preferredtype", type.toString());
   }
 
+  // TODO unit test
+  public Optional<String> readPushMessengerUserId() {
+    String key = "pushmessenger.userid";
+
+    if (checkPrefsMissing(key))
+      return Optional.empty();
+
+    return Optional.ofNullable(realPrefs.get(key, null));
+  }
+
+  // TODO unit test
+  public void writePushMessengerUserId(String userId) {
+    realPrefs.put("pushmessenger.userid", userId);
+  }
+
   public Optional<String> readApiKey(String id) {
     id = StringLegalizer.create(id).mandatory().end();
 

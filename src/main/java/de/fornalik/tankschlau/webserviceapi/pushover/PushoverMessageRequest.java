@@ -16,27 +16,55 @@
 
 package de.fornalik.tankschlau.webserviceapi.pushover;
 
+import de.fornalik.tankschlau.TankSchlau;
 import de.fornalik.tankschlau.net.PushMessageRequest;
 import de.fornalik.tankschlau.util.StringLegalizer;
+import de.fornalik.tankschlau.util.UserPrefs;
+import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
+
+import java.util.Objects;
 
 // TODO unit test, javadoc
 public class PushoverMessageRequest extends PushMessageRequest {
   private static final String BASE_URL = "https://api.pushover.net/1/messages.json";
-  private static final HttpMethod HTTP_METHOD = HttpMethod.POST;
+  private final ApiKeyManager apiKeyManager;
+  private final UserPrefs userPrefs;
 
   public PushoverMessageRequest() {
+    this(TankSchlau.GEOCODING_APIKEY_MANAGER, TankSchlau.USER_PREFS);
+  }
+
+  public PushoverMessageRequest(ApiKeyManager apiKeyManager, UserPrefs userPrefs) {
     super();
 
+    this.apiKeyManager = Objects.requireNonNull(
+        apiKeyManager,
+        "apiKeyManager must not be null.");
+
+    this.userPrefs = Objects.requireNonNull(
+        userPrefs,
+        "userPrefs must not be null.");
+
     setBaseData();
+    setCommonHeaderParameters();
   }
 
   private void setBaseData() {
-    setBaseUrl(StringLegalizer.create(BASE_URL).mandatory().toUrl());
-    setHttpMethod(HTTP_METHOD);
+    setBaseUrl(StringLegalizer.create(BASE_URL).toUrl());
+    setHttpMethod(HttpMethod.POST);
+  }
+
+  private void setCommonHeaderParameters() {
+    /* Only add user key if we got one. Pushover will inform us about a missing/invalid user key
+    in its response, where we handle errors anyway. */
+    userPrefs.readPushMessengerUserId().ifPresent(value -> addHeader("user", value));
+
+    // Dito for API key.
+    apiKeyManager.read().ifPresent(value -> addHeader("token", value));
   }
 
   @Override
-  public void setMessageParameter(String message) {
+  public void setMessage(String message) {
 
   }
 }
