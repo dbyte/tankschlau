@@ -30,7 +30,8 @@ import static org.mockito.Mockito.*;
 
 class ApiKeyManagerTest {
   private static ApiKeyStore apiKeyStoreMock;
-  private String expectedApiKeyForPetrolStations, expectedApiKeyForGeocoding;
+  private String expectedApiKeyForPetrolStations, expectedApiKeyForGeocoding,
+      expectedApiKeyForPushMessenger;
   private ApiKeyManager apiKeyManager;
   private String actualApiKey;
 
@@ -52,12 +53,16 @@ class ApiKeyManagerTest {
 
     this.expectedApiKeyForPetrolStations = "apikey-value-fake-for-petrolstations";
     this.expectedApiKeyForGeocoding = "apikey-value-fake-for-geocoding";
+    this.expectedApiKeyForPushMessenger = "apikey-value-fake-for-pushmessenger";
 
     when(apiKeyStoreMock.read("apikey.petrolstations"))
         .thenReturn(Optional.of(expectedApiKeyForPetrolStations));
 
     when(apiKeyStoreMock.read("apikey.geocoding"))
         .thenReturn(Optional.of(expectedApiKeyForGeocoding));
+
+    when(apiKeyStoreMock.read("apikey.pushmessenger"))
+        .thenReturn(Optional.of(expectedApiKeyForPushMessenger));
   }
 
   @Test
@@ -82,6 +87,20 @@ class ApiKeyManagerTest {
 
     // when
     apiKeyManager = ApiKeyManager.createForGeocoding(expectedApiKeyStore);
+
+    // then
+    assertEquals(expectedApiKeyStore, apiKeyManager.getApiKeyStore());
+    assertEquals(expectedId, apiKeyManager.getId());
+  }
+
+  @Test
+  void createForPushMessenger_setsFieldsProperly() {
+    // given
+    String expectedId = "apikey.pushmessenger";
+    ApiKeyStore expectedApiKeyStore = apiKeyStoreMock;
+
+    // when
+    apiKeyManager = ApiKeyManager.createForPushMessenger(expectedApiKeyStore);
 
     // then
     assertEquals(expectedApiKeyStore, apiKeyManager.getApiKeyStore());
@@ -126,6 +145,19 @@ class ApiKeyManagerTest {
   }
 
   @Test
+  void read_forPushMessenger_returnsProperApiKey() {
+    // given
+    apiKeyManager = ApiKeyManager.createForPushMessenger(apiKeyStoreMock);
+
+    // when
+    //noinspection OptionalGetWithoutIsPresent
+    actualApiKey = apiKeyManager.read().get();
+
+    // then
+    assertEquals(expectedApiKeyForPushMessenger, actualApiKey);
+  }
+
+  @Test
   void write_forPetrolStations_properlyPassesArgumentsToApiKeyStore() {
     // given
     String expectedId = "apikey.petrolstations";
@@ -151,6 +183,26 @@ class ApiKeyManagerTest {
     String expectedApiKey = "my-api-key-39913293912837";
 
     apiKeyManager = ApiKeyManager.createForGeocoding(apiKeyStoreMock);
+
+    // when
+    apiKeyManager.write(expectedApiKey);
+
+    // then
+    inOrder(apiKeyStoreMock)
+        .verify(
+            apiKeyStoreMock,
+            calls(1))
+
+        .write(expectedId, expectedApiKey);
+  }
+
+  @Test
+  void write_forPushMessenger_properlyPassesArgumentsToApiKeyStore() {
+    // given
+    String expectedId = "apikey.pushmessenger";
+    String expectedApiKey = "my-api-key-8sksnsis-29eell";
+
+    apiKeyManager = ApiKeyManager.createForPushMessenger(apiKeyStoreMock);
 
     // when
     apiKeyManager.write(expectedApiKey);

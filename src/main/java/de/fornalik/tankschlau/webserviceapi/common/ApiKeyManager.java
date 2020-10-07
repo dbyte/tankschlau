@@ -67,6 +67,16 @@ public class ApiKeyManager {
     return new ApiKeyManager(apiKeyStore, "apikey.geocoding");
   }
 
+  /**
+   * Returns a new instance of ApiKeyManager for use with a push messenger webservice.
+   *
+   * @param apiKeyStore Storage strategy for the API key.
+   * @return New instance of ApiKeyManager with a predefined {@link #id}.
+   */
+  public static ApiKeyManager createForPushMessenger(ApiKeyStore apiKeyStore) {
+    return new ApiKeyManager(apiKeyStore, "apikey.pushmessenger");
+  }
+
   public ApiKeyStore getApiKeyStore() {
     return apiKeyStore;
   }
