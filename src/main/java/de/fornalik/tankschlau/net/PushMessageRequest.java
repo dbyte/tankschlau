@@ -24,11 +24,11 @@ package de.fornalik.tankschlau.net;
 public abstract class PushMessageRequest extends BaseRequest {
 
   /**
-   * Implementation should set or overwrite the "message" parameter for this request.
+   * Implementation should set or overwrite the "message" for this request.
    *
-   * @param message The message string itself.
+   * @param message The message string itself. Empty or null values should be allowed here by
+   *                each implementation.
    * @throws NullPointerException If given message string is null.
    */
   public abstract void setMessage(String message);
-
 }

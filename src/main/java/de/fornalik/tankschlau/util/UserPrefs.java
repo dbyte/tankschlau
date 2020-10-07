@@ -116,7 +116,6 @@ public class UserPrefs {
     realPrefs.put("petrol.preferredtype", type.toString());
   }
 
-  // TODO unit test
   public Optional<String> readPushMessengerUserId() {
     String key = "pushmessenger.userid";
 
@@ -126,7 +125,6 @@ public class UserPrefs {
     return Optional.ofNullable(realPrefs.get(key, null));
   }
 
-  // TODO unit test
   public void writePushMessengerUserId(String userId) {
     realPrefs.put("pushmessenger.userid", userId);
   }

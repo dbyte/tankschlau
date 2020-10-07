@@ -46,7 +46,7 @@ public class PushoverMessageRequest extends PushMessageRequest {
         "userPrefs must not be null.");
 
     setBaseData();
-    setCommonHeaderParameters();
+    setCommonHeaders();
   }
 
   private void setBaseData() {
@@ -54,7 +54,7 @@ public class PushoverMessageRequest extends PushMessageRequest {
     setHttpMethod(HttpMethod.POST);
   }
 
-  private void setCommonHeaderParameters() {
+  private void setCommonHeaders() {
     /* Only add user key if we got one. Pushover will inform us about a missing/invalid user key
     in its response, where we handle errors anyway. */
     userPrefs.readPushMessengerUserId().ifPresent(value -> addHeader("user", value));
@@ -65,6 +65,7 @@ public class PushoverMessageRequest extends PushMessageRequest {
 
   @Override
   public void setMessage(String message) {
-
+    message = StringLegalizer.create(message).safeTrim().nullToEmpty().end();
+    addHeader("message", message);
   }
 }

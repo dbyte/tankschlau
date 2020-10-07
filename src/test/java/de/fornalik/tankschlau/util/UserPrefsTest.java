@@ -151,6 +151,36 @@ class UserPrefsTest {
   }
 
   @Test
+  void writePushMessengerUserId_writesProperly() {
+    // given
+    String givenUserId = "iahBzWeeC568g-pocEr-kkmM";
+
+    // when
+    prefs.writePushMessengerUserId(givenUserId);
+
+    // then
+    Optional<String> actualUserId = prefs.readPushMessengerUserId();
+
+    assertTrue(actualUserId.isPresent());
+    assertEquals(givenUserId, actualUserId.get());
+  }
+
+  @ParameterizedTest
+  @ValueSource(booleans = {false, true})
+  void readPushMessengerUserId_returnsEmptyOptionalIfPrefDoesNotExist(boolean removeNode)
+  throws BackingStoreException {
+    // given
+    if (removeNode)
+      prefs.getRealPrefs().removeNode();
+
+    // when
+    Optional<String> actualUserId = prefs.readPushMessengerUserId();
+
+    // then
+    assertEquals(Optional.empty(), actualUserId);
+  }
+
+  @Test
   void writeApiKey_writesProperly() {
     // given
     String userPrefToken = "apikey.petrolstations";
