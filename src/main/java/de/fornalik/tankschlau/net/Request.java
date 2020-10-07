@@ -95,11 +95,11 @@ public interface Request {
   Map<String, String> getBodyParameters();
 
   /**
-   * @param clazz Class (used as a token) to which to convert the body parameters
-   * @param <T>   Some class.
+   * @param to  Token - to which type of body to convert the body parameters.
+   * @param <T> Some class.
    * @return Request body which can be used by the HTTP client.
    */
-  <T> T convertBodyParameters(Class<T> clazz);
+  <T> T convertBodyParameters(String to);
 
   /**
    * Adds an entry to the request header.

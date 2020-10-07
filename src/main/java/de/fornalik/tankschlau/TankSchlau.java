@@ -38,6 +38,7 @@ import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigJsonAdapter
 import javax.swing.*;
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Optional;
 
 public class TankSchlau {
   // Configuration
@@ -57,17 +58,25 @@ public class TankSchlau {
       ApiKeyManager.createForPetrolStations(API_KEY_STORE);
   public static final ApiKeyManager GEOCODING_APIKEY_MANAGER =
       ApiKeyManager.createForGeocoding(API_KEY_STORE);
+  public static final ApiKeyManager PUSHMESSAGE_APIKEY_MANAGER =
+      ApiKeyManager.createForPushMessage(API_KEY_STORE);
 
-  // Start application
   public static void main(String[] args) {
-    // Offer option to pass a tankerkoenig- and geocoding-api-key at startup which we persist
-    // in a specified storage.
-    if (args.length >= 1)
-      TANKERKOENIG_APIKEY_MANAGER.write(args[0]);
-    if (args.length >= 2)
-      GEOCODING_APIKEY_MANAGER.write(args[1]);
+    // Offer option to pass some data at startup. Ex: -Dmyproperty="My value"
 
-    // Example: Writing some user geo data to user prefs
+    Optional.ofNullable(System.getProperty("petrolStationsApiKey"))
+            .ifPresent(TANKERKOENIG_APIKEY_MANAGER::write);
+
+    Optional.ofNullable(System.getProperty("geocodingApiKey"))
+            .ifPresent(GEOCODING_APIKEY_MANAGER::write);
+
+    Optional.ofNullable(System.getProperty("pushmessageApiKey"))
+            .ifPresent(PUSHMESSAGE_APIKEY_MANAGER::write);
+
+    Optional.ofNullable(System.getProperty("pushmessageUserId"))
+            .ifPresent(USER_PREFS::writePushMessengerUserId);
+
+    // Ex: Writing some user geo data to user prefs
     // processTestAddress();
 
     Geo userGeo = USER_PREFS.readGeo().orElseThrow(

@@ -100,19 +100,17 @@ public abstract class BaseRequest implements Request {
     return bodyParameters;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   // TODO unit test
-  public <T> T convertBodyParameters(Class<T> type) {
-    if (type == String.class) {
+  public String convertBodyParameters(String to) {
+    if ("JSON_STRING".equals(to)) {
       JsonObject jsonObject = new JsonObject();
       getBodyParameters().forEach(jsonObject::addProperty);
-
-      //noinspection unchecked
-      return (T) jsonObject.toString();
+      return jsonObject.toString();
 
     } else {
-      throw new IllegalArgumentException(
-          type.getSimpleName() + " not yet implemented for conversion.");
+      throw new IllegalArgumentException("\"" + to + "\" not implemented for conversion.");
     }
   }
 

@@ -48,7 +48,7 @@ public class PushoverMessageRequest extends PushMessageRequest {
 
     setBaseData();
     setHeaders();
-    setRequestParameters();
+    setAuthenticationParameters();
   }
 
   private void setBaseData() {
@@ -60,7 +60,7 @@ public class PushoverMessageRequest extends PushMessageRequest {
     addHeader("Accept", "application/json; charset=utf-8");
   }
 
-  private void setRequestParameters() {
+  private void setAuthenticationParameters() {
     /* Only add user key if we got one. Pushover will inform us about a missing/invalid user key
     in its response, where we handle errors anyway. */
     userPrefs.readPushMessengerUserId().ifPresent(value -> addBodyParameter("user", value));

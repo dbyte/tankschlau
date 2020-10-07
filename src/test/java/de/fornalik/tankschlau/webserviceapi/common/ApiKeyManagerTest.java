@@ -61,7 +61,7 @@ class ApiKeyManagerTest {
     when(apiKeyStoreMock.read("apikey.geocoding"))
         .thenReturn(Optional.of(expectedApiKeyForGeocoding));
 
-    when(apiKeyStoreMock.read("apikey.pushmessenger"))
+    when(apiKeyStoreMock.read("apikey.pushmessage"))
         .thenReturn(Optional.of(expectedApiKeyForPushMessenger));
   }
 
@@ -96,11 +96,11 @@ class ApiKeyManagerTest {
   @Test
   void createForPushMessenger_setsFieldsProperly() {
     // given
-    String expectedId = "apikey.pushmessenger";
+    String expectedId = "apikey.pushmessage";
     ApiKeyStore expectedApiKeyStore = apiKeyStoreMock;
 
     // when
-    apiKeyManager = ApiKeyManager.createForPushMessenger(expectedApiKeyStore);
+    apiKeyManager = ApiKeyManager.createForPushMessage(expectedApiKeyStore);
 
     // then
     assertEquals(expectedApiKeyStore, apiKeyManager.getApiKeyStore());
@@ -147,7 +147,7 @@ class ApiKeyManagerTest {
   @Test
   void read_forPushMessenger_returnsProperApiKey() {
     // given
-    apiKeyManager = ApiKeyManager.createForPushMessenger(apiKeyStoreMock);
+    apiKeyManager = ApiKeyManager.createForPushMessage(apiKeyStoreMock);
 
     // when
     //noinspection OptionalGetWithoutIsPresent
@@ -199,10 +199,10 @@ class ApiKeyManagerTest {
   @Test
   void write_forPushMessenger_properlyPassesArgumentsToApiKeyStore() {
     // given
-    String expectedId = "apikey.pushmessenger";
+    String expectedId = "apikey.pushmessage";
     String expectedApiKey = "my-api-key-8sksnsis-29eell";
 
-    apiKeyManager = ApiKeyManager.createForPushMessenger(apiKeyStoreMock);
+    apiKeyManager = ApiKeyManager.createForPushMessage(apiKeyStoreMock);
 
     // when
     apiKeyManager.write(expectedApiKey);

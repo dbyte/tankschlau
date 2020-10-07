@@ -27,7 +27,6 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,11 +39,19 @@ class PushoverMessageRequestTest {
   void setUp() {
     this.actualRequest = null;
 
+    // Inject some API keys via VM Options if needed.
+    String pmApiKey = Optional.ofNullable(System.getProperty("pushmessageApiKey"))
+                              .orElse("some-fake-abcdef-12345");
+
+    String pmUserId = Optional.ofNullable(System.getProperty("pushmessageUserId"))
+                              .orElse("some-fake-aklmnop-666");
+
+    // Setup the mocks.
     this.apiKeyManagerMock = mock(ApiKeyManager.class);
-    when(apiKeyManagerMock.read()).thenReturn(Optional.of("abcdef-12345"));
+    when(apiKeyManagerMock.read()).thenReturn(Optional.of(pmApiKey));
 
     this.userPrefsMock = mock(UserPrefs.class);
-    when(userPrefsMock.readPushMessengerUserId()).thenReturn(Optional.of("klmnop-666"));
+    when(userPrefsMock.readPushMessengerUserId()).thenReturn(Optional.of(pmUserId));
   }
 
   @Test
@@ -61,8 +68,4 @@ class PushoverMessageRequestTest {
     System.out.println(response.getBody());
   }
 
-  @Test
-  void setMessage_XXX() {
-    fail();
-  }
 }

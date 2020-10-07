@@ -73,8 +73,8 @@ public class ApiKeyManager {
    * @param apiKeyStore Storage strategy for the API key.
    * @return New instance of ApiKeyManager with a predefined {@link #id}.
    */
-  public static ApiKeyManager createForPushMessenger(ApiKeyStore apiKeyStore) {
-    return new ApiKeyManager(apiKeyStore, "apikey.pushmessenger");
+  public static ApiKeyManager createForPushMessage(ApiKeyStore apiKeyStore) {
+    return new ApiKeyManager(apiKeyStore, "apikey.pushmessage");
   }
 
   public ApiKeyStore getApiKeyStore() {

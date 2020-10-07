@@ -104,7 +104,7 @@ public class OkHttpClient implements HttpClient {
       // Note: Body is only allowed to be null for HTTP "GET" request type.
       return null;
 
-    String jsonBody = request.convertBodyParameters(String.class);
+    String jsonBody = request.convertBodyParameters("JSON_STRING");
 
     return okhttp3.RequestBody.create(
         okhttp3.MediaType.parse("application/json; charset=utf-8"),
