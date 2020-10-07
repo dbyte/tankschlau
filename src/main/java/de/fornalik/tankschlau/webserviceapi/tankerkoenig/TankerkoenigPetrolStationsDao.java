@@ -76,7 +76,6 @@ public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
     this.transactionInfo = new TransactionInfo();
   }
 
-  // TODO new unit tests
   @Override
   public List<PetrolStation> getAllInNeighbourhood(Geo geo) throws IOException {
     this.request.setGeoUrlParameters(geo);
