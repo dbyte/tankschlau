@@ -67,6 +67,30 @@ public class DomainFixtureHelp {
   }
 
   /**
+   * Computes two test-fixture objects by reading a JSON response fixture file.<br/>
+   * The returned JSON of this method does only include the <b>first station</b> of the response!
+   * <p>
+   * 1) {@link ResponseDTO} which we can use e.g. for equality checks.<br/>
+   * 2) {@link JsonObject} of the <b>first station</b> found within the JSON file fixture.
+   *
+   * @see #setupFixture(String resName)
+   */
+  public void setupSingleFixture(String resName) {
+    Objects.requireNonNull(resName);
+
+    setupFixture(resName);
+
+    JsonObject jsonObject = JsonParser.parseString(jsonFixture).getAsJsonObject();
+    assert jsonObject.getAsJsonArray("stations") != null;
+
+    jsonFixture = jsonObject
+        .getAsJsonArray("stations")
+        .get(0)
+        .getAsJsonObject()
+        .toString();
+  }
+
+  /**
    * Converts the generated stations List of type {@link StationDTO} to List<PetrolStation>
    *
    * @return A List of PetrolStation objects.
