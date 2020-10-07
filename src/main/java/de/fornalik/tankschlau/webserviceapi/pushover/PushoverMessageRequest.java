@@ -64,7 +64,7 @@ public class PushoverMessageRequest extends MessageRequest {
   private void setAuthenticationParameters() {
     /* Only add user key if we got one. Pushover will inform us about a missing/invalid user key
     in its response, where we handle errors anyway. */
-    userPrefs.readPushMessengerUserId().ifPresent(value -> addBodyParameter("user", value));
+    userPrefs.readPushMessageUserId().ifPresent(value -> addBodyParameter("user", value));
 
     // Dito for API key.
     apiKeyManager.read().ifPresent(value -> addBodyParameter("token", value));

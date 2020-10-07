@@ -54,7 +54,7 @@ class PushoverMessageRequestTest {
     when(apiKeyManagerMock.read()).thenReturn(Optional.of(pmApiKey));
 
     this.userPrefsMock = mock(UserPrefs.class);
-    when(userPrefsMock.readPushMessengerUserId()).thenReturn(Optional.of(pmUserId));
+    when(userPrefsMock.readPushMessageUserId()).thenReturn(Optional.of(pmUserId));
 
     this.messageContentMock = mock(MessageContent.class);
   }

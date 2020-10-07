@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 class ApiKeyManagerTest {
   private static ApiKeyStore apiKeyStoreMock;
   private String expectedApiKeyForPetrolStations, expectedApiKeyForGeocoding,
-      expectedApiKeyForPushMessenger;
+      expectedApiKeyForPushMessage;
   private ApiKeyManager apiKeyManager;
   private String actualApiKey;
 
@@ -53,7 +53,7 @@ class ApiKeyManagerTest {
 
     this.expectedApiKeyForPetrolStations = "apikey-value-fake-for-petrolstations";
     this.expectedApiKeyForGeocoding = "apikey-value-fake-for-geocoding";
-    this.expectedApiKeyForPushMessenger = "apikey-value-fake-for-pushmessenger";
+    this.expectedApiKeyForPushMessage = "apikey-value-fake-for-pushmessage";
 
     when(apiKeyStoreMock.read("apikey.petrolstations"))
         .thenReturn(Optional.of(expectedApiKeyForPetrolStations));
@@ -62,7 +62,7 @@ class ApiKeyManagerTest {
         .thenReturn(Optional.of(expectedApiKeyForGeocoding));
 
     when(apiKeyStoreMock.read("apikey.pushmessage"))
-        .thenReturn(Optional.of(expectedApiKeyForPushMessenger));
+        .thenReturn(Optional.of(expectedApiKeyForPushMessage));
   }
 
   @Test
@@ -94,7 +94,7 @@ class ApiKeyManagerTest {
   }
 
   @Test
-  void createForPushMessenger_setsFieldsProperly() {
+  void createForPushMessage_setsFieldsProperly() {
     // given
     String expectedId = "apikey.pushmessage";
     ApiKeyStore expectedApiKeyStore = apiKeyStoreMock;
@@ -145,7 +145,7 @@ class ApiKeyManagerTest {
   }
 
   @Test
-  void read_forPushMessenger_returnsProperApiKey() {
+  void read_forPushMessage_returnsProperApiKey() {
     // given
     apiKeyManager = ApiKeyManager.createForPushMessage(apiKeyStoreMock);
 
@@ -154,7 +154,7 @@ class ApiKeyManagerTest {
     actualApiKey = apiKeyManager.read().get();
 
     // then
-    assertEquals(expectedApiKeyForPushMessenger, actualApiKey);
+    assertEquals(expectedApiKeyForPushMessage, actualApiKey);
   }
 
   @Test
@@ -197,7 +197,7 @@ class ApiKeyManagerTest {
   }
 
   @Test
-  void write_forPushMessenger_properlyPassesArgumentsToApiKeyStore() {
+  void write_forPushMessage_properlyPassesArgumentsToApiKeyStore() {
     // given
     String expectedId = "apikey.pushmessage";
     String expectedApiKey = "my-api-key-8sksnsis-29eell";

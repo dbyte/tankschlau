@@ -151,15 +151,15 @@ class UserPrefsTest {
   }
 
   @Test
-  void writePushMessengerUserId_writesProperly() {
+  void writePushMessageUserId_writesProperly() {
     // given
     String givenUserId = "iahBzWeeC568g-pocEr-kkmM";
 
     // when
-    prefs.writePushMessengerUserId(givenUserId);
+    prefs.writePushMessageUserId(givenUserId);
 
     // then
-    Optional<String> actualUserId = prefs.readPushMessengerUserId();
+    Optional<String> actualUserId = prefs.readPushMessageUserId();
 
     assertTrue(actualUserId.isPresent());
     assertEquals(givenUserId, actualUserId.get());
@@ -167,14 +167,14 @@ class UserPrefsTest {
 
   @ParameterizedTest
   @ValueSource(booleans = {false, true})
-  void readPushMessengerUserId_returnsEmptyOptionalIfPrefDoesNotExist(boolean removeNode)
+  void readPushMessageUserId_returnsEmptyOptionalIfPrefDoesNotExist(boolean removeNode)
   throws BackingStoreException {
     // given
     if (removeNode)
       prefs.getRealPrefs().removeNode();
 
     // when
-    Optional<String> actualUserId = prefs.readPushMessengerUserId();
+    Optional<String> actualUserId = prefs.readPushMessageUserId();
 
     // then
     assertEquals(Optional.empty(), actualUserId);

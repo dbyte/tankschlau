@@ -74,7 +74,7 @@ public class TankSchlau {
             .ifPresent(PUSHMESSAGE_APIKEY_MANAGER::write);
 
     Optional.ofNullable(System.getProperty("pushmessageUserId"))
-            .ifPresent(USER_PREFS::writePushMessengerUserId);
+            .ifPresent(USER_PREFS::writePushMessageUserId);
 
     // Ex: Writing some user geo data to user prefs
     // processTestAddress();

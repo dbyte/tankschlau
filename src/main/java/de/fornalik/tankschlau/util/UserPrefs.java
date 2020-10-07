@@ -116,8 +116,8 @@ public class UserPrefs {
     realPrefs.put("petrol.preferredtype", type.toString());
   }
 
-  public Optional<String> readPushMessengerUserId() {
-    String key = "pushmessenger.userid";
+  public Optional<String> readPushMessageUserId() {
+    String key = "pushmessage.userid";
 
     if (checkPrefsMissing(key))
       return Optional.empty();
@@ -125,8 +125,8 @@ public class UserPrefs {
     return Optional.ofNullable(realPrefs.get(key, null));
   }
 
-  public void writePushMessengerUserId(String userId) {
-    realPrefs.put("pushmessenger.userid", userId);
+  public void writePushMessageUserId(String userId) {
+    realPrefs.put("pushmessage.userid", userId);
   }
 
   public Optional<String> readApiKey(String id) {
