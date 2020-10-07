@@ -51,7 +51,7 @@ public interface Request {
 
   /**
    * Adds a URL parameter if HTTP method is GET.
-   * Results in UTF-8 encoded query string which is then added to the requests existing URL
+   * Should result in UTF-8 encoded query string which is then added to the requests existing URL
    * parameters.
    *
    * @param key   ex. "sort"
@@ -75,6 +75,31 @@ public interface Request {
    * added by {@link #addUrlParameter(String, String)}.
    */
   Map<String, String> getUrlParameters();
+
+  /**
+   * Adds a parameter to the request body, needed if HTTP method is POST.
+   * Values should NOT be encoded at this point, because we should have full control at the
+   * time the parameters are converted to something suitable for the HTTP client impl.
+   *
+   * @param key   ex. "name"
+   * @param value ex. "Joe" - do NOT encode to UTF-8 at this point.
+   */
+  void addBodyParameter(String key, String value);
+
+  /**
+   * Getter for body parameters.
+   *
+   * @return key/value pairs of all body parameters which were previously
+   * added by {@link #addBodyParameter(String, String)}.
+   */
+  Map<String, String> getBodyParameters();
+
+  /**
+   * @param clazz Class (used as a token) to which to convert the body parameters
+   * @param <T>   Some class.
+   * @return Request body which can be used by the HTTP client.
+   */
+  <T> T convertBodyParameters(Class<T> clazz);
 
   /**
    * Adds an entry to the request header.

@@ -87,13 +87,29 @@ public class OkHttpClient implements HttpClient {
     return urlBuilder.build();
   }
 
+  // TODO unit test for use of createJsonRequestBody()
   private okhttp3.Request createRequest(okhttp3.HttpUrl url) {
     okhttp3.Request.Builder okhttpRequestBuilder = new okhttp3.Request.Builder()
         .url(url.toString())
-        .method(request.getHttpMethod().name(), null);
+        .method(request.getHttpMethod().name(), createJsonRequestBody());
 
     request.getHeaders().forEach(okhttpRequestBuilder::addHeader);
+
     return okhttpRequestBuilder.build();
+  }
+
+  // TODO unit test
+  private okhttp3.RequestBody createJsonRequestBody() {
+    if (request.getBodyParameters().isEmpty())
+      // Note: Body is only allowed to be null for HTTP "GET" request type.
+      return null;
+
+    String jsonBody = request.convertBodyParameters(String.class);
+
+    return okhttp3.RequestBody.create(
+        okhttp3.MediaType.parse("application/json; charset=utf-8"),
+        jsonBody
+    );
   }
 
   private okhttp3.Response callServer(okhttp3.Request okhttpRequest) throws IOException {

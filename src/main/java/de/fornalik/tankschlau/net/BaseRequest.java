@@ -16,6 +16,8 @@
 
 package de.fornalik.tankschlau.net;
 
+import com.google.gson.JsonObject;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -29,6 +31,7 @@ import java.util.NoSuchElementException;
 public abstract class BaseRequest implements Request {
 
   private final Map<String, String> urlParameters = new HashMap<>();
+  private final Map<String, String> bodyParameters = new HashMap<>();
   private final Map<String, String> headers = new HashMap<>();
   private URL baseUrl;
   private HttpMethod httpMethod;
@@ -79,6 +82,50 @@ public abstract class BaseRequest implements Request {
     this.urlParameters.put(urlParameter, newValue);
   }
 
+  @Override
+  public Map<String, String> getUrlParameters() {
+    return this.urlParameters;
+  }
+
+  @Override
+  // TODO unit test
+  public void addBodyParameter(String key, String value) {
+    // Do NOT encode at this point.
+    this.bodyParameters.put(key, value);
+  }
+
+  @Override
+  // TODO unit test
+  public Map<String, String> getBodyParameters() {
+    return bodyParameters;
+  }
+
+  @Override
+  // TODO unit test
+  public <T> T convertBodyParameters(Class<T> type) {
+    if (type == String.class) {
+      JsonObject jsonObject = new JsonObject();
+      getBodyParameters().forEach(jsonObject::addProperty);
+
+      //noinspection unchecked
+      return (T) jsonObject.toString();
+
+    } else {
+      throw new IllegalArgumentException(
+          type.getSimpleName() + " not yet implemented for conversion.");
+    }
+  }
+
+  @Override
+  public void addHeader(String key, String value) {
+    this.headers.put(key, value);
+  }
+
+  @Override
+  public Map<String, String> getHeaders() {
+    return this.headers;
+  }
+
   private String encodeString(String s, String enc) {
     String encodedString;
 
@@ -90,20 +137,5 @@ public abstract class BaseRequest implements Request {
     }
 
     return encodedString;
-  }
-
-  @Override
-  public Map<String, String> getUrlParameters() {
-    return this.urlParameters;
-  }
-
-  @Override
-  public void addHeader(String key, String value) {
-    this.headers.put(key, value);
-  }
-
-  @Override
-  public Map<String, String> getHeaders() {
-    return headers;
   }
 }

@@ -27,6 +27,7 @@ import java.util.Objects;
 // TODO unit test, javadoc
 public class PushoverMessageRequest extends PushMessageRequest {
   private static final String BASE_URL = "https://api.pushover.net/1/messages.json";
+
   private final ApiKeyManager apiKeyManager;
   private final UserPrefs userPrefs;
 
@@ -46,7 +47,8 @@ public class PushoverMessageRequest extends PushMessageRequest {
         "userPrefs must not be null.");
 
     setBaseData();
-    setCommonHeaders();
+    setHeaders();
+    setRequestParameters();
   }
 
   private void setBaseData() {
@@ -54,18 +56,22 @@ public class PushoverMessageRequest extends PushMessageRequest {
     setHttpMethod(HttpMethod.POST);
   }
 
-  private void setCommonHeaders() {
+  private void setHeaders() {
+    addHeader("Accept", "application/json; charset=utf-8");
+  }
+
+  private void setRequestParameters() {
     /* Only add user key if we got one. Pushover will inform us about a missing/invalid user key
     in its response, where we handle errors anyway. */
-    userPrefs.readPushMessengerUserId().ifPresent(value -> addHeader("user", value));
+    userPrefs.readPushMessengerUserId().ifPresent(value -> addBodyParameter("user", value));
 
     // Dito for API key.
-    apiKeyManager.read().ifPresent(value -> addHeader("token", value));
+    apiKeyManager.read().ifPresent(value -> addBodyParameter("token", value));
   }
 
   @Override
   public void setMessage(String message) {
     message = StringLegalizer.create(message).safeTrim().nullToEmpty().end();
-    addHeader("message", message);
+    addBodyParameter("message", message);
   }
 }
