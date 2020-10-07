@@ -25,8 +25,6 @@ import com.google.gson.stream.JsonWriter;
 import java.util.HashSet;
 import java.util.Set;
 
-// TODO unit test
-
 /**
  * A {@link Gson} JSON adapter which converts given JSON petrol data to a Set of {@link Petrol}.
  */
@@ -52,9 +50,9 @@ public class PetrolsJsonAdapter extends TypeAdapter<Set<Petrol>> {
    * This is a concrete implementation for a JSON document having the structure (ex.) <br><br>
    * <code> {
    * [...]
-   * diesel: 1.099
-   * e5: 1.585
-   * e10: 1.6
+   * "diesel": 1.099,
+   * "e5": 1.585,
+   * "e10": 1.6,
    * [...]
    * } </code><br><br>
    * As of our business rules, 0 to 3 of these elements may exist.
