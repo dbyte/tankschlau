@@ -74,6 +74,12 @@ public class FixtureFiles {
       TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR +
           "StationsArrayWithJsonStringsInsteadOfJsonObjects.json";
 
+  public static final String TANKERKOENIG_JSON_RESPONSE_MISSING_APIKEY =
+      TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR + "MissingApiKey.json";
+
+  public static final String TANKERKOENIG_JSON_RESPONSE_LONGITUDE_ERROR =
+      TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR + "LongitudeOutOfBoundsError.json";
+
   // endregion
   // region Google Geocoding responses
 
@@ -121,7 +127,8 @@ public class FixtureFiles {
 
     try {
       return new FileReader(fileUrl.getFile());
-    } catch (IOException e) {
+    }
+    catch (IOException e) {
       throw new RuntimeException(e);
     }
   }

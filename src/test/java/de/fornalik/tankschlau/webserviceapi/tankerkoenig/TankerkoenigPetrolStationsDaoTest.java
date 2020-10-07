@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -118,5 +119,94 @@ class TankerkoenigPetrolStationsDaoTest {
 
     // then
     assertEquals(0, actualPetrolStations.size());
+  }
+
+  @Test
+  void getAllInNeighbourhood_setsTransactionInfoProperlyIfResponseIsNull() throws IOException {
+    // given
+    when(httpClientMock.newCall(geoRequestMock)).thenReturn(null);
+
+    // when
+    actualPetrolStations = sut.getAllInNeighbourhood(geoMock);
+
+    // then
+    assertEquals(0, actualPetrolStations.size());
+    assertFalse(sut.getTransactionInfo().isOk());
+    assertEquals(
+        TankerkoenigPetrolStationsDao.class.getSimpleName() + "_RESPONSE_NULL",
+        sut.getTransactionInfo().getStatus());
+    assertEquals("Response is null.", sut.getTransactionInfo().getMessage());
+  }
+
+  @Test
+  void getAllInNeighbourhood_setsTransactionInfoProperlyIfBodyIsEmpty() throws IOException {
+    // given
+    when(stringResponseMock.getBody()).thenReturn(Optional.empty());
+    when(httpClientMock.newCall(geoRequestMock)).thenReturn(stringResponseMock);
+
+    // when
+    actualPetrolStations = sut.getAllInNeighbourhood(geoMock);
+
+    // then
+    assertEquals(0, actualPetrolStations.size());
+
+    assertFalse(sut.getTransactionInfo().isOk());
+
+    assertEquals(
+        TankerkoenigPetrolStationsDao.class.getSimpleName() + "_EMPTY_RESPONSE_BODY",
+        sut.getTransactionInfo().getStatus());
+
+    assertEquals("Response body is empty.", sut.getTransactionInfo().getMessage());
+  }
+
+  @Test
+  void getAllInNeighbourhood_setsTransactionInfoProperlyIfOkIsFalse() throws IOException {
+    // given
+    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_MISSING_APIKEY);
+
+    when(stringResponseMock.getBody()).thenReturn(Optional.of(fixture.jsonFixture));
+    when(httpClientMock.newCall(geoRequestMock)).thenReturn(stringResponseMock);
+
+    // when
+    actualPetrolStations = sut.getAllInNeighbourhood(geoMock);
+
+    // then
+    assertEquals(0, actualPetrolStations.size());
+
+    assertFalse(sut.getTransactionInfo().isOk());
+
+    assertEquals(
+        "error",
+        sut.getTransactionInfo().getStatus());
+
+    assertEquals(
+        "apikey nicht angegeben, falsch, oder im falschen Format",
+        sut.getTransactionInfo().getMessage());
+  }
+
+  @Test
+  void getAllInNeighbourhood_setsTransactionInfoProperlyIfApiRespondsWithError()
+  throws IOException {
+    // given
+    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_LONGITUDE_ERROR);
+
+    when(stringResponseMock.getBody()).thenReturn(Optional.of(fixture.jsonFixture));
+    when(httpClientMock.newCall(geoRequestMock)).thenReturn(stringResponseMock);
+
+    // when
+    actualPetrolStations = sut.getAllInNeighbourhood(geoMock);
+
+    // then
+    assertEquals(0, actualPetrolStations.size());
+
+    assertFalse(sut.getTransactionInfo().isOk());
+
+    assertEquals(
+        "error",
+        sut.getTransactionInfo().getStatus());
+
+    assertEquals(
+        "lng nicht angegeben, oder ausserhalb der gültigen Grenzen",
+        sut.getTransactionInfo().getMessage());
   }
 }
