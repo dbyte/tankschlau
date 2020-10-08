@@ -232,10 +232,10 @@ public class MainWindow extends JFrame {
   }
 
   private String createDistanceString(PetrolStation station) {
-    Optional<Double> distanceKm = station.address.getGeo().flatMap(Geo::getDistance);
+    Optional<Geo> geo = station.address.getGeo();
 
-    String distanceString = distanceKm.isPresent()
-        ? distanceKm.get().toString()
+    String distanceString = geo.isPresent()
+        ? geo.get().getDistanceAwayString(l10n)
         : l10n.get("msg.Unknown");
 
     return l10n.get("msg.KmAway", distanceString);

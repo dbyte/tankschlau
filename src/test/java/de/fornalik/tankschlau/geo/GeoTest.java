@@ -1,10 +1,13 @@
 package de.fornalik.tankschlau.geo;
 
+import de.fornalik.tankschlau.util.Localization;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.Locale;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -98,6 +101,37 @@ class GeoTest {
 
     // when then
     assertDoesNotThrow(() -> geo.setDistance(null));
+  }
+
+  @Test
+  void getDistanceAwayString_returnsExpectedString() {
+    // given
+    String actualString;
+    final String locBaseName = "LocaleTestStrings";
+    Localization locFixture;
+    Geo givenGeo;
+
+    givenGeo = new Geo(54.354532, 23.0, 8.27456);
+    locFixture = new Localization(ResourceBundle.getBundle(locBaseName, Locale.GERMAN));
+    // when
+    actualString = givenGeo.getDistanceAwayString(locFixture);
+    // then
+    assertEquals("8,27 km entfernt", actualString);
+
+    // given
+    givenGeo = new Geo(54.354532, 23.0, 1D);
+    // when
+    actualString = givenGeo.getDistanceAwayString(locFixture);
+    // then
+    assertEquals("1 km entfernt", actualString);
+
+    // given
+    givenGeo = new Geo(54.354532, 23.0, 54.2);
+    locFixture = new Localization(ResourceBundle.getBundle(locBaseName, Locale.UK));
+    // when
+    actualString = givenGeo.getDistanceAwayString(locFixture);
+    // then
+    assertEquals("54,2 km away", actualString);
   }
 
   @ParameterizedTest

@@ -103,7 +103,7 @@ public class TankerkoenigJsonAdapter {
 
   private Address createAddress(String jsonStr) {
     Address rawAddress = jsonProvider.fromJson(jsonStr, Address.class);
-    Geo geo = jsonProvider.fromJson(jsonStr, Geo.class);
+    Geo rawGeo = jsonProvider.fromJson(jsonStr, Geo.class);
 
     // Legalize Address by passing it to its failable constructor.
     Address deserializedAddress = new Address(
@@ -114,9 +114,19 @@ public class TankerkoenigJsonAdapter {
         rawAddress.getPostCode(),
         null);
 
-    // Validate Geo object and add it to address if valid.
-    if (geo.getLatitude() != 0.0 || geo.getLongitude() != 0.0 || geo.getDistance().isPresent())
-      deserializedAddress.setGeo(geo);
+    // Validate Geo object and add a new legalized instance to address if valid.
+    if (rawGeo.getLatitude() != 0.0
+        || rawGeo.getLongitude() != 0.0
+        || rawGeo.getDistance().isPresent()) {
+
+      Geo deserializedGeo = new Geo(
+          rawGeo.getLatitude(),
+          rawGeo.getLongitude(),
+          rawGeo.getDistance().orElse(null));
+
+      deserializedAddress.setGeo(deserializedGeo);
+    }
+
 
     return deserializedAddress;
   }
