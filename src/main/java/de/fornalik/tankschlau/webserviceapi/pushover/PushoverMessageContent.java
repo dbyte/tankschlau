@@ -16,17 +16,23 @@
 
 package de.fornalik.tankschlau.webserviceapi.pushover;
 
+import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.StringLegalizer;
-import de.fornalik.tankschlau.webserviceapi.common.MessageContent;
+import de.fornalik.tankschlau.webserviceapi.common.PetrolStationMessageContent;
 
 // TODO unit tests
 
 /**
- * Implementation for message content with pushover.net push messaging webservice
+ * Concrete implementation of {@link PetrolStationMessageContent} regarding petrol station messages
+ * with webservice pushover.net
  */
-public class PushoverMessageContent implements MessageContent {
+public class PushoverMessageContent extends PetrolStationMessageContent {
   private String title;
   private String message;
+
+  public PushoverMessageContent(Localization l10n) {
+    super(l10n);
+  }
 
   @Override
   public String getTitle() {
@@ -46,5 +52,10 @@ public class PushoverMessageContent implements MessageContent {
   @Override
   public void setMessage(String text) {
     this.message = StringLegalizer.create(text).safeTrim().end();
+  }
+
+  @Override
+  public PetrolStationMessageContent newInstance() {
+    return new PushoverMessageContent(this.getL10n());
   }
 }

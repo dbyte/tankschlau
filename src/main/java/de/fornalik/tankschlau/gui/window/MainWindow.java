@@ -24,13 +24,12 @@ import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.webserviceapi.common.GeocodingClient;
 import de.fornalik.tankschlau.webserviceapi.common.MessageClient;
-import de.fornalik.tankschlau.webserviceapi.common.MessageContent;
+import de.fornalik.tankschlau.webserviceapi.common.PetrolStationMessageContent;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -41,7 +40,7 @@ public class MainWindow extends JFrame {
   private final PetrolStations petrolStationService;
   private final GeocodingClient geoCodingClient;
   private final MessageClient messageClient;
-  private final MessageContent messageContent;
+  private final PetrolStationMessageContent messageContent;
 
   private DefaultListModel<String> model;
 
@@ -51,7 +50,7 @@ public class MainWindow extends JFrame {
       PetrolStations petrolStationService,
       GeocodingClient geoCodingClient,
       MessageClient messageClient,
-      MessageContent messageContent) {
+      PetrolStationMessageContent messageContent) {
 
     super(de.fornalik.tankschlau.TankSchlau.class.getSimpleName());
     this.l10n = l10n;
@@ -210,17 +209,9 @@ public class MainWindow extends JFrame {
   }
 
   private void sendMessage(PetrolStation cheapestStation, PetrolType petrolType)
-  throws NoSuchMethodException, IllegalAccessException, InvocationTargetException,
-      InstantiationException, IOException {
-
-    messageContent.getClass().getConstructor().newInstance();
-    messageContent.setMessage(
-        l10n.get("msg.BestPrice", createPetrolString(cheapestStation, petrolType))
-            + "\n" + createDistanceString(cheapestStation) + "\n\n"
-            + createStationHeader(cheapestStation) + "\n"
-            + (cheapestStation.address.getStreet() + " "
-            + cheapestStation.address.getHouseNumber()).trim());
-
+  throws IOException {
+    messageContent.newInstance();
+    messageContent.setMessage(cheapestStation, petrolType);
     messageClient.sendMessage(messageContent);
   }
 

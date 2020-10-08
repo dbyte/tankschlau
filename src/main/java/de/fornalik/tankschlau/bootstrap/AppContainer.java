@@ -57,7 +57,7 @@ public final class AppContainer {
   public final GeoRequest GEO_REQUEST;
   public final PetrolStationsDao PETROL_STATIONS_DAO;
   public final PetrolStations PETROL_STATIONS_SERVICE;
-  public final MessageContent MESSAGE_CONTENT;
+  public final PetrolStationMessageContent PETROL_STATION_MESSAGE_CONTENT;
   public final MessageRequest MESSAGE_REQUEST;
   public final MessageClient MESSAGE_CLIENT;
 
@@ -92,7 +92,7 @@ public final class AppContainer {
 
     PETROL_STATIONS_SERVICE = new PetrolStations(PETROL_STATIONS_DAO);
 
-    MESSAGE_CONTENT = new PushoverMessageContent();
+    PETROL_STATION_MESSAGE_CONTENT = new PushoverMessageContent(L10N);
     MESSAGE_REQUEST = new PushoverMessageRequest(PUSHMESSAGE_APIKEY_MANAGER, USER_PREFS);
     MESSAGE_CLIENT = new PushoverMessageClient(HTTP_CLIENT, MESSAGE_REQUEST);
   }
