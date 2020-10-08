@@ -16,27 +16,88 @@
 
 package de.fornalik.tankschlau.gui.window;
 
+import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.gui.menu.MainMenuBar;
 import de.fornalik.tankschlau.station.*;
+import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
+import de.fornalik.tankschlau.webserviceapi.common.GeocodingClient;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class MainWindow extends JFrame {
   private final Localization l10n;
+  private final UserPrefs userPrefs;
   private final PetrolStations petrolStationService;
+  private final GeocodingClient geoCodingClient;
+
   private DefaultListModel<String> model;
 
-  public MainWindow(PetrolStations petrolStations, Localization l10n) {
+  public MainWindow(
+      Localization l10n,
+      UserPrefs userPrefs,
+      PetrolStations petrolStationService,
+      GeocodingClient geoCodingClient) {
+
     super(de.fornalik.tankschlau.TankSchlau.class.getSimpleName());
     this.l10n = l10n;
-    this.petrolStationService = petrolStations;
+    this.userPrefs = userPrefs;
+    this.petrolStationService = petrolStationService;
+    this.geoCodingClient = geoCodingClient;
+
+    initGui();
+    updateList(PetrolType.DIESEL);
+  }
+
+  private Address getUserPrefAddress() {
+    Address address = userPrefs
+        .readAddress()
+        .orElseThrow(() -> new IllegalStateException("No preferences found for user address."));
+
+    if (!address.getGeo().isPresent()) {
+      Optional<Geo> geoFromWebservice = getUserGeoFromWebservice(address);
+
+      if (!geoFromWebservice.isPresent()) {
+        // Swap that msg with a Logger.
+        String msg = "Log.Error: Requesting webservice for Geo data based on user's address did "
+            + "not return required lat/lng.";
+        System.out.println(msg);
+
+        return address;
+      }
+
+      address.setGeo(geoFromWebservice.get());
+      userPrefs.writeAddress(address);
+    }
+
+    return address;
+  }
+
+  private Optional<Geo> getUserGeoFromWebservice(Address userAddress) {
+    System.out.println("Log.Info: Requesting geocoding webservice...");
+    Optional<Geo> geo = Optional.empty();
+
+    try {
+      geo = geoCodingClient.getGeo(userAddress);
+      geo.ifPresent(newGeo -> newGeo.setDistance(8.0)); // app default: 8.0 km search radius
+      System.out.println("Log.Info: Success geocoding webservice. New geo data: " + geo);
+    }
+
+    catch (IOException e) {
+      e.printStackTrace();
+      // Swap that msg with a Logger.
+      System.out.println("Log.Error: Requesting webservice for Geo data based on user's "
+                             + "address did not return required lat/lng.");
+    }
+
+    return geo;
   }
 
   public void initGui() {
@@ -68,7 +129,14 @@ public class MainWindow extends JFrame {
     this.setVisible(true);
   }
 
-  public void updateList(Geo userGeo, PetrolType sortedFor) {
+  public void updateList(PetrolType sortedFor) {
+    Geo userGeo = getUserPrefAddress()
+        .getGeo()
+        .orElseThrow(() -> new IllegalStateException(
+            "Can't request petrol station update, because got no lat/lng data for user address"));
+
+    // processTestAddress(); // Ex: Writing some user geo data to user prefs
+
     model.addElement(l10n.get("msg.PriceRequestRunning"));
 
     // Run a new dispatch queue thread for the web service request/response.

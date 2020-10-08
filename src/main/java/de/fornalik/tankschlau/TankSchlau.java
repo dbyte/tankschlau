@@ -18,9 +18,7 @@ package de.fornalik.tankschlau;
 
 import de.fornalik.tankschlau.bootstrap.AppContainer;
 import de.fornalik.tankschlau.geo.Address;
-import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.gui.window.MainWindow;
-import de.fornalik.tankschlau.station.PetrolType;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -38,19 +36,12 @@ public final class TankSchlau {
   private void invokeGui() {
     // processTestAddress(); // Ex: Writing some user geo data to user prefs
 
-    final Geo userGeo = container.USER_PREFS
-        .readGeo()
-        .orElseThrow(() -> new IllegalStateException("No preferences found for user geo data."));
-
-    SwingUtilities.invokeLater(() -> {
-                                 MainWindow mainWindow = new MainWindow(
-                                     container.PETROL_STATIONS_SERVICE,
-                                     container.L10N);
-
-                                 mainWindow.initGui();
-                                 mainWindow.updateList(userGeo, PetrolType.DIESEL);
-                               }
-    );
+    SwingUtilities.invokeLater(
+        () -> new MainWindow(
+            container.L10N,
+            container.USER_PREFS,
+            container.PETROL_STATIONS_SERVICE,
+            container.GEOCODING_CLIENT));
   }
 
   private void processVmOptions() {
