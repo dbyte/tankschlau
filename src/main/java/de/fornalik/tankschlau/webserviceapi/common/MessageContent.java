@@ -40,4 +40,14 @@ public interface MessageContent {
    * @param text Main message text.
    */
   void setMessage(String text);
+
+  /**
+   * Use right before setting up new content from the client. As of IoC, the implementing classes
+   * might cover the app's lifecycle, so here's a way to cleanup without destroying the graph
+   * of the concrete instance.
+   *
+   * @return A new instance of the implementing class or its superclass.
+   */
+  @SuppressWarnings("UnusedReturnValue")
+  MessageContent newInstance();
 }
