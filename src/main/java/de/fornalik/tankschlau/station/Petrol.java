@@ -32,7 +32,7 @@ public class Petrol {
 
   public final PetrolType type;
   public final double price;
-  private final NumberFormat numberFormat;
+  private transient final NumberFormat numberFormat;
 
   /**
    * Constructor
