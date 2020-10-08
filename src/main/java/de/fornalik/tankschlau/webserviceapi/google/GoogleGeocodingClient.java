@@ -42,7 +42,7 @@ public class GoogleGeocodingClient implements GeocodingClient {
 
   /**
    * <span style="color:yellow;">Use this constructor for production</span> as it implicitly
-   * uses predefined singleton dependencies defined at startup.
+   * uses predefined static dependencies defined at startup.
    *
    * @see #GoogleGeocodingClient(HttpClient, AddressRequest)
    */

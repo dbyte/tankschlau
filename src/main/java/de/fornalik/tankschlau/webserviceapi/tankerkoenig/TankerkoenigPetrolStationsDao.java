@@ -42,7 +42,7 @@ public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
   /**
    * Creates a new default {@link TankerkoenigPetrolStationsDao} object for the webservice. <br>
    * <span style="color:yellow;">Use this constructor in production.</span><br><br>
-   * Implicitly uses the app's singletons {@link TankSchlau#HTTP_CLIENT},
+   * Implicitly uses the app's static {@link TankSchlau#HTTP_CLIENT},
    * {@link TankSchlau#PETROL_STATIONS_JSON_ADAPTER} and
    * {@link TankSchlau#TANKERKOENIG_APIKEY_MANAGER}. <br>
    *

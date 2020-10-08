@@ -54,6 +54,7 @@ public class TankSchlau {
       new TankerkoenigJsonAdapter(JSON_PROVIDER);
 
   private static final ApiKeyStore API_KEY_STORE = new UserPrefsApiKeyStore(USER_PREFS);
+
   public static final ApiKeyManager TANKERKOENIG_APIKEY_MANAGER =
       ApiKeyManager.createForPetrolStations(API_KEY_STORE);
   public static final ApiKeyManager GEOCODING_APIKEY_MANAGER =
@@ -62,6 +63,26 @@ public class TankSchlau {
       ApiKeyManager.createForPushMessage(API_KEY_STORE);
 
   public static void main(String[] args) {
+    TankSchlau instance = new TankSchlau();
+    instance.processVmOptions();
+
+    // Ex: Writing some user geo data to user prefs
+    // instance.processTestAddress();
+
+    Geo userGeo = USER_PREFS
+        .readGeo()
+        .orElseThrow(() -> new IllegalStateException("No preferences found for user geo data."));
+
+    SwingUtilities.invokeLater(
+        () -> {
+          MainWindow mainWindow = new MainWindow();
+          mainWindow.initGui();
+          mainWindow.updateList(userGeo, PetrolType.DIESEL);
+        }
+    );
+  }
+
+  private void processVmOptions() {
     // Offer option to pass some data at startup. Ex: -Dmyproperty="My value"
 
     Optional.ofNullable(System.getProperty("petrolStationsApiKey"))
@@ -75,24 +96,10 @@ public class TankSchlau {
 
     Optional.ofNullable(System.getProperty("pushmessageUserId"))
             .ifPresent(USER_PREFS::writePushMessageUserId);
-
-    // Ex: Writing some user geo data to user prefs
-    // processTestAddress();
-
-    Geo userGeo = USER_PREFS.readGeo().orElseThrow(
-        () -> new IllegalStateException("No preferences found for user geo data."));
-
-    SwingUtilities.invokeLater(
-        () -> {
-          MainWindow mainWindow = new MainWindow();
-          mainWindow.initGui();
-          mainWindow.updateList(userGeo, PetrolType.DIESEL);
-        }
-    );
   }
 
   // Example: Writing some user address and geo data to user prefs.
-  private static void processTestAddress() {
+  private void processTestAddress() {
     Address address = new Address("An den Äckern", "Wolfsburg", "38446");
     GeocodingClient geocodingClient = new GoogleGeocodingClient();
 

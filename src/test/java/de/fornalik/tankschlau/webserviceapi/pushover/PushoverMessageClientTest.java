@@ -16,26 +16,49 @@
 
 package de.fornalik.tankschlau.webserviceapi.pushover;
 
+import de.fornalik.tankschlau.net.HttpClient;
+import de.fornalik.tankschlau.net.MessageRequest;
+import de.fornalik.tankschlau.net.OkHttpClient;
+import de.fornalik.tankschlau.net.Response;
 import de.fornalik.tankschlau.util.UserPrefs;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.common.MessageContent;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class PushoverMessageRequestTest {
-  private PushoverMessageRequest actualRequest;
+class PushoverMessageClientTest {
+  private static HttpClient httpClientMock;
+  private static MessageRequest messageRequestMock;
+
+  private PushoverMessageClient messageClient;
   private MessageContent messageContentMock;
   private UserPrefs userPrefsMock;
   private ApiKeyManager apiKeyManagerMock;
 
+  @BeforeAll
+  static void beforeAll() {
+    httpClientMock = mock(HttpClient.class);
+    messageRequestMock = mock(MessageRequest.class);
+  }
+
+  @AfterAll
+  static void afterAll() {
+    httpClientMock = null;
+    messageRequestMock = null;
+  }
 
   @BeforeEach
   void setUp() {
-    this.actualRequest = null;
+    this.messageContentMock = mock(MessageContent.class);
+    this.messageClient = new PushoverMessageClient(httpClientMock, messageRequestMock);
 
     // Inject some API keys via VM Options if needed.
     String pmApiKey = Optional.ofNullable(System.getProperty("pushmessageApiKey"))
@@ -50,10 +73,30 @@ class PushoverMessageRequestTest {
 
     this.userPrefsMock = mock(UserPrefs.class);
     when(userPrefsMock.readPushMessageUserId()).thenReturn(Optional.of(pmUserId));
+  }
 
-    this.messageContentMock = mock(MessageContent.class);
+  @Test
+  void sendMessage_integrationTest_shouldSendRealMessage() throws IOException {
+    // given
+    HttpClient realHttpClient = new OkHttpClient();
+
+    when(messageContentMock.getTitle())
+        .thenReturn("New price for station!");
+
+    when(messageContentMock.getMessage())
+        .thenReturn("UTF-8? Umlauts! ÖÄÜ öäü ß.\nThis should be a new line");
+
+    MessageRequest request = new PushoverMessageRequest(apiKeyManagerMock, userPrefsMock);
+
+    PushoverMessageClient messageClient = new PushoverMessageClient(realHttpClient, request);
+
+    // when
+    Response response = messageClient.sendMessage(messageContentMock);
+
+    // then
+    System.out.println("RESPONSE BODY: " + response.getBody());
+    System.out.println("RESPONSE ERROR MESSAGE: " + response.getErrorMessage());
   }
 
   // TODO unit tests go here
-
 }
