@@ -18,6 +18,7 @@ package de.fornalik.tankschlau.webserviceapi.google;
 
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.net.Request;
+import de.fornalik.tankschlau.webserviceapi.common.AddressRequest;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,7 @@ import static org.mockito.Mockito.when;
  * be directly tested in unit tests for {@link de.fornalik.tankschlau.net.BaseRequest}
  */
 class GoogleGeocodingRequestTest {
-  private GoogleGeocodingRequest actualRequest;
+  private AddressRequest actualRequest;
   private ApiKeyManager apiKeyManagerMock;
   private Address addressMock;
 

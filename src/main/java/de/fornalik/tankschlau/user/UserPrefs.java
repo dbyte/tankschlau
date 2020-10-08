@@ -37,10 +37,6 @@ import java.util.prefs.Preferences;
 public class UserPrefs {
   private final Preferences realPrefs;
 
-  public UserPrefs() {
-    this("/de/fornalik/tankschlau");
-  }
-
   public UserPrefs(String node) {
     this.realPrefs = Preferences.userRoot().node(node);
   }

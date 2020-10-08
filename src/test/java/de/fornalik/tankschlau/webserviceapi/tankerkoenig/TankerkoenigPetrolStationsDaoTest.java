@@ -86,6 +86,7 @@ class TankerkoenigPetrolStationsDaoTest {
     sut = new TankerkoenigPetrolStationsDao(
         httpClientMock,
         petrolStationsJsonAdapter,
+        jsonProvider,
         geoRequestMock);
   }
 

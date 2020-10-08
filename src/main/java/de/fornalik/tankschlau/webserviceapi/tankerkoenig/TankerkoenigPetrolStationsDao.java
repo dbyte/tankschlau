@@ -16,7 +16,7 @@
 
 package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 
-import de.fornalik.tankschlau.TankSchlau;
+import com.google.gson.Gson;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.StringResponse;
@@ -35,44 +35,29 @@ import java.util.List;
  */
 public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
   private final HttpClient httpClient;
-  private final GeoRequest request;
+  private final Gson jsonProvider;
   private final TankerkoenigJsonAdapter jsonAdapter;
+  private final GeoRequest request;
   private TransactionInfo transactionInfo;
 
   /**
    * Creates a new default {@link TankerkoenigPetrolStationsDao} object for the webservice. <br>
-   * <span style="color:yellow;">Use this constructor in production.</span><br><br>
-   * Implicitly uses the app's static {@link TankSchlau#HTTP_CLIENT},
-   * {@link TankSchlau#PETROL_STATIONS_JSON_ADAPTER} and
-   * {@link TankSchlau#TANKERKOENIG_APIKEY_MANAGER}. <br>
    *
-   * @see #TankerkoenigPetrolStationsDao(HttpClient, TankerkoenigJsonAdapter, GeoRequest)
-   */
-  public TankerkoenigPetrolStationsDao() {
-    this(
-        TankSchlau.HTTP_CLIENT,
-        TankSchlau.PETROL_STATIONS_JSON_ADAPTER,
-        TankerkoenigRequest.create(TankSchlau.TANKERKOENIG_APIKEY_MANAGER));
-  }
-
-  /**
-   * Creates a new default {@link TankerkoenigPetrolStationsDao} object for the webservice. <br>
-   * Dependency Injection variant of {@link #TankerkoenigPetrolStationsDao()}. <br>
-   * <span style="color:yellow;">You should use this constructor in tests only.</span><br><br>
-   *
-   * @param httpClient  Some {@link HttpClient} implementation.
-   * @param jsonAdapter Some json adapter implementation for petrol stations.
-   * @param request     Some {@link GeoRequest} implementation.
-   * @see #TankerkoenigPetrolStationsDao()
+   * @param httpClient   Some {@link HttpClient} implementation.
+   * @param jsonAdapter  Some json adapter implementation for petrol stations.
+   * @param jsonProvider Currently fixed {@link Gson} implementation.
+   * @param request      Some {@link GeoRequest} implementation.
    */
   public TankerkoenigPetrolStationsDao(
       HttpClient httpClient,
       TankerkoenigJsonAdapter jsonAdapter,
+      Gson jsonProvider,
       GeoRequest request) {
 
     this.httpClient = httpClient;
-    this.request = request;
     this.jsonAdapter = jsonAdapter;
+    this.jsonProvider = jsonProvider;
+    this.request = request;
     this.transactionInfo = new TransactionInfo();
   }
 
@@ -105,7 +90,7 @@ public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
     by the webservice's API. So all following processing should crash only if _we_
     messed things up. */
 
-    this.transactionInfo = TankSchlau.JSON_PROVIDER.fromJson(body, TransactionInfo.class);
+    this.transactionInfo = jsonProvider.fromJson(body, TransactionInfo.class);
 
     if (!transactionInfo.isOk()) {
       System.err.println("Log.Error: " + transactionInfo.getStatus());

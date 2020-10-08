@@ -16,7 +16,7 @@
 
 package de.fornalik.tankschlau.gui.menu;
 
-import de.fornalik.tankschlau.TankSchlau;
+import de.fornalik.tankschlau.bootstrap.AppContainer;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -30,7 +30,7 @@ import java.util.Optional;
 class CloseWindowMenuItem extends MenuItem {
 
   CloseWindowMenuItem() {
-    super(TankSchlau.L10N.get("menu.CloseWindow"), KeyEvent.VK_W);
+    super(AppContainer.L10N.get("menu.CloseWindow"), KeyEvent.VK_W);
   }
 
   @Override

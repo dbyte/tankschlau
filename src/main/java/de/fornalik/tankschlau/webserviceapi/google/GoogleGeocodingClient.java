@@ -16,8 +16,8 @@
 
 package de.fornalik.tankschlau.webserviceapi.google;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
-import de.fornalik.tankschlau.TankSchlau;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.HttpClient;
@@ -37,31 +37,19 @@ import java.util.Optional;
  */
 public class GoogleGeocodingClient implements GeocodingClient {
   private final HttpClient httpClient;
+  private final Gson jsonProvider;
   private final AddressRequest request;
   private TransactionInfo transactionInfo;
 
   /**
-   * <span style="color:yellow;">Use this constructor for production</span> as it implicitly
-   * uses predefined static dependencies defined at startup.
-   *
-   * @see #GoogleGeocodingClient(HttpClient, AddressRequest)
-   */
-  public GoogleGeocodingClient() {
-    this(
-        TankSchlau.HTTP_CLIENT,
-        GoogleGeocodingRequest.create(TankSchlau.GEOCODING_APIKEY_MANAGER));
-  }
-
-  /**
-   * Dependency injection variant of {@link #GoogleGeocodingClient()},
-   * <span style="color:yellow;">e.g. for testing purposes.</span>
+   * Constructor
    *
    * @param httpClient Some implementation of {@link HttpClient} for interaction with webservice.
    * @param request    Some implementation of {@link AddressRequest}, forming a concrete request.
-   * @see #GoogleGeocodingClient()
    */
-  public GoogleGeocodingClient(HttpClient httpClient, AddressRequest request) {
+  public GoogleGeocodingClient(HttpClient httpClient, Gson jsonProvider, AddressRequest request) {
     this.httpClient = httpClient;
+    this.jsonProvider = jsonProvider;
     this.request = request;
     this.transactionInfo = new TransactionInfo();
   }
@@ -101,7 +89,7 @@ public class GoogleGeocodingClient implements GeocodingClient {
   }
 
   private Optional<Geo> parseJson(String in) {
-    ResponseDTO dto = TankSchlau.JSON_PROVIDER.fromJson(in, ResponseDTO.class);
+    ResponseDTO dto = jsonProvider.fromJson(in, ResponseDTO.class);
 
     if (dto == null) {
       transactionInfo.setStatus(ResponseDTO.class.getSimpleName() + "_NULL");

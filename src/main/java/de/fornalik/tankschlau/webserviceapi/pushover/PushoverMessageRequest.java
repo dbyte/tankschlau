@@ -16,7 +16,6 @@
 
 package de.fornalik.tankschlau.webserviceapi.pushover;
 
-import de.fornalik.tankschlau.TankSchlau;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.StringLegalizer;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
@@ -31,10 +30,6 @@ public class PushoverMessageRequest extends MessageRequest {
 
   private final ApiKeyManager apiKeyManager;
   private final UserPrefs userPrefs;
-
-  public PushoverMessageRequest() {
-    this(TankSchlau.PUSHMESSAGE_APIKEY_MANAGER, TankSchlau.USER_PREFS);
-  }
 
   public PushoverMessageRequest(ApiKeyManager apiKeyManager, UserPrefs userPrefs) {
     super();

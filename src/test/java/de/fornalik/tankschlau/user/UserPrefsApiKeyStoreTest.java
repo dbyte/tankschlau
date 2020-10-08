@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package de.fornalik.tankschlau.webserviceapi.common;
+package de.fornalik.tankschlau.user;
 
-import de.fornalik.tankschlau.user.UserPrefs;
-import de.fornalik.tankschlau.user.UserPrefsApiKeyStore;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

@@ -43,7 +43,7 @@ public class TankerkoenigRequest extends GeoRequest {
    * @return A new {@link TankerkoenigRequest} instance.
    * @throws SearchRadiusException If distance value of {@link Geo} data is missing.
    */
-  public static TankerkoenigRequest create(ApiKeyManager apiKeyManager) {
+  public static GeoRequest create(ApiKeyManager apiKeyManager) {
     TankerkoenigRequest instance = new TankerkoenigRequest();
 
     instance.apiKeyManager = Objects.requireNonNull(

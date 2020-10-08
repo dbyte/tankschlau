@@ -40,7 +40,7 @@ public class GoogleGeocodingRequest extends AddressRequest {
    *
    * @return {@link Address} object as in, ready for use which within a {@link Request}.
    */
-  public static GoogleGeocodingRequest create(ApiKeyManager apiKeyManager) {
+  public static AddressRequest create(ApiKeyManager apiKeyManager) {
     GoogleGeocodingRequest instance = new GoogleGeocodingRequest();
 
     instance.apiKeyManager = Objects.requireNonNull(

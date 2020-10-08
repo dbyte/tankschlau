@@ -16,7 +16,7 @@
 
 package de.fornalik.tankschlau.gui.menu;
 
-import de.fornalik.tankschlau.TankSchlau;
+import de.fornalik.tankschlau.bootstrap.AppContainer;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -31,7 +31,7 @@ public class MainMenuBar extends JMenuBar {
 
   private void init() {
     // "File" menu
-    JMenu fileMenu = new JMenu(TankSchlau.L10N.get("menu.File"));
+    JMenu fileMenu = new JMenu(AppContainer.L10N.get("menu.File"));
     fileMenu.setMnemonic(KeyEvent.VK_F);
 
     fileMenu.add(new CloseWindowMenuItem());

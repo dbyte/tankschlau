@@ -19,6 +19,7 @@ package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.Request;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
+import de.fornalik.tankschlau.webserviceapi.common.GeoRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +34,7 @@ import static org.mockito.Mockito.when;
  * be directly tested in unit tests for {@link de.fornalik.tankschlau.net.BaseRequest}
  */
 class TankerkoenigRequestTest {
-  private TankerkoenigRequest actualRequest;
+  private GeoRequest actualRequest;
   private ApiKeyManager apiKeyManagerMock;
   private Geo geoMock;
 

@@ -16,11 +16,10 @@
 
 package de.fornalik.tankschlau.gui.window;
 
-import de.fornalik.tankschlau.TankSchlau;
+import de.fornalik.tankschlau.bootstrap.AppContainer;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.gui.menu.MainMenuBar;
 import de.fornalik.tankschlau.station.*;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigPetrolStationsDao;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
@@ -30,11 +29,12 @@ import java.util.List;
 import java.util.Set;
 
 public class MainWindow extends JFrame {
-  private final PetrolStationsDao petrolStationsDao = new TankerkoenigPetrolStationsDao();
+  private final PetrolStationsDao petrolStationsDao;
   private DefaultListModel<String> model;
 
-  public MainWindow() {
+  public MainWindow(PetrolStationsDao petrolStationsDao) {
     super(de.fornalik.tankschlau.TankSchlau.class.getSimpleName());
+    this.petrolStationsDao = petrolStationsDao;
   }
 
   public void initGui() {
@@ -66,8 +66,8 @@ public class MainWindow extends JFrame {
     this.setVisible(true);
   }
 
-  public void updateList(Geo geo, PetrolType sortedFor) {
-    model.addElement(TankSchlau.L10N.get("msg.PriceRequestRunning"));
+  public void updateList(Geo userGeo, PetrolType sortedFor) {
+    model.addElement(AppContainer.L10N.get("msg.PriceRequestRunning"));
 
     // Run a new dispatch queue thread for the web service request/response.
     EventQueue.invokeLater(() -> {
@@ -75,7 +75,7 @@ public class MainWindow extends JFrame {
       try {
         List<PetrolStation> petrolStations = PetrolStations.getAllInNeighbourhood(
             petrolStationsDao,
-            geo);
+            userGeo);
 
         model.remove(0);
         System.out.println("Response ready, status: " + petrolStationsDao.getTransactionInfo()
@@ -87,7 +87,7 @@ public class MainWindow extends JFrame {
 
         model.addElement(
             "********** "
-                + TankSchlau.L10N.get("msg.CurrentPricesSortedBy", sortedFor.name())
+                + AppContainer.L10N.get("msg.CurrentPricesSortedBy", sortedFor.name())
                 + " **********");
 
         model.addElement(" ");
@@ -98,7 +98,7 @@ public class MainWindow extends JFrame {
       catch (IOException e) {
         model.add(
             1,
-            TankSchlau.L10N.get("msg.ErrorServerConnection", e.getClass().getTypeName()));
+            AppContainer.L10N.get("msg.ErrorServerConnection", e.getClass().getTypeName()));
 
         model.add(2, e.getMessage());
         e.printStackTrace();
@@ -107,7 +107,7 @@ public class MainWindow extends JFrame {
       catch (Exception e) {
         model.add(
             1,
-            TankSchlau.L10N.get("msg.ErrorWhileRequestingPrices", e.getClass().getTypeName()));
+            AppContainer.L10N.get("msg.ErrorWhileRequestingPrices", e.getClass().getTypeName()));
 
         model.add(2, e.getMessage());
         e.printStackTrace();
@@ -117,7 +117,7 @@ public class MainWindow extends JFrame {
 
   private void populateListModel(PetrolStation station) {
     String stationName = station.address.getName();
-    String open = station.isOpen ? TankSchlau.L10N.get("msg.NowOpen") : TankSchlau.L10N.get(
+    String open = station.isOpen ? AppContainer.L10N.get("msg.NowOpen") : AppContainer.L10N.get(
         "msg.NowClosed");
     double distanceKm = station.address.getGeo().flatMap(Geo::getDistance).orElse(0.0);
 
@@ -126,7 +126,7 @@ public class MainWindow extends JFrame {
 
     model.addElement(stationName + " - " + open);
     petrols.forEach((petrol) -> model.addElement(petrol.type.name() + "\t\t" + petrol.price));
-    model.addElement(TankSchlau.L10N.get("msg.KmAway", distanceKm));
+    model.addElement(AppContainer.L10N.get("msg.KmAway", distanceKm));
     model.addElement("\t");
   }
 }

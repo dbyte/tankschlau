@@ -16,6 +16,7 @@
 
 package de.fornalik.tankschlau.webserviceapi.google;
 
+import com.google.gson.Gson;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.HttpClient;
@@ -41,6 +42,7 @@ class GoogleGeocodingClientTest {
   private static HttpClient httpClientMock;
   private static StringResponse stringResponseMock;
   private static AddressRequest addressRequestMock;
+  private static Gson jsonProvider;
 
   private GoogleGeocodingClient geocodingClient;
   private Geo actualGeo;
@@ -54,6 +56,7 @@ class GoogleGeocodingClientTest {
     httpClientMock = mock(HttpClient.class);
     stringResponseMock = mock(StringResponse.class);
     addressRequestMock = mock(AddressRequest.class);
+    jsonProvider = new Gson();
   }
 
   @AfterAll
@@ -66,7 +69,11 @@ class GoogleGeocodingClientTest {
   @BeforeEach
   void setUp() {
     this.addressMock = mock(Address.class);
-    this.geocodingClient = new GoogleGeocodingClient(httpClientMock, addressRequestMock);
+    this.geocodingClient = new GoogleGeocodingClient(
+        httpClientMock,
+        jsonProvider,
+        addressRequestMock);
+
     this.actualGeo = null;
     this.fixture = new GeocodingFixtureHelp();
   }
