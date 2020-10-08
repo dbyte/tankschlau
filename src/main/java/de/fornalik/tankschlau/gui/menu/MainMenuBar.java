@@ -16,26 +16,29 @@
 
 package de.fornalik.tankschlau.gui.menu;
 
-import de.fornalik.tankschlau.bootstrap.AppContainer;
+import de.fornalik.tankschlau.util.Localization;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 
 public class MainMenuBar extends JMenuBar {
+  private final Localization l10n;
   JFrame mainFrame;
 
-  public MainMenuBar(JFrame mainFrame) {
+  public MainMenuBar(JFrame mainFrame, Localization l10n) {
     this.mainFrame = mainFrame;
+    this.l10n = l10n;
+
     this.init();
   }
 
   private void init() {
     // "File" menu
-    JMenu fileMenu = new JMenu(AppContainer.L10N.get("menu.File"));
+    JMenu fileMenu = new JMenu(l10n.get("menu.File"));
     fileMenu.setMnemonic(KeyEvent.VK_F);
 
-    fileMenu.add(new CloseWindowMenuItem());
-    fileMenu.add(new ShowMainWindowMenuItem(mainFrame));
+    fileMenu.add(new CloseWindowMenuItem(l10n));
+    fileMenu.add(new ShowMainWindowMenuItem(mainFrame, l10n));
 
     this.add(fileMenu);
   }

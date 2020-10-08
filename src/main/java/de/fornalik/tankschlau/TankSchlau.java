@@ -42,12 +42,14 @@ public final class TankSchlau {
         .readGeo()
         .orElseThrow(() -> new IllegalStateException("No preferences found for user geo data."));
 
-    SwingUtilities.invokeLater(
-        () -> {
-          MainWindow mainWindow = new MainWindow(container.PETROL_STATIONS_SERVICE);
-          mainWindow.initGui();
-          mainWindow.updateList(userGeo, PetrolType.DIESEL);
-        }
+    SwingUtilities.invokeLater(() -> {
+                                 MainWindow mainWindow = new MainWindow(
+                                     container.PETROL_STATIONS_SERVICE,
+                                     container.L10N);
+
+                                 mainWindow.initGui();
+                                 mainWindow.updateList(userGeo, PetrolType.DIESEL);
+                               }
     );
   }
 

@@ -16,7 +16,7 @@
 
 package de.fornalik.tankschlau.gui.menu;
 
-import de.fornalik.tankschlau.bootstrap.AppContainer;
+import de.fornalik.tankschlau.util.Localization;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -29,8 +29,8 @@ import java.util.Optional;
  */
 class CloseWindowMenuItem extends MenuItem {
 
-  CloseWindowMenuItem() {
-    super(AppContainer.L10N.get("menu.CloseWindow"), KeyEvent.VK_W);
+  CloseWindowMenuItem(Localization l10n) {
+    super(l10n.get("menu.CloseWindow"), KeyEvent.VK_W);
   }
 
   @Override

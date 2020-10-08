@@ -44,8 +44,7 @@ import java.util.Locale;
  * Avoid tight coupling to any classes by ONLY calling it's members from the root of the app.
  */
 public final class AppContainer {
-  public static final Localization L10N = new Localization(Locale.GERMAN);
-
+  public final Localization L10N;
   public final UserPrefs USER_PREFS;
   public final HttpClient HTTP_CLIENT;
   public final Gson JSON_PROVIDER;
@@ -61,7 +60,7 @@ public final class AppContainer {
 
   public AppContainer() {
     // Setup dependency graph
-
+    L10N = new Localization(Locale.GERMAN);
     USER_PREFS = new UserPrefs("/de/fornalik/tankschlau");
     HTTP_CLIENT = new OkHttpClient();
 
@@ -69,10 +68,7 @@ public final class AppContainer {
         .registerTypeAdapter(Petrols.class, new PetrolsJsonAdapter())
         .create();
 
-    PETROL_STATIONS_JSON_ADAPTER = new TankerkoenigJsonAdapter(JSON_PROVIDER);
-
     API_KEY_STORE = new UserPrefsApiKeyStore(USER_PREFS);
-
     PUSHMESSAGE_APIKEY_MANAGER = ApiKeyManager.createForPushMessage(API_KEY_STORE);
     GEOCODING_APIKEY_MANAGER = ApiKeyManager.createForGeocoding(API_KEY_STORE);
     TANKERKOENIG_APIKEY_MANAGER = ApiKeyManager.createForPetrolStations(API_KEY_STORE);
@@ -83,6 +79,7 @@ public final class AppContainer {
         GoogleGeocodingRequest.create(GEOCODING_APIKEY_MANAGER));
 
     GEO_REQUEST = TankerkoenigRequest.create(TANKERKOENIG_APIKEY_MANAGER);
+    PETROL_STATIONS_JSON_ADAPTER = new TankerkoenigJsonAdapter(JSON_PROVIDER);
 
     PETROL_STATIONS_DAO = new TankerkoenigPetrolStationsDao(
         HTTP_CLIENT,

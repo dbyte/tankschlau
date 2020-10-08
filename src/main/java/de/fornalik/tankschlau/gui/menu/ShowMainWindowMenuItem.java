@@ -16,7 +16,7 @@
 
 package de.fornalik.tankschlau.gui.menu;
 
-import de.fornalik.tankschlau.bootstrap.AppContainer;
+import de.fornalik.tankschlau.util.Localization;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -28,8 +28,8 @@ import java.awt.event.KeyEvent;
 class ShowMainWindowMenuItem extends MenuItem {
   private final JFrame mainFrame;
 
-  ShowMainWindowMenuItem(JFrame mainFrame) {
-    super(AppContainer.L10N.get("menu.ShowMainWindow"), KeyEvent.VK_N);
+  ShowMainWindowMenuItem(JFrame mainFrame, Localization l10n) {
+    super(l10n.get("menu.ShowMainWindow"), KeyEvent.VK_N);
     this.mainFrame = mainFrame;
   }
 

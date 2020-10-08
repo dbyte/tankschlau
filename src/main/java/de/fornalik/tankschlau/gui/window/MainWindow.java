@@ -16,10 +16,10 @@
 
 package de.fornalik.tankschlau.gui.window;
 
-import de.fornalik.tankschlau.bootstrap.AppContainer;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.gui.menu.MainMenuBar;
 import de.fornalik.tankschlau.station.*;
+import de.fornalik.tankschlau.util.Localization;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
@@ -29,11 +29,13 @@ import java.util.List;
 import java.util.Set;
 
 public class MainWindow extends JFrame {
+  private final Localization l10n;
   private final PetrolStations petrolStationService;
   private DefaultListModel<String> model;
 
-  public MainWindow(PetrolStations petrolStations) {
+  public MainWindow(PetrolStations petrolStations, Localization l10n) {
     super(de.fornalik.tankschlau.TankSchlau.class.getSimpleName());
+    this.l10n = l10n;
     this.petrolStationService = petrolStations;
   }
 
@@ -61,13 +63,13 @@ public class MainWindow extends JFrame {
     this.setLocationRelativeTo(null);  // will center the window
     this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 
-    this.setJMenuBar(new MainMenuBar(this));
+    this.setJMenuBar(new MainMenuBar(this, l10n));
 
     this.setVisible(true);
   }
 
   public void updateList(Geo userGeo, PetrolType sortedFor) {
-    model.addElement(AppContainer.L10N.get("msg.PriceRequestRunning"));
+    model.addElement(l10n.get("msg.PriceRequestRunning"));
 
     // Run a new dispatch queue thread for the web service request/response.
     EventQueue.invokeLater(() -> {
@@ -86,7 +88,7 @@ public class MainWindow extends JFrame {
 
         model.addElement(
             "********** "
-                + AppContainer.L10N.get("msg.CurrentPricesSortedBy", sortedFor.name())
+                + l10n.get("msg.CurrentPricesSortedBy", sortedFor.name())
                 + " **********");
 
         model.addElement(" ");
@@ -97,7 +99,7 @@ public class MainWindow extends JFrame {
       catch (IOException e) {
         model.add(
             1,
-            AppContainer.L10N.get("msg.ErrorServerConnection", e.getClass().getTypeName()));
+            l10n.get("msg.ErrorServerConnection", e.getClass().getTypeName()));
 
         model.add(2, e.getMessage());
         e.printStackTrace();
@@ -106,7 +108,7 @@ public class MainWindow extends JFrame {
       catch (Exception e) {
         model.add(
             1,
-            AppContainer.L10N.get("msg.ErrorWhileRequestingPrices", e.getClass().getTypeName()));
+            l10n.get("msg.ErrorWhileRequestingPrices", e.getClass().getTypeName()));
 
         model.add(2, e.getMessage());
         e.printStackTrace();
@@ -116,7 +118,7 @@ public class MainWindow extends JFrame {
 
   private void populateListModel(PetrolStation station) {
     String stationName = station.address.getName();
-    String open = station.isOpen ? AppContainer.L10N.get("msg.NowOpen") : AppContainer.L10N.get(
+    String open = station.isOpen ? l10n.get("msg.NowOpen") : l10n.get(
         "msg.NowClosed");
     double distanceKm = station.address.getGeo().flatMap(Geo::getDistance).orElse(0.0);
 
@@ -125,7 +127,7 @@ public class MainWindow extends JFrame {
 
     model.addElement(stationName + " - " + open);
     petrols.forEach((petrol) -> model.addElement(petrol.type.name() + "\t\t" + petrol.price));
-    model.addElement(AppContainer.L10N.get("msg.KmAway", distanceKm));
+    model.addElement(l10n.get("msg.KmAway", distanceKm));
     model.addElement("\t");
   }
 }
