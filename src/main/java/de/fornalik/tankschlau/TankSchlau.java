@@ -26,22 +26,25 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.Optional;
 
-public class TankSchlau {
+public final class TankSchlau {
+  final AppContainer container = new AppContainer();
 
   public static void main(String[] args) {
-    TankSchlau instance = new TankSchlau();
+    final TankSchlau instance = new TankSchlau();
     instance.processVmOptions();
+    instance.invokeGui();
+  }
 
-    // Ex: Writing some user geo data to user prefs
-    // instance.processTestAddress();
+  private void invokeGui() {
+    // processTestAddress(); // Ex: Writing some user geo data to user prefs
 
-    final Geo userGeo = AppContainer.USER_PREFS
+    final Geo userGeo = container.USER_PREFS
         .readGeo()
         .orElseThrow(() -> new IllegalStateException("No preferences found for user geo data."));
 
     SwingUtilities.invokeLater(
         () -> {
-          MainWindow mainWindow = new MainWindow(AppContainer.PETROL_STATIONS_DAO);
+          MainWindow mainWindow = new MainWindow(container.PETROL_STATIONS_DAO);
           mainWindow.initGui();
           mainWindow.updateList(userGeo, PetrolType.DIESEL);
         }
@@ -52,16 +55,16 @@ public class TankSchlau {
     // Offer option to pass some data at startup. Ex: -Dmyproperty="My value"
 
     Optional.ofNullable(System.getProperty("petrolStationsApiKey"))
-            .ifPresent(AppContainer.TANKERKOENIG_APIKEY_MANAGER::write);
+            .ifPresent(container.TANKERKOENIG_APIKEY_MANAGER::write);
 
     Optional.ofNullable(System.getProperty("geocodingApiKey"))
-            .ifPresent(AppContainer.GEOCODING_APIKEY_MANAGER::write);
+            .ifPresent(container.GEOCODING_APIKEY_MANAGER::write);
 
     Optional.ofNullable(System.getProperty("pushmessageApiKey"))
-            .ifPresent(AppContainer.PUSHMESSAGE_APIKEY_MANAGER::write);
+            .ifPresent(container.PUSHMESSAGE_APIKEY_MANAGER::write);
 
     Optional.ofNullable(System.getProperty("pushmessageUserId"))
-            .ifPresent(AppContainer.USER_PREFS::writePushMessageUserId);
+            .ifPresent(container.USER_PREFS::writePushMessageUserId);
   }
 
   // Example: Writing some user address and geo data to user prefs.
@@ -69,13 +72,13 @@ public class TankSchlau {
     Address address = new Address("An den Äckern", "Wolfsburg", "38446");
 
     try {
-      AppContainer.GEOCODING_CLIENT.getGeo(address).ifPresent(address::setGeo);
+      container.GEOCODING_CLIENT.getGeo(address).ifPresent(address::setGeo);
       address.getGeo().ifPresent(g -> g.setDistance(10.0));
     }
     catch (IOException e) {
       e.printStackTrace();
     }
 
-    AppContainer.USER_PREFS.writeAddress(address);
+    container.USER_PREFS.writeAddress(address);
   }
 }

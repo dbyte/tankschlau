@@ -42,39 +42,50 @@ import java.util.Locale;
  * Describes a the dependency graph throughout the application.
  * Avoid tight coupling to any classes by ONLY calling it's static members from the root of the app.
  */
-public class AppContainer {
-  // Configuration
+public final class AppContainer {
   public static final Localization L10N = new Localization(Locale.GERMAN);
-  public static final UserPrefs USER_PREFS = new UserPrefs("/de/fornalik/tankschlau");
-  public static final HttpClient HTTP_CLIENT = new OkHttpClient();
 
-  public static final Gson JSON_PROVIDER = new GsonBuilder()
-      .registerTypeAdapter(Petrols.class, new PetrolsJsonAdapter())
-      .create();
+  public final UserPrefs USER_PREFS;
+  public final HttpClient HTTP_CLIENT;
+  public final Gson JSON_PROVIDER;
+  public final TankerkoenigJsonAdapter PETROL_STATIONS_JSON_ADAPTER;
+  public final ApiKeyStore API_KEY_STORE;
+  public final ApiKeyManager PUSHMESSAGE_APIKEY_MANAGER;
+  public final ApiKeyManager GEOCODING_APIKEY_MANAGER;
+  public final ApiKeyManager TANKERKOENIG_APIKEY_MANAGER;
+  public final GeocodingClient GEOCODING_CLIENT;
+  public final GeoRequest GEO_REQUEST;
+  public final PetrolStationsDao PETROL_STATIONS_DAO;
 
-  public static final TankerkoenigJsonAdapter PETROL_STATIONS_JSON_ADAPTER =
-      new TankerkoenigJsonAdapter(JSON_PROVIDER);
+  public AppContainer() {
+    // Setup dependency graph
 
-  public static final ApiKeyStore API_KEY_STORE = new UserPrefsApiKeyStore(USER_PREFS);
+    USER_PREFS = new UserPrefs("/de/fornalik/tankschlau");
+    HTTP_CLIENT = new OkHttpClient();
 
-  public static final ApiKeyManager PUSHMESSAGE_APIKEY_MANAGER =
-      ApiKeyManager.createForPushMessage(API_KEY_STORE);
-  public static final ApiKeyManager GEOCODING_APIKEY_MANAGER =
-      ApiKeyManager.createForGeocoding(API_KEY_STORE);
-  public static final ApiKeyManager TANKERKOENIG_APIKEY_MANAGER =
-      ApiKeyManager.createForPetrolStations(API_KEY_STORE);
+    JSON_PROVIDER = new GsonBuilder()
+        .registerTypeAdapter(Petrols.class, new PetrolsJsonAdapter())
+        .create();
 
-  public static final GeocodingClient GEOCODING_CLIENT = new GoogleGeocodingClient(
-      HTTP_CLIENT,
-      JSON_PROVIDER,
-      GoogleGeocodingRequest.create(GEOCODING_APIKEY_MANAGER));
+    PETROL_STATIONS_JSON_ADAPTER = new TankerkoenigJsonAdapter(JSON_PROVIDER);
 
-  public static final GeoRequest GEO_REQUEST = TankerkoenigRequest.create(
-      TANKERKOENIG_APIKEY_MANAGER);
+    API_KEY_STORE = new UserPrefsApiKeyStore(USER_PREFS);
 
-  public static final PetrolStationsDao PETROL_STATIONS_DAO = new TankerkoenigPetrolStationsDao(
-      HTTP_CLIENT,
-      PETROL_STATIONS_JSON_ADAPTER,
-      JSON_PROVIDER,
-      GEO_REQUEST);
+    PUSHMESSAGE_APIKEY_MANAGER = ApiKeyManager.createForPushMessage(API_KEY_STORE);
+    GEOCODING_APIKEY_MANAGER = ApiKeyManager.createForGeocoding(API_KEY_STORE);
+    TANKERKOENIG_APIKEY_MANAGER = ApiKeyManager.createForPetrolStations(API_KEY_STORE);
+
+    GEOCODING_CLIENT = new GoogleGeocodingClient(
+        HTTP_CLIENT,
+        JSON_PROVIDER,
+        GoogleGeocodingRequest.create(GEOCODING_APIKEY_MANAGER));
+
+    GEO_REQUEST = TankerkoenigRequest.create(TANKERKOENIG_APIKEY_MANAGER);
+
+    PETROL_STATIONS_DAO = new TankerkoenigPetrolStationsDao(
+        HTTP_CLIENT,
+        PETROL_STATIONS_JSON_ADAPTER,
+        JSON_PROVIDER,
+        GEO_REQUEST);
+  }
 }
