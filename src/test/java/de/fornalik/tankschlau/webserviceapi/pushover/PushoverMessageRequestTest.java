@@ -16,7 +16,7 @@
 
 package de.fornalik.tankschlau.webserviceapi.pushover;
 
-import de.fornalik.tankschlau.util.UserPrefs;
+import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.common.MessageContent;
 import org.junit.jupiter.api.BeforeEach;

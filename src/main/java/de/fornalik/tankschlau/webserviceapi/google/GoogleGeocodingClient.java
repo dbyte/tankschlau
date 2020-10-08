@@ -20,9 +20,9 @@ import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.TankSchlau;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.net.AddressRequest;
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.StringResponse;
+import de.fornalik.tankschlau.webserviceapi.common.AddressRequest;
 import de.fornalik.tankschlau.webserviceapi.common.GeocodingClient;
 
 import java.io.IOException;

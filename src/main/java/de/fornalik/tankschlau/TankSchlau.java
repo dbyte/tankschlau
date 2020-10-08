@@ -26,12 +26,12 @@ import de.fornalik.tankschlau.net.OkHttpClient;
 import de.fornalik.tankschlau.station.PetrolType;
 import de.fornalik.tankschlau.station.Petrols;
 import de.fornalik.tankschlau.station.PetrolsJsonAdapter;
+import de.fornalik.tankschlau.user.UserPrefs;
+import de.fornalik.tankschlau.user.UserPrefsApiKeyStore;
 import de.fornalik.tankschlau.util.Localization;
-import de.fornalik.tankschlau.util.UserPrefs;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyStore;
 import de.fornalik.tankschlau.webserviceapi.common.GeocodingClient;
-import de.fornalik.tankschlau.webserviceapi.common.UserPrefsApiKeyStore;
 import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingClient;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigJsonAdapter;
 
@@ -104,7 +104,7 @@ public class TankSchlau {
     GeocodingClient geocodingClient = new GoogleGeocodingClient();
 
     try {
-      address.setGeo(geocodingClient);
+      geocodingClient.getGeo(address).ifPresent(address::setGeo);
       address.getGeo().ifPresent(g -> g.setDistance(10.0));
     }
     catch (IOException e) {

@@ -1,19 +1,15 @@
 package de.fornalik.tankschlau.geo;
 
 import de.fornalik.tankschlau.util.StringLegalizer;
-import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingClient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class AddressTest {
 
@@ -167,13 +163,13 @@ class AddressTest {
     final Address address = new Address("x", "y", "z");
 
     // when
-    address.setGeo((Geo) null);
+    address.setGeo(null);
 
     // then
     assertEquals(Optional.empty(), address.getGeo());
   }
 
-  @Test
+  /*@Test
   void setGeo_withWebService_doesProperlySetGeoOwnedByAddress() throws IOException {
     // given
     Address address = new Address("don't care", "don't care", "don't care", "don't care");
@@ -193,13 +189,13 @@ class AddressTest {
     // then
     assertEquals(geoMock.getLatitude(), address.getGeo().get().getLatitude());
     assertEquals(geoMock.getLongitude(), address.getGeo().get().getLongitude());
-  }
+  }*/
 
   @Test
   void toString_doesNotThrowOnMinimumInitialization() {
     // given
     final Address addressWithNullGeo = new Address("x", "y", "z");
-    addressWithNullGeo.setGeo((Geo) null);
+    addressWithNullGeo.setGeo(null);
 
     // when then
     assertDoesNotThrow(addressWithNullGeo::toString);

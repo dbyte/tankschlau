@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package de.fornalik.tankschlau.webserviceapi.common;
+package de.fornalik.tankschlau.user;
 
-import de.fornalik.tankschlau.util.UserPrefs;
+import de.fornalik.tankschlau.webserviceapi.common.ApiKeyStore;
 
 import java.util.Optional;
 

@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package de.fornalik.tankschlau.net;
+package de.fornalik.tankschlau.webserviceapi.common;
 
-import de.fornalik.tankschlau.webserviceapi.common.MessageContent;
+import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.net.BaseRequest;
 
 /**
  * Abstract HTTP request class with base functionalities and <b>additional hook</b> for generating
- * proper request parameters for a push message.
+ * proper URL request parameters for {@link Geo} data.
  */
-// TODO unit tests
-public abstract class MessageRequest extends BaseRequest {
+public abstract class GeoRequest extends BaseRequest {
 
   /**
-   * Implementation should set or overwrite the "message" parameter with the new value for this
-   * request.
+   * Implementation should set or overwrite the latitude/longitude/distance URL parameters
+   * for this request.
    *
-   * @param content Content of the message (title, text etc.).
+   * @param geo The {@link Geo} data.
+   * @throws NullPointerException If given Geo instance is null.
    */
-  public abstract void setMessage(MessageContent content);
+  public abstract void setGeoUrlParameters(Geo geo);
 }

@@ -17,11 +17,11 @@
 package de.fornalik.tankschlau.webserviceapi.pushover;
 
 import de.fornalik.tankschlau.TankSchlau;
-import de.fornalik.tankschlau.net.MessageRequest;
+import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.StringLegalizer;
-import de.fornalik.tankschlau.util.UserPrefs;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.common.MessageContent;
+import de.fornalik.tankschlau.webserviceapi.common.MessageRequest;
 
 import java.util.Objects;
 
@@ -33,7 +33,7 @@ public class PushoverMessageRequest extends MessageRequest {
   private final UserPrefs userPrefs;
 
   public PushoverMessageRequest() {
-    this(TankSchlau.GEOCODING_APIKEY_MANAGER, TankSchlau.USER_PREFS);
+    this(TankSchlau.PUSHMESSAGE_APIKEY_MANAGER, TankSchlau.USER_PREFS);
   }
 
   public PushoverMessageRequest(ApiKeyManager apiKeyManager, UserPrefs userPrefs) {

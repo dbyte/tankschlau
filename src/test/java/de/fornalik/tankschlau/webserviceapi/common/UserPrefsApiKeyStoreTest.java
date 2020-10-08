@@ -16,7 +16,8 @@
 
 package de.fornalik.tankschlau.webserviceapi.common;
 
-import de.fornalik.tankschlau.util.UserPrefs;
+import de.fornalik.tankschlau.user.UserPrefs;
+import de.fornalik.tankschlau.user.UserPrefsApiKeyStore;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

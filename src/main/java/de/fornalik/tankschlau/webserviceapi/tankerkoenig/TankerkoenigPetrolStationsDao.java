@@ -18,11 +18,11 @@ package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 
 import de.fornalik.tankschlau.TankSchlau;
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.net.GeoRequest;
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.StringResponse;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolStationsDao;
+import de.fornalik.tankschlau.webserviceapi.common.GeoRequest;
 
 import java.io.IOException;
 import java.util.ArrayList;

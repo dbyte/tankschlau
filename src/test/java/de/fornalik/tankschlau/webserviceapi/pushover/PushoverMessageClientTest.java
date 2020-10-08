@@ -17,12 +17,12 @@
 package de.fornalik.tankschlau.webserviceapi.pushover;
 
 import de.fornalik.tankschlau.net.HttpClient;
-import de.fornalik.tankschlau.net.MessageRequest;
 import de.fornalik.tankschlau.net.OkHttpClient;
 import de.fornalik.tankschlau.net.Response;
-import de.fornalik.tankschlau.util.UserPrefs;
+import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.common.MessageContent;
+import de.fornalik.tankschlau.webserviceapi.common.MessageRequest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

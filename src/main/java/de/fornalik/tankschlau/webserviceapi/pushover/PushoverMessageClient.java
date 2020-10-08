@@ -18,11 +18,11 @@ package de.fornalik.tankschlau.webserviceapi.pushover;
 
 import de.fornalik.tankschlau.TankSchlau;
 import de.fornalik.tankschlau.net.HttpClient;
-import de.fornalik.tankschlau.net.MessageRequest;
 import de.fornalik.tankschlau.net.Response;
 import de.fornalik.tankschlau.net.StringResponse;
 import de.fornalik.tankschlau.webserviceapi.common.MessageClient;
 import de.fornalik.tankschlau.webserviceapi.common.MessageContent;
+import de.fornalik.tankschlau.webserviceapi.common.MessageRequest;
 
 import java.io.IOException;
 

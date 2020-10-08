@@ -19,9 +19,7 @@ package de.fornalik.tankschlau.geo;
 import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.util.MyToStringBuilder;
 import de.fornalik.tankschlau.util.StringLegalizer;
-import de.fornalik.tankschlau.webserviceapi.common.GeocodingClient;
 
-import java.io.IOException;
 import java.util.Optional;
 
 public class Address {
@@ -155,19 +153,6 @@ public class Address {
    */
   public void setGeo(Geo geo) {
     this.geo = geo;
-  }
-
-  /**
-   * Tries to determine and set latitude & longitude of this address by calling a geocoding
-   * webservice with address data.
-   * Basically, it's a wrapper for {@link GeocodingClient#getGeo(Address)}.
-   *
-   * @param geocodingClient Some implementation of a geocoding webservice.
-   * @throws IOException If something went wrong while reading the response of the webservice or
-   *                     while requesting the server.
-   */
-  public void setGeo(GeocodingClient geocodingClient) throws IOException {
-    geocodingClient.getGeo(this).ifPresent(this::setGeo);
   }
 
   /**

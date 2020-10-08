@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package de.fornalik.tankschlau.util;
+package de.fornalik.tankschlau.user;
 
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.station.PetrolType;
+import de.fornalik.tankschlau.util.StringLegalizer;
 
 import java.util.Arrays;
 import java.util.HashSet;

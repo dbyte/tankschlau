@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package de.fornalik.tankschlau.net;
+package de.fornalik.tankschlau.webserviceapi.common;
 
 import de.fornalik.tankschlau.geo.Address;
+import de.fornalik.tankschlau.net.BaseRequest;
 
 /**
  * Abstract HTTP request class with base functionalities and <b>additional hook</b> for generating
