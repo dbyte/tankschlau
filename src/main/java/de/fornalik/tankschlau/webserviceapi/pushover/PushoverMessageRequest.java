@@ -67,7 +67,7 @@ public class PushoverMessageRequest extends MessageRequest {
 
   @Override
   public void setMessage(MessageContent content) {
-    String title = StringLegalizer.create(content.getTitle()).safeTrim().mandatory().end();
+    String title = StringLegalizer.create(content.getTitle()).safeTrim().nullToEmpty().end();
     String message = StringLegalizer.create(content.getMessage()).safeTrim().nullToEmpty().end();
 
     addBodyParameter("title", title);

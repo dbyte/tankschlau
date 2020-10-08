@@ -41,7 +41,9 @@ public final class TankSchlau {
             container.L10N,
             container.USER_PREFS,
             container.PETROL_STATIONS_SERVICE,
-            container.GEOCODING_CLIENT));
+            container.GEOCODING_CLIENT,
+            container.MESSAGE_CLIENT,
+            container.MESSAGE_CONTENT));
   }
 
   private void processVmOptions() {

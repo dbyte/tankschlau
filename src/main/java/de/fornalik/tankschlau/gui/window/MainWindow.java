@@ -23,6 +23,8 @@ import de.fornalik.tankschlau.station.*;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.webserviceapi.common.GeocodingClient;
+import de.fornalik.tankschlau.webserviceapi.common.MessageClient;
+import de.fornalik.tankschlau.webserviceapi.common.MessageContent;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
@@ -37,6 +39,8 @@ public class MainWindow extends JFrame {
   private final UserPrefs userPrefs;
   private final PetrolStations petrolStationService;
   private final GeocodingClient geoCodingClient;
+  private final MessageClient messageClient;
+  private final MessageContent messageContent;
 
   private DefaultListModel<String> model;
 
@@ -44,13 +48,17 @@ public class MainWindow extends JFrame {
       Localization l10n,
       UserPrefs userPrefs,
       PetrolStations petrolStationService,
-      GeocodingClient geoCodingClient) {
+      GeocodingClient geoCodingClient,
+      MessageClient messageClient,
+      MessageContent messageContent) {
 
     super(de.fornalik.tankschlau.TankSchlau.class.getSimpleName());
     this.l10n = l10n;
     this.userPrefs = userPrefs;
     this.petrolStationService = petrolStationService;
     this.geoCodingClient = geoCodingClient;
+    this.messageClient = messageClient;
+    this.messageContent = messageContent;
 
     initGui();
     updateList(PetrolType.DIESEL);
@@ -130,12 +138,12 @@ public class MainWindow extends JFrame {
   }
 
   public void updateList(PetrolType sortedFor) {
+    // processTestAddress(); // Ex: Writing some user geo data to user prefs
+
     Geo userGeo = getUserPrefAddress()
         .getGeo()
         .orElseThrow(() -> new IllegalStateException(
             "Can't request petrol station update, because got no lat/lng data for user address"));
-
-    // processTestAddress(); // Ex: Writing some user geo data to user prefs
 
     model.addElement(l10n.get("msg.PriceRequestRunning"));
 
@@ -162,6 +170,21 @@ public class MainWindow extends JFrame {
         model.addElement(" ");
 
         petrolStationsList.forEach(this::populateListModel);
+
+        if (petrolStationsList.size() == 0)
+          return;
+
+        // Send a push message
+        PetrolStation cheapest = petrolStationsList.get(0);
+
+        messageContent.getClass().getConstructor().newInstance();
+        messageContent.setMessage(
+            "Niedrigster Preis: "
+                + createPetrolString(cheapest, sortedFor) + "\n\n"
+                + createStationHeader(cheapest) + "\n"
+                + (cheapest.address.getStreet() + " " + cheapest.address.getHouseNumber()).trim());
+
+        messageClient.sendMessage(messageContent);
       }
 
       catch (IOException e) {
@@ -185,17 +208,28 @@ public class MainWindow extends JFrame {
   }
 
   private void populateListModel(PetrolStation station) {
-    String stationName = station.address.getName();
-    String open = station.isOpen ? l10n.get("msg.NowOpen") : l10n.get(
-        "msg.NowClosed");
     double distanceKm = station.address.getGeo().flatMap(Geo::getDistance).orElse(0.0);
 
     Set<Petrol> petrolsUnsorted = station.getPetrols();
     List<Petrol> petrols = Petrols.getSortedByPetrolTypeAndPrice(petrolsUnsorted);
 
-    model.addElement(stationName + " - " + open);
-    petrols.forEach((petrol) -> model.addElement(petrol.type.name() + "\t\t" + petrol.price));
+    model.addElement(createStationHeader(station));
+    petrols.forEach((petrol) -> model.addElement(createPetrolString(station, petrol.type)));
     model.addElement(l10n.get("msg.KmAway", distanceKm));
     model.addElement("\t");
+  }
+
+  private String createStationHeader(PetrolStation station) {
+    String stationName = station.address.getName();
+    String open = station.isOpen ? l10n.get("msg.NowOpen") : l10n.get(
+        "msg.NowClosed");
+    return stationName + " - " + open;
+  }
+
+  private String createPetrolString(PetrolStation station, PetrolType type) {
+    return station
+        .findPetrol(type)
+        .map(p -> p.type.name() + " " + p.price)
+        .orElse(type.name() + " data not found for station " + station.address.getName());
   }
 }
