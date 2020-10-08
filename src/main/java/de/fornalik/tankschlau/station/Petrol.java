@@ -20,15 +20,46 @@ import de.fornalik.tankschlau.util.MyToStringBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Objects;
 
+/**
+ * Holds the price for a petrol type.
+ */
 public class Petrol {
+  private static final String NBSP_AND_EUR = "\u00A0\u20AC";
+
   public final PetrolType type;
   public final double price;
+  private final NumberFormat numberFormat;
 
+  /**
+   * Constructor
+   *
+   * @param type  Enum for petrol type. Diesel, E5, E10, maybe more in some future.
+   * @param price Price in EUR.
+   */
   public Petrol(PetrolType type, double price) {
     this.type = Objects.requireNonNull(type, "type must not be null.");
     this.price = price;
+    this.numberFormat = createCurrencyFormat();
+  }
+
+  /**
+   * @return Petrol type and price, concatenated as string in german format plus non
+   * breaking space plus EUR symbol. This is fixed because this app is meant to be used for
+   * german petrol prices only.
+   */
+  public String getTypeAndPrice() {
+    return type.name() + " " + numberFormat.format(price) + NBSP_AND_EUR;
+  }
+
+  private NumberFormat createCurrencyFormat() {
+    NumberFormat nf = NumberFormat.getInstance(Locale.GERMANY);
+    nf.setMaximumFractionDigits(3);
+    nf.setMinimumFractionDigits(2);
+    return nf;
   }
 
   @Override

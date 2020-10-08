@@ -227,7 +227,7 @@ public class MainWindow extends JFrame {
 
     return station
         .findPetrol(type)
-        .map(p -> p.type.name() + " " + p.price)
+        .map(Petrol::getTypeAndPrice)
         .orElse(msg);
   }
 

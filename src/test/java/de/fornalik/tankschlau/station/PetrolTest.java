@@ -2,9 +2,30 @@ package de.fornalik.tankschlau.station;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class PetrolTest {
+
+  @Test
+  void getTypeAndPrice_returnsConcatenatedStringForGermanLocale() {
+    // given
+    Map<String, Petrol> givenPetrols = new TreeMap<>();
+    givenPetrols.put("DIESEL 0,978\u00A0\u20AC", new Petrol(PetrolType.DIESEL, 0.978));
+    givenPetrols.put("E5 1,00\u00A0\u20AC", new Petrol(PetrolType.E5, 1.00));
+    givenPetrols.put("E10 0,00\u00A0\u20AC", new Petrol(PetrolType.E10, 0));
+
+    // when
+    String actualString;
+    for (Map.Entry<String, Petrol> entry : givenPetrols.entrySet()) {
+      actualString = entry.getValue().getTypeAndPrice();
+
+      // then
+      assertEquals(entry.getKey(), actualString);
+    }
+  }
 
   @Test
   void equals_returnsTrue() {

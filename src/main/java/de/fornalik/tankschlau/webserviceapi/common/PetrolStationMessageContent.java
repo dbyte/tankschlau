@@ -19,6 +19,7 @@ package de.fornalik.tankschlau.webserviceapi.common;
 // TODO unit tests, javadoc
 
 import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.station.Petrol;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolType;
 import de.fornalik.tankschlau.util.Localization;
@@ -62,7 +63,7 @@ public abstract class PetrolStationMessageContent implements MessageContent {
 
     return station
         .findPetrol(type)
-        .map(p -> p.type.name() + " " + p.price)
+        .map(Petrol::getTypeAndPrice)
         .orElse(msg);
   }
 
