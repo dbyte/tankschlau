@@ -27,23 +27,22 @@ class PetrolStationsTest {
     actualPetrolStations = null;
   }
 
-  /*
-  The underlying implementation of this factory method is subject to the corresponding
-  net and web service units, so we just do some basic test on its own code paths here.
-  */
-
+  /* The underlying implementation of this method is subject to the corresponding
+  net and web service units, so we just do some basic test on its own code paths here. */
   @Test
   void getAllInNeighbourhood_callsDaoAndReturnsResultingPetrolStations()
   throws IOException {
     // given
+    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
+
     PetrolStationsDao daoMock = mock(PetrolStationsDao.class);
     Geo geoMock = mock(Geo.class);
-
-    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
     when(daoMock.getAllInNeighbourhood(geoMock)).thenReturn(fixture.convertToPetrolStations());
 
+    PetrolStations petrolStationService = new PetrolStations(daoMock);
+
     // when
-    actualPetrolStations = PetrolStations.getAllInNeighbourhood(daoMock, geoMock);
+    actualPetrolStations = petrolStationService.getAllInNeighbourhood(geoMock);
 
     // then
     fixture.assertEqualValuesIgnoringSort(actualPetrolStations);

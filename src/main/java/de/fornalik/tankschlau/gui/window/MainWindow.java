@@ -29,12 +29,12 @@ import java.util.List;
 import java.util.Set;
 
 public class MainWindow extends JFrame {
-  private final PetrolStationsDao petrolStationsDao;
+  private final PetrolStations petrolStationService;
   private DefaultListModel<String> model;
 
-  public MainWindow(PetrolStationsDao petrolStationsDao) {
+  public MainWindow(PetrolStations petrolStations) {
     super(de.fornalik.tankschlau.TankSchlau.class.getSimpleName());
-    this.petrolStationsDao = petrolStationsDao;
+    this.petrolStationService = petrolStations;
   }
 
   public void initGui() {
@@ -73,16 +73,15 @@ public class MainWindow extends JFrame {
     EventQueue.invokeLater(() -> {
 
       try {
-        List<PetrolStation> petrolStations = PetrolStations.getAllInNeighbourhood(
-            petrolStationsDao,
+        List<PetrolStation> petrolStationsList = petrolStationService.getAllInNeighbourhood(
             userGeo);
 
         model.remove(0);
-        System.out.println("Response ready, status: " + petrolStationsDao.getTransactionInfo()
-                                                                         .getStatus());
+        System.out.println(
+            "Response ready, status: " + petrolStationService.getTransactionInfo().getStatus());
 
-        petrolStations = PetrolStations.sortByPriceAndDistanceForPetrolType(
-            petrolStations,
+        petrolStationsList = PetrolStations.sortByPriceAndDistanceForPetrolType(
+            petrolStationsList,
             sortedFor);
 
         model.addElement(
@@ -92,7 +91,7 @@ public class MainWindow extends JFrame {
 
         model.addElement(" ");
 
-        petrolStations.forEach(this::populateListModel);
+        petrolStationsList.forEach(this::populateListModel);
       }
 
       catch (IOException e) {

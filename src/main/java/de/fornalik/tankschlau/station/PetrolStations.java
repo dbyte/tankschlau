@@ -23,24 +23,43 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 /**
- * Utility class for collections of {@link PetrolStation}
+ * Service class for dealing with data collections of a {@link PetrolStation}.
  */
 public class PetrolStations {
+  private final PetrolStationsDao dao;
+
+  /**
+   * Constructor
+   *
+   * @param dao Some {@link PetrolStationsDao} implementation.
+   */
+  public PetrolStations(PetrolStationsDao dao) {
+    this.dao = Objects.requireNonNull(
+        dao, PetrolStationsDao.class.getSimpleName() + " must not be null");
+  }
 
   /**
    * Gets a list of petrol stations around the user's neighbourhood, whereby neighbourhood
-   * Basically, it's a wrapper for {@link PetrolStationsDao#getAllInNeighbourhood(Geo)}.
+   * Basically, it's a service wrapper for {@link PetrolStationsDao#getAllInNeighbourhood(Geo)}.
    *
-   * @param dao Some {@link PetrolStationsDao} implementation.
    * @param geo {@link Geo} data wrapping the user's current location.
    * @throws IOException If something went wrong while contacting the backing store of
    *                     {@link PetrolStation}.
    */
-  public static List<PetrolStation> getAllInNeighbourhood(PetrolStationsDao dao, Geo geo)
-  throws IOException {
+  public List<PetrolStation> getAllInNeighbourhood(Geo geo) throws IOException {
     return dao.getAllInNeighbourhood(geo);
+  }
+
+  /**
+   * @return Further information about the last DAO operation.
+   * @see PetrolStationsDao.TransactionInfo
+   */
+  // TODO unit tests
+  public PetrolStationsDao.TransactionInfo getTransactionInfo() {
+    return dao.getTransactionInfo();
   }
 
   /**

@@ -44,7 +44,7 @@ public final class TankSchlau {
 
     SwingUtilities.invokeLater(
         () -> {
-          MainWindow mainWindow = new MainWindow(container.PETROL_STATIONS_DAO);
+          MainWindow mainWindow = new MainWindow(container.PETROL_STATIONS_SERVICE);
           mainWindow.initGui();
           mainWindow.updateList(userGeo, PetrolType.DIESEL);
         }
