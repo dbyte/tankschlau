@@ -30,6 +30,7 @@ import org.apache.commons.lang3.SystemUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -143,7 +144,7 @@ public class MainWindow extends JFrame {
     Geo userGeo = getUserPrefAddress()
         .getGeo()
         .orElseThrow(() -> new IllegalStateException(
-            "Can't request petrol station update, because got no lat/lng data for user address"));
+            l10n.get("msg.UnableToRequestPetrolStations_ReasonNoGeoForUser")));
 
     model.addElement(l10n.get("msg.PriceRequestRunning"));
 
@@ -174,17 +175,8 @@ public class MainWindow extends JFrame {
         if (petrolStationsList.size() == 0)
           return;
 
-        // Send a push message
-        PetrolStation cheapest = petrolStationsList.get(0);
-
-        messageContent.getClass().getConstructor().newInstance();
-        messageContent.setMessage(
-            "Niedrigster Preis: "
-                + createPetrolString(cheapest, sortedFor) + "\n\n"
-                + createStationHeader(cheapest) + "\n"
-                + (cheapest.address.getStreet() + " " + cheapest.address.getHouseNumber()).trim());
-
-        messageClient.sendMessage(messageContent);
+        // Just for testing purposes...
+        sendMessage(petrolStationsList.get(0), sortedFor);
       }
 
       catch (IOException e) {
@@ -208,15 +200,28 @@ public class MainWindow extends JFrame {
   }
 
   private void populateListModel(PetrolStation station) {
-    double distanceKm = station.address.getGeo().flatMap(Geo::getDistance).orElse(0.0);
-
     Set<Petrol> petrolsUnsorted = station.getPetrols();
     List<Petrol> petrols = Petrols.getSortedByPetrolTypeAndPrice(petrolsUnsorted);
 
     model.addElement(createStationHeader(station));
     petrols.forEach((petrol) -> model.addElement(createPetrolString(station, petrol.type)));
-    model.addElement(l10n.get("msg.KmAway", distanceKm));
+    model.addElement(createDistanceString(station));
     model.addElement("\t");
+  }
+
+  private void sendMessage(PetrolStation cheapestStation, PetrolType petrolType)
+  throws NoSuchMethodException, IllegalAccessException, InvocationTargetException,
+      InstantiationException, IOException {
+
+    messageContent.getClass().getConstructor().newInstance();
+    messageContent.setMessage(
+        l10n.get("msg.BestPrice", createPetrolString(cheapestStation, petrolType))
+            + "\n" + createDistanceString(cheapestStation) + "\n\n"
+            + createStationHeader(cheapestStation) + "\n"
+            + (cheapestStation.address.getStreet() + " "
+            + cheapestStation.address.getHouseNumber()).trim());
+
+    messageClient.sendMessage(messageContent);
   }
 
   private String createStationHeader(PetrolStation station) {
@@ -227,9 +232,21 @@ public class MainWindow extends JFrame {
   }
 
   private String createPetrolString(PetrolStation station, PetrolType type) {
+    String msg = l10n.get("msg.NoPetrolDataForStation", type.name(), station.address.getName());
+
     return station
         .findPetrol(type)
         .map(p -> p.type.name() + " " + p.price)
-        .orElse(type.name() + " data not found for station " + station.address.getName());
+        .orElse(msg);
+  }
+
+  private String createDistanceString(PetrolStation station) {
+    Optional<Double> distanceKm = station.address.getGeo().flatMap(Geo::getDistance);
+
+    String distanceString = distanceKm.isPresent()
+        ? distanceKm.get().toString()
+        : l10n.get("msg.Unknown");
+
+    return l10n.get("msg.KmAway", distanceString);
   }
 }
