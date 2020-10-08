@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.OkHttpClient;
+import de.fornalik.tankschlau.station.PetrolStations;
 import de.fornalik.tankschlau.station.PetrolStationsDao;
 import de.fornalik.tankschlau.station.Petrols;
 import de.fornalik.tankschlau.station.PetrolsJsonAdapter;
@@ -40,7 +41,7 @@ import java.util.Locale;
 
 /**
  * Describes a the dependency graph throughout the application.
- * Avoid tight coupling to any classes by ONLY calling it's static members from the root of the app.
+ * Avoid tight coupling to any classes by ONLY calling it's members from the root of the app.
  */
 public final class AppContainer {
   public static final Localization L10N = new Localization(Locale.GERMAN);
@@ -56,6 +57,7 @@ public final class AppContainer {
   public final GeocodingClient GEOCODING_CLIENT;
   public final GeoRequest GEO_REQUEST;
   public final PetrolStationsDao PETROL_STATIONS_DAO;
+  public final PetrolStations PETROL_STATIONS_SERVICE;
 
   public AppContainer() {
     // Setup dependency graph
@@ -87,5 +89,7 @@ public final class AppContainer {
         PETROL_STATIONS_JSON_ADAPTER,
         JSON_PROVIDER,
         GEO_REQUEST);
+
+    PETROL_STATIONS_SERVICE = new PetrolStations(PETROL_STATIONS_DAO);
   }
 }
