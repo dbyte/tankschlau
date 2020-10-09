@@ -25,22 +25,20 @@ import java.util.Optional;
  */
 public class OkHttpClient implements HttpClient {
 
-  private static okhttp3.OkHttpClient okHttpClientSingleton;
+  private final okhttp3.OkHttpClient okHttp3Client;
   private Request request;
 
   /**
-   * This constructor should be the only one being used in production.
-   */
-  public OkHttpClient() {
-    this.createOkHttpClientSingleton();
-  }
-
-  /**
-   * This constructor should only be used for testing purposes as it does not rely on
-   * a one time instantiation of the underlying {@link okhttp3.OkHttpClient}.
+   * Constructor
+   * <br><br>
+   * In production, do a one-time-instantiation of this class at startup time.
+   * Side note: According to the okhttp3 docs, it's perfectly o.k. to its the client for the
+   * lifecycle of the app.
+   *
+   * @param okHttp3Client Instance of {@link okhttp3.OkHttpClient} to be adapted.
    */
   public OkHttpClient(okhttp3.OkHttpClient okHttp3Client) {
-    OkHttpClient.okHttpClientSingleton = okHttp3Client;
+    this.okHttp3Client = Objects.requireNonNull(okHttp3Client);
   }
 
   @Override
@@ -113,8 +111,8 @@ public class OkHttpClient implements HttpClient {
   }
 
   private okhttp3.Response callServer(okhttp3.Request okhttpRequest) throws IOException {
-    okhttp3.Call call = okHttpClientSingleton.newCall(okhttpRequest);
-    return call.execute(); // throws
+    okhttp3.Call realCall = okHttp3Client.newCall(okhttpRequest);
+    return realCall.execute(); // throws
   }
 
   private String getDetails(okhttp3.Response okhttpResponse) {
@@ -122,11 +120,5 @@ public class OkHttpClient implements HttpClient {
         + okhttpResponse.message()
         + "\nResponse headers:\n"
         + okhttpResponse.headers().toString();
-  }
-
-  private void createOkHttpClientSingleton() {
-    // Singleton for OkHttpClient as recommended by okhttp crew.
-    if (OkHttpClient.okHttpClientSingleton == null)
-      OkHttpClient.okHttpClientSingleton = new okhttp3.OkHttpClient();
   }
 }

@@ -78,7 +78,7 @@ class PushoverMessageClientTest {
   @Test
   void sendMessage_integrationTest_shouldSendRealMessage() throws IOException {
     // given
-    HttpClient realHttpClient = new OkHttpClient();
+    HttpClient realHttpClient = new OkHttpClient(new okhttp3.OkHttpClient());
 
     when(messageContentMock.getTitle())
         .thenReturn("New price for station!");

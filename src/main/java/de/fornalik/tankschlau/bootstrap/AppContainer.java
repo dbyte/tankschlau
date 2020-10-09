@@ -65,7 +65,7 @@ public final class AppContainer {
     // Setup dependency graph
     L10N = new Localization(Locale.GERMAN);
     USER_PREFS = new UserPrefs("/de/fornalik/tankschlau");
-    HTTP_CLIENT = new OkHttpClient();
+    HTTP_CLIENT = new OkHttpClient(new okhttp3.OkHttpClient());
 
     JSON_PROVIDER = new GsonBuilder()
         .registerTypeAdapter(Petrols.class, new PetrolsJsonAdapter())

@@ -55,7 +55,7 @@ class OkHttpClientTest {
   @Test
   void construct_initializesProperly() {
     // when
-    HttpClient okHttpClient = new OkHttpClient();
+    HttpClient okHttpClient = new OkHttpClient(okHttp3ClientMock);
 
     // then
     assertEquals(Optional.empty(), okHttpClient.getRequest());
