@@ -151,16 +151,14 @@ public class MainWindow extends JFrame {
     EventQueue.invokeLater(() -> {
 
       try {
-        List<PetrolStation> petrolStationsList = petrolStationService.getAllInNeighbourhood(
-            userGeo);
+        List<PetrolStation> petrolStationsList =
+            petrolStationService.getAllInNeighbourhood(userGeo);
 
         model.remove(0);
         System.out.println(
             "Response ready, status: " + petrolStationService.getTransactionInfo().getStatus());
 
-        petrolStationsList = PetrolStations.sortByPriceAndDistanceForPetrolType(
-            petrolStationsList,
-            sortedFor);
+        PetrolStations.sortByPriceAndDistanceForPetrolType(petrolStationsList, sortedFor);
 
         model.addElement(
             "********** "

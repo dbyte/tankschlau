@@ -62,11 +62,10 @@ class PetrolStationsTest {
     Collections.shuffle(givenPetrolStations);
 
     // when
-    actualPetrolStations = PetrolStations
-        .sortByPriceAndDistanceForPetrolType(givenPetrolStations, givenPetrolType);
+    PetrolStations.sortByPriceAndDistanceForPetrolType(givenPetrolStations, givenPetrolType);
 
     // then
-    Iterator<PetrolStation> iter = actualPetrolStations.listIterator();
+    Iterator<PetrolStation> iter = givenPetrolStations.listIterator();
 
     while (iter.hasNext()) {
       PetrolStation stationA = iter.next();

@@ -20,7 +20,6 @@ import de.fornalik.tankschlau.geo.Geo;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -39,6 +38,22 @@ public class PetrolStations {
   public PetrolStations(PetrolStationsDao dao) {
     this.dao = Objects.requireNonNull(
         dao, PetrolStationsDao.class.getSimpleName() + " must not be null");
+  }
+
+  /**
+   * Sorts a {@code List} of {@link PetrolStation} first by price and then by distance.
+   *
+   * @param petrolStations List of {@link PetrolStation} to sort.
+   * @param type           The {@link PetrolType} on which to sort the stations.
+   * @see PriceAndDistanceComparator
+   */
+  // TODO port unit tests to inner class PriceAndDistanceComparator
+  public static void sortByPriceAndDistanceForPetrolType(
+      List<PetrolStation> petrolStations,
+      PetrolType type) {
+
+    // List<PetrolStation> stationsCopy = new ArrayList<>(petrolStations);
+    petrolStations.sort(new PriceAndDistanceComparator(type));
   }
 
   /**
@@ -63,50 +78,42 @@ public class PetrolStations {
   }
 
   /**
-   * Creates a copy of the incoming List of {@link PetrolStation}, sorts the copy by
-   * price and distance and returns it.
-   *
-   * @param stations List of {@link PetrolStation} to sort.
-   * @param type     The {@link PetrolType} for which to sort the petrol stations.
-   * @return A shallow copy of stations, sorted by price, then distance.
+   * Compares two {@link PetrolStation} objects, first by price and then by distance.
+   * <br><br>
+   * If the price of the given {@link PetrolType} is missing, its corresponding station is
+   * considered greater then the other.
+   * <br><br>
+   * Same applies for missing distance within the address of the station.
    */
-  public static List<PetrolStation> sortByPriceAndDistanceForPetrolType(
-      List<PetrolStation> stations,
-      PetrolType type) {
+  // TODO unit tests (move existing tests from sortByPriceAndDistanceForPetrolType to here)
+  public static class PriceAndDistanceComparator implements Comparator<PetrolStation> {
+    private final PetrolType petrolType;
 
-    class PriceAndDistanceComparator implements Comparator<PetrolStation> {
-
-      @Override
-      public int compare(PetrolStation stationA, PetrolStation stationB) {
-
-        double priceA = getPriceForSort(stationA, type);
-        double priceB = getPriceForSort(stationB, type);
-
-        double distanceA = getDistanceForSort(stationA);
-        double distanceB = getDistanceForSort(stationB);
-
-        return new CompareToBuilder()
-            .append(priceA, priceB)
-            .append(distanceA, distanceB)
-            .toComparison();
-      }
+    public PriceAndDistanceComparator(PetrolType forPetrolType) {
+      this.petrolType = forPetrolType;
     }
 
-    List<PetrolStation> stationsCopy = new ArrayList<>(stations);
-    stationsCopy.sort(new PriceAndDistanceComparator());
+    @Override
+    public int compare(PetrolStation first, PetrolStation second) {
+      // sort empty Optionals last
+      return new CompareToBuilder()
+          .append(getPriceForSort(first), getPriceForSort(second))
+          .append(getDistanceForSort(first), getDistanceForSort(second))
+          .toComparison();
+    }
 
-    return stationsCopy;
-  }
+    private Double getPriceForSort(PetrolStation station) {
+      return station
+          .findPetrol(this.petrolType)
+          .map((p) -> p.price)
+          .orElse(null);
+    }
 
-  private static double getPriceForSort(PetrolStation station, PetrolType type) {
-    return station.findPetrol(type)
-                  .map((petrol) -> petrol.price)
-                  .orElse(9999.99);
-  }
-
-  private static double getDistanceForSort(PetrolStation station) {
-    return station.address.getGeo()
-                          .flatMap(Geo::getDistance)
-                          .orElse(9999.99);
+    private Double getDistanceForSort(PetrolStation station) {
+      return station.address
+          .getGeo()
+          .flatMap(Geo::getDistance)
+          .orElse(null);
+    }
   }
 }
