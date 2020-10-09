@@ -156,6 +156,13 @@ public class Address {
   }
 
   /**
+   * @return Concatenated trimmed street + housenumber .
+   */
+  public String getStreetAndHouseNumber() {
+    return StringLegalizer.create(getStreet() + " " + getHouseNumber()).safeTrim().end();
+  }
+
+  /**
    * Check if this Address is valid from a point of business rules.
    *
    * @return true if it is a valid address by business rules

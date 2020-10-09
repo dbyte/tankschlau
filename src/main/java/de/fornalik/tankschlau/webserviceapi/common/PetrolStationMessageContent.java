@@ -46,7 +46,7 @@ public abstract class PetrolStationMessageContent implements MessageContent {
     String stationHeader = createStationHeader(station);
     String petrol = l10n.get("msg.BestPrice", createPetrolString(station, petrolType));
     String distance = createDistanceString(station);
-    String street = (station.address.getStreet() + " " + station.address.getHouseNumber()).trim();
+    String street = station.address.getStreetAndHouseNumber();
 
     this.setMessage(petrol + "\n" + distance + "\n\n" + stationHeader + "\n" + street);
   }

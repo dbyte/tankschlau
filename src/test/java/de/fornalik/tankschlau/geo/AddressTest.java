@@ -1,6 +1,7 @@
 package de.fornalik.tankschlau.geo;
 
 import de.fornalik.tankschlau.util.StringLegalizer;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -12,6 +13,12 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AddressTest {
+  private Address address;
+
+  @BeforeEach
+  void setUp() {
+    address = null;
+  }
 
   @ParameterizedTest
   @CsvSource(value = {
@@ -57,7 +64,7 @@ class AddressTest {
   @Test
   void setName_legalizesValue() {
     // given
-    final Address address = new Address("x", "y", "z");
+    address = new Address("x", "y", "z");
 
     // when
     address.setName("   My Name To Be Trimmed            ");
@@ -73,7 +80,7 @@ class AddressTest {
   @Test
   void setHouseNumber_legalizesValue() {
     // given
-    final Address address = new Address("x", "y", "z");
+    address = new Address("x", "y", "z");
 
     // when
     address.setHouseNumber("      25 B Hinterhof  ");
@@ -89,7 +96,7 @@ class AddressTest {
   @Test
   void setStreet_legalizesValue() {
     // given
-    final Address address = new Address("x", "y", "z");
+    address = new Address("x", "y", "z");
 
     // when
     address.setStreet("Walter von Schön Straße   ");
@@ -106,7 +113,7 @@ class AddressTest {
   @Test
   void setCity_legalizesValue() {
     // given
-    final Address address = new Address("x", "y", "z");
+    address = new Address("x", "y", "z");
 
     // when
     address.setCity(" Düsseldorf   ");
@@ -123,7 +130,7 @@ class AddressTest {
   @Test
   void setPostCode_legalizesValue() {
     // given
-    final Address address = new Address("x", "y", "z");
+    address = new Address("x", "y", "z");
 
     // when
     address.setPostCode("   D-80803");
@@ -146,7 +153,7 @@ class AddressTest {
     // given
     final Double dist = distAsString.equals("null") ? null : Double.parseDouble(distAsString);
     final Geo expectedGeo = new Geo(lat, lon, dist);
-    final Address address = new Address("x", "y", "z", expectedGeo);
+    address = new Address("x", "y", "z", expectedGeo);
 
     // when
     Geo actualGeoObject = address
@@ -160,7 +167,7 @@ class AddressTest {
   @Test
   void getGeo_returnsEmptyOptional() {
     // given
-    final Address address = new Address("x", "y", "z");
+    address = new Address("x", "y", "z");
 
     // when
     address.setGeo(null);
@@ -169,10 +176,31 @@ class AddressTest {
     assertEquals(Optional.empty(), address.getGeo());
   }
 
+  @ParameterizedTest
+  @CsvSource(value = {
+      " Mockenmuck :7b:Mockenmuck 7b",
+      " Freudenstraße ::Freudenstraße",
+      "Homestreet: 23 b :Homestreet 23 b",
+  }, delimiter = ':')
+  void getStreetAndHouseNumber_returnsExpectedString(
+      String street,
+      String houseNumber,
+      String expected) {
+
+    // given
+    String actualString;
+
+    address = new Address(street, houseNumber, "X", "X");
+    // when
+    actualString = address.getStreetAndHouseNumber();
+    // then
+    assertEquals(expected, actualString);
+  }
+
   /*@Test
   void setGeo_withWebService_doesProperlySetGeoOwnedByAddress() throws IOException {
     // given
-    Address address = new Address("don't care", "don't care", "don't care", "don't care");
+    Address = new Address("don't care", "don't care", "don't care", "don't care");
     assert !address.getGeo().isPresent();
 
     Geo geoMock = mock(Geo.class);
@@ -194,19 +222,19 @@ class AddressTest {
   @Test
   void toString_doesNotThrowOnMinimumInitialization() {
     // given
-    final Address addressWithNullGeo = new Address("x", "y", "z");
-    addressWithNullGeo.setGeo(null);
+    address = new Address("x", "y", "z");
+    address.setGeo(null);
 
     // when then
-    assertDoesNotThrow(addressWithNullGeo::toString);
+    assertDoesNotThrow(address::toString);
   }
 
   @Test
   void toString_doesNotThrow() {
     // given
-    final Address addressWithNullGeo = new Address("x", "y", "z");
+    address = new Address("x", "y", "z");
     // when then
-    assertDoesNotThrow(addressWithNullGeo::toString);
+    assertDoesNotThrow(address::toString);
 
     // given
     final Geo fullGeo = new Geo(43.4, 79.355, 303.0);
