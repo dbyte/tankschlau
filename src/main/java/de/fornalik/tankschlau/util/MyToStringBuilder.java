@@ -16,8 +16,8 @@
 
 package de.fornalik.tankschlau.util;
 
+import org.apache.commons.lang3.builder.StandardToStringStyle;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
  * Customized apache.commons.lang3 {@link ToStringBuilder} used by this application.
@@ -25,36 +25,18 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * @see ToStringBuilder
  */
 public class MyToStringBuilder extends ToStringBuilder {
+  private static final StandardToStringStyle toStringStyle = createStandardToStringStyle();
 
   /**
    * @see ToStringBuilder
    */
   public MyToStringBuilder(Object object) {
-    super(object, MyToStringStyle.getInstance());
-  }
-}
-
-/**
- * Thread-safe-lazy-loading Singleton which provides customized settings for the
- * apache.commons.lang3 {@link ToStringBuilder}.
- */
-class MyToStringStyle extends ToStringStyle {
-  private static MyToStringStyle instance;
-
-  private MyToStringStyle() {
-    super();
+    super(object, toStringStyle);
   }
 
-  /**
-   * @return Thread-safe-lazy-loading singleton of MyToStringStyle.
-   */
-  static synchronized MyToStringStyle getInstance() {
-    if (instance == null)
-      instance = new MyToStringStyle();
-
-    // Hide package paths
-    instance.setUseShortClassName(true);
-
-    return instance;
+  private synchronized static StandardToStringStyle createStandardToStringStyle() {
+    StandardToStringStyle style = new StandardToStringStyle();
+    style.setUseShortClassName(true);
+    return style;
   }
 }

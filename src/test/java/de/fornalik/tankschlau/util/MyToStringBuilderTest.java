@@ -1,40 +1,38 @@
 package de.fornalik.tankschlau.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MyToStringBuilderTest {
-  private MyToStringBuilder sut;
+  private MyToStringBuilder myToStringBuilder;
   private FixtureClass givenInstance;
-  private String expectedString, actualString;
+  private String expectedStartString, expectedEndString, actualString;
 
   @BeforeEach
   void setUp() {
     givenInstance = new FixtureClass();
-    sut = new MyToStringBuilder(givenInstance);
-    expectedString = null;
+    myToStringBuilder = new MyToStringBuilder(givenInstance);
+    expectedStartString = null;
+    expectedEndString = null;
     actualString = null;
   }
 
   @Test
   void toString_producesImplicitShortClassNameStyle() {
     // given
-    givenInstance.someString = "This is a test value.";
-    expectedString = "MyToStringBuilderTest.FixtureClass@";
-    sut.append("someString", givenInstance.someString);
+    givenInstance.someString = "is not tested here";
+    myToStringBuilder.append("is not tested here", givenInstance.someString);
+
+    expectedStartString = getClass().getSimpleName() + "." + FixtureClass.class.getSimpleName();
 
     // when
-    actualString = sut.toString();
+    actualString = myToStringBuilder.toString();
 
     // then
-    assertTrue(
-        actualString.startsWith(expectedString),
-        "Expected short name style string must start with ==>\n"
-            + expectedString + "\n"
-            + "but actually is ==>\n"
-            + actualString);
+    assertEquals(expectedStartString, StringUtils.substringBefore(actualString, "@"));
   }
 
   @Test
@@ -42,24 +40,20 @@ class MyToStringBuilderTest {
     // given
     givenInstance.someString = "This is another test value ÖÄÜ.";
     givenInstance.someInt = 2347;
-    expectedString = "[someString=This is another test value ÖÄÜ.,someInt=2347]";
 
-    sut.append("someString", givenInstance.someString);
-    sut.append("someInt", givenInstance.someInt);
+    myToStringBuilder.append("someString", givenInstance.someString);
+    myToStringBuilder.append("someInt", givenInstance.someInt);
+
+    expectedEndString = "someString=This is another test value ÖÄÜ.,someInt=2347";
 
     // when
-    actualString = sut.toString();
+    actualString = myToStringBuilder.toString();
 
     // then
-    assertTrue(
-        actualString.contains(expectedString),
-        "Expected short name style string must contain ==>\n"
-            + expectedString + "\n"
-            + "but actually is ==>\n"
-            + actualString);
+    assertEquals(expectedEndString, StringUtils.substringBetween(actualString, "[", "]"));
   }
 
-  // Just a micro fixture for testing.
+  // Just a micro fixture class for testing.
   private static class FixtureClass {
     String someString;
     int someInt;
