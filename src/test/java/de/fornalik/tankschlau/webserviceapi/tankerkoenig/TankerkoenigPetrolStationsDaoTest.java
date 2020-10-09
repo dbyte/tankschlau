@@ -99,7 +99,7 @@ class TankerkoenigPetrolStationsDaoTest {
     when(httpClientMock.newCall(geoRequestMock)).thenReturn(stringResponseMock);
 
     // when
-    actualPetrolStations = sut.getAllInNeighbourhood(geoMock);
+    actualPetrolStations = sut.findAllInNeighbourhood(geoMock);
 
     // then
     fixture.assertEqualValues(sut);
@@ -116,7 +116,7 @@ class TankerkoenigPetrolStationsDaoTest {
     when(httpClientMock.newCall(geoRequestMock)).thenReturn(stringResponseMock);
 
     // when
-    actualPetrolStations = sut.getAllInNeighbourhood(geoMock);
+    actualPetrolStations = sut.findAllInNeighbourhood(geoMock);
 
     // then
     assertEquals(0, actualPetrolStations.size());
@@ -128,7 +128,7 @@ class TankerkoenigPetrolStationsDaoTest {
     when(httpClientMock.newCall(geoRequestMock)).thenReturn(null);
 
     // when
-    actualPetrolStations = sut.getAllInNeighbourhood(geoMock);
+    actualPetrolStations = sut.findAllInNeighbourhood(geoMock);
 
     // then
     assertEquals(0, actualPetrolStations.size());
@@ -146,7 +146,7 @@ class TankerkoenigPetrolStationsDaoTest {
     when(httpClientMock.newCall(geoRequestMock)).thenReturn(stringResponseMock);
 
     // when
-    actualPetrolStations = sut.getAllInNeighbourhood(geoMock);
+    actualPetrolStations = sut.findAllInNeighbourhood(geoMock);
 
     // then
     assertEquals(0, actualPetrolStations.size());
@@ -169,7 +169,7 @@ class TankerkoenigPetrolStationsDaoTest {
     when(httpClientMock.newCall(geoRequestMock)).thenReturn(stringResponseMock);
 
     // when
-    actualPetrolStations = sut.getAllInNeighbourhood(geoMock);
+    actualPetrolStations = sut.findAllInNeighbourhood(geoMock);
 
     // then
     assertEquals(0, actualPetrolStations.size());
@@ -195,7 +195,7 @@ class TankerkoenigPetrolStationsDaoTest {
     when(httpClientMock.newCall(geoRequestMock)).thenReturn(stringResponseMock);
 
     // when
-    actualPetrolStations = sut.getAllInNeighbourhood(geoMock);
+    actualPetrolStations = sut.findAllInNeighbourhood(geoMock);
 
     // then
     assertEquals(0, actualPetrolStations.size());

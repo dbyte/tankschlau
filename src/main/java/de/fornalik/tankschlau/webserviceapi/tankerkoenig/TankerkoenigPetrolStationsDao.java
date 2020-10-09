@@ -62,7 +62,7 @@ public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
   }
 
   @Override
-  public List<PetrolStation> getAllInNeighbourhood(Geo geo) throws IOException {
+  public List<PetrolStation> findAllInNeighbourhood(Geo geo) throws IOException {
     this.request.setGeoUrlParameters(geo);
 
     // Reset state!

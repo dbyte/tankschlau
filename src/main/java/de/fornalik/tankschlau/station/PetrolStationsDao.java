@@ -24,12 +24,12 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Interface for each Data Access Object of {@link PetrolStation}.
+ * Interface for Data Access Objects of {@link PetrolStation}.
  */
 public interface PetrolStationsDao {
 
   /**
-   * Gets a list of petrol stations around the user's neighbourhood, whereby neighbourhood
+   * Searches for petrol stations around the user's neighbourhood, whereby neighbourhood
    * is defined by the given {@link Geo} data of the user.
    *
    * @param geo {@link Geo} instance. Its latitude & longitude should reflect the current
@@ -39,7 +39,7 @@ public interface PetrolStationsDao {
    * @throws IOException If something went wrong while contacting the backing store of
    *                     {@link PetrolStation}.
    */
-  List<PetrolStation> getAllInNeighbourhood(Geo geo) throws IOException;
+  List<PetrolStation> findAllInNeighbourhood(Geo geo) throws IOException;
 
   /**
    * @return Some technical response data - sort of response summary or header data,

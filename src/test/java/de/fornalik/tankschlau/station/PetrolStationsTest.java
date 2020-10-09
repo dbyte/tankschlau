@@ -42,7 +42,7 @@ class PetrolStationsTest {
 
     PetrolStationsDao daoMock = mock(PetrolStationsDao.class);
     Geo geoMock = mock(Geo.class);
-    when(daoMock.getAllInNeighbourhood(geoMock)).thenReturn(fixture.convertToPetrolStations());
+    when(daoMock.findAllInNeighbourhood(geoMock)).thenReturn(fixture.convertToPetrolStations());
 
     PetrolStations petrolStationService = new PetrolStations(daoMock);
 

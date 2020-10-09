@@ -56,14 +56,14 @@ public class PetrolStations {
 
   /**
    * Gets a list of petrol stations around the user's neighbourhood, whereby neighbourhood
-   * Basically, it's a service wrapper for {@link PetrolStationsDao#getAllInNeighbourhood(Geo)}.
+   * Basically, it's a service wrapper for {@link PetrolStationsDao#findAllInNeighbourhood(Geo)}.
    *
    * @param geo {@link Geo} data wrapping the user's current location.
    * @throws IOException If something went wrong while contacting the backing store of
    *                     {@link PetrolStation}.
    */
   public List<PetrolStation> getAllInNeighbourhood(Geo geo) throws IOException {
-    return dao.getAllInNeighbourhood(geo);
+    return dao.findAllInNeighbourhood(geo);
   }
 
   /**
