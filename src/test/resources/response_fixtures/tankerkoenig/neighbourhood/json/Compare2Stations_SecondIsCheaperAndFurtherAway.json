@@ -1,0 +1,40 @@
+{
+  "ok": true,
+  "license": "CC BY 4.0 -  https:\/\/creativecommons.tankerkoenig.de",
+  "data": "MTS-K",
+  "status": "ok",
+  "stations": [
+    {
+      "id": "88641cd8-5ece-473d-8b04-7a0b06ee8a2e",
+      "name": "Shell Berlin Juelicher Str. 1",
+      "brand": "Shell",
+      "street": "Juelicher Str.",
+      "place": "Berlin",
+      "lat": 52.554854,
+      "lng": 13.391877,
+      "dist": 1.8,
+      "diesel": 4.0,
+      "e5": 5.0,
+      "e10": 6.0,
+      "isOpen": true,
+      "houseNumber": "1",
+      "postCode": 13357
+    },
+    {
+      "id": "a0f35e83-2d97-4bfb-b90e-f068fe8c73e1",
+      "name": "TOTAL BERLIN",
+      "brand": "TOTAL",
+      "street": "Indira-Gandhi-Str. 106-109",
+      "place": "BERLIN",
+      "lat": 52.547499,
+      "lng": 13.46808,
+      "dist": 9.5,
+      "diesel": 1.0,
+      "e5": 2.0,
+      "e10": 3.0,
+      "isOpen": true,
+      "houseNumber": "",
+      "postCode": 13053
+    }
+  ]
+}

@@ -13,18 +13,23 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class PetrolStationsTest {
+  PetrolStations.PriceAndDistanceComparator comparatorUnderTest;
   private DomainFixtureHelp fixture;
+  private List<PetrolStation> givenPetrolStations;
   private List<PetrolStation> actualPetrolStations;
 
   @BeforeEach
   void setUp() {
     fixture = new DomainFixtureHelp();
+    givenPetrolStations = null;
     actualPetrolStations = null;
+    comparatorUnderTest = null;
   }
 
   /* The underlying implementation of this method is subject to the corresponding
@@ -50,12 +55,72 @@ class PetrolStationsTest {
 
   @ParameterizedTest
   @EnumSource(PetrolType.class)
+  void innerPriceAndDistanceComparator_compare_1stIsCheaperThan2nd(PetrolType givenPetrolType) {
+    // given
+    comparatorUnderTest = new PetrolStations.PriceAndDistanceComparator(givenPetrolType);
+
+    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_COMPARE_TWO_1ST_IS_CHEAPEST);
+    givenPetrolStations = fixture.convertToPetrolStations();
+    PetrolStation expectedPetrolStation = givenPetrolStations.get(0);
+
+    // when
+    givenPetrolStations.sort(comparatorUnderTest);
+
+    // then
+    /* Assert that 1st station is cheaper than 2nd station for each given PetrolType
+    (which is determined within the given fixtures). */
+    assertEquals(expectedPetrolStation, givenPetrolStations.get(0));
+  }
+
+  @ParameterizedTest
+  @EnumSource(PetrolType.class)
+  void innerPriceAndDistanceComparator_compare_2ndIsCheaperAndFurtherThan1st(PetrolType givenPetrolType) {
+    // given
+    comparatorUnderTest = new PetrolStations.PriceAndDistanceComparator(givenPetrolType);
+
+    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_COMPARE_TWO_2ND_IS_CHEAPER_AND_FURTHER);
+    givenPetrolStations = fixture.convertToPetrolStations();
+    PetrolStation expectedPetrolStation = givenPetrolStations.get(1);
+
+    // when
+    givenPetrolStations.sort(comparatorUnderTest);
+
+    // then
+    /* Assert that 2nd station is cheaper and further away than 1st station for each given
+    PetrolType (which is determined within the given fixtures).
+    By business rules that does NOT matter yet and the second station must win. */
+    assertEquals(expectedPetrolStation, givenPetrolStations.get(0));
+  }
+
+  @ParameterizedTest
+  @EnumSource(PetrolType.class)
+  void innerPriceAndDistanceComparator_compare_bothStationsHaveEqualPricesBut2ndIsCloser(
+      PetrolType givenPetrolType) {
+    // given
+    comparatorUnderTest = new PetrolStations.PriceAndDistanceComparator(givenPetrolType);
+
+    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_COMPARE_TWO_EQUAL_PRICES_BUT_2ND_IS_CLOSER);
+    givenPetrolStations = fixture.convertToPetrolStations();
+    PetrolStation expectedPetrolStation = givenPetrolStations.get(1);
+
+    // when
+    givenPetrolStations.sort(comparatorUnderTest);
+
+    // then
+    /* Assert that both stations have equal prices for each given PetrolType (which is
+    determined within the given fixtures), but 2nd station is closer than 1st.
+    By business rules, the closer station must win - that is the 2nd. */
+    assertEquals(expectedPetrolStation, givenPetrolStations.get(0));
+  }
+
+  @ParameterizedTest
+  @EnumSource(PetrolType.class)
   void sortByPriceAndDistanceForPetrolType_happy(PetrolType givenPetrolType) {
     // given
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
 
     // Convert from fixture-stations to a List of real PetrolStation objects.
-    List<PetrolStation> givenPetrolStations = fixture.convertToPetrolStations();
+    givenPetrolStations = fixture.convertToPetrolStations();
 
     /* Scramble the order of Array elements, so we can test if it gets sorted as expected by
     the method under test. */

@@ -47,12 +47,10 @@ public class PetrolStations {
    * @param type           The {@link PetrolType} on which to sort the stations.
    * @see PriceAndDistanceComparator
    */
-  // TODO port unit tests to inner class PriceAndDistanceComparator
   public static void sortByPriceAndDistanceForPetrolType(
       List<PetrolStation> petrolStations,
       PetrolType type) {
 
-    // List<PetrolStation> stationsCopy = new ArrayList<>(petrolStations);
     petrolStations.sort(new PriceAndDistanceComparator(type));
   }
 
@@ -85,7 +83,6 @@ public class PetrolStations {
    * <br><br>
    * Same applies for missing distance within the address of the station.
    */
-  // TODO unit tests (move existing tests from sortByPriceAndDistanceForPetrolType to here)
   public static class PriceAndDistanceComparator implements Comparator<PetrolStation> {
     private final PetrolType petrolType;
 
@@ -106,14 +103,14 @@ public class PetrolStations {
       return station
           .findPetrol(this.petrolType)
           .map((p) -> p.price)
-          .orElse(null);
+          .orElse(999999D);
     }
 
     private Double getDistanceForSort(PetrolStation station) {
       return station.address
           .getGeo()
           .flatMap(Geo::getDistance)
-          .orElse(null);
+          .orElse(999999D);
     }
   }
 }
