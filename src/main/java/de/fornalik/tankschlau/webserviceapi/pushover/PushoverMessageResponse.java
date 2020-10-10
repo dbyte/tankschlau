@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
-package de.fornalik.tankschlau.net;
+package de.fornalik.tankschlau.webserviceapi.pushover;
 
-public abstract class StringResponse extends BaseResponse<String> {}
+import de.fornalik.tankschlau.net.StringResponse;
+
+/**
+ * Concrete implementation if {@link StringResponse} for pushover.net webservice.
+ * Locks the type of the response body to <code>String</code>.
+ */
+public class PushoverMessageResponse extends StringResponse {}

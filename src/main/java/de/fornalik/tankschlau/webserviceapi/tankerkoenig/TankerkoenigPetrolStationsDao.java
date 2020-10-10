@@ -19,7 +19,7 @@ package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 import com.google.gson.Gson;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.HttpClient;
-import de.fornalik.tankschlau.net.StringResponse;
+import de.fornalik.tankschlau.net.Response;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolStationsDao;
 import de.fornalik.tankschlau.webserviceapi.common.GeoRequest;
@@ -68,16 +68,12 @@ public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
     // Reset state!
     this.transactionInfo = new TransactionInfo();
 
-    StringResponse response = (StringResponse) httpClient.newCall(request);
+    // It's guaranteed by newCall(...) that response is not null.
+    Response<String> response = httpClient.newCall(request, new TankerkoenigResponse());
 
-    if (response == null) {
-      this.transactionInfo.setOk(false);
-      this.transactionInfo.setStatus(getClass().getSimpleName() + "_RESPONSE_NULL");
-      this.transactionInfo.setMessage("Response is null.");
-      return new ArrayList<>();
-    }
-
-    String body = response.getBody().orElse("");
+    String body = response
+        .getBody()
+        .orElse("");
 
     if ("".equals(body)) {
       this.transactionInfo.setOk(false);

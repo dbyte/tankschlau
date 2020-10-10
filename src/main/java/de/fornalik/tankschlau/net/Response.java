@@ -19,9 +19,9 @@ package de.fornalik.tankschlau.net;
 import java.util.Optional;
 
 /**
- * The HTTP response interface used by this application.
+ * The HTTP response interface used by this application. T determines the type of the response body.
  */
-public interface Response {
+public interface Response<T> {
 
   /**
    * @return Optional error message for errors which have not been thrown at request time.
@@ -36,20 +36,19 @@ public interface Response {
   void setErrorMessage(String message);
 
   /**
-   * Gets the final response body data as a string.
+   * Gets the final response body data as T, while T is determined by the implementation
+   * of {@link BaseResponse}.
    *
-   * @return Optional body of the response as string, e.g. a JSON string. Or an empty Optional
-   * if there were errors which have not been thrown at request time - in this case,
-   * {@link #getErrorMessage()} should return the message which prevented the body from
-   * being converted to string.
+   * @return Optional body of the response as T, e.g. <code>String</code>. Or an empty Optional
+   * if there were errors which have not been thrown at request time.
    */
-  <T> Optional<T> getBody();
+  Optional<T> getBody();
 
   /**
-   * Sets the final string data.
+   * Sets the final body data.
    *
-   * @param <T>  The type of data.
-   * @param data Some data of type T.
+   * @param data Some data of type T, while T is defined by concrete implementation
+   *             of the {@link BaseResponse}.
    */
-  <T> void setBody(T data);
+  void setBody(T data);
 }

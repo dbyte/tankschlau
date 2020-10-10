@@ -16,4 +16,33 @@
 
 package de.fornalik.tankschlau.net;
 
-public abstract class StringResponse extends BaseResponse<String> {}
+import java.util.Optional;
+
+/**
+ * Abstract base class for a server's {@link Response} which provides body data
+ * and an optional error message.
+ */
+abstract class BaseResponse<T> implements Response<T> {
+  private T body;
+  private String errorMessage;
+
+  @Override
+  public Optional<T> getBody() {
+    return Optional.ofNullable(body);
+  }
+
+  @Override
+  public void setBody(T data) {
+    this.body = data;
+  }
+
+  @Override
+  public Optional<String> getErrorMessage() {
+    return Optional.ofNullable(errorMessage);
+  }
+
+  @Override
+  public void setErrorMessage(String in) {
+    this.errorMessage = in;
+  }
+}

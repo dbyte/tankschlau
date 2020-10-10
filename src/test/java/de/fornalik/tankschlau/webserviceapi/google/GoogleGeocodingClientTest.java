@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.HttpClient;
+import de.fornalik.tankschlau.net.Response;
 import de.fornalik.tankschlau.net.StringResponse;
 import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
 import de.fornalik.tankschlau.testhelp_common.GeocodingFixtureHelp;
@@ -27,6 +28,7 @@ import de.fornalik.tankschlau.webserviceapi.common.AddressRequest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -34,13 +36,15 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@SuppressWarnings("OptionalGetWithoutIsPresent")
+
 class GoogleGeocodingClientTest {
   private static HttpClient httpClientMock;
-  private static StringResponse stringResponseMock;
+  private static Response<String> stringResponseMock;
   private static AddressRequest addressRequestMock;
   private static Gson jsonProvider;
 
@@ -84,8 +88,7 @@ class GoogleGeocodingClientTest {
     when(stringResponseMock.getBody())
         .thenReturn(Optional.of(fixture.jsonFixture.toString()));
 
-    when(httpClientMock.newCall(addressRequestMock))
-        .thenReturn(stringResponseMock);
+    when(httpClientMock.newCall(any(), any())).thenReturn(stringResponseMock);
   }
 
   // endregion
@@ -102,10 +105,22 @@ class GoogleGeocodingClientTest {
     setupFixture(fixturePath);
 
     // when
+    //noinspection OptionalGetWithoutIsPresent
     actualGeo = geocodingClient.getGeo(addressMock).get();
 
     // then
     fixture.assertEqualValues(actualGeo);
+  }
+
+  @Test
+  void getGeo_shouldCrashWithNullPointerExceptionIfResponseIsNull()
+  throws IOException {
+    // given
+    when(httpClientMock.newCall(any(), any())).thenReturn(null);
+
+    // when then
+    //noinspection OptionalGetWithoutIsPresent
+    assertThrows(NullPointerException.class, () -> geocodingClient.getGeo(addressMock).get());
   }
 
   @ParameterizedTest

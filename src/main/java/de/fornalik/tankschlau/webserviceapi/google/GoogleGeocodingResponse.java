@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
-package de.fornalik.tankschlau.net;
+package de.fornalik.tankschlau.webserviceapi.google;
 
-public abstract class StringResponse extends BaseResponse<String> {}
+import de.fornalik.tankschlau.net.StringResponse;
+
+/**
+ * Concrete implementation of {@link StringResponse} for Google Geocoding webservice.
+ * Locks the type of the response body to <code>String</code>.
+ *
+ * @see <a href="https://maps.googleapis.com/maps/api/geocode/json">API base URL</a>,
+ * <a href="https://developers.google.com/maps/documentation/geocoding/overview#GeocodingResponses">Google documentation: GeocodingResponses</a>
+ */
+public class GoogleGeocodingResponse extends StringResponse {}

@@ -21,7 +21,7 @@ import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.HttpClient;
-import de.fornalik.tankschlau.net.StringResponse;
+import de.fornalik.tankschlau.net.Response;
 import de.fornalik.tankschlau.webserviceapi.common.AddressRequest;
 import de.fornalik.tankschlau.webserviceapi.common.GeocodingClient;
 
@@ -61,16 +61,10 @@ public class GoogleGeocodingClient implements GeocodingClient {
     // Reset state!
     this.transactionInfo = new TransactionInfo();
 
-    StringResponse response = (StringResponse) httpClient.newCall(request);
-
-    if (response == null) {
-      transactionInfo.setStatus(StringResponse.class.getSimpleName() + "_NULL");
-      transactionInfo.setMessage("Response is null.");
-      return Optional.empty();
-    }
+    Response<String> response = httpClient.newCall(request, new GoogleGeocodingResponse());
 
     if (!response.getBody().isPresent()) {
-      transactionInfo.setStatus(StringResponse.class.getSimpleName() + "_EMPTY_BODY");
+      transactionInfo.setStatus(GoogleGeocodingResponse.class.getSimpleName() + "_EMPTY_BODY");
       transactionInfo.setMessage("Response body is empty.");
       return Optional.empty();
     }

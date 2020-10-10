@@ -1,45 +1,57 @@
 package de.fornalik.tankschlau.net;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
+import static org.mockito.Mockito.mock;
 
 /**
  * We only test getters/setters with non-standard functionality here.
  */
 class StringResponseTest {
+  private static StringResponse stringResponse;
+
+  @BeforeAll
+  static void beforeAll() {
+    stringResponse = mock(StringResponse.class, CALLS_REAL_METHODS);
+  }
+
+  @AfterAll
+  static void afterAll() {
+    stringResponse = null;
+  }
 
   @Test
   void create_returnsProperlyInitializedInstance() {
-    // when
-    Response response = StringResponse.create();
-
-    // then
-    assertEquals(Optional.empty(), response.getBody());
-    assertEquals(Optional.empty(), response.getErrorMessage());
+    // when then
+    assertEquals(Optional.empty(), stringResponse.getBody());
+    assertEquals(Optional.empty(), stringResponse.getErrorMessage());
   }
 
   @Test
   void setBody_properlyProcessesStringArgument() {
     // given
-    Response response = StringResponse.create();
     String givenString = "This is a string which represents body data";
 
     // when then
-    assertDoesNotThrow(() -> response.setBody(givenString));
-    assertTrue(response.getBody().isPresent());
-    assertEquals(givenString, response.getBody().get());
+    assertDoesNotThrow(() -> stringResponse.setBody(givenString));
+    assertTrue(stringResponse.getBody().isPresent());
+    assertEquals(givenString, stringResponse.getBody().get());
   }
 
   @Test
-  void setBody_throwsOnInvalidArgumentType() {
+  void setErrorMessage_setsGivenMessage() {
     // given
-    Response response = StringResponse.create();
-    byte[] bytes = new byte[]{12, 127, 67, 13};
+    String givenString = "This is an error string";
 
     // when then
-    assertThrows(ClassCastException.class, () -> response.setBody(bytes));
+    assertDoesNotThrow(() -> stringResponse.setErrorMessage(givenString));
+    assertTrue(stringResponse.getErrorMessage().isPresent());
+    assertEquals(givenString, stringResponse.getErrorMessage().get());
   }
 }

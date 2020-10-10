@@ -20,7 +20,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.HttpClient;
-import de.fornalik.tankschlau.net.StringResponse;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.Petrols;
 import de.fornalik.tankschlau.station.PetrolsJsonAdapter;
@@ -37,10 +36,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class TankerkoenigPetrolStationsDaoTest {
   private static Gson jsonProvider;
@@ -51,8 +48,7 @@ class TankerkoenigPetrolStationsDaoTest {
 
   private DomainFixtureHelp fixture;
   private HttpClient httpClientMock;
-  private GeoRequest geoRequestMock;
-  private StringResponse stringResponseMock;
+  private TankerkoenigResponse tankerkoenigResponseMock;
 
   @BeforeAll
   static void beforeAll() {
@@ -80,8 +76,8 @@ class TankerkoenigPetrolStationsDaoTest {
     TankerkoenigJsonAdapter petrolStationsJsonAdapter = new TankerkoenigJsonAdapter(jsonProvider);
 
     httpClientMock = mock(HttpClient.class);
-    geoRequestMock = mock(GeoRequest.class);
-    stringResponseMock = mock(StringResponse.class);
+    GeoRequest geoRequestMock = mock(GeoRequest.class);
+    tankerkoenigResponseMock = mock(TankerkoenigResponse.class);
 
     sut = new TankerkoenigPetrolStationsDao(
         httpClientMock,
@@ -95,8 +91,8 @@ class TankerkoenigPetrolStationsDaoTest {
     // given
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_17STATIONS_HAPPY);
 
-    when(stringResponseMock.getBody()).thenReturn(Optional.of(fixture.jsonFixture));
-    when(httpClientMock.newCall(geoRequestMock)).thenReturn(stringResponseMock);
+    when(tankerkoenigResponseMock.getBody()).thenReturn(Optional.of(fixture.jsonFixture));
+    when(httpClientMock.newCall(any(), any())).thenReturn(tankerkoenigResponseMock);
 
     // when
     actualPetrolStations = sut.findAllInNeighbourhood(geoMock);
@@ -112,8 +108,8 @@ class TankerkoenigPetrolStationsDaoTest {
     // given
     String jsonStringResponse = "{}";
 
-    when(stringResponseMock.getBody()).thenReturn(Optional.of(jsonStringResponse));
-    when(httpClientMock.newCall(geoRequestMock)).thenReturn(stringResponseMock);
+    when(tankerkoenigResponseMock.getBody()).thenReturn(Optional.of(jsonStringResponse));
+    when(httpClientMock.newCall(any(), any())).thenReturn(tankerkoenigResponseMock);
 
     // when
     actualPetrolStations = sut.findAllInNeighbourhood(geoMock);
@@ -123,27 +119,20 @@ class TankerkoenigPetrolStationsDaoTest {
   }
 
   @Test
-  void getAllInNeighbourhood_setsTransactionInfoProperlyIfResponseIsNull() throws IOException {
+  void getAllInNeighbourhood_shouldCrashWithNullPointerExceptionIfResponseIsNull()
+  throws IOException {
     // given
-    when(httpClientMock.newCall(geoRequestMock)).thenReturn(null);
+    when(httpClientMock.newCall(any(), any())).thenReturn(null);
 
-    // when
-    actualPetrolStations = sut.findAllInNeighbourhood(geoMock);
-
-    // then
-    assertEquals(0, actualPetrolStations.size());
-    assertFalse(sut.getTransactionInfo().isOk());
-    assertEquals(
-        TankerkoenigPetrolStationsDao.class.getSimpleName() + "_RESPONSE_NULL",
-        sut.getTransactionInfo().getStatus());
-    assertEquals("Response is null.", sut.getTransactionInfo().getMessage());
+    // when then
+    assertThrows(NullPointerException.class, () -> sut.findAllInNeighbourhood(geoMock));
   }
 
   @Test
   void getAllInNeighbourhood_setsTransactionInfoProperlyIfBodyIsEmpty() throws IOException {
     // given
-    when(stringResponseMock.getBody()).thenReturn(Optional.empty());
-    when(httpClientMock.newCall(geoRequestMock)).thenReturn(stringResponseMock);
+    when(tankerkoenigResponseMock.getBody()).thenReturn(Optional.empty());
+    when(httpClientMock.newCall(any(), any())).thenReturn(tankerkoenigResponseMock);
 
     // when
     actualPetrolStations = sut.findAllInNeighbourhood(geoMock);
@@ -165,8 +154,8 @@ class TankerkoenigPetrolStationsDaoTest {
     // given
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_MISSING_APIKEY);
 
-    when(stringResponseMock.getBody()).thenReturn(Optional.of(fixture.jsonFixture));
-    when(httpClientMock.newCall(geoRequestMock)).thenReturn(stringResponseMock);
+    when(tankerkoenigResponseMock.getBody()).thenReturn(Optional.of(fixture.jsonFixture));
+    when(httpClientMock.newCall(any(), any())).thenReturn(tankerkoenigResponseMock);
 
     // when
     actualPetrolStations = sut.findAllInNeighbourhood(geoMock);
@@ -191,8 +180,8 @@ class TankerkoenigPetrolStationsDaoTest {
     // given
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_LONGITUDE_ERROR);
 
-    when(stringResponseMock.getBody()).thenReturn(Optional.of(fixture.jsonFixture));
-    when(httpClientMock.newCall(geoRequestMock)).thenReturn(stringResponseMock);
+    when(tankerkoenigResponseMock.getBody()).thenReturn(Optional.of(fixture.jsonFixture));
+    when(httpClientMock.newCall(any(), any())).thenReturn(tankerkoenigResponseMock);
 
     // when
     actualPetrolStations = sut.findAllInNeighbourhood(geoMock);

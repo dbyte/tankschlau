@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
-package de.fornalik.tankschlau.net;
+package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 
-public abstract class StringResponse extends BaseResponse<String> {}
+import de.fornalik.tankschlau.net.StringResponse;
+
+/**
+ * Concrete implementation of {@link StringResponse} for tankerkoenig.de webservice.
+ * Locks the type of the response body to <code>String</code>.
+ */
+public class TankerkoenigResponse extends StringResponse {}

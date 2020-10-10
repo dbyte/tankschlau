@@ -47,32 +47,52 @@ public class OkHttpClient implements HttpClient {
   }
 
   @Override
-  public Response newCall(final Request request) throws IOException {
-    return this.newCall(request, StringResponse.create());
+  public StringResponse newCall(final Request request, StringResponse response) {
+    okhttp3.Response okhttpResponse;
+
+    try {
+      okhttpResponse = this.realCall(request, response);
+    }
+
+    catch (IOException | IllegalStateException e) {
+      return response;
+    }
+
+    try {
+      response.setBody(Objects.requireNonNull(okhttpResponse.body()).string());
+    }
+
+    catch (IOException | NullPointerException e) {
+      String msg = "Body of response could not be converted to string.";
+      response.setErrorMessage(msg + " " + getDetails(okhttpResponse));
+    }
+
+    return response;
   }
 
-  @Override
-  public Response newCall(final Request request, Response response) throws IOException {
+  private okhttp3.Response realCall(final Request request, Response<?> response)
+  throws IOException, IllegalStateException {
     this.request = request;
 
     okhttp3.HttpUrl url = createUrl();
     okhttp3.Request okhttpRequest = createRequest(url);
-    okhttp3.Response okhttpResponse = callServer(okhttpRequest); //throws
+    okhttp3.Response okhttpResponse;
 
-    if (okhttpResponse.body() != null) {
-      if (response instanceof StringResponse)
-        response.setBody(okhttpResponse.body().string());
-      else
-        throw new UnsupportedOperationException(
-            "response.setBody not implemented for incoming type of Response: "
-                + response.getClass().getTypeName());
-
-    } else {
-      String message = "Body of response is null. " + getDetails(okhttpResponse);
-      throw new IOException(message);
+    try {
+      okhttpResponse = callServer(okhttpRequest); //throws
+    }
+    catch (IOException e) {
+      response.setErrorMessage(e.getMessage());
+      throw e;
     }
 
-    return response;
+    if (okhttpResponse.body() == null) {
+      response.setErrorMessage("Body of response is null.\n" + getDetails(okhttpResponse));
+      //noinspection OptionalGetWithoutIsPresent
+      throw new IllegalStateException(response.getErrorMessage().get());
+    }
+
+    return okhttpResponse;
   }
 
   private okhttp3.HttpUrl createUrl() {

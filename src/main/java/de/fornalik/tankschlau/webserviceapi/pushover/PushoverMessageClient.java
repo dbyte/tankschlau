@@ -18,7 +18,6 @@ package de.fornalik.tankschlau.webserviceapi.pushover;
 
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.Response;
-import de.fornalik.tankschlau.net.StringResponse;
 import de.fornalik.tankschlau.webserviceapi.common.MessageClient;
 import de.fornalik.tankschlau.webserviceapi.common.MessageContent;
 import de.fornalik.tankschlau.webserviceapi.common.MessageRequest;
@@ -47,19 +46,12 @@ public class PushoverMessageClient implements MessageClient {
   }
 
   @Override
-  public Response sendMessage(MessageContent content) throws IOException {
+  public Response<String> sendMessage(MessageContent content) throws IOException {
     request.setMessage(content);
-    StringResponse response = (StringResponse) httpClient.newCall(request);
 
-    if (response == null) {
-      StringResponse resp = StringResponse.create();
-      resp.setErrorMessage("Response is null.");
-      return resp;
-    }
+    Response<String> response = httpClient.newCall(request, new PushoverMessageResponse());
 
-    if (!response.getBody().isPresent()) {
-      response.setErrorMessage(response.getErrorMessage().orElse("Response body is empty."));
-    }
+    response.getErrorMessage().ifPresent((msg) -> System.out.println("Log.Error: " + msg));
 
     return response;
   }

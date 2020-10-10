@@ -31,6 +31,8 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -76,6 +78,16 @@ class PushoverMessageClientTest {
   }
 
   @Test
+  void sendMessage_shouldCrashWithNullPointerExceptionIfResponseIsNull()
+  throws IOException {
+    // given
+    when(httpClientMock.newCall(any(), any())).thenReturn(null);
+
+    // when then
+    assertThrows(NullPointerException.class, () -> messageClient.sendMessage(messageContentMock));
+  }
+
+  @Test
   void sendMessage_integrationTest_shouldSendRealMessage() throws IOException {
     // given
     HttpClient realHttpClient = new OkHttpClient(new okhttp3.OkHttpClient());
@@ -91,7 +103,7 @@ class PushoverMessageClientTest {
     PushoverMessageClient messageClient = new PushoverMessageClient(realHttpClient, request);
 
     // when
-    Response response = messageClient.sendMessage(messageContentMock);
+    Response<String> response = messageClient.sendMessage(messageContentMock);
 
     // then
     System.out.println("RESPONSE BODY: " + response.getBody());
