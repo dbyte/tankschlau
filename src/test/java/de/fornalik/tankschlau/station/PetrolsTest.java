@@ -1,7 +1,5 @@
 package de.fornalik.tankschlau.station;
 
-import de.fornalik.tankschlau.testhelp_common.DomainFixtureHelp;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -11,12 +9,6 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PetrolsTest {
-  private DomainFixtureHelp fixture;
-
-  @BeforeEach
-  void setUp() {
-    fixture = new DomainFixtureHelp();
-  }
 
   @Test
   void getSortedByPetrolTypeAndPrice_sortsByOrderOfPetrolTypeCasesAndThenPrice() {

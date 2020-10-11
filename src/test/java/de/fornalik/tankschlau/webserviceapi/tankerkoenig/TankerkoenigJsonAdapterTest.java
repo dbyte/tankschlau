@@ -29,7 +29,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.FileReader;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,11 +61,6 @@ class TankerkoenigJsonAdapterTest {
   }
 
   @Test
-  void constructor_XXX() {
-
-  }
-
-  @Test
   void createPetrolStations_oneStation_happy() {
     // given
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
@@ -82,10 +76,6 @@ class TankerkoenigJsonAdapterTest {
 
   @Test
   void createPetrolStations_oneStation_returnsEmptyArrayIfJsonArrayElementsAreNoJsonObjects() {
-    // given
-    FileReader reader = FixtureFiles.getFileReaderForResource(
-        FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_STATIONS_ARRAY_IS_STRING_ARRAY);
-
     // when
     actualPetrolStations = sut.createPetrolStations(null);
 

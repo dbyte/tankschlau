@@ -30,7 +30,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -77,7 +76,7 @@ class GoogleGeocodingClientTest {
     response = new GoogleGeocodingResponse(jsonProvider);
   }
 
-  private void setupFixture(String path) throws IOException {
+  private void setupFixture(String path) {
     fixture.setupFixture(path);
 
     response.setBody(fixture.jsonFixture.toString());
@@ -102,7 +101,7 @@ class GoogleGeocodingClientTest {
       FixtureFiles.GOOGLE_GEO_RESPONSE_52_5006049_13_3136007_GeometricCenter,
       FixtureFiles.GOOGLE_GEO_RESPONSE_52_9541353_8_2396026_Approximate,
   })
-  void getGeo_returnsProperGeoInstanceOnHappyResponse(String fixturePath) throws IOException {
+  void getGeo_returnsProperGeoInstanceOnHappyResponse(String fixturePath) {
     // given
     setupFixture(fixturePath);
 
@@ -115,8 +114,7 @@ class GoogleGeocodingClientTest {
   }
 
   @Test
-  void getGeo_shouldCrashWithNullPointerExceptionIfResponseIsNull()
-  throws IOException {
+  void getGeo_shouldCrashWithNullPointerExceptionIfResponseIsNull() {
     // given
     response = null;
     when(httpClientMock.newCall(any(), any())).thenReturn(response);
@@ -126,7 +124,7 @@ class GoogleGeocodingClientTest {
   }
 
   @Test
-  void getGeo_returnsEmptyGeoIfResponseBodyIsEmpty() throws IOException {
+  void getGeo_returnsEmptyGeoIfResponseBodyIsEmpty() {
     // given
     setupFixture(FixtureFiles.GOOGLE_GEO_RESPONSE_MissingApiKey); // does not matter here
     response.setBody(null);
@@ -139,7 +137,7 @@ class GoogleGeocodingClientTest {
   }
 
   @Test
-  void getGeo_returnsExpectedLicenceInfo() throws IOException {
+  void getGeo_returnsExpectedLicenceInfo() {
     // given
     setupFixture(FixtureFiles.GOOGLE_GEO_RESPONSE_50_1078234_8_5413809_Rooftop);
 
@@ -156,8 +154,7 @@ class GoogleGeocodingClientTest {
       FixtureFiles.GOOGLE_GEO_RESPONSE_MissingApiKey,
       FixtureFiles.GOOGLE_GEO_RESPONSE_ZeroResults,
   })
-  void getGeo_correctlyAdaptsGoogleResponseRootDataToResponseFields(String fixturePath)
-  throws IOException {
+  void getGeo_correctlyAdaptsGoogleResponseRootDataToResponseFields(String fixturePath) {
     // given
     setupFixture(fixturePath);
 
@@ -173,8 +170,7 @@ class GoogleGeocodingClientTest {
       FixtureFiles.GOOGLE_GEO_RESPONSE_MissingApiKey,
       FixtureFiles.GOOGLE_GEO_RESPONSE_ZeroResults
   })
-  void getGeo_setsProperResponseMessageAndStatusIfGoogleReportsError(String fixturePath)
-  throws IOException {
+  void getGeo_setsProperResponseMessageAndStatusIfGoogleReportsError(String fixturePath) {
     // given
     setupFixture(fixturePath);
 

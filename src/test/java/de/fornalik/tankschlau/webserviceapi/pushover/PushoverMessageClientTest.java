@@ -28,7 +28,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -78,8 +77,7 @@ class PushoverMessageClientTest {
   }
 
   @Test
-  void sendMessage_shouldCrashWithNullPointerExceptionIfResponseIsNull()
-  throws IOException {
+  void sendMessage_shouldCrashWithNullPointerExceptionIfResponseIsNull() {
     // given
     when(httpClientMock.newCall(any(), any())).thenReturn(null);
 
@@ -88,7 +86,7 @@ class PushoverMessageClientTest {
   }
 
   @Test
-  void sendMessage_integrationTest_shouldSendRealMessage() throws IOException {
+  void sendMessage_integrationTest_shouldSendRealMessage() {
     // given
     HttpClient realHttpClient = new OkHttpClient(new okhttp3.OkHttpClient());
 

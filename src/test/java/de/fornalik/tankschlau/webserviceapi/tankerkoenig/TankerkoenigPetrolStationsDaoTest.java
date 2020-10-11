@@ -32,7 +32,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -87,7 +86,7 @@ class TankerkoenigPetrolStationsDaoTest {
   }
 
   @Test
-  void getAllInNeighbourhood_happy() throws IOException {
+  void getAllInNeighbourhood_happy() {
     // given
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_17STATIONS_HAPPY);
 
@@ -103,8 +102,7 @@ class TankerkoenigPetrolStationsDaoTest {
   }
 
   @Test
-  void getAllInNeighbourhood_returnsEmptyPetrolStationsArrayOnEmptyJsonResponse()
-  throws IOException {
+  void getAllInNeighbourhood_returnsEmptyPetrolStationsArrayOnEmptyJsonResponse() {
     // given
     String jsonStringResponse = "{}";
 
@@ -119,8 +117,7 @@ class TankerkoenigPetrolStationsDaoTest {
   }
 
   @Test
-  void getAllInNeighbourhood_shouldCrashWithNullPointerExceptionIfResponseIsNull()
-  throws IOException {
+  void getAllInNeighbourhood_shouldCrashWithNullPointerExceptionIfResponseIsNull() {
     // given
     when(httpClientMock.newCall(any(), any())).thenReturn(null);
 
@@ -129,7 +126,7 @@ class TankerkoenigPetrolStationsDaoTest {
   }
 
   @Test
-  void getAllInNeighbourhood_setsTransactionInfoProperlyIfBodyIsEmpty() throws IOException {
+  void getAllInNeighbourhood_setsTransactionInfoProperlyIfBodyIsEmpty() {
     // given
     when(tankerkoenigResponseMock.getBody()).thenReturn(Optional.empty());
     when(httpClientMock.newCall(any(), any())).thenReturn(tankerkoenigResponseMock);
@@ -150,7 +147,7 @@ class TankerkoenigPetrolStationsDaoTest {
   }
 
   @Test
-  void getAllInNeighbourhood_setsTransactionInfoProperlyIfOkIsFalse() throws IOException {
+  void getAllInNeighbourhood_setsTransactionInfoProperlyIfOkIsFalse() {
     // given
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_MISSING_APIKEY);
 
@@ -175,8 +172,7 @@ class TankerkoenigPetrolStationsDaoTest {
   }
 
   @Test
-  void getAllInNeighbourhood_setsTransactionInfoProperlyIfApiRespondsWithError()
-  throws IOException {
+  void getAllInNeighbourhood_setsTransactionInfoProperlyIfApiRespondsWithError() {
     // given
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_LONGITUDE_ERROR);
 

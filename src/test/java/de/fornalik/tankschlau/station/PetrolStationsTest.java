@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -35,8 +34,7 @@ class PetrolStationsTest {
   /* The underlying implementation of this method is subject to the corresponding
   net and web service units, so we just do some basic test on its own code paths here. */
   @Test
-  void getAllInNeighbourhood_callsDaoAndReturnsResultingPetrolStations()
-  throws IOException {
+  void getAllInNeighbourhood_callsDaoAndReturnsResultingPetrolStations() {
     // given
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
 
