@@ -44,10 +44,8 @@ class GoogleGeocodingResponse extends JsonResponse<Geo> {
 
   @Override
   public Optional<Geo> fromJson(String jsonString) {
-
-    ResponseDTO responseDto = jsonProvider.fromJson(
-        jsonString,
-        ResponseDTO.class);
+    // Deserialize
+    ResponseDTO responseDto = jsonProvider.fromJson(jsonString, ResponseDTO.class);
 
     if (responseDto == null) {
       setErrorMessage("JSON string could not be converted. String is:\n" + jsonString);
@@ -55,13 +53,11 @@ class GoogleGeocodingResponse extends JsonResponse<Geo> {
       return Optional.empty();
     }
 
-    if (responseDto.status != null && !"".equals(responseDto.status)) {
+    if (responseDto.status != null && !"".equals(responseDto.status))
       setStatus(responseDto.status);
-    }
 
-    if (responseDto.message != null && !"".equals(responseDto.message)) {
+    if (responseDto.message != null && !"".equals(responseDto.message))
       setErrorMessage(responseDto.message);
-    }
 
     if (responseDto.results.size() == 0)
       return Optional.empty();
@@ -76,24 +72,24 @@ class GoogleGeocodingResponse extends JsonResponse<Geo> {
   }
 
   /**
-   * Object relational mapper for Gson. It must correlate with the root level json object
-   * of the Google Geocoding response.
+   * Class provides object relational mapping support for Gson. It must correlate with the
+   * root level json object of the Google Geocoding response.
    */
   private static class ResponseDTO {
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     @SerializedName("results")
-    final ArrayList<ResultDTO> results;
+    ArrayList<ResultDTO> results;
     @SerializedName("status") String status;
     @SerializedName("error_message") String message;
 
-    private ResponseDTO() {
-      results = new ArrayList<>();
+    ResponseDTO() {
+      this.results = new ArrayList<>();
     }
   }
 
   /**
-   * Object relational mapper for Gson. It represents the json array "results" of the
-   * Google Geocoding response.
+   * Class provides object relational mapping support for Gson. It represents the json array
+   * "results" of the Google Geocoding response.
    */
   @SuppressWarnings("unused")
   private static class ResultDTO {
@@ -108,8 +104,8 @@ class GoogleGeocodingResponse extends JsonResponse<Geo> {
     }
 
     /**
-     * Object relational mapper for Gson. It represents the "geometry" json object within one
-     * element of json array "results" of the Google Geocoding response.
+     * Class provides object relational mapping support for Gson. It represents the "geometry"
+     * json object within one element of json array "results" of the Google Geocoding response.
      */
     @SuppressWarnings("unused")
     private static class Geometry {
@@ -118,8 +114,8 @@ class GoogleGeocodingResponse extends JsonResponse<Geo> {
     }
 
     /**
-     * Object relational mapper for Gson. It represents the "location" json object within the
-     * json object "geometry" of the Google Geocoding response.
+     * Class provides object relational mapping support for Gson. It represents the "location"
+     * json object within the json object "geometry" of the Google Geocoding response.
      */
     @SuppressWarnings("unused")
     private static class Location {
