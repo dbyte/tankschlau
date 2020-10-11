@@ -43,6 +43,7 @@ import static org.mockito.Mockito.when;
 class GoogleGeocodingClientTest {
   private static HttpClient httpClientMock;
   private static AddressRequest addressRequestMock;
+  private static Gson jsonProvider;
 
   private GoogleGeocodingClient geocodingClient;
   private Geo actualGeo;
@@ -54,45 +55,42 @@ class GoogleGeocodingClientTest {
 
   @BeforeAll
   static void beforeAll() {
-
+    httpClientMock = mock(HttpClient.class);
+    addressRequestMock = mock(AddressRequest.class);
+    jsonProvider = new Gson();
   }
 
   @AfterAll
   static void afterAll() {
     httpClientMock = null;
     addressRequestMock = null;
+    jsonProvider = null;
   }
 
   @BeforeEach
   void setUp() {
-
-
-  }
-
-  private void setupFixture(String path) throws IOException {
-    httpClientMock = mock(HttpClient.class);
-    addressRequestMock = mock(AddressRequest.class);
-
     this.addressMock = mock(Address.class);
     this.actualGeo = null;
     this.fixture = new GeocodingFixtureHelp();
 
+    // Must be a real object
+    response = new GoogleGeocodingResponse(jsonProvider);
+  }
+
+  private void setupFixture(String path) throws IOException {
     fixture.setupFixture(path);
 
-    this.response = new GoogleGeocodingResponse(new Gson()); // must be a real object
     response.setBody(fixture.jsonFixture.toString());
 
     when(httpClientMock.newCall(any(), any())).thenReturn(response);
 
     this.geocodingClient = new GoogleGeocodingClient(
         httpClientMock,
-        new Gson(),
+        jsonProvider,
         addressRequestMock);
 
     /*when(response.getBody())
         .thenReturn(Optional.of(fixture.jsonFixture.toString()));*/
-
-
   }
 
   // endregion
@@ -120,24 +118,24 @@ class GoogleGeocodingClientTest {
   void getGeo_shouldCrashWithNullPointerExceptionIfResponseIsNull()
   throws IOException {
     // given
-    when(httpClientMock.newCall(any(), any())).thenReturn(null);
+    response = null;
+    when(httpClientMock.newCall(any(), any())).thenReturn(response);
 
     // when then
-    //noinspection OptionalGetWithoutIsPresent
-    assertThrows(NullPointerException.class, () -> geocodingClient.getGeo(addressMock).get());
+    assertThrows(NullPointerException.class, () -> geocodingClient.getGeo(addressMock));
   }
 
-  @ParameterizedTest
-  @ValueSource(strings = {
-      FixtureFiles.GOOGLE_GEO_RESPONSE_MissingApiKey,
-      FixtureFiles.GOOGLE_GEO_RESPONSE_ZeroResults
-  })
-  void getGeo_returnsEmptyGeoIfGoogleReportsError(String fixturePath) throws IOException {
+  @Test
+  void getGeo_returnsEmptyGeoIfResponseBodyIsEmpty() throws IOException {
     // given
-    setupFixture(fixturePath);
+    setupFixture(FixtureFiles.GOOGLE_GEO_RESPONSE_MissingApiKey); // does not matter here
+    response.setBody(null);
+
+    // when
+    Optional<Geo> actualOptionalGeo = geocodingClient.getGeo(addressMock);
 
     // when then
-    assertEquals(Optional.empty(), geocodingClient.getGeo(addressMock));
+    assertEquals(Optional.empty(), actualOptionalGeo);
   }
 
   @Test
@@ -158,7 +156,7 @@ class GoogleGeocodingClientTest {
       FixtureFiles.GOOGLE_GEO_RESPONSE_MissingApiKey,
       FixtureFiles.GOOGLE_GEO_RESPONSE_ZeroResults,
   })
-  void getGeo_convertsResponseStatusFromGoogleResponseStatus(String fixturePath)
+  void getGeo_correctlyAdaptsGoogleResponseRootDataToResponseFields(String fixturePath)
   throws IOException {
     // given
     setupFixture(fixturePath);
@@ -175,7 +173,8 @@ class GoogleGeocodingClientTest {
       FixtureFiles.GOOGLE_GEO_RESPONSE_MissingApiKey,
       FixtureFiles.GOOGLE_GEO_RESPONSE_ZeroResults
   })
-  void getGeo_setsProperTransactionInfoIfGoogleReportsError(String fixturePath) throws IOException {
+  void getGeo_setsProperResponseMessageAndStatusIfGoogleReportsError(String fixturePath)
+  throws IOException {
     // given
     setupFixture(fixturePath);
 
@@ -184,6 +183,5 @@ class GoogleGeocodingClientTest {
 
     // then
     fixture.assertEqualValues(response);
-    assertEquals("Geo data powered by Google.", geocodingClient.getLicenseString());
   }
 }

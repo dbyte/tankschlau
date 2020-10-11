@@ -61,12 +61,10 @@ public class GoogleGeocodingClient implements GeocodingClient<JsonResponse<Geo>>
         request,
         new GoogleGeocodingResponse(jsonProvider));
 
-    if (!response.getBody().isPresent()) {
-      // Appropriate error message should then be available by calling response.getErrorMessage().
-      return Optional.empty();
-    }
+    Objects.requireNonNull(response, "Response is null.");
 
-    return jsonToGeo();
+    // Return populated Geo object if body is present, else return Optional.empty
+    return response.getBody().flatMap(jsonString -> response.fromJson(jsonString));
   }
 
   @Override
@@ -77,13 +75,5 @@ public class GoogleGeocodingClient implements GeocodingClient<JsonResponse<Geo>>
   @Override
   public String getLicenseString() {
     return "Geo data powered by Google.";
-  }
-
-  private Optional<Geo> jsonToGeo() {
-    String jsonString = response
-        .getBody()
-        .orElseThrow(() -> new IllegalStateException("Response body is empty."));
-
-    return response.fromJson(jsonString);
   }
 }
