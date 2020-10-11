@@ -55,8 +55,6 @@ class GoogleGeocodingResponse extends JsonResponse<Geo> {
       return Optional.empty();
     }
 
-    Optional<Geo> geo = Optional.empty();
-
     if (responseDto.status != null && !"".equals(responseDto.status)) {
       setStatus(responseDto.status);
     }
@@ -65,15 +63,16 @@ class GoogleGeocodingResponse extends JsonResponse<Geo> {
       setErrorMessage(responseDto.message);
     }
 
-    if (responseDto.results.size() > 0) {
-      /* results is always initialized at construction time of ResponseDTO, so can't be null.
-      From here, we can trust that webservice has set values for latitude, longitude
-      and location type. */
-      ResultDTO firstResult = responseDto.results.get(0);
-      geo = Optional.of(firstResult.getAsGeo());
-    }
+    if (responseDto.results.size() == 0)
+      return Optional.empty();
 
-    return geo;
+    /*
+    From here, we can trust that Google service has set values for latitude, longitude and
+    location type. List "results" is always initialized at construction time of ResponseDTO,
+    so can't be null.
+    */
+    ResultDTO firstResult = responseDto.results.get(0);
+    return Optional.of(firstResult.getAsGeo());
   }
 
   /**
@@ -81,12 +80,11 @@ class GoogleGeocodingResponse extends JsonResponse<Geo> {
    * of the Google Geocoding response.
    */
   private static class ResponseDTO {
-    @SerializedName("status") String status;
-    @SerializedName("error_message") String message;
-
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     @SerializedName("results")
     final ArrayList<ResultDTO> results;
+    @SerializedName("status") String status;
+    @SerializedName("error_message") String message;
 
     private ResponseDTO() {
       results = new ArrayList<>();
