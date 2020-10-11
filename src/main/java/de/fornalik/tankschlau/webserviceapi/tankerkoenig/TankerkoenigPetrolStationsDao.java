@@ -77,7 +77,9 @@ public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
     if ("".equals(body)) {
       this.transactionInfo.setOk(false);
       this.transactionInfo.setStatus(getClass().getSimpleName() + "_EMPTY_RESPONSE_BODY");
-      this.transactionInfo.setMessage("Response body is empty.");
+      this.transactionInfo.setMessage(
+          "Response body is empty. " + response.getErrorMessage().orElse(""));
+
       return new ArrayList<>();
     }
 

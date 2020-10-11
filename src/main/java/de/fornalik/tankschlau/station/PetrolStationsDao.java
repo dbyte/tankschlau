@@ -82,7 +82,7 @@ public interface PetrolStationsDao {
     }
 
     public void setMessage(String message) {
-      this.message = message;
+      this.message = StringLegalizer.create(message).safeTrim().end();
     }
 
     private String nullToEmpty(String s) {
