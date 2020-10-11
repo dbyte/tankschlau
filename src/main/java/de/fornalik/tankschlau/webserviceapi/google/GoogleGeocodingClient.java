@@ -34,7 +34,6 @@ import java.util.Optional;
  * <a href="https://developers.google.com/maps/documentation/geocoding/overview#GeocodingResponses">Google documentation: GeocodingResponses</a>
  */
 public class GoogleGeocodingClient implements GeocodingClient<JsonResponse<Geo>> {
-
   private final HttpClient httpClient;
   private final Gson jsonProvider;
   private final AddressRequest request;

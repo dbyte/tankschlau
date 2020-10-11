@@ -16,6 +16,8 @@
 
 package de.fornalik.tankschlau.net;
 
+import de.fornalik.tankschlau.util.StringLegalizer;
+
 import java.util.Optional;
 
 /**
@@ -63,6 +65,6 @@ abstract class BaseResponse<T> implements Response<T> {
 
   @Override
   public void setErrorMessage(String in) {
-    this.errorMessage = in;
+    this.errorMessage = StringLegalizer.create(in).safeTrim().end();
   }
 }

@@ -71,13 +71,14 @@ class BaseResponseTest {
   }
 
   @Test
-  void setErrorMessage_setsGivenMessage() {
+  void setErrorMessage_setsAndTrimsGivenMessage() {
     // given
-    String givenString = "This is an error string";
+    String givenString = "    This is an error string  ";
+    String expectedString = "This is an error string";
 
     // when then
     assertDoesNotThrow(() -> stringResponse.setErrorMessage(givenString));
     assertTrue(stringResponse.getErrorMessage().isPresent());
-    assertEquals(givenString, stringResponse.getErrorMessage().get());
+    assertEquals(expectedString, stringResponse.getErrorMessage().get());
   }
 }

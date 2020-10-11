@@ -28,8 +28,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GeocodingFixtureHelp {
   public ResponseDTO objectFixture;
@@ -82,10 +81,22 @@ public class GeocodingFixtureHelp {
     // Begin test
 
     assertEquals(objectFixture.status, response.getStatus());
-    assertEquals(objectFixture.message, response.getErrorMessage().orElse(""));
 
-    /* According to Google Geocoding conventions, we assert that the results array is never null,
-     even if we got a response with an error message. */
+    /*
+    Lenient message-check, because at some conditions, we concatenate custom message strings with
+    the ones delivered by the webservice.
+    */
+    assertTrue(
+        response.getErrorMessage().orElse("").contains(objectFixture.message),
+        "\nExpected error message to contain\n"
+            + "\"" + objectFixture.message + "\"\n"
+            + "but actually is\n"
+            + "\"" + response.getErrorMessage() + "\"");
+
+    /*
+    According to Google Geocoding conventions, we assert that the results array is never null,
+    even if we got a response with an error message.
+    */
     assertNotNull(objectFixture.results);
   }
 

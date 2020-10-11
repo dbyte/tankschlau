@@ -20,7 +20,10 @@ import com.google.gson.Gson;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
 import de.fornalik.tankschlau.testhelp_common.GeocodingFixtureHelp;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -51,10 +54,6 @@ class GoogleGeocodingResponseTest {
     this.fixture = new GeocodingFixtureHelp();
   }
 
-  @AfterEach
-  void tearDown() {
-  }
-
   @Test
   void construct_throwsOnNullJsonProvider() {
     assertThrows(NullPointerException.class, () -> new GoogleGeocodingResponse(null));
@@ -64,8 +63,7 @@ class GoogleGeocodingResponseTest {
   @ValueSource(strings = {
       FixtureFiles.GOOGLE_GEO_RESPONSE_52_39097_10_84663_Rooftop,
       FixtureFiles.GOOGLE_GEO_RESPONSE_52_5006049_13_3136007_GeometricCenter,
-      FixtureFiles.GOOGLE_GEO_RESPONSE_52_9541353_8_2396026_Approximate
-  })
+      FixtureFiles.GOOGLE_GEO_RESPONSE_52_9541353_8_2396026_Approximate})
   void fromJson_deserializesGivenJsonToGeoObject_happy(String givenJsonString) {
     // given
     fixture.setupFixture(givenJsonString);
@@ -84,8 +82,7 @@ class GoogleGeocodingResponseTest {
       FixtureFiles.GOOGLE_GEO_RESPONSE_52_5006049_13_3136007_GeometricCenter,
       FixtureFiles.GOOGLE_GEO_RESPONSE_52_9541353_8_2396026_Approximate,
       FixtureFiles.GOOGLE_GEO_RESPONSE_MissingApiKey,
-      FixtureFiles.GOOGLE_GEO_RESPONSE_ZeroResults
-  })
+      FixtureFiles.GOOGLE_GEO_RESPONSE_ZeroResults})
   void fromJson_setsResponseFieldsAccordingToGoogleResponse_happy(String givenJsonString) {
     // given
     fixture.setupFixture(givenJsonString);
@@ -101,8 +98,7 @@ class GoogleGeocodingResponseTest {
   @ParameterizedTest
   @ValueSource(strings = {
       FixtureFiles.GOOGLE_GEO_RESPONSE_ZeroResults,
-      FixtureFiles.GOOGLE_GEO_RESPONSE_MissingApiKey
-  })
+      FixtureFiles.GOOGLE_GEO_RESPONSE_MissingApiKey})
   void fromJson_returnsEmptyOptionalIfGoogleRespondedWithZeroResults(String givenJsonString) {
     // given
     fixture.setupFixture(givenJsonString);
@@ -125,5 +121,22 @@ class GoogleGeocodingResponseTest {
     actualOptionalGeo = googleGeocodingResponse.fromJson("");
     // then
     assertEquals(Optional.empty(), actualOptionalGeo);
+  }
+
+  @Test
+  void fromJson_setsCustomErrorMessageIfDeserializationResultIsNull() {
+    // given
+    String expectedMessagePart = "JSON string could not be converted";
+
+    // when
+    googleGeocodingResponse.fromJson(null);
+
+    // then
+    assertTrue(
+        googleGeocodingResponse.getErrorMessage().orElse("").contains(expectedMessagePart),
+        "\nExpected error message to contain\n"
+            + "\"" + expectedMessagePart + "\"\n"
+            + "but actually is\n"
+            + "\"" + googleGeocodingResponse.getErrorMessage() + "\"");
   }
 }

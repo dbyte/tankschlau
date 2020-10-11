@@ -20,16 +20,13 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.JsonResponse;
-import de.fornalik.tankschlau.net.StringResponse;
 
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 
-// TODO unit tests, move some from GoogleGeocodingClientTest to here.
-
 /**
- * Concrete implementation of {@link StringResponse} for Google Geocoding webservice.
+ * Concrete implementation of {@link JsonResponse} for Google Geocoding webservice.
  * Locks the type of the response body to <code>String</code>.
  *
  * @see <a href="https://maps.googleapis.com/maps/api/geocode/json">API base URL</a>,
@@ -59,8 +56,10 @@ class GoogleGeocodingResponse extends JsonResponse<Geo> {
     if (responseDto.message != null && !"".equals(responseDto.message))
       setErrorMessage(responseDto.message);
 
-    if (responseDto.results.size() == 0)
+    if (responseDto.results.size() == 0) {
+      setErrorMessage(responseDto.message);
       return Optional.empty();
+    }
 
     /*
     From here, we can trust that Google service has set values for latitude, longitude and
