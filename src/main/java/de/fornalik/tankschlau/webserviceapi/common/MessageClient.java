@@ -18,8 +18,6 @@ package de.fornalik.tankschlau.webserviceapi.common;
 
 import de.fornalik.tankschlau.net.Response;
 
-import java.io.IOException;
-
 public interface MessageClient {
 
   /**
@@ -28,8 +26,6 @@ public interface MessageClient {
    *
    * @param content Describes the content (title, text, etc.) of a message.
    * @return {@link Response} data object with some info about the transaction.
-   * @throws IOException If something went wrong while reading the response of the webservice or
-   *                     while requesting the server.
    */
-  Response sendMessage(MessageContent content) throws IOException;
+  Response<String> sendMessage(MessageContent content);
 }

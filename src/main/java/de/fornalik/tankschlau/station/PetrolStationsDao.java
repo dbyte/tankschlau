@@ -20,7 +20,6 @@ import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.util.StringLegalizer;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -36,10 +35,8 @@ public interface PetrolStationsDao {
    *            location of the user. Its distance field should reflect the maximum search radius
    *            for petrol stations in the neighbourhood of the users current location.
    * @return A list of {@link PetrolStation}, or an empty list if no stations were found.
-   * @throws IOException If something went wrong while contacting the backing store of
-   *                     {@link PetrolStation}.
    */
-  List<PetrolStation> findAllInNeighbourhood(Geo geo) throws IOException;
+  List<PetrolStation> findAllInNeighbourhood(Geo geo);
 
   /**
    * @return Some technical response data - sort of response summary or header data,

@@ -16,7 +16,6 @@
 
 package de.fornalik.tankschlau.net;
 
-import java.io.IOException;
 import java.util.Optional;
 
 /**
@@ -37,7 +36,6 @@ public interface HttpClient {
    * @param response A default-initialized {@link BaseResponse} object, which will be populated by
    *                 the server's response data, then being passed back as the return value.
    * @return The populated {@link Response} object which was passed to this method.
-   * @throws IOException If something went wrong while handling communication etc.
    */
-  Response<String> newCall(final Request request, StringResponse response) throws IOException;
+  Response<String> newCall(final Request request, StringResponse response);
 }

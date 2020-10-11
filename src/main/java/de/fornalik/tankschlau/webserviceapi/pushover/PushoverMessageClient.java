@@ -22,8 +22,6 @@ import de.fornalik.tankschlau.webserviceapi.common.MessageClient;
 import de.fornalik.tankschlau.webserviceapi.common.MessageContent;
 import de.fornalik.tankschlau.webserviceapi.common.MessageRequest;
 
-import java.io.IOException;
-
 /**
  * Implementation of {@link MessageClient} for pushover.net push message webservices.
  *
@@ -46,7 +44,7 @@ public class PushoverMessageClient implements MessageClient {
   }
 
   @Override
-  public Response<String> sendMessage(MessageContent content) throws IOException {
+  public Response<String> sendMessage(MessageContent content) {
     request.setMessage(content);
 
     Response<String> response = httpClient.newCall(request, new PushoverMessageResponse());

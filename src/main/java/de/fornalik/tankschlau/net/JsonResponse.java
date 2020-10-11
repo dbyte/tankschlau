@@ -23,7 +23,7 @@ import java.util.Optional;
  *
  * @param <T> The target to which to deserialize the JSON.
  */
-public abstract class JsonResponse<T> extends StringResponse implements Response<String> {
+public abstract class JsonResponse<T> extends StringResponse {
 
   /**
    * @param jsonString Some JSON string to deserialize.

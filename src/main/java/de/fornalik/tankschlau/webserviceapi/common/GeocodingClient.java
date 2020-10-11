@@ -20,7 +20,6 @@ import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.Response;
 
-import java.io.IOException;
 import java.util.Optional;
 
 /**
@@ -37,10 +36,8 @@ public interface GeocodingClient<ResponseType> {
    * @param address The Address which lacks of latitude & longitude.
    * @return Latitude & longitude data, wrapped in a {@link Geo} instance on successful
    * interaction with the geocoding service, else an empty Optional.
-   * @throws IOException If something went wrong while reading the response of the webservice or
-   *                     while requesting the server.
    */
-  Optional<Geo> getGeo(Address address) throws IOException;
+  Optional<Geo> getGeo(Address address);
 
   /**
    * @return Licence string.

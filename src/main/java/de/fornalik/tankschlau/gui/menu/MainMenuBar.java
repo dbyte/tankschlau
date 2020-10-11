@@ -23,7 +23,7 @@ import java.awt.event.KeyEvent;
 
 public class MainMenuBar extends JMenuBar {
   private final Localization l10n;
-  JFrame mainFrame;
+  final JFrame mainFrame;
 
   public MainMenuBar(JFrame mainFrame, Localization l10n) {
     this.mainFrame = mainFrame;

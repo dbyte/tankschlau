@@ -24,7 +24,6 @@ import de.fornalik.tankschlau.net.JsonResponse;
 import de.fornalik.tankschlau.webserviceapi.common.AddressRequest;
 import de.fornalik.tankschlau.webserviceapi.common.GeocodingClient;
 
-import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -54,7 +53,7 @@ public class GoogleGeocodingClient implements GeocodingClient<JsonResponse<Geo>>
   }
 
   @Override
-  public Optional<Geo> getGeo(Address address) throws IOException {
+  public Optional<Geo> getGeo(Address address) {
     request.setAddressUrlParameters(address);
 
     response = (JsonResponse<Geo>) httpClient.newCall(

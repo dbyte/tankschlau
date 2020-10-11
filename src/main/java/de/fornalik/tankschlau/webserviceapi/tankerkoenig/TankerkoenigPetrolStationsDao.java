@@ -24,7 +24,6 @@ import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolStationsDao;
 import de.fornalik.tankschlau.webserviceapi.common.GeoRequest;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +61,7 @@ public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
   }
 
   @Override
-  public List<PetrolStation> findAllInNeighbourhood(Geo geo) throws IOException {
+  public List<PetrolStation> findAllInNeighbourhood(Geo geo) {
     this.request.setGeoUrlParameters(geo);
 
     // Reset state!

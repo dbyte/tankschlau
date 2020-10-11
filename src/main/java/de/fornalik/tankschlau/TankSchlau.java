@@ -17,11 +17,9 @@
 package de.fornalik.tankschlau;
 
 import de.fornalik.tankschlau.bootstrap.AppContainer;
-import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.gui.window.MainWindow;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.util.Optional;
 
 public final class TankSchlau {
@@ -34,8 +32,6 @@ public final class TankSchlau {
   }
 
   private void invokeGui() {
-    // processTestAddress(); // Ex: Writing some user geo data to user prefs
-
     SwingUtilities.invokeLater(
         () -> new MainWindow(
             container.L10N,
@@ -60,20 +56,5 @@ public final class TankSchlau {
 
     Optional.ofNullable(System.getProperty("pushmessageUserId"))
             .ifPresent(container.USER_PREFS::writePushMessageUserId);
-  }
-
-  // Example: Writing some user address and geo data to user prefs.
-  private void processTestAddress() {
-    Address address = new Address("An den Äckern", "Wolfsburg", "38446");
-
-    try {
-      container.GEOCODING_CLIENT.getGeo(address).ifPresent(address::setGeo);
-      address.getGeo().ifPresent(g -> g.setDistance(10.0));
-    }
-    catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    container.USER_PREFS.writeAddress(address);
   }
 }

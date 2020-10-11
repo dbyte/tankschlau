@@ -55,6 +55,8 @@ public class OkHttpClient implements HttpClient {
     }
 
     catch (IOException | IllegalStateException e) {
+      // Nothing to do here, as okhttp3 error messages should have been pushed into
+      // field response.errorMessage in method realCall.
       return response;
     }
 

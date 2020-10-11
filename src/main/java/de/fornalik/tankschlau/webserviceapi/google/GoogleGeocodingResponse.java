@@ -65,8 +65,9 @@ class GoogleGeocodingResponse extends JsonResponse<Geo> {
       setErrorMessage(responseDto.message);
     }
 
-    if (responseDto.results != null && responseDto.results.size() > 0) {
-      /* From here, we can trust that webservice has set values for latitude, longitude
+    if (responseDto.results.size() > 0) {
+      /* results is always initialized at construction time of ResponseDTO, so can't be null.
+      From here, we can trust that webservice has set values for latitude, longitude
       and location type. */
       ResultDTO firstResult = responseDto.results.get(0);
       geo = Optional.of(firstResult.getAsGeo());
@@ -79,11 +80,13 @@ class GoogleGeocodingResponse extends JsonResponse<Geo> {
    * Object relational mapper for Gson. It must correlate with the root level json object
    * of the Google Geocoding response.
    */
-  @SuppressWarnings({"unused", "FieldMayBeFinal", "MismatchedQueryAndUpdateOfCollection"})
   private static class ResponseDTO {
     @SerializedName("status") String status;
     @SerializedName("error_message") String message;
-    @SerializedName("results") ArrayList<ResultDTO> results;
+
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    @SerializedName("results")
+    final ArrayList<ResultDTO> results;
 
     private ResponseDTO() {
       results = new ArrayList<>();

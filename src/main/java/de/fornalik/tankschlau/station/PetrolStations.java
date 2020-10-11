@@ -19,7 +19,6 @@ package de.fornalik.tankschlau.station;
 import de.fornalik.tankschlau.geo.Geo;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
-import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -59,10 +58,8 @@ public class PetrolStations {
    * Basically, it's a service wrapper for {@link PetrolStationsDao#findAllInNeighbourhood(Geo)}.
    *
    * @param geo {@link Geo} data wrapping the user's current location.
-   * @throws IOException If something went wrong while contacting the backing store of
-   *                     {@link PetrolStation}.
    */
-  public List<PetrolStation> getAllInNeighbourhood(Geo geo) throws IOException {
+  public List<PetrolStation> getAllInNeighbourhood(Geo geo) {
     return dao.findAllInNeighbourhood(geo);
   }
 

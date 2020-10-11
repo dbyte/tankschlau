@@ -29,7 +29,7 @@ import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -64,50 +64,6 @@ public class MainWindow extends JFrame {
     updateList(PetrolType.DIESEL);
   }
 
-  private Address getUserPrefAddress() {
-    Address address = userPrefs
-        .readAddress()
-        .orElseThrow(() -> new IllegalStateException("No preferences found for user address."));
-
-    if (!address.getGeo().isPresent()) {
-      Optional<Geo> geoFromWebservice = getUserGeoFromWebservice(address);
-
-      if (!geoFromWebservice.isPresent()) {
-        // Swap that msg with a Logger.
-        String msg = "Log.Error: Requesting webservice for Geo data based on user's address did "
-            + "not return required lat/lng.";
-        System.out.println(msg);
-
-        return address;
-      }
-
-      address.setGeo(geoFromWebservice.get());
-      userPrefs.writeAddress(address);
-    }
-
-    return address;
-  }
-
-  private Optional<Geo> getUserGeoFromWebservice(Address userAddress) {
-    System.out.println("Log.Info: Requesting geocoding webservice...");
-    Optional<Geo> geo = Optional.empty();
-
-    try {
-      geo = geoCodingClient.getGeo(userAddress);
-      geo.ifPresent(newGeo -> newGeo.setDistance(8.0)); // app default: 8.0 km search radius
-      System.out.println("Log.Info: Success geocoding webservice. New geo data: " + geo);
-    }
-
-    catch (IOException e) {
-      e.printStackTrace();
-      // Swap that msg with a Logger.
-      System.out.println("Log.Error: Requesting webservice for Geo data based on user's "
-                             + "address did not return required lat/lng.");
-    }
-
-    return geo;
-  }
-
   public void initGui() {
     if (SystemUtils.IS_OS_MAC_OSX)
       try {
@@ -138,25 +94,16 @@ public class MainWindow extends JFrame {
   }
 
   public void updateList(PetrolType sortedFor) {
-    // processTestAddress(); // Ex: Writing some user geo data to user prefs
-
-    Geo userGeo = getUserPrefAddress()
-        .getGeo()
-        .orElseThrow(() -> new IllegalStateException(
-            l10n.get("msg.UnableToRequestPetrolStations_ReasonNoGeoForUser")));
-
     model.addElement(l10n.get("msg.PriceRequestRunning"));
 
     // Run a new dispatch queue thread for the web service request/response.
     EventQueue.invokeLater(() -> {
 
       try {
-        List<PetrolStation> petrolStationsList =
-            petrolStationService.getAllInNeighbourhood(userGeo);
+        List<PetrolStation> petrolStationsList = getPetrolStationFromWebservice();
 
-        model.remove(0);
-        System.out.println(
-            "Response ready, status: " + petrolStationService.getTransactionInfo().getStatus());
+        if (petrolStationsList.size() == 0)
+          return;
 
         PetrolStations.sortByPriceAndDistanceForPetrolType(petrolStationsList, sortedFor);
 
@@ -169,20 +116,8 @@ public class MainWindow extends JFrame {
 
         petrolStationsList.forEach(this::populateListModel);
 
-        if (petrolStationsList.size() == 0)
-          return;
-
         // Just for testing purposes...
         sendMessage(petrolStationsList.get(0), sortedFor);
-      }
-
-      catch (IOException e) {
-        model.add(
-            1,
-            l10n.get("msg.ErrorServerConnection", e.getClass().getTypeName()));
-
-        model.add(2, e.getMessage());
-        e.printStackTrace();
       }
 
       catch (Exception e) {
@@ -196,6 +131,69 @@ public class MainWindow extends JFrame {
     });
   }
 
+  private List<PetrolStation> getPetrolStationFromWebservice() {
+    Optional<Geo> geo = getUserPrefAddress().getGeo();
+
+    if (!geo.isPresent())
+      return new ArrayList<>();
+
+    List<PetrolStation> data = petrolStationService.getAllInNeighbourhood(geo.get());
+
+    if (!petrolStationService.getTransactionInfo().isOk()) {
+      String serviceMessage = petrolStationService.getTransactionInfo().getMessage();
+      model.addElement(l10n.get("msg.ErrorServerConnection", serviceMessage));
+    }
+
+    if (data.size() == 0) {
+      System.out.println(l10n.get("msg.NoPetrolStationsFoundInNeighbourhood"));
+    }
+
+    return data;
+  }
+
+  private Address getUserPrefAddress() {
+    Address address = userPrefs
+        .readAddress()
+        .orElseThrow(() -> new IllegalStateException(l10n.get(
+            "msg.UnableToRequestPetrolStations_ReasonNoGeoForUser")));
+
+    if (!address.getGeo().isPresent()) {
+      Optional<Geo> geoFromWebservice = getUserGeoFromWebservice(address);
+
+      if (!geoFromWebservice.isPresent()) {
+        // Swap that msg with a Logger.
+        String msg = "Log.Error: Requesting webservice for Geo data based on user's address did "
+            + "not return required lat/lng.";
+        System.out.println(msg);
+
+        return address;
+      }
+
+      address.setGeo(geoFromWebservice.get());
+      userPrefs.writeAddress(address);
+    }
+
+    return address;
+  }
+
+  private Optional<Geo> getUserGeoFromWebservice(Address userAddress) {
+    System.out.println("Log.Info: Requesting geocoding webservice...");
+    Optional<Geo> geo = geoCodingClient.getGeo(userAddress);
+    Optional<String> responseErrorMsg = geoCodingClient.getResponse().getErrorMessage();
+
+    if (responseErrorMsg.isPresent()) {
+      // Swap that msg with a Logger.
+      String message = "Log.Error: Requesting webservice for Geo data based on user's "
+          + "address did not return required lat/lng: "
+          + responseErrorMsg.get();
+
+      System.out.println(message);
+      return Optional.empty();
+    }
+
+    return geo;
+  }
+
   private void populateListModel(PetrolStation station) {
     Set<Petrol> petrolsUnsorted = station.getPetrols();
     List<Petrol> petrols = Petrols.getSortedByPetrolTypeAndPrice(petrolsUnsorted);
@@ -207,8 +205,7 @@ public class MainWindow extends JFrame {
     model.addElement("\t");
   }
 
-  private void sendMessage(PetrolStation cheapestStation, PetrolType petrolType)
-  throws IOException {
+  private void sendMessage(PetrolStation cheapestStation, PetrolType petrolType) {
     messageContent.newInstance();
     messageContent.setMessage(cheapestStation, petrolType);
     messageClient.sendMessage(messageContent);
