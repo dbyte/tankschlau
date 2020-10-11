@@ -22,16 +22,18 @@ import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.Response;
-import org.junit.jupiter.api.Assertions;
 
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 public class GeocodingFixtureHelp {
   public ResponseDTO objectFixture;
-  public JsonObject jsonFixture;
+  public String jsonFixture;
 
   /**
    * Computes two test-fixture objects by reading a JSON response fixture file.<br/>
@@ -50,7 +52,7 @@ public class GeocodingFixtureHelp {
     Gson gson = new Gson();
 
     objectFixture = gson.fromJson(reader1, ResponseDTO.class);
-    jsonFixture = (JsonObject) JsonParser.parseReader(reader2);
+    jsonFixture = JsonParser.parseReader(reader2).toString();
   }
 
   /**
@@ -61,7 +63,6 @@ public class GeocodingFixtureHelp {
   public void assertEqualValues(Geo geo) {
     /* Preconditions for running the test. Note these checks are not subject to the test itself.
     Thus, we don't use Junit assertions here. */
-    assert geo != null;
     assert objectFixture != null;
     assert objectFixture.results != null && objectFixture.results.size() == 1;
 
@@ -69,9 +70,9 @@ public class GeocodingFixtureHelp {
 
     // Begin test
 
-    Assertions.assertEquals(fixture.getAsGeo().getLatitude(), geo.getLatitude());
-    Assertions.assertEquals(fixture.getAsGeo().getLongitude(), geo.getLongitude());
-    Assertions.assertEquals(fixture.getAsGeo().getDistance(), Optional.empty());
+    assertEquals(fixture.getAsGeo().getLatitude(), geo.getLatitude());
+    assertEquals(fixture.getAsGeo().getLongitude(), geo.getLongitude());
+    assertEquals(fixture.getAsGeo().getDistance(), Optional.empty());
   }
 
   public void assertEqualValues(Response<String> response) {
@@ -80,12 +81,12 @@ public class GeocodingFixtureHelp {
 
     // Begin test
 
-    Assertions.assertEquals(objectFixture.status, response.getStatus());
-    Assertions.assertEquals(objectFixture.message, response.getErrorMessage().orElse(""));
+    assertEquals(objectFixture.status, response.getStatus());
+    assertEquals(objectFixture.message, response.getErrorMessage().orElse(""));
 
     /* According to Google Geocoding conventions, we assert that the results array is never null,
      even if we got a response with an error message. */
-    Assertions.assertNotNull(objectFixture.results);
+    assertNotNull(objectFixture.results);
   }
 
   /**

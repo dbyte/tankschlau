@@ -72,14 +72,14 @@ class GoogleGeocodingClientTest {
     this.actualGeo = null;
     this.fixture = new GeocodingFixtureHelp();
 
-    // Must be a real object
+    // No mock here... must be a real object, sorry for that :-)
     response = new GoogleGeocodingResponse(jsonProvider);
   }
 
   private void setupFixture(String path) {
     fixture.setupFixture(path);
 
-    response.setBody(fixture.jsonFixture.toString());
+    response.setBody(fixture.jsonFixture);
 
     when(httpClientMock.newCall(any(), any())).thenReturn(response);
 
@@ -89,7 +89,7 @@ class GoogleGeocodingClientTest {
         addressRequestMock);
 
     /*when(response.getBody())
-        .thenReturn(Optional.of(fixture.jsonFixture.toString()));*/
+        .thenReturn(Optional.of(fixture.jsonFixture()));*/
   }
 
   // endregion
@@ -146,38 +146,5 @@ class GoogleGeocodingClientTest {
 
     // then
     assertEquals("Geo data powered by Google.", geocodingClient.getLicenseString());
-  }
-
-  @ParameterizedTest
-  @ValueSource(strings = {
-      FixtureFiles.GOOGLE_GEO_RESPONSE_50_1078234_8_5413809_Rooftop,
-      FixtureFiles.GOOGLE_GEO_RESPONSE_MissingApiKey,
-      FixtureFiles.GOOGLE_GEO_RESPONSE_ZeroResults,
-  })
-  void getGeo_correctlyAdaptsGoogleResponseRootDataToResponseFields(String fixturePath) {
-    // given
-    setupFixture(fixturePath);
-
-    // when
-    geocodingClient.getGeo(addressMock);
-
-    // then
-    fixture.assertEqualValues(geocodingClient.getResponse());
-  }
-
-  @ParameterizedTest
-  @ValueSource(strings = {
-      FixtureFiles.GOOGLE_GEO_RESPONSE_MissingApiKey,
-      FixtureFiles.GOOGLE_GEO_RESPONSE_ZeroResults
-  })
-  void getGeo_setsProperResponseMessageAndStatusIfGoogleReportsError(String fixturePath) {
-    // given
-    setupFixture(fixturePath);
-
-    // when
-    geocodingClient.getGeo(addressMock);
-
-    // then
-    fixture.assertEqualValues(response);
   }
 }
