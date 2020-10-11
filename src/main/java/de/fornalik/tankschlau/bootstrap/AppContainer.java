@@ -53,7 +53,7 @@ public final class AppContainer {
   public final ApiKeyManager PUSHMESSAGE_APIKEY_MANAGER;
   public final ApiKeyManager GEOCODING_APIKEY_MANAGER;
   public final ApiKeyManager TANKERKOENIG_APIKEY_MANAGER;
-  public final GeocodingClient GEOCODING_CLIENT;
+  public final GoogleGeocodingClient GEOCODING_CLIENT;
   public final GeoRequest GEO_REQUEST;
   public final PetrolStationsDao PETROL_STATIONS_DAO;
   public final PetrolStations PETROL_STATIONS_SERVICE;

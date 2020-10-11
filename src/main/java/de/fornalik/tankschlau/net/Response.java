@@ -20,12 +20,14 @@ import java.util.Optional;
 
 /**
  * The HTTP response interface used by this application. T determines the type of the response body.
+ *
+ * @param <T> The type of the response body.
  */
 public interface Response<T> {
 
   /**
    * @return Optional error message for errors which have not been thrown at request time.
-   * Empty Optional if no errors were detected.
+   * <span style="color:red;">Important: </span>Empty Optional if no errors were detected.
    */
   Optional<String> getErrorMessage();
 
@@ -51,4 +53,16 @@ public interface Response<T> {
    *             of the {@link BaseResponse}.
    */
   void setBody(T data);
+
+  /**
+   * @return Some information about the client/server transaction, directly provided
+   * by the server or enriched by ourselves. Should return empty string if no info is available.
+   */
+  String getStatus();
+
+  /**
+   * @param data Some information about the client/server transaction, directly provided
+   *             by the server or enriched by ourselves.
+   */
+  void setStatus(String data);
 }

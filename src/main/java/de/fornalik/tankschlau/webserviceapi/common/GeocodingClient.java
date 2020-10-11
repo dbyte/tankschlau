@@ -16,15 +16,19 @@
 
 package de.fornalik.tankschlau.webserviceapi.common;
 
-import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.util.StringLegalizer;
+import de.fornalik.tankschlau.net.Response;
 
 import java.io.IOException;
 import java.util.Optional;
 
-public interface GeocodingClient {
+/**
+ * Interface for geocoding webservices.
+ *
+ * @param <ResponseType> The type of the {@link Response}.
+ */
+public interface GeocodingClient<ResponseType> {
 
   /**
    * Implementation should call a geocoding webservice with the provided {@link Address} data,
@@ -39,53 +43,13 @@ public interface GeocodingClient {
   Optional<Geo> getGeo(Address address) throws IOException;
 
   /**
-   * @return Some technical response data - sort of response summary or header data,
-   * depending on the concrete implementation.
-   */
-  TransactionInfo getTransactionInfo();
-
-  /**
    * @return Licence string.
    * @implSpec Implement according to provider's terms of use!
    */
   String getLicenseString();
 
   /**
-   * Provides some technical response data - sort of response summary or header data,
-   * depending on the concrete implementation.
+   * @return The {@link Response} of the last request.
    */
-  @SuppressWarnings("unused")
-  class TransactionInfo {
-    @SerializedName("status") private String status;
-    @SerializedName("error_message") private String message;
-    @SerializedName("location_type") private String locationType;
-
-    public String getStatus() {
-      return nullToEmpty(status);
-    }
-
-    public void setStatus(String status) {
-      this.status = status;
-    }
-
-    public String getMessage() {
-      return nullToEmpty(message);
-    }
-
-    public void setMessage(String message) {
-      this.message = message;
-    }
-
-    public String getLocationType() {
-      return nullToEmpty(locationType);
-    }
-
-    public void setLocationType(String locationType) {
-      this.locationType = locationType;
-    }
-
-    private String nullToEmpty(String s) {
-      return StringLegalizer.create(s).nullToEmpty().end();
-    }
-  }
+  ResponseType getResponse();
 }

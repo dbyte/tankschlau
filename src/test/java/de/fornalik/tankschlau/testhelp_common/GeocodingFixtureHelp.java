@@ -21,7 +21,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.webserviceapi.common.GeocodingClient;
+import de.fornalik.tankschlau.net.Response;
 import org.junit.jupiter.api.Assertions;
 
 import java.io.FileReader;
@@ -74,30 +74,18 @@ public class GeocodingFixtureHelp {
     Assertions.assertEquals(fixture.getAsGeo().getDistance(), Optional.empty());
   }
 
-  public void assertEqualValues(GeocodingClient geocodingClient, boolean testLocationType) {
-    assert geocodingClient != null;
+  public void assertEqualValues(Response<String> response) {
+    assert response != null;
     assert objectFixture != null;
 
     // Begin test
 
-    Assertions.assertEquals(
-        objectFixture.status,
-        geocodingClient.getTransactionInfo().getStatus());
-
-    Assertions.assertEquals(
-        objectFixture.message,
-        geocodingClient.getTransactionInfo().getMessage());
+    Assertions.assertEquals(objectFixture.status, response.getStatus());
+    Assertions.assertEquals(objectFixture.message, response.getErrorMessage().orElse(""));
 
     /* According to Google Geocoding conventions, we assert that the results array is never null,
      even if we got a response with an error message. */
     Assertions.assertNotNull(objectFixture.results);
-
-    /* Assert that we have at least 1 result, which also carries info about some kind
-    of location type. */
-    if (testLocationType)
-      Assertions.assertEquals(
-          objectFixture.results.get(0).getLocationType(),
-          geocodingClient.getTransactionInfo().getLocationType());
   }
 
   /**

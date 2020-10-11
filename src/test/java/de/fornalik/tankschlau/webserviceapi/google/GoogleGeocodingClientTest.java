@@ -20,8 +20,6 @@ import com.google.gson.Gson;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.HttpClient;
-import de.fornalik.tankschlau.net.Response;
-import de.fornalik.tankschlau.net.StringResponse;
 import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
 import de.fornalik.tankschlau.testhelp_common.GeocodingFixtureHelp;
 import de.fornalik.tankschlau.webserviceapi.common.AddressRequest;
@@ -44,51 +42,57 @@ import static org.mockito.Mockito.when;
 
 class GoogleGeocodingClientTest {
   private static HttpClient httpClientMock;
-  private static Response<String> stringResponseMock;
   private static AddressRequest addressRequestMock;
-  private static Gson jsonProvider;
 
   private GoogleGeocodingClient geocodingClient;
   private Geo actualGeo;
   private GeocodingFixtureHelp fixture;
   private Address addressMock;
+  private GoogleGeocodingResponse response;
 
   // region -----  SETUP  -----
 
   @BeforeAll
   static void beforeAll() {
-    httpClientMock = mock(HttpClient.class);
-    stringResponseMock = mock(StringResponse.class);
-    addressRequestMock = mock(AddressRequest.class);
-    jsonProvider = new Gson();
+
   }
 
   @AfterAll
   static void afterAll() {
     httpClientMock = null;
-    stringResponseMock = null;
     addressRequestMock = null;
   }
 
   @BeforeEach
   void setUp() {
-    this.addressMock = mock(Address.class);
-    this.geocodingClient = new GoogleGeocodingClient(
-        httpClientMock,
-        jsonProvider,
-        addressRequestMock);
 
-    this.actualGeo = null;
-    this.fixture = new GeocodingFixtureHelp();
+
   }
 
   private void setupFixture(String path) throws IOException {
+    httpClientMock = mock(HttpClient.class);
+    addressRequestMock = mock(AddressRequest.class);
+
+    this.addressMock = mock(Address.class);
+    this.actualGeo = null;
+    this.fixture = new GeocodingFixtureHelp();
+
     fixture.setupFixture(path);
 
-    when(stringResponseMock.getBody())
-        .thenReturn(Optional.of(fixture.jsonFixture.toString()));
+    this.response = new GoogleGeocodingResponse(new Gson()); // must be a real object
+    response.setBody(fixture.jsonFixture.toString());
 
-    when(httpClientMock.newCall(any(), any())).thenReturn(stringResponseMock);
+    when(httpClientMock.newCall(any(), any())).thenReturn(response);
+
+    this.geocodingClient = new GoogleGeocodingClient(
+        httpClientMock,
+        new Gson(),
+        addressRequestMock);
+
+    /*when(response.getBody())
+        .thenReturn(Optional.of(fixture.jsonFixture.toString()));*/
+
+
   }
 
   // endregion
@@ -136,13 +140,26 @@ class GoogleGeocodingClientTest {
     assertEquals(Optional.empty(), geocodingClient.getGeo(addressMock));
   }
 
+  @Test
+  void getGeo_returnsExpectedLicenceInfo() throws IOException {
+    // given
+    setupFixture(FixtureFiles.GOOGLE_GEO_RESPONSE_50_1078234_8_5413809_Rooftop);
+
+    // when
+    geocodingClient.getGeo(addressMock);
+
+    // then
+    assertEquals("Geo data powered by Google.", geocodingClient.getLicenseString());
+  }
+
   @ParameterizedTest
   @ValueSource(strings = {
       FixtureFiles.GOOGLE_GEO_RESPONSE_50_1078234_8_5413809_Rooftop,
-      FixtureFiles.GOOGLE_GEO_RESPONSE_52_5006049_13_3136007_GeometricCenter,
-      FixtureFiles.GOOGLE_GEO_RESPONSE_52_9541353_8_2396026_Approximate,
+      FixtureFiles.GOOGLE_GEO_RESPONSE_MissingApiKey,
+      FixtureFiles.GOOGLE_GEO_RESPONSE_ZeroResults,
   })
-  void getGeo_setsProperTransactionInfoOnHappyResponse(String fixturePath) throws IOException {
+  void getGeo_convertsResponseStatusFromGoogleResponseStatus(String fixturePath)
+  throws IOException {
     // given
     setupFixture(fixturePath);
 
@@ -150,8 +167,7 @@ class GoogleGeocodingClientTest {
     geocodingClient.getGeo(addressMock);
 
     // then
-    fixture.assertEqualValues(geocodingClient, true);
-    assertEquals("Geo data powered by Google.", geocodingClient.getLicenseString());
+    fixture.assertEqualValues(geocodingClient.getResponse());
   }
 
   @ParameterizedTest
@@ -167,7 +183,7 @@ class GoogleGeocodingClientTest {
     geocodingClient.getGeo(addressMock);
 
     // then
-    fixture.assertEqualValues(geocodingClient, false);
+    fixture.assertEqualValues(response);
     assertEquals("Geo data powered by Google.", geocodingClient.getLicenseString());
   }
 }

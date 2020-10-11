@@ -16,8 +16,18 @@
 
 package de.fornalik.tankschlau.net;
 
+import java.util.Optional;
+
 /**
- * Intermediate abstract class for a {@link BaseResponse} which body data is of type
- * <code>String</>.
+ * Intermediate abstract class for a {@link StringResponse} which body data contains JSON string.
+ *
+ * @param <T> The target to which to deserialize the JSON.
  */
-public abstract class StringResponse extends BaseResponse<String> {}
+public abstract class JsonResponse<T> extends StringResponse implements Response<String> {
+
+  /**
+   * @param jsonString Some JSON string to deserialize.
+   * @return Instance of class T.
+   */
+  public abstract Optional<T> fromJson(String jsonString);
+}

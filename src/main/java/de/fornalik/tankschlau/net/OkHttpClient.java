@@ -65,6 +65,7 @@ public class OkHttpClient implements HttpClient {
     catch (IOException | NullPointerException e) {
       String msg = "Body of response could not be converted to string.";
       response.setErrorMessage(msg + " " + getDetails(okhttpResponse));
+      response.setStatus("ERROR");
     }
 
     return response;
@@ -82,6 +83,7 @@ public class OkHttpClient implements HttpClient {
       okhttpResponse = callServer(okhttpRequest); //throws
     }
     catch (IOException e) {
+      response.setStatus("ERROR");
       response.setErrorMessage(e.getMessage());
       throw e;
     }

@@ -17,16 +17,15 @@
 package de.fornalik.tankschlau.webserviceapi.google;
 
 import com.google.gson.Gson;
-import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.HttpClient;
-import de.fornalik.tankschlau.net.Response;
+import de.fornalik.tankschlau.net.JsonResponse;
 import de.fornalik.tankschlau.webserviceapi.common.AddressRequest;
 import de.fornalik.tankschlau.webserviceapi.common.GeocodingClient;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -35,11 +34,12 @@ import java.util.Optional;
  * @see
  * <a href="https://developers.google.com/maps/documentation/geocoding/overview#GeocodingResponses">Google documentation: GeocodingResponses</a>
  */
-public class GoogleGeocodingClient implements GeocodingClient {
+public class GoogleGeocodingClient implements GeocodingClient<JsonResponse<Geo>> {
+
   private final HttpClient httpClient;
   private final Gson jsonProvider;
   private final AddressRequest request;
-  private TransactionInfo transactionInfo;
+  private JsonResponse<Geo> response;
 
   /**
    * Constructor
@@ -48,33 +48,30 @@ public class GoogleGeocodingClient implements GeocodingClient {
    * @param request    Some implementation of {@link AddressRequest}, forming a concrete request.
    */
   public GoogleGeocodingClient(HttpClient httpClient, Gson jsonProvider, AddressRequest request) {
-    this.httpClient = httpClient;
-    this.jsonProvider = jsonProvider;
-    this.request = request;
-    this.transactionInfo = new TransactionInfo();
+    this.httpClient = Objects.requireNonNull(httpClient);
+    this.jsonProvider = Objects.requireNonNull(jsonProvider);
+    this.request = Objects.requireNonNull(request);
   }
 
   @Override
   public Optional<Geo> getGeo(Address address) throws IOException {
     request.setAddressUrlParameters(address);
 
-    // Reset state!
-    this.transactionInfo = new TransactionInfo();
-
-    Response<String> response = httpClient.newCall(request, new GoogleGeocodingResponse());
+    response = (JsonResponse<Geo>) httpClient.newCall(
+        request,
+        new GoogleGeocodingResponse(jsonProvider));
 
     if (!response.getBody().isPresent()) {
-      transactionInfo.setStatus(GoogleGeocodingResponse.class.getSimpleName() + "_EMPTY_BODY");
-      transactionInfo.setMessage("Response body is empty.");
+      // Appropriate error message should then be available by calling response.getErrorMessage().
       return Optional.empty();
     }
 
-    return parseJson(response.getBody().get());
+    return jsonToGeo();
   }
 
   @Override
-  public TransactionInfo getTransactionInfo() {
-    return transactionInfo;
+  public JsonResponse<Geo> getResponse() {
+    return response;
   }
 
   @Override
@@ -82,81 +79,11 @@ public class GoogleGeocodingClient implements GeocodingClient {
     return "Geo data powered by Google.";
   }
 
-  private Optional<Geo> parseJson(String in) {
-    ResponseDTO dto = jsonProvider.fromJson(in, ResponseDTO.class);
+  private Optional<Geo> jsonToGeo() {
+    String jsonString = response
+        .getBody()
+        .orElseThrow(() -> new IllegalStateException("Response body is empty."));
 
-    if (dto == null) {
-      transactionInfo.setStatus(ResponseDTO.class.getSimpleName() + "_NULL");
-      transactionInfo.setMessage("JSON string could not be converted. String is: " + in);
-      return Optional.empty();
-    }
-
-    Optional<Geo> geo = Optional.empty();
-
-    if (dto.results != null && dto.results.size() > 0) {
-      /* From here, we can trust that webservice has set values for latitude, longitude
-      and location type. */
-      ResultDTO firstResult = dto.results.get(0);
-      transactionInfo.setLocationType(firstResult.getLocationType());
-      geo = Optional.of(firstResult.getAsGeo());
-    }
-
-    // From here, we can trust that webservice has set values for status & message.
-    transactionInfo.setStatus(dto.status);
-    transactionInfo.setMessage(dto.message);
-
-    return geo;
-  }
-
-  /**
-   * Object relational mapper for Gson. It must correlate with the root level json object
-   * of the Google Geocoding response.
-   */
-  @SuppressWarnings({"unused", "FieldMayBeFinal", "MismatchedQueryAndUpdateOfCollection"})
-  private static class ResponseDTO {
-    @SerializedName("status") private String status;
-    @SerializedName("error_message") private String message;
-    @SerializedName("results") private ArrayList<ResultDTO> results;
-
-    private ResponseDTO() {
-      results = new ArrayList<>();
-    }
-  }
-
-  /**
-   * Object relational mapper for Gson. It represents the json array "results" of the
-   * Google Geocoding response.
-   */
-  @SuppressWarnings("unused")
-  private static class ResultDTO {
-    @SerializedName("geometry") private Geometry geometry;
-
-    private Geo getAsGeo() {
-      return new Geo(geometry.location.latitude, geometry.location.longitude);
-    }
-
-    private String getLocationType() {
-      return geometry.locationType;
-    }
-
-    /**
-     * Object relational mapper for Gson. It represents the "geometry" json object within one
-     * element of json array "results" of the Google Geocoding response.
-     */
-    @SuppressWarnings("unused")
-    private static class Geometry {
-      @SerializedName("location") private Location location;
-      @SerializedName("location_type") private String locationType;
-    }
-
-    /**
-     * Object relational mapper for Gson. It represents the "location" json object within the
-     * json object "geometry" of the Google Geocoding response.
-     */
-    @SuppressWarnings("unused")
-    private static class Location {
-      @SerializedName("lat") private Double latitude;
-      @SerializedName("lng") private Double longitude;
-    }
+    return response.fromJson(jsonString);
   }
 }
