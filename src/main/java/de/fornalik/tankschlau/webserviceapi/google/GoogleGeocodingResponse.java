@@ -35,10 +35,10 @@ import java.util.Optional;
  * @see <a href="https://maps.googleapis.com/maps/api/geocode/json">API base URL</a>,
  * <a href="https://developers.google.com/maps/documentation/geocoding/overview#GeocodingResponses">Google documentation: GeocodingResponses</a>
  */
-public class GoogleGeocodingResponse extends JsonResponse<Geo> {
+class GoogleGeocodingResponse extends JsonResponse<Geo> {
   private final Gson jsonProvider;
 
-  public GoogleGeocodingResponse(Gson jsonProvider) {
+  GoogleGeocodingResponse(Gson jsonProvider) {
     this.jsonProvider = Objects.requireNonNull(jsonProvider);
   }
 
@@ -80,7 +80,7 @@ public class GoogleGeocodingResponse extends JsonResponse<Geo> {
    * of the Google Geocoding response.
    */
   @SuppressWarnings({"unused", "FieldMayBeFinal", "MismatchedQueryAndUpdateOfCollection"})
-  private class ResponseDTO {
+  private static class ResponseDTO {
     @SerializedName("status") String status;
     @SerializedName("error_message") String message;
     @SerializedName("results") ArrayList<ResultDTO> results;
@@ -95,7 +95,7 @@ public class GoogleGeocodingResponse extends JsonResponse<Geo> {
    * Google Geocoding response.
    */
   @SuppressWarnings("unused")
-  private class ResultDTO {
+  private static class ResultDTO {
     @SerializedName("geometry") private ResultDTO.Geometry geometry;
 
     Geo getAsGeo() {
@@ -111,7 +111,7 @@ public class GoogleGeocodingResponse extends JsonResponse<Geo> {
      * element of json array "results" of the Google Geocoding response.
      */
     @SuppressWarnings("unused")
-    private class Geometry {
+    private static class Geometry {
       @SerializedName("location") private ResultDTO.Location location;
       @SerializedName("location_type") private String locationType;
     }
@@ -121,7 +121,7 @@ public class GoogleGeocodingResponse extends JsonResponse<Geo> {
      * json object "geometry" of the Google Geocoding response.
      */
     @SuppressWarnings("unused")
-    private class Location {
+    private static class Location {
       @SerializedName("lat") private Double latitude;
       @SerializedName("lng") private Double longitude;
     }
