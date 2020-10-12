@@ -25,6 +25,7 @@ import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.webserviceapi.common.MessageClient;
 import de.fornalik.tankschlau.webserviceapi.common.PetrolStationMessageContent;
 import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingClient;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigPetrolStationsClient;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
@@ -37,7 +38,7 @@ import java.util.Set;
 public class MainWindow extends JFrame {
   private final Localization l10n;
   private final UserPrefs userPrefs;
-  private final PetrolStations petrolStationService;
+  private final TankerkoenigPetrolStationsClient petrolStationsClient;
   private final GoogleGeocodingClient geoCodingClient;
   private final MessageClient messageClient;
   private final PetrolStationMessageContent messageContent;
@@ -47,7 +48,7 @@ public class MainWindow extends JFrame {
   public MainWindow(
       Localization l10n,
       UserPrefs userPrefs,
-      PetrolStations petrolStationService,
+      TankerkoenigPetrolStationsClient petrolStationsClient,
       GoogleGeocodingClient geoCodingClient,
       MessageClient messageClient,
       PetrolStationMessageContent messageContent) {
@@ -55,7 +56,7 @@ public class MainWindow extends JFrame {
     super(de.fornalik.tankschlau.TankSchlau.class.getSimpleName());
     this.l10n = l10n;
     this.userPrefs = userPrefs;
-    this.petrolStationService = petrolStationService;
+    this.petrolStationsClient = petrolStationsClient;
     this.geoCodingClient = geoCodingClient;
     this.messageClient = messageClient;
     this.messageContent = messageContent;
@@ -137,12 +138,11 @@ public class MainWindow extends JFrame {
     if (!geo.isPresent())
       return new ArrayList<>();
 
-    List<PetrolStation> data = petrolStationService.getAllInNeighbourhood(geo.get());
+    List<PetrolStation> data = petrolStationsClient.findAllInNeighbourhood((geo.get()));
+    Optional<String> errorMessage = petrolStationsClient.getResponse().getErrorMessage();
 
-    if (!petrolStationService.getTransactionInfo().isOk()) {
-      String serviceMessage = petrolStationService.getTransactionInfo().getMessage();
-      model.addElement(l10n.get("msg.ErrorServerConnection", serviceMessage));
-    }
+    if (errorMessage.isPresent())
+      model.addElement(l10n.get("msg.ErrorServerConnection", errorMessage));
 
     if (data.size() == 0) {
       System.out.println(l10n.get("msg.NoPetrolStationsFoundInNeighbourhood"));

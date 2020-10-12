@@ -36,7 +36,7 @@ public final class TankSchlau {
         () -> new MainWindow(
             container.L10N,
             container.USER_PREFS,
-            container.PETROL_STATIONS_SERVICE,
+            container.PETROL_STATIONS_CLIENT,
             container.GEOCODING_CLIENT,
             container.MESSAGE_CLIENT,
             container.PETROL_STATION_MESSAGE_CONTENT));

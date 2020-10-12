@@ -45,8 +45,8 @@ public class GeocodingFixtureHelp {
   public void setupFixture(String resName) {
     Objects.requireNonNull(resName);
 
-    FileReader reader1 = FixtureFiles.getFileReaderForResource(resName);
-    FileReader reader2 = FixtureFiles.getFileReaderForResource(resName);
+    FileReader reader1 = ClassLoaderHelp.getFileReaderForResource(resName, getClass());
+    FileReader reader2 = ClassLoaderHelp.getFileReaderForResource(resName, getClass());
 
     Gson gson = new Gson();
 

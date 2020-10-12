@@ -19,35 +19,39 @@ package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 import com.google.gson.Gson;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.HttpClient;
-import de.fornalik.tankschlau.net.Response;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolStationsDao;
 import de.fornalik.tankschlau.webserviceapi.common.GeoRequest;
+import de.fornalik.tankschlau.webserviceapi.common.PetrolStationsClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
- * Petrol stations DAO implementation for tankerkoenig.de response.
+ * Petrol stations client/DAO implementation for tankerkoenig.de response.
  *
+ * @see PetrolStationsClient
  * @see PetrolStationsDao
  */
-public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
+public class TankerkoenigPetrolStationsClient
+    implements PetrolStationsClient<TankerkoenigResponse> {
+
   private final HttpClient httpClient;
   private final Gson jsonProvider;
   private final TankerkoenigJsonAdapter jsonAdapter;
   private final GeoRequest request;
-  private TransactionInfo transactionInfo;
+  private TankerkoenigResponse response;
 
   /**
-   * Creates a new default {@link TankerkoenigPetrolStationsDao} object for the webservice. <br>
+   * Creates a new default {@link TankerkoenigPetrolStationsClient} object for the webservice. <br>
    *
    * @param httpClient   Some {@link HttpClient} implementation.
    * @param jsonAdapter  Some json adapter implementation for petrol stations.
    * @param jsonProvider Currently fixed {@link Gson} implementation.
    * @param request      Some {@link GeoRequest} implementation.
    */
-  public TankerkoenigPetrolStationsDao(
+  public TankerkoenigPetrolStationsClient(
       HttpClient httpClient,
       TankerkoenigJsonAdapter jsonAdapter,
       Gson jsonProvider,
@@ -57,49 +61,39 @@ public class TankerkoenigPetrolStationsDao implements PetrolStationsDao {
     this.jsonAdapter = jsonAdapter;
     this.jsonProvider = jsonProvider;
     this.request = request;
-    this.transactionInfo = new TransactionInfo();
+    this.response = null;
   }
 
   @Override
   public List<PetrolStation> findAllInNeighbourhood(Geo geo) {
     this.request.setGeoUrlParameters(geo);
 
-    // Reset state!
-    this.transactionInfo = new TransactionInfo();
+    // It's guaranteed by newCall(...) that returned response is not null.
+    response = (TankerkoenigResponse) httpClient.newCall(
+        request,
+        new TankerkoenigResponse(jsonProvider));
 
-    // It's guaranteed by newCall(...) that response is not null.
-    Response<String> response = httpClient.newCall(request, new TankerkoenigResponse());
+    Objects.requireNonNull(response, "Response is null.");
 
-    String body = response
-        .getBody()
-        .orElse("");
-
-    if ("".equals(body)) {
-      this.transactionInfo.setOk(false);
-      this.transactionInfo.setStatus(getClass().getSimpleName() + "_EMPTY_RESPONSE_BODY");
-      this.transactionInfo.setMessage(
-          "Response body is empty. " + response.getErrorMessage().orElse(""));
-
+    if (!response.getBody().isPresent())
       return new ArrayList<>();
-    }
 
-    /* At this point we assert a valid JSON document - well formed and determined
+    /*
+    At this point we assert a valid JSON document - well formed and determined
     by the webservice's API. So all following processing should crash only if _we_
-    messed things up. */
-
-    this.transactionInfo = jsonProvider.fromJson(body, TransactionInfo.class);
-
-    if (!transactionInfo.isOk()) {
-      System.err.println("Log.Error: " + transactionInfo.getStatus());
-      System.err.println("Log.Error: " + transactionInfo.getMessage());
-      return new ArrayList<>();
-    }
-
-    return jsonAdapter.createPetrolStations(body);
+    messed things up.
+    */
+    return jsonAdapter.createPetrolStations(response.getBody().get());
   }
 
   @Override
-  public TransactionInfo getTransactionInfo() {
-    return transactionInfo;
+  public TankerkoenigResponse getResponse() {
+    return response;
   }
+
+  @Override
+  public String getLicenseString() {
+    return response.getLicenseString();
+  }
+
 }

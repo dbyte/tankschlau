@@ -29,8 +29,6 @@ import java.io.FileReader;
 import java.util.*;
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 /**
  * Deals with test-fixtures for the common domain of this app.
  * <p>
@@ -57,8 +55,8 @@ public class DomainFixtureHelp {
   public void setupFixture(String resName) {
     Objects.requireNonNull(resName);
 
-    FileReader reader1 = FixtureFiles.getFileReaderForResource(resName);
-    FileReader reader2 = FixtureFiles.getFileReaderForResource(resName);
+    FileReader reader1 = ClassLoaderHelp.getFileReaderForResource(resName, getClass());
+    FileReader reader2 = ClassLoaderHelp.getFileReaderForResource(resName, getClass());
 
     Gson gson = new Gson();
 
@@ -132,10 +130,14 @@ public class DomainFixtureHelp {
   public void assertEqualValues(PetrolStationsDao petrolStationsDao) {
     Objects.requireNonNull(petrolStationsDao);
 
-    assertEquals(objectFixture.ok, petrolStationsDao.getTransactionInfo().isOk());
-    assertEquals(objectFixture.license, petrolStationsDao.getTransactionInfo().getLicense());
+    Assertions.fail("TODO");
+  /*  assertEquals(objectFixture.ok, petrolStationsDao.getTransactionInfo().isOk());
+    assertEquals(
+        objectFixture.license,
+        petrolStationsDao.getResponse().getTransactionInfo().getLicense());
     assertEquals(objectFixture.message, petrolStationsDao.getTransactionInfo().getMessage());
-    assertEquals(objectFixture.status, petrolStationsDao.getTransactionInfo().getStatus());
+    assertEquals(objectFixture.status, petrolStationsDao.getTransactionInfo().getStatus());*/
+
   }
 
   /**

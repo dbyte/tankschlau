@@ -26,23 +26,21 @@ import de.fornalik.tankschlau.station.PetrolsJsonAdapter;
 import de.fornalik.tankschlau.testhelp_common.DomainFixtureHelp;
 import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
 import de.fornalik.tankschlau.webserviceapi.common.GeoRequest;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-class TankerkoenigPetrolStationsDaoTest {
+class TankerkoenigPetrolStationsClientTest {
   private static Gson jsonProvider;
   private static Geo geoMock;
 
-  private TankerkoenigPetrolStationsDao sut;
+  private TankerkoenigPetrolStationsClient sut;
   private List<PetrolStation> actualPetrolStations;
 
   private DomainFixtureHelp fixture;
@@ -78,7 +76,7 @@ class TankerkoenigPetrolStationsDaoTest {
     GeoRequest geoRequestMock = mock(GeoRequest.class);
     tankerkoenigResponseMock = mock(TankerkoenigResponse.class);
 
-    sut = new TankerkoenigPetrolStationsDao(
+    sut = new TankerkoenigPetrolStationsClient(
         httpClientMock,
         petrolStationsJsonAdapter,
         jsonProvider,
@@ -137,13 +135,15 @@ class TankerkoenigPetrolStationsDaoTest {
     // then
     assertEquals(0, actualPetrolStations.size());
 
-    assertFalse(sut.getTransactionInfo().isOk());
+    Assertions.fail("TODO");
+
+   /* assertFalse(sut.getTransactionInfo().isOk());
 
     assertEquals(
-        TankerkoenigPetrolStationsDao.class.getSimpleName() + "_EMPTY_RESPONSE_BODY",
+        TankerkoenigPetrolStationsClient.class.getSimpleName() + "_EMPTY_RESPONSE_BODY",
         sut.getTransactionInfo().getStatus());
 
-    assertEquals("Response body is empty.", sut.getTransactionInfo().getMessage());
+    assertEquals("Response body is empty.", sut.getTransactionInfo().getMessage());*/
   }
 
   @Test
@@ -160,7 +160,8 @@ class TankerkoenigPetrolStationsDaoTest {
     // then
     assertEquals(0, actualPetrolStations.size());
 
-    assertFalse(sut.getTransactionInfo().isOk());
+    Assertions.fail("TODO");
+   /* assertFalse(sut.getTransactionInfo().isOk());
 
     assertEquals(
         "error",
@@ -168,7 +169,7 @@ class TankerkoenigPetrolStationsDaoTest {
 
     assertEquals(
         "apikey nicht angegeben, falsch, oder im falschen Format",
-        sut.getTransactionInfo().getMessage());
+        sut.getTransactionInfo().getMessage());*/
   }
 
   @Test
@@ -185,7 +186,8 @@ class TankerkoenigPetrolStationsDaoTest {
     // then
     assertEquals(0, actualPetrolStations.size());
 
-    assertFalse(sut.getTransactionInfo().isOk());
+    Assertions.fail("TODO");
+    /*assertFalse(sut.getTransactionInfo().isOk());
 
     assertEquals(
         "error",
@@ -193,6 +195,6 @@ class TankerkoenigPetrolStationsDaoTest {
 
     assertEquals(
         "lng nicht angegeben, oder ausserhalb der gültigen Grenzen",
-        sut.getTransactionInfo().getMessage());
+        sut.getTransactionInfo().getMessage());*/
   }
 }

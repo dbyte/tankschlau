@@ -16,11 +16,6 @@
 
 package de.fornalik.tankschlau.testhelp_common;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Objects;
-
 /**
  * Utility class for test-fixture file handling.
  */
@@ -118,29 +113,5 @@ public class FixtureFiles {
   // endregion
 
   private FixtureFiles() {
-  }
-
-  /**
-   * @param name String which represents a resource, separated by "/" as defined
-   *             in {@link ClassLoader#getResource(String)}. Note that the implicit root of the
-   *             final resource url is directory "test/resources".
-   * @return A {@link FileReader} instance, linked to the resource if resource was found, else
-   * throws RuntimeException. May also throw RTE if resource was not found.
-   */
-  public static FileReader getFileReaderForResource(String name) {
-    Objects.requireNonNull(name);
-
-    ClassLoader loader = DomainFixtureHelp.class.getClassLoader();
-    URL fileUrl = loader.getResource(name);
-
-    if (fileUrl == null)
-      throw new RuntimeException("Resource " + name + " not found for ClassLoader " + loader.toString());
-
-    try {
-      return new FileReader(fileUrl.getFile());
-    }
-    catch (IOException e) {
-      throw new RuntimeException(e);
-    }
   }
 }

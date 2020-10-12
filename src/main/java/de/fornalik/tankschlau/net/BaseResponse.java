@@ -26,7 +26,7 @@ import java.util.Optional;
  *
  * @param <T> The type of the response body.
  */
-abstract class BaseResponse<T> implements Response<T> {
+public abstract class BaseResponse<T> implements Response<T> {
   private T body;
   private String status;
   private String errorMessage;

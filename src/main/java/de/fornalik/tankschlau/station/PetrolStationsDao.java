@@ -16,9 +16,7 @@
 
 package de.fornalik.tankschlau.station;
 
-import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.util.StringLegalizer;
 
 import java.util.List;
 
@@ -37,56 +35,4 @@ public interface PetrolStationsDao {
    * @return A list of {@link PetrolStation}, or an empty list if no stations were found.
    */
   List<PetrolStation> findAllInNeighbourhood(Geo geo);
-
-  /**
-   * @return Some technical response data - sort of response summary or header data,
-   * depending on the concrete implementation.
-   */
-  TransactionInfo getTransactionInfo();
-
-  /**
-   * Provides some technical response data - sort of response summary or header data,
-   * depending on the concrete implementation.
-   */
-  @SuppressWarnings("unused")
-  class TransactionInfo {
-    @SerializedName("ok") private boolean ok;
-    @SerializedName("license") private String license;
-    @SerializedName("status") private String status;
-    @SerializedName("message") private String message;
-
-    public TransactionInfo() {}
-
-    public boolean isOk() {
-      return ok;
-    }
-
-    public void setOk(boolean ok) {
-      this.ok = ok;
-    }
-
-    public String getLicense() {
-      return nullToEmpty(license);
-    }
-
-    public String getStatus() {
-      return nullToEmpty(status);
-    }
-
-    public void setStatus(String status) {
-      this.status = status;
-    }
-
-    public String getMessage() {
-      return nullToEmpty(message);
-    }
-
-    public void setMessage(String message) {
-      this.message = StringLegalizer.create(message).safeTrim().end();
-    }
-
-    private String nullToEmpty(String s) {
-      return StringLegalizer.create(s).nullToEmpty().end();
-    }
-  }
 }

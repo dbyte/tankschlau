@@ -27,16 +27,16 @@ import java.util.Objects;
  * Service class for dealing with data collections of a {@link PetrolStation}.
  */
 public class PetrolStations {
-  private final PetrolStationsDao dao;
+  private final PetrolStationsDao petrolStationsDao;
 
   /**
    * Constructor
    *
-   * @param dao Some {@link PetrolStationsDao} implementation.
+   * @param petrolStationsDao Some {@link PetrolStationsDao} implementation.
    */
-  public PetrolStations(PetrolStationsDao dao) {
-    this.dao = Objects.requireNonNull(
-        dao, PetrolStationsDao.class.getSimpleName() + " must not be null");
+  public PetrolStations(PetrolStationsDao petrolStationsDao) {
+    this.petrolStationsDao = Objects.requireNonNull(
+        petrolStationsDao, PetrolStationsDao.class.getSimpleName() + " must not be null");
   }
 
   /**
@@ -60,16 +60,7 @@ public class PetrolStations {
    * @param geo {@link Geo} data wrapping the user's current location.
    */
   public List<PetrolStation> getAllInNeighbourhood(Geo geo) {
-    return dao.findAllInNeighbourhood(geo);
-  }
-
-  /**
-   * @return Further information about the last DAO operation.
-   * @see PetrolStationsDao.TransactionInfo
-   */
-  // TODO unit tests
-  public PetrolStationsDao.TransactionInfo getTransactionInfo() {
-    return dao.getTransactionInfo();
+    return petrolStationsDao.findAllInNeighbourhood(geo);
   }
 
   /**

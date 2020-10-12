@@ -27,7 +27,7 @@ import java.util.Optional;
  *
  * @param <ResponseType> The type of the {@link Response}.
  */
-public interface GeocodingClient<ResponseType> {
+public interface GeocodingClient<ResponseType> extends Licensed {
 
   /**
    * Implementation should call a geocoding webservice with the provided {@link Address} data,
@@ -38,12 +38,6 @@ public interface GeocodingClient<ResponseType> {
    * interaction with the geocoding service, else an empty Optional.
    */
   Optional<Geo> getGeo(Address address);
-
-  /**
-   * @return Licence string.
-   * @implSpec Implement according to provider's terms of use!
-   */
-  String getLicenseString();
 
   /**
    * @return The {@link Response} of the last request.

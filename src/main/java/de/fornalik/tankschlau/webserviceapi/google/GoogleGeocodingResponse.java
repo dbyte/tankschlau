@@ -32,7 +32,7 @@ import java.util.Optional;
  * @see <a href="https://maps.googleapis.com/maps/api/geocode/json">API base URL</a>,
  * <a href="https://developers.google.com/maps/documentation/geocoding/overview#GeocodingResponses">Google documentation: GeocodingResponses</a>
  */
-class GoogleGeocodingResponse extends JsonResponse<Geo> {
+public class GoogleGeocodingResponse extends JsonResponse<Geo> {
   private final Gson jsonProvider;
 
   GoogleGeocodingResponse(Gson jsonProvider) {
