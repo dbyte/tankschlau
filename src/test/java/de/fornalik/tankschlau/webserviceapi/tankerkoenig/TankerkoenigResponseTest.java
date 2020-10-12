@@ -27,12 +27,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TankerkoenigResponseTest {
   private static Gson jsonProvider;
   private DomainFixtureHelp fixture;
   private TankerkoenigResponse tankerkoenigResponse;
-  private TankerkoenigResponse.ResponseDto actualResponse;
 
   @BeforeAll
   static void beforeAll() {
@@ -46,7 +46,6 @@ class TankerkoenigResponseTest {
 
   @BeforeEach
   void setUp() {
-    this.actualResponse = null;
     this.tankerkoenigResponse = new TankerkoenigResponse(jsonProvider); // SUT
     this.fixture = new DomainFixtureHelp();
   }
@@ -85,6 +84,31 @@ class TankerkoenigResponseTest {
   }
 
   @Test
-  void getLicenseString_() {
+  void getLicenseString_returnsEmptyStringIfLicenceFieldIsNull() {
+    // given
+    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_LONGITUDE_ERROR);
+
+    // when
+    tankerkoenigResponse.fromJson(fixture.jsonFixture);
+
+    // then
+    assertEquals("", tankerkoenigResponse.getLicenseString());
+  }
+
+  @Test
+  void fromJson_setsCustomErrorMessageIfDeserializationResultIsNull() {
+    // given
+    String expectedMessagePart = "JSON string could not be converted";
+
+    // when
+    tankerkoenigResponse.fromJson(null);
+
+    // then
+    assertTrue(
+        tankerkoenigResponse.getErrorMessage().orElse("").contains(expectedMessagePart),
+        "\nExpected error message to contain\n"
+            + "\"" + expectedMessagePart + "\"\n"
+            + "but actually is\n"
+            + "\"" + tankerkoenigResponse.getErrorMessage() + "\"");
   }
 }

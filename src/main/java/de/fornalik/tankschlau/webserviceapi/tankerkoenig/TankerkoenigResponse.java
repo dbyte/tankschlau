@@ -20,13 +20,10 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.net.JsonResponse;
 import de.fornalik.tankschlau.net.StringResponse;
-import de.fornalik.tankschlau.util.StringLegalizer;
 import de.fornalik.tankschlau.webserviceapi.common.Licensed;
 
 import java.util.Objects;
 import java.util.Optional;
-
-// TODO unit tests
 
 /**
  * Concrete implementation of {@link StringResponse} for tankerkoenig.de webservice.
@@ -70,7 +67,7 @@ public class TankerkoenigResponse extends JsonResponse<TankerkoenigResponse.Resp
 
   @Override
   public String getLicenseString() {
-    return StringLegalizer.create(licenseString).nullToEmpty().end();
+    return (licenseString != null ? licenseString : "");
   }
 
   /**

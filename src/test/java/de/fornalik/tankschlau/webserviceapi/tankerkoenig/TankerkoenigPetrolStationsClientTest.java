@@ -26,13 +26,17 @@ import de.fornalik.tankschlau.station.PetrolsJsonAdapter;
 import de.fornalik.tankschlau.testhelp_common.DomainFixtureHelp;
 import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
 import de.fornalik.tankschlau.webserviceapi.common.GeoRequest;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class TankerkoenigPetrolStationsClientTest {
@@ -95,8 +99,6 @@ class TankerkoenigPetrolStationsClientTest {
 
     // then
     fixture.assertEqualValuesIgnoringSort(actualPetrolStations);
-    fail("TODO");
-    //    fixture.assertEqualValues(sut);
   }
 
   @Test
@@ -121,80 +123,5 @@ class TankerkoenigPetrolStationsClientTest {
 
     // when then
     assertThrows(NullPointerException.class, () -> sut.findAllInNeighbourhood(geoMock));
-  }
-
-  @Test
-  void getAllInNeighbourhood_setsTransactionInfoProperlyIfBodyIsEmpty() {
-    // given
-    when(tankerkoenigResponseMock.getBody()).thenReturn(Optional.empty());
-    when(httpClientMock.newCall(any(), any())).thenReturn(tankerkoenigResponseMock);
-
-    // when
-    actualPetrolStations = sut.findAllInNeighbourhood(geoMock);
-
-    // then
-    assertEquals(0, actualPetrolStations.size());
-
-    Assertions.fail("TODO");
-
-   /* assertFalse(sut.getTransactionInfo().isOk());
-
-    assertEquals(
-        TankerkoenigPetrolStationsClient.class.getSimpleName() + "_EMPTY_RESPONSE_BODY",
-        sut.getTransactionInfo().getStatus());
-
-    assertEquals("Response body is empty.", sut.getTransactionInfo().getMessage());*/
-  }
-
-  @Test
-  void getAllInNeighbourhood_setsTransactionInfoProperlyIfOkIsFalse() {
-    // given
-    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_MISSING_APIKEY);
-
-    when(tankerkoenigResponseMock.getBody()).thenReturn(Optional.of(fixture.jsonFixture));
-    when(httpClientMock.newCall(any(), any())).thenReturn(tankerkoenigResponseMock);
-
-    // when
-    actualPetrolStations = sut.findAllInNeighbourhood(geoMock);
-
-    // then
-    assertEquals(0, actualPetrolStations.size());
-
-    Assertions.fail("TODO");
-   /* assertFalse(sut.getTransactionInfo().isOk());
-
-    assertEquals(
-        "error",
-        sut.getTransactionInfo().getStatus());
-
-    assertEquals(
-        "apikey nicht angegeben, falsch, oder im falschen Format",
-        sut.getTransactionInfo().getMessage());*/
-  }
-
-  @Test
-  void getAllInNeighbourhood_setsTransactionInfoProperlyIfApiRespondsWithError() {
-    // given
-    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_LONGITUDE_ERROR);
-
-    when(tankerkoenigResponseMock.getBody()).thenReturn(Optional.of(fixture.jsonFixture));
-    when(httpClientMock.newCall(any(), any())).thenReturn(tankerkoenigResponseMock);
-
-    // when
-    actualPetrolStations = sut.findAllInNeighbourhood(geoMock);
-
-    // then
-    assertEquals(0, actualPetrolStations.size());
-
-    Assertions.fail("TODO");
-    /*assertFalse(sut.getTransactionInfo().isOk());
-
-    assertEquals(
-        "error",
-        sut.getTransactionInfo().getStatus());
-
-    assertEquals(
-        "lng nicht angegeben, oder ausserhalb der gültigen Grenzen",
-        sut.getTransactionInfo().getMessage());*/
   }
 }
