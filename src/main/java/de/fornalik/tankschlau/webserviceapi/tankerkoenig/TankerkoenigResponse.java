@@ -34,18 +34,21 @@ import java.util.Optional;
  */
 public class TankerkoenigResponse extends JsonResponse<TankerkoenigResponse.ResponseDto>
     implements Licensed {
+
   private final Gson jsonProvider;
-  ResponseDto responseDto;
+  private ResponseDto responseDto;
+  private String licenseString;
 
   TankerkoenigResponse(Gson jsonProvider) {
     this.jsonProvider = Objects.requireNonNull(jsonProvider);
     this.responseDto = null;
+    this.licenseString = "";
   }
 
   @Override
   public Optional<ResponseDto> fromJson(String jsonString) {
     // Deserialize
-    ResponseDto responseDto = jsonProvider.fromJson(jsonString, ResponseDto.class);
+    responseDto = jsonProvider.fromJson(jsonString, ResponseDto.class);
 
     if (responseDto == null) {
       setErrorMessage("JSON string could not be converted. String is:\n" + jsonString);
@@ -53,24 +56,21 @@ public class TankerkoenigResponse extends JsonResponse<TankerkoenigResponse.Resp
       return Optional.empty();
     }
 
-    if (responseDto.status != null && !"".equals(responseDto.status))
-      setStatus(responseDto.status);
+    if (!responseDto.getStatus().isEmpty())
+      setStatus(responseDto.getStatus());
 
-    if (responseDto.message != null && !"".equals(responseDto.message))
-      setErrorMessage(responseDto.message);
+    if (!responseDto.getMessage().isEmpty())
+      setErrorMessage(responseDto.getMessage());
 
-    /*
-    From here, we can trust that tankerkoenig.de service has set all expected values.
-    */
+    if (!responseDto.getLicense().isEmpty())
+      licenseString = responseDto.getLicense();
+
     return Optional.of(responseDto);
   }
 
   @Override
   public String getLicenseString() {
-    if (responseDto == null)
-      return "";
-
-    return responseDto.getLicense();
+    return StringLegalizer.create(licenseString).nullToEmpty().end();
   }
 
   /**
@@ -84,14 +84,6 @@ public class TankerkoenigResponse extends JsonResponse<TankerkoenigResponse.Resp
     @SerializedName("status") private String status;
     @SerializedName("message") private String message;
 
-    public boolean isOk() {
-      return ok;
-    }
-
-    public void setOk(boolean ok) {
-      this.ok = ok;
-    }
-
     public String getLicense() {
       return nullToEmpty(license);
     }
@@ -100,42 +92,12 @@ public class TankerkoenigResponse extends JsonResponse<TankerkoenigResponse.Resp
       return nullToEmpty(status);
     }
 
-    public void setStatus(String status) {
-      this.status = status;
-    }
-
     public String getMessage() {
       return nullToEmpty(message);
     }
 
-    public void setMessage(String message) {
-      this.message = StringLegalizer.create(message).safeTrim().end();
-    }
-
     private String nullToEmpty(String s) {
-      return StringLegalizer.create(s).nullToEmpty().end();
+      return s != null ? s : "";
     }
   }
-
-  /*
-   * Class provides object relational mapping support for {@link Gson}. Convert a tankerkoenig.de
-   * JSON response file to a {@link PetrolStation}.
-   *//*
-  @SuppressWarnings("unused")
-  private static class PetrolStationDto {
-    @SerializedName("id") private UUID uuid;
-    @SerializedName("name") private String name;
-    @SerializedName("brand") private String brand;
-    @SerializedName("isOpen") private boolean isOpen;
-    @SerializedName("street") private String street;
-    @SerializedName("houseNumber") private String houseNumber;
-    @SerializedName("place") private String city;
-    @SerializedName("postCode") private String postCode;
-    @SerializedName("lat") private Double lat;
-    @SerializedName("lng") private Double lng;
-    @SerializedName("dist") private Double distanceKm;
-    @SerializedName("diesel") private Double diesel;
-    @SerializedName("e5") private Double e5;
-    @SerializedName("e10") private Double e10;
-  }*/
 }

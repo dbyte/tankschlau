@@ -23,11 +23,14 @@ import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.station.*;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigResponse;
 import org.junit.jupiter.api.Assertions;
 
 import java.io.FileReader;
 import java.util.*;
 import java.util.function.Function;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Deals with test-fixtures for the common domain of this app.
@@ -127,17 +130,13 @@ public class DomainFixtureHelp {
 
   // region Assertions
 
-  public void assertEqualValues(PetrolStationsDao petrolStationsDao) {
-    Objects.requireNonNull(petrolStationsDao);
+  public void assertEqualValues(TankerkoenigResponse tankerkoenigResponse) {
+    Objects.requireNonNull(tankerkoenigResponse);
 
-    Assertions.fail("TODO");
-  /*  assertEquals(objectFixture.ok, petrolStationsDao.getTransactionInfo().isOk());
-    assertEquals(
-        objectFixture.license,
-        petrolStationsDao.getResponse().getTransactionInfo().getLicense());
-    assertEquals(objectFixture.message, petrolStationsDao.getTransactionInfo().getMessage());
-    assertEquals(objectFixture.status, petrolStationsDao.getTransactionInfo().getStatus());*/
-
+    assertEquals(objectFixture.status, tankerkoenigResponse.getStatus());
+    assertEquals(objectFixture.getLicenseString(), tankerkoenigResponse.getLicenseString());
+    assertEquals(objectFixture.message, tankerkoenigResponse.getErrorMessage().orElse(""));
+    assertEquals(objectFixture.status, tankerkoenigResponse.getStatus());
   }
 
   /**
@@ -147,7 +146,7 @@ public class DomainFixtureHelp {
    */
   public void assertEqualValuesIgnoringSort(List<PetrolStation> petrolStations) {
     Objects.requireNonNull(petrolStations);
-    Assertions.assertEquals(objectFixture.stations.size(), petrolStations.size());
+    assertEquals(objectFixture.stations.size(), petrolStations.size());
     petrolStations.forEach(this::assertEqualValues);
   }
 
@@ -173,9 +172,9 @@ public class DomainFixtureHelp {
 
     // Begin test
 
-    Assertions.assertEquals(fixture.uuid, petrolStation.uuid);
-    Assertions.assertEquals(fixture.brand, petrolStation.brand);
-    Assertions.assertEquals(fixture.isOpen, petrolStation.isOpen);
+    assertEquals(fixture.uuid, petrolStation.uuid);
+    assertEquals(fixture.brand, petrolStation.brand);
+    assertEquals(fixture.isOpen, petrolStation.isOpen);
 
     Assertions.assertNotNull(petrolStation.address);
     this.assertEqualValues(petrolStation.address, objectFixture.stations.indexOf(fixture));
@@ -202,11 +201,11 @@ public class DomainFixtureHelp {
 
     // Begin test
 
-    Assertions.assertEquals(fixture.name, addressUnderTest.getName());
-    Assertions.assertEquals(fixture.street, addressUnderTest.getStreet());
-    Assertions.assertEquals(fixture.houseNumber, addressUnderTest.getHouseNumber());
-    Assertions.assertEquals(fixture.city, addressUnderTest.getCity());
-    Assertions.assertEquals(fixture.postCode, addressUnderTest.getPostCode());
+    assertEquals(fixture.name, addressUnderTest.getName());
+    assertEquals(fixture.street, addressUnderTest.getStreet());
+    assertEquals(fixture.houseNumber, addressUnderTest.getHouseNumber());
+    assertEquals(fixture.city, addressUnderTest.getCity());
+    assertEquals(fixture.postCode, addressUnderTest.getPostCode());
 
     this.assertEqualValues(addressUnderTest.getGeo().orElse(null), fixtureIdx);
   }
@@ -228,15 +227,15 @@ public class DomainFixtureHelp {
 
     // Begin test
 
-    Assertions.assertEquals(
+    assertEquals(
         Optional.of(fixture.lat),
         optGeoUnderTest.map(Geo::getLatitude));
 
-    Assertions.assertEquals(
+    assertEquals(
         Optional.of(fixture.lng),
         optGeoUnderTest.map(Geo::getLongitude));
 
-    Assertions.assertEquals(
+    assertEquals(
         Optional.ofNullable(fixture.distanceKm),
         optGeoUnderTest.flatMap(Geo::getDistance));
   }
@@ -260,15 +259,15 @@ public class DomainFixtureHelp {
         .findFirst()
         .map(petr -> petr.price);
 
-    Assertions.assertEquals(
+    assertEquals(
         Optional.ofNullable(fixture.diesel),
         actualPrice.apply(PetrolType.DIESEL));
 
-    Assertions.assertEquals(
+    assertEquals(
         Optional.ofNullable(fixture.e10),
         actualPrice.apply(PetrolType.E10));
 
-    Assertions.assertEquals(
+    assertEquals(
         Optional.ofNullable(fixture.e5),
         actualPrice.apply(PetrolType.E5));
   }
@@ -284,11 +283,11 @@ public class DomainFixtureHelp {
    */
   public static class ResponseDTO {
     @SerializedName("ok") public Boolean ok;
-    @SerializedName("license") public String license;
     @SerializedName("data") public String data;
     @SerializedName("status") public String status;
     @SerializedName("message") public String message;
     @SerializedName("stations") public ArrayList<StationDTO> stations;
+    @SerializedName("license") private String license;
 
     ResponseDTO() {
       stations = new ArrayList<>();
@@ -296,6 +295,10 @@ public class DomainFixtureHelp {
       // As "message" is missing in JSON if no error occurred, it is by convention set
       // to empty in our production DAO class. So we do same here.
       message = "";
+    }
+
+    public String getLicenseString() {
+      return (license != null ? license : "");
     }
   }
 

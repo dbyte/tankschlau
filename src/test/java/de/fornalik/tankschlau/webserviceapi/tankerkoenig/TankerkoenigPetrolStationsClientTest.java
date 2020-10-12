@@ -32,8 +32,7 @@ import org.mockito.Mockito;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class TankerkoenigPetrolStationsClientTest {
@@ -95,8 +94,9 @@ class TankerkoenigPetrolStationsClientTest {
     actualPetrolStations = sut.findAllInNeighbourhood(geoMock);
 
     // then
-    fixture.assertEqualValues(sut);
     fixture.assertEqualValuesIgnoringSort(actualPetrolStations);
+    fail("TODO");
+    //    fixture.assertEqualValues(sut);
   }
 
   @Test
