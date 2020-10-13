@@ -30,10 +30,10 @@ import java.util.Objects;
  * Use this one with a View Model / Presentation Layer or Controller.
  */
 public class PetrolStationsWebService implements PetrolStationsService {
-  private final PetrolStationsRepo service;
+  private final PetrolStationsRepo repo;
 
-  public PetrolStationsWebService(PetrolStationsRepo service) {
-    this.service = Objects.requireNonNull(service);
+  public PetrolStationsWebService(PetrolStationsRepo repo) {
+    this.repo = Objects.requireNonNull(repo);
   }
 
   /**
@@ -44,11 +44,11 @@ public class PetrolStationsWebService implements PetrolStationsService {
    */
   @Override
   public List<PetrolStation> getNeighbourhoodStations(Geo geo) {
-    return service.findAllInNeighbourhood(geo);
+    return repo.findAllInNeighbourhood(geo);
   }
 
   @Override
   public TransactInfo getTransactInfo() {
-    return service.getTransactInfo();
+    return repo.getTransactInfo();
   }
 }

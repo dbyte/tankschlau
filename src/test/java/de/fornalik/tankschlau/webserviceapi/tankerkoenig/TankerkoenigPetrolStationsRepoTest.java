@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-class TankerkoenigPetrolStationsRepoToServiceTest {
+class TankerkoenigPetrolStationsRepoTest {
   private static Gson jsonProvider;
   private static Geo geoMock;
 

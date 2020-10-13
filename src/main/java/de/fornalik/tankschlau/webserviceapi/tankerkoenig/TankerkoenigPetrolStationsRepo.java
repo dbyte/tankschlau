@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Petrol stations client/service implementation for tankerkoenig.de response.
+ * Petrol stations client/repository implementation for tankerkoenig.de communication.
  *
  * @see PetrolStation
  */
