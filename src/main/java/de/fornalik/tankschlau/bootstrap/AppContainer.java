@@ -19,10 +19,15 @@ package de.fornalik.tankschlau.bootstrap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.fornalik.tankschlau.net.HttpClient;
+import de.fornalik.tankschlau.net.JsonResponse;
 import de.fornalik.tankschlau.net.OkHttpClient;
+import de.fornalik.tankschlau.net.ResponseBodyImpl;
 import de.fornalik.tankschlau.station.PetrolStations;
 import de.fornalik.tankschlau.station.Petrols;
 import de.fornalik.tankschlau.station.PetrolsJsonAdapter;
+import de.fornalik.tankschlau.storage.PetrolStationsDao;
+import de.fornalik.tankschlau.storage.PetrolStationsService;
+import de.fornalik.tankschlau.storage.TransactInfoImpl;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.user.UserPrefsApiKeyStore;
 import de.fornalik.tankschlau.util.Localization;
@@ -35,6 +40,7 @@ import de.fornalik.tankschlau.webserviceapi.pushover.PushoverMessageRequest;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigJsonAdapter;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigPetrolStationsClient;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigRequest;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigResponse;
 
 import java.util.Locale;
 
@@ -54,8 +60,10 @@ public final class AppContainer {
   public final ApiKeyManager TANKERKOENIG_APIKEY_MANAGER;
   public final GoogleGeocodingClient GEOCODING_CLIENT;
   public final GeoRequest GEO_REQUEST;
-  public final TankerkoenigPetrolStationsClient PETROL_STATIONS_CLIENT;
-  public final PetrolStations PETROL_STATIONS_SERVICE;
+  public final PetrolStationsDao PETROL_STATIONS_DAO;
+  public final JsonResponse PETROL_STATIONS_JSON_RESPONSE;
+  public final PetrolStationsService PETROL_STATIONS_WEBSERVICE;
+  public final PetrolStations PETROL_STATIONS;
   public final PetrolStationMessageContent PETROL_STATION_MESSAGE_CONTENT;
   public final MessageRequest MESSAGE_REQUEST;
   public final MessageClient MESSAGE_CLIENT;
@@ -83,13 +91,20 @@ public final class AppContainer {
     GEO_REQUEST = TankerkoenigRequest.create(TANKERKOENIG_APIKEY_MANAGER);
     PETROL_STATIONS_JSON_ADAPTER = new TankerkoenigJsonAdapter(JSON_PROVIDER);
 
-    PETROL_STATIONS_CLIENT = new TankerkoenigPetrolStationsClient(
+    PETROL_STATIONS_JSON_RESPONSE = new TankerkoenigResponse(
+        JSON_PROVIDER,
+        new ResponseBodyImpl(),
+        new TransactInfoImpl());
+
+    PETROL_STATIONS_DAO = new TankerkoenigPetrolStationsClient(
         HTTP_CLIENT,
         PETROL_STATIONS_JSON_ADAPTER,
-        JSON_PROVIDER,
-        GEO_REQUEST);
+        GEO_REQUEST,
+        PETROL_STATIONS_JSON_RESPONSE);
 
-    PETROL_STATIONS_SERVICE = new PetrolStations(PETROL_STATIONS_CLIENT);
+    PETROL_STATIONS_WEBSERVICE = new PetrolStationsWebService(PETROL_STATIONS_DAO);
+
+    PETROL_STATIONS = new PetrolStations(PETROL_STATIONS_WEBSERVICE);
 
     PETROL_STATION_MESSAGE_CONTENT = new PushoverMessageContent(L10N);
     MESSAGE_REQUEST = new PushoverMessageRequest(PUSHMESSAGE_APIKEY_MANAGER, USER_PREFS);

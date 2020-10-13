@@ -1,10 +1,9 @@
 package de.fornalik.tankschlau.station;
 
 import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.storage.PetrolStationsService;
 import de.fornalik.tankschlau.testhelp_common.DomainFixtureHelp;
 import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
-import de.fornalik.tankschlau.webserviceapi.common.PetrolStationsClient;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -40,9 +39,9 @@ class PetrolStationsTest {
     // given
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
 
-    PetrolStationsClient<TankerkoenigResponse> clientMock = mock(PetrolStationsClient.class);
+    PetrolStationsService clientMock = mock(PetrolStationsService.class);
     Geo geoMock = mock(Geo.class);
-    when(clientMock.findAllInNeighbourhood(geoMock)).thenReturn(fixture.convertToPetrolStations());
+    when(clientMock.getNeighbourhoodStations(geoMock)).thenReturn(fixture.convertToPetrolStations());
 
     PetrolStations petrolStationService = new PetrolStations(clientMock);
 
@@ -157,9 +156,9 @@ class PetrolStationsTest {
 
       String failureMessage = String.format(
           "TEST FAILED!\n"
-              + "stationA (uuid %s) is not properly sorted to stationB (uuid %s).\n"
-              + "priceA: %f, distanceA: %f compared to next priceB: %f, distanceB: %f "
-              + "is a wrong sort order.",
+          + "stationA (uuid %s) is not properly sorted to stationB (uuid %s).\n"
+          + "priceA: %f, distanceA: %f compared to next priceB: %f, distanceB: %f "
+          + "is a wrong sort order.",
           stationA.uuid, stationB.uuid, priceA, distanceA, priceB, distanceB);
 
       fail(failureMessage);

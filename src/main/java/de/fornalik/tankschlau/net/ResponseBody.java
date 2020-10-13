@@ -14,12 +14,25 @@
  * limitations under the License.
  */
 
-package de.fornalik.tankschlau.webserviceapi.pushover;
-
-import de.fornalik.tankschlau.net.BaseResponse;
+package de.fornalik.tankschlau.net;
 
 /**
- * Concrete implementation if {@link StringResponse} for pushover.net webservice.
- * Locks the type of the response body to <code>String</code>.
+ * Body of a server response.
  */
-public class PushoverMessageResponse extends BaseResponse<String> {}
+public interface ResponseBody {
+
+  /**
+   * @param ofType Type variable which determines the class of body data, e.g. <code>String
+   *               .class</code>.
+   * @param <T>    same
+   * @return The data part of the response of the server.
+   */
+  <T> T getData(Class<T> ofType);
+
+  /**
+   * @param data The data part of the response of the server.
+   * @param <T>  Class type  which determines the class of body data, e.g. <code>String
+   *             .class</code>.
+   */
+  <T> void setData(T data);
+}

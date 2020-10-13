@@ -22,7 +22,10 @@ import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.station.*;
+import de.fornalik.tankschlau.station.Petrol;
+import de.fornalik.tankschlau.station.PetrolStation;
+import de.fornalik.tankschlau.station.PetrolStationBuilder;
+import de.fornalik.tankschlau.station.PetrolType;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigResponse;
 import org.junit.jupiter.api.Assertions;
 
@@ -35,7 +38,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * Deals with test-fixtures for the common domain of this app.
  * <p>
- * Use for creating fixed data of {@link PetrolStation} and {@link PetrolStationsDao}.
+ * Use for creating fixed data of {@link PetrolStation} and
+ * {@link de.fornalik.tankschlau.storage.PetrolStationsDao}.
  * All DTO fields are public mutable for testing purposes. Also, all primitives are wrapped
  * to be able to null them for testing purposes.
  */

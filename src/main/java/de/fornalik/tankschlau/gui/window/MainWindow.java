@@ -20,12 +20,12 @@ import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.gui.menu.MainMenuBar;
 import de.fornalik.tankschlau.station.*;
+import de.fornalik.tankschlau.storage.PetrolStationsService;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.webserviceapi.common.MessageClient;
 import de.fornalik.tankschlau.webserviceapi.common.PetrolStationMessageContent;
 import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingClient;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigPetrolStationsClient;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
@@ -38,7 +38,7 @@ import java.util.Set;
 public class MainWindow extends JFrame {
   private final Localization l10n;
   private final UserPrefs userPrefs;
-  private final TankerkoenigPetrolStationsClient petrolStationsClient;
+  private final PetrolStationsService petrolStationsWebService;
   private final GoogleGeocodingClient geoCodingClient;
   private final MessageClient messageClient;
   private final PetrolStationMessageContent messageContent;
@@ -48,7 +48,7 @@ public class MainWindow extends JFrame {
   public MainWindow(
       Localization l10n,
       UserPrefs userPrefs,
-      TankerkoenigPetrolStationsClient petrolStationsClient,
+      PetrolStationsService petrolStationsWebService,
       GoogleGeocodingClient geoCodingClient,
       MessageClient messageClient,
       PetrolStationMessageContent messageContent) {
@@ -56,7 +56,7 @@ public class MainWindow extends JFrame {
     super(de.fornalik.tankschlau.TankSchlau.class.getSimpleName());
     this.l10n = l10n;
     this.userPrefs = userPrefs;
-    this.petrolStationsClient = petrolStationsClient;
+    this.petrolStationsWebService = petrolStationsWebService;
     this.geoCodingClient = geoCodingClient;
     this.messageClient = messageClient;
     this.messageContent = messageContent;
@@ -110,8 +110,8 @@ public class MainWindow extends JFrame {
 
         model.addElement(
             "********** "
-                + l10n.get("msg.CurrentPricesSortedBy", sortedFor.name())
-                + " **********");
+            + l10n.get("msg.CurrentPricesSortedBy", sortedFor.name())
+            + " **********");
 
         model.addElement(" ");
 
@@ -138,8 +138,8 @@ public class MainWindow extends JFrame {
     if (!geo.isPresent())
       return new ArrayList<>();
 
-    List<PetrolStation> data = petrolStationsClient.findAllInNeighbourhood((geo.get()));
-    Optional<String> errorMessage = petrolStationsClient.getResponse().getErrorMessage();
+    List<PetrolStation> data = petrolStationsWebService.getNeighbourhoodStations((geo.get()));
+    Optional<String> errorMessage = petrolStationsWebService.getTransactInfo().getErrorMessage();
 
     if (errorMessage.isPresent())
       model.addElement(l10n.get("msg.ErrorServerConnection", errorMessage));
@@ -163,7 +163,7 @@ public class MainWindow extends JFrame {
       if (!geoFromWebservice.isPresent()) {
         // Swap that msg with a Logger.
         String msg = "Log.Error: Requesting webservice for Geo data based on user's address did "
-            + "not return required lat/lng.";
+                     + "not return required lat/lng.";
         System.out.println(msg);
 
         return address;
@@ -179,13 +179,16 @@ public class MainWindow extends JFrame {
   private Optional<Geo> getUserGeoFromWebservice(Address userAddress) {
     System.out.println("Log.Info: Requesting geocoding webservice...");
     Optional<Geo> geo = geoCodingClient.getGeo(userAddress);
-    Optional<String> responseErrorMsg = geoCodingClient.getResponse().getErrorMessage();
+    Optional<String> responseErrorMsg = geoCodingClient
+        .getResponse()
+        .getTransactInfo()
+        .getErrorMessage();
 
     if (responseErrorMsg.isPresent()) {
       // Swap that msg with a Logger.
       String message = "Log.Error: Requesting webservice for Geo data based on user's "
-          + "address did not return required lat/lng: "
-          + responseErrorMsg.get();
+                       + "address did not return required lat/lng: "
+                       + responseErrorMsg.get();
 
       System.out.println(message);
       return Optional.empty();

@@ -17,7 +17,22 @@
 package de.fornalik.tankschlau.net;
 
 /**
- * Intermediate abstract class for a {@link BaseResponse} which body data is of type
- * <code>String</>.
+ * The body part of a server response.
  */
-public abstract class StringResponse extends BaseResponse<String> {}
+public class ResponseBodyImpl implements ResponseBody {
+  private Object data;
+
+  public ResponseBodyImpl() {
+    this.data = null;
+  }
+
+  @Override
+  public <T> T getData(Class<T> ofType) {
+    return ofType.cast(data);
+  }
+
+  @Override
+  public <T> void setData(T data) {
+    this.data = data;
+  }
+}

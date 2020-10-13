@@ -16,55 +16,30 @@
 
 package de.fornalik.tankschlau.net;
 
-import de.fornalik.tankschlau.util.StringLegalizer;
+import de.fornalik.tankschlau.storage.TransactInfo;
 
 import java.util.Optional;
 
 /**
- * Abstract base class for a server's {@link Response} which provides body data
+ * Base class for a server's {@link Response} which provides body data
  * and an optional error message.
- *
- * @param <T> The type of the response body.
  */
-public abstract class BaseResponse<T> implements Response<T> {
-  private T body;
-  private String status;
-  private String errorMessage;
+public class BaseResponse implements Response {
+  private final ResponseBody responseBody;
+  private final TransactInfo transactInfo;
 
-  public BaseResponse() {
-    this.body = null;
-    this.status = null;
-    this.errorMessage = null;
+  public BaseResponse(ResponseBody responseBody, TransactInfo transactInfo) {
+    this.responseBody = responseBody;
+    this.transactInfo = transactInfo;
   }
 
   @Override
-  public Optional<T> getBody() {
-    return Optional.ofNullable(body);
+  public Optional<ResponseBody> getBody() {
+    return Optional.ofNullable(responseBody);
   }
 
   @Override
-  public void setBody(T data) {
-    this.body = data;
-  }
-
-  @Override
-  public String getStatus() {
-    return status != null ? status : "";
-  }
-
-  @Override
-  public void setStatus(String data) {
-    this.status = data;
-  }
-
-  @Override
-  public Optional<String> getErrorMessage() {
-    // Important: Must return an empty Optional if no errors were detected and body is valid!
-    return Optional.ofNullable(errorMessage);
-  }
-
-  @Override
-  public void setErrorMessage(String in) {
-    this.errorMessage = StringLegalizer.create(in).safeTrim().end();
+  public TransactInfo getTransactInfo() {
+    return transactInfo;
   }
 }

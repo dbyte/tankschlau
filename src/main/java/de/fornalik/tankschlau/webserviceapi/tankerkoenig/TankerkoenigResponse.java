@@ -18,56 +18,63 @@ package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import de.fornalik.tankschlau.net.BaseResponse;
 import de.fornalik.tankschlau.net.JsonResponse;
-import de.fornalik.tankschlau.net.StringResponse;
-import de.fornalik.tankschlau.webserviceapi.common.Licensed;
+import de.fornalik.tankschlau.net.ResponseBody;
+import de.fornalik.tankschlau.storage.TransactInfo;
 
+import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Concrete implementation of {@link StringResponse} for tankerkoenig.de webservice.
+ * Concrete implementation of {@link JsonResponse} for tankerkoenig.de webservice.
  * Locks the type of the response body to <code>String</code>.
  */
-public class TankerkoenigResponse extends JsonResponse<TankerkoenigResponse.ResponseDto>
-    implements Licensed {
+public class TankerkoenigResponse extends BaseResponse implements JsonResponse {
 
   private final Gson jsonProvider;
+  private final ResponseBody
   private ResponseDto responseDto;
   private String licenseString;
 
-  TankerkoenigResponse(Gson jsonProvider) {
+  public TankerkoenigResponse(
+      Gson jsonProvider,
+      ResponseBody responseBody,
+      TransactInfo transactInfo) {
+
+    super(responseBody, transactInfo);
     this.jsonProvider = Objects.requireNonNull(jsonProvider);
     this.responseDto = null;
     this.licenseString = "";
   }
 
   @Override
-  public Optional<ResponseDto> fromJson(String jsonString) {
-    // Deserialize
-    responseDto = jsonProvider.fromJson(jsonString, ResponseDto.class);
+  public <T> Optional<T> fromJson(String jsonString, Class<T> targetClass) {
+    // Deserialize root level data of of the webservice's JSON response and push it
+    // into our existing TransactInfo object.
+
+    responseDto = jsonProvider.fromJson(jsonString, (Type) targetClass);
 
     if (responseDto == null) {
-      setErrorMessage("JSON string could not be converted. String is:\n" + jsonString);
-      setStatus("ERROR");
+      getTransactInfo().setErrorMessage(
+          "JSON string could not be converted. String is:\n"
+          + jsonString);
+
+      getTransactInfo().setStatus("ERROR");
       return Optional.empty();
     }
 
     if (!responseDto.getStatus().isEmpty())
-      setStatus(responseDto.getStatus());
+      getTransactInfo().setStatus(responseDto.getStatus());
 
     if (!responseDto.getMessage().isEmpty())
-      setErrorMessage(responseDto.getMessage());
+      getTransactInfo().setErrorMessage(responseDto.getMessage());
 
     if (!responseDto.getLicense().isEmpty())
       licenseString = responseDto.getLicense();
 
-    return Optional.of(responseDto);
-  }
-
-  @Override
-  public String getLicenseString() {
-    return (licenseString != null ? licenseString : "");
+    return Optional.empty();
   }
 
   /**

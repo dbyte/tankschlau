@@ -14,12 +14,27 @@
  * limitations under the License.
  */
 
-package de.fornalik.tankschlau.webserviceapi.pushover;
+package de.fornalik.tankschlau.storage;
 
-import de.fornalik.tankschlau.net.BaseResponse;
+
+import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.station.PetrolStation;
+
+import java.util.List;
 
 /**
- * Concrete implementation if {@link StringResponse} for pushover.net webservice.
- * Locks the type of the response body to <code>String</code>.
+ * Service for petrol stations. Interacts with the storage through a DAO.
  */
-public class PushoverMessageResponse extends BaseResponse<String> {}
+public interface PetrolStationsService {
+
+  /**
+   * @see PetrolStationsDao#findAllInNeighbourhood(Geo)
+   */
+  List<PetrolStation> getNeighbourhoodStations(Geo geo);
+
+  /**
+   * @return Some valuable information about the last transaction with the storage.
+   * @see TransactInfo
+   */
+  TransactInfo getTransactInfo();
+}

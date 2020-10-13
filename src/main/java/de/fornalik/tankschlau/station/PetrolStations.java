@@ -17,6 +17,8 @@
 package de.fornalik.tankschlau.station;
 
 import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.storage.PetrolStationsDao;
+import de.fornalik.tankschlau.storage.PetrolStationsService;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
 import java.util.Comparator;
@@ -27,16 +29,16 @@ import java.util.Objects;
  * Service class for dealing with data collections of a {@link PetrolStation}.
  */
 public class PetrolStations {
-  private final PetrolStationsDao petrolStationsDao;
+  private final PetrolStationsService petrolStationsWebservice;
 
   /**
    * Constructor
    *
-   * @param petrolStationsDao Some {@link PetrolStationsDao} implementation.
+   * @param petrolStationsWebservice Some {@link PetrolStationsDao} implementation.
    */
-  public PetrolStations(PetrolStationsDao petrolStationsDao) {
-    this.petrolStationsDao = Objects.requireNonNull(
-        petrolStationsDao, PetrolStationsDao.class.getSimpleName() + " must not be null");
+  public PetrolStations(PetrolStationsService petrolStationsWebservice) {
+    this.petrolStationsWebservice = Objects.requireNonNull(
+        petrolStationsWebservice, PetrolStationsDao.class.getSimpleName() + " must not be null");
   }
 
   /**
@@ -60,7 +62,7 @@ public class PetrolStations {
    * @param geo {@link Geo} data wrapping the user's current location.
    */
   public List<PetrolStation> getAllInNeighbourhood(Geo geo) {
-    return petrolStationsDao.findAllInNeighbourhood(geo);
+    return petrolStationsWebservice.getNeighbourhoodStations(geo);
   }
 
   /**

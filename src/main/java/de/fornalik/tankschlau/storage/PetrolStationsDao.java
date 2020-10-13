@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package de.fornalik.tankschlau.station;
+package de.fornalik.tankschlau.storage;
 
 import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.station.PetrolStation;
 
 import java.util.List;
 
 /**
- * Interface for Data Access Objects of {@link PetrolStation}.
+ * Data access object interface for the {@link PetrolStation} business class.
  */
 public interface PetrolStationsDao {
 
@@ -35,4 +36,10 @@ public interface PetrolStationsDao {
    * @return A list of {@link PetrolStation}, or an empty list if no stations were found.
    */
   List<PetrolStation> findAllInNeighbourhood(Geo geo);
+
+  /**
+   * @return Some valuable information about the last transaction with the storage.
+   * @see TransactInfo
+   */
+  TransactInfo getTransactInfo();
 }

@@ -24,18 +24,20 @@ import java.util.Optional;
 public interface HttpClient {
 
   /**
-   * @return The request which was last used invoking {@link #newCall(Request, StringResponse)}.
+   * @return The request which was last used invoking {@link #newCall(Request, Response, Class)}.
    */
   Optional<Request> getRequest();
 
   /**
-   * Calls the web service synchronously and extracts its response body by invoking
-   * {@link Response#setBody}, while the type T of the body is a concrete {@link String} here.
+   * Calls the web service synchronously and extracts its response body.
    *
-   * @param request  A configured {@link Request} object.
-   * @param response A default-initialized {@link BaseResponse} object, which will be populated by
-   *                 the server's response data, then being passed back as the return value.
+   * @param request            A configured {@link Request} object.
+   * @param response           A default-initialized implementation of {@link Response}, which
+   *                           will be populated by the server's response data, then being passed
+   *                           back as the return value.
+   * @param typeOfResponseData Type variable for the body data, e.g. <code>String.class</code>
+   * @param <T>                The class of a type.
    * @return The populated {@link Response} object which was passed to this method.
    */
-  Response<String> newCall(final Request request, StringResponse response);
+  <T> Response newCall(Request request, Response response, Class<T> typeOfResponseData);
 }

@@ -16,53 +16,26 @@
 
 package de.fornalik.tankschlau.net;
 
+import de.fornalik.tankschlau.storage.TransactInfo;
+
 import java.util.Optional;
 
 /**
- * The HTTP response interface used by this application. T determines the type of the response body.
- *
- * @param <T> The type of the response body.
+ * The HTTP response interface used by this application.
  */
-public interface Response<T> {
+public interface Response {
 
   /**
-   * @return Optional error message for errors which have not been thrown at request time.
-   * <span style="color:red;">Important: </span>Empty Optional if no errors were detected.
-   */
-  Optional<String> getErrorMessage();
-
-  /**
-   * @param message Sets an error message for errors which have not been thrown at request time.
-   *                Do not set at all (or null) if no error were encountered.
-   */
-  void setErrorMessage(String message);
-
-  /**
-   * Gets the final response body data as T, while T is determined by the implementation
-   * of {@link BaseResponse}.
+   * Gets the final response body, while the type T of its <code>data</code> field is determined
+   * at runtime.
    *
-   * @return Optional body of the response as T, e.g. <code>String</code>. Or an empty Optional
+   * @return Some implementation instance of a {@link ResponseBody} - or an empty Optional
    * if there were errors which have not been thrown at request time.
    */
-  Optional<T> getBody();
+  Optional<ResponseBody> getBody();
 
   /**
-   * Sets the final body data.
-   *
-   * @param data Some data of type T, while T is defined by concrete implementation
-   *             of the {@link BaseResponse}.
+   * @return Some implementation of a {@link TransactInfo}
    */
-  void setBody(T data);
-
-  /**
-   * @return Some information about the client/server transaction, directly provided
-   * by the server or enriched by ourselves. Should return empty string if no info is available.
-   */
-  String getStatus();
-
-  /**
-   * @param data Some information about the client/server transaction, directly provided
-   *             by the server or enriched by ourselves.
-   */
-  void setStatus(String data);
+  TransactInfo getTransactInfo();
 }

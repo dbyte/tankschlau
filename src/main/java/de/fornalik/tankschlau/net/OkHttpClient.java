@@ -47,7 +47,15 @@ public class OkHttpClient implements HttpClient {
   }
 
   @Override
-  public StringResponse newCall(final Request request, StringResponse response) {
+  public <T> Response newCall(Request request, Response response, Class<T> typeOfResponseData) {
+
+    if (typeOfResponseData != String.class) {
+      throw new UnsupportedOperationException(
+          "Support for body data of type "
+          + typeOfResponseData.getSimpleName()
+          + " not yet implemented.");
+    }
+
     okhttp3.Response okhttpResponse;
 
     try {
@@ -61,19 +69,19 @@ public class OkHttpClient implements HttpClient {
     }
 
     try {
-      response.setBody(Objects.requireNonNull(okhttpResponse.body()).string());
+      response.getBody().setData(Objects.requireNonNull(okhttpResponse.body()).string());
     }
 
     catch (IOException | NullPointerException e) {
       String msg = "Body of response could not be converted to string.";
-      response.setErrorMessage(msg + " " + getDetails(okhttpResponse));
-      response.setStatus("ERROR");
+      response.getTransactInfo().setErrorMessage(msg + " " + getDetails(okhttpResponse));
+      response.getTransactInfo().setStatus("ERROR");
     }
 
     return response;
   }
 
-  private okhttp3.Response realCall(final Request request, Response<?> response)
+  private okhttp3.Response realCall(final Request request, Response response)
   throws IOException, IllegalStateException {
     this.request = request;
 
@@ -85,15 +93,17 @@ public class OkHttpClient implements HttpClient {
       okhttpResponse = callServer(okhttpRequest); //throws
     }
     catch (IOException e) {
-      response.setStatus("ERROR");
-      response.setErrorMessage(e.getMessage());
+      response.getTransactInfo().setStatus("ERROR");
+      response.getTransactInfo().setErrorMessage(e.getMessage());
       throw e;
     }
 
     if (okhttpResponse.body() == null) {
-      response.setErrorMessage("Body of response is null.\n" + getDetails(okhttpResponse));
+      response
+          .getTransactInfo()
+          .setErrorMessage("Body of response is null.\n" + getDetails(okhttpResponse));
       //noinspection OptionalGetWithoutIsPresent
-      throw new IllegalStateException(response.getErrorMessage().get());
+      throw new IllegalStateException(response.getTransactInfo().getErrorMessage().get());
     }
 
     return okhttpResponse;
@@ -141,8 +151,8 @@ public class OkHttpClient implements HttpClient {
 
   private String getDetails(okhttp3.Response okhttpResponse) {
     return "HTTP status message: "
-        + okhttpResponse.message()
-        + "\nResponse headers:\n"
-        + okhttpResponse.headers().toString();
+           + okhttpResponse.message()
+           + "\nResponse headers:\n"
+           + okhttpResponse.headers().toString();
   }
 }

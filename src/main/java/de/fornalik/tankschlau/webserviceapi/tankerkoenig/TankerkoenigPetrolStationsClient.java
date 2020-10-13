@@ -16,13 +16,14 @@
 
 package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 
-import com.google.gson.Gson;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.HttpClient;
+import de.fornalik.tankschlau.net.JsonResponse;
+import de.fornalik.tankschlau.net.Response;
 import de.fornalik.tankschlau.station.PetrolStation;
-import de.fornalik.tankschlau.station.PetrolStationsDao;
+import de.fornalik.tankschlau.storage.PetrolStationsDao;
+import de.fornalik.tankschlau.storage.TransactInfo;
 import de.fornalik.tankschlau.webserviceapi.common.GeoRequest;
-import de.fornalik.tankschlau.webserviceapi.common.PetrolStationsClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,37 +32,33 @@ import java.util.Objects;
 /**
  * Petrol stations client/DAO implementation for tankerkoenig.de response.
  *
- * @see PetrolStationsClient
- * @see PetrolStationsDao
+ * @see PetrolStation
  */
-public class TankerkoenigPetrolStationsClient
-    implements PetrolStationsClient<TankerkoenigResponse> {
+public class TankerkoenigPetrolStationsClient implements PetrolStationsDao {
 
   private final HttpClient httpClient;
-  private final Gson jsonProvider;
   private final TankerkoenigJsonAdapter jsonAdapter;
   private final GeoRequest request;
-  private TankerkoenigResponse response;
+  private JsonResponse response;
 
   /**
    * Creates a new default {@link TankerkoenigPetrolStationsClient} object for the webservice. <br>
    *
-   * @param httpClient   Some {@link HttpClient} implementation.
-   * @param jsonAdapter  Some json adapter implementation for petrol stations.
-   * @param jsonProvider Currently fixed {@link Gson} implementation.
-   * @param request      Some {@link GeoRequest} implementation.
+   * @param httpClient  Some {@link HttpClient} implementation.
+   * @param jsonAdapter Some json adapter implementation for petrol stations.
+   * @param request     Some {@link GeoRequest} implementation.
+   * @param response    Some initialized implementation of a {@link Response} object.
    */
   public TankerkoenigPetrolStationsClient(
       HttpClient httpClient,
       TankerkoenigJsonAdapter jsonAdapter,
-      Gson jsonProvider,
-      GeoRequest request) {
+      GeoRequest request,
+      JsonResponse response) {
 
     this.httpClient = httpClient;
     this.jsonAdapter = jsonAdapter;
-    this.jsonProvider = jsonProvider;
     this.request = request;
-    this.response = null;
+    this.response = response;
   }
 
   @Override
@@ -69,31 +66,33 @@ public class TankerkoenigPetrolStationsClient
     this.request.setGeoUrlParameters(geo);
 
     // It's guaranteed by newCall(...) that returned response is not null.
-    response = (TankerkoenigResponse) httpClient.newCall(
-        request,
-        new TankerkoenigResponse(jsonProvider));
+    response = (JsonResponse) httpClient.newCall(request, response, String.class);
+    // Note: After newCall, the field response.transactInfo may already contain error message etc,
+    // mutated by the http client while processing communication/request/response.
 
     Objects.requireNonNull(response, "Response is null.");
 
     if (!response.getBody().isPresent())
       return new ArrayList<>();
 
+    // Get body data from server response.
+    String jsonString = response.getBody().get().getData(String.class);
+
+    // Deserialize data from JSON data which are of informal type -
+    // like status, licence string, error message because of wrong API key etc.
+    // Note: Response objects will be mutated there. No need to retrieve any results here.
+    response.fromJson(jsonString, TankerkoenigResponse.ResponseDto.class);
+
     /*
     At this point we assert a valid JSON document - well formed and determined
     by the webservice's API. So all following processing should crash only if _we_
     messed things up.
     */
-    return jsonAdapter.createPetrolStations(response.getBody().get());
+    return jsonAdapter.createPetrolStations(jsonString);
   }
 
   @Override
-  public TankerkoenigResponse getResponse() {
-    return response;
+  public TransactInfo getTransactInfo() {
+    return this.response.getTransactInfo();
   }
-
-  @Override
-  public String getLicenseString() {
-    return response.getLicenseString();
-  }
-
 }

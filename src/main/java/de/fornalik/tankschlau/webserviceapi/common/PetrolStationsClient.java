@@ -16,7 +16,8 @@
 
 package de.fornalik.tankschlau.webserviceapi.common;
 
-import de.fornalik.tankschlau.station.PetrolStationsDao;
+
+import de.fornalik.tankschlau.storage.PetrolStationsDao;
 
 /**
  * Interface for getting petrol stations and their prices via webservice.
