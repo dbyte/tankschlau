@@ -138,10 +138,12 @@ public class DomainFixtureHelp {
   public void assertEqualValues(TankerkoenigResponse tankerkoenigResponse) {
     Objects.requireNonNull(tankerkoenigResponse);
 
-    assertEquals(objectFixture.status, tankerkoenigResponse.getStatus());
-    assertEquals(objectFixture.getLicenseString(), tankerkoenigResponse.getLicenseString());
-    assertEquals(objectFixture.message, tankerkoenigResponse.getErrorMessage().orElse(""));
-    assertEquals(objectFixture.status, tankerkoenigResponse.getStatus());
+    assertEquals(objectFixture.status, tankerkoenigResponse.getTransactInfo().getStatus());
+    assertEquals(objectFixture.getLicence(), tankerkoenigResponse.getTransactInfo().getLicence());
+    assertEquals(
+        objectFixture.message,
+        tankerkoenigResponse.getTransactInfo().getErrorMessage().orElse(""));
+    assertEquals(objectFixture.status, tankerkoenigResponse.getTransactInfo().getStatus());
   }
 
   /**
@@ -292,7 +294,7 @@ public class DomainFixtureHelp {
     @SerializedName("status") public String status;
     @SerializedName("message") public String message;
     @SerializedName("stations") public ArrayList<StationDTO> stations;
-    @SerializedName("license") private String license;
+    @SerializedName("license") private String licence;
 
     ResponseDTO() {
       stations = new ArrayList<>();
@@ -302,8 +304,8 @@ public class DomainFixtureHelp {
       message = "";
     }
 
-    public String getLicenseString() {
-      return (license != null ? license : "");
+    public String getLicence() {
+      return (licence != null ? licence : "");
     }
   }
 

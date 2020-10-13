@@ -94,7 +94,7 @@ class TankerkoenigResponseTest {
 
     // then
     assertEquals(
-        fixture.objectFixture.getLicenseString(),
+        fixture.objectFixture.getLicence(),
         tankerkoenigResponse.getTransactInfo().getLicence());
   }
 
