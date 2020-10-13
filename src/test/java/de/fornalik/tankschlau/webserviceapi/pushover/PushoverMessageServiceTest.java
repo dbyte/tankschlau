@@ -37,11 +37,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class PushoverMessageClientTest {
+class PushoverMessageServiceTest {
   private static HttpClient httpClientMock;
   private static MessageRequest messageRequestMock;
 
-  private PushoverMessageClient messageClient;
+  private PushoverMessageService messageClient;
   private MessageContent messageContentMock;
   private PushoverMessageResponse messageResponseMock;
   private UserPrefs userPrefsMock;
@@ -64,7 +64,7 @@ class PushoverMessageClientTest {
     this.messageContentMock = mock(MessageContent.class);
     this.messageResponseMock = mock(PushoverMessageResponse.class);
 
-    this.messageClient = new PushoverMessageClient(
+    this.messageClient = new PushoverMessageService(
         httpClientMock,
         messageRequestMock,
         messageResponseMock);
@@ -110,7 +110,7 @@ class PushoverMessageClientTest {
 
     MessageRequest realRequest = new PushoverMessageRequest(apiKeyManagerMock, userPrefsMock);
 
-    PushoverMessageClient messageClient = new PushoverMessageClient(
+    PushoverMessageService messageClient = new PushoverMessageService(
         realHttpClient,
         realRequest,
         realResponse);

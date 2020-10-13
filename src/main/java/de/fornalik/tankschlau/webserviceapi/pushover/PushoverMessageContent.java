@@ -55,7 +55,8 @@ public class PushoverMessageContent extends PetrolStationMessageContent {
   }
 
   @Override
-  public PetrolStationMessageContent newInstance() {
-    return new PushoverMessageContent(this.getL10n());
+  public void reset() {
+    setTitle(null);
+    setMessage(null);
   }
 }

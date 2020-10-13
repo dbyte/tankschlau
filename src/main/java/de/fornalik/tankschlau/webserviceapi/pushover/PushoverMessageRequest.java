@@ -16,6 +16,7 @@
 
 package de.fornalik.tankschlau.webserviceapi.pushover;
 
+import de.fornalik.tankschlau.net.BaseRequest;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.StringLegalizer;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
@@ -25,7 +26,7 @@ import de.fornalik.tankschlau.webserviceapi.common.MessageRequest;
 import java.util.Objects;
 
 // TODO unit test, javadoc
-public class PushoverMessageRequest extends MessageRequest {
+public class PushoverMessageRequest extends BaseRequest implements MessageRequest {
   private static final String BASE_URL = "https://api.pushover.net/1/messages.json";
 
   private final ApiKeyManager apiKeyManager;

@@ -25,7 +25,6 @@ import de.fornalik.tankschlau.net.ResponseBodyImpl;
 import de.fornalik.tankschlau.station.PetrolStations;
 import de.fornalik.tankschlau.station.Petrols;
 import de.fornalik.tankschlau.station.PetrolsJsonAdapter;
-import de.fornalik.tankschlau.storage.GeocodingService;
 import de.fornalik.tankschlau.storage.PetrolStationsRepo;
 import de.fornalik.tankschlau.storage.PetrolStationsService;
 import de.fornalik.tankschlau.storage.TransactInfoImpl;
@@ -35,10 +34,10 @@ import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.webserviceapi.common.*;
 import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingClient;
 import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingRequest;
-import de.fornalik.tankschlau.webserviceapi.pushover.PushoverMessageClient;
 import de.fornalik.tankschlau.webserviceapi.pushover.PushoverMessageContent;
 import de.fornalik.tankschlau.webserviceapi.pushover.PushoverMessageRequest;
 import de.fornalik.tankschlau.webserviceapi.pushover.PushoverMessageResponse;
+import de.fornalik.tankschlau.webserviceapi.pushover.PushoverMessageService;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigJsonAdapter;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigPetrolStationsClient;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigRequest;
@@ -68,11 +67,14 @@ public final class AppContainer {
   public final PetrolStations PETROL_STATIONS;
   public final PetrolStationMessageContent PETROL_STATION_MESSAGE_CONTENT;
   public final MessageRequest MESSAGE_REQUEST;
-  public final PushoverMessageResponse MESSAGE_RESPONSE;
-  public final MessageClient MESSAGE_CLIENT;
+  public final JsonResponse MESSAGE_RESPONSE;
+  public final MessageService MESSAGE_CLIENT;
 
   public AppContainer() {
-    // Setup dependency graph
+    /*
+    Setup application context dependency graph
+    */
+
     L10N = new Localization(Locale.GERMAN);
     USER_PREFS = new UserPrefs("/de/fornalik/tankschlau");
     HTTP_CLIENT = new OkHttpClient(new okhttp3.OkHttpClient());
@@ -112,6 +114,6 @@ public final class AppContainer {
     PETROL_STATION_MESSAGE_CONTENT = new PushoverMessageContent(L10N);
     MESSAGE_REQUEST = new PushoverMessageRequest(PUSHMESSAGE_APIKEY_MANAGER, USER_PREFS);
     MESSAGE_RESPONSE = new PushoverMessageResponse(new ResponseBodyImpl(), new TransactInfoImpl());
-    MESSAGE_CLIENT = new PushoverMessageClient(HTTP_CLIENT, MESSAGE_REQUEST, MESSAGE_RESPONSE);
+    MESSAGE_CLIENT = new PushoverMessageService(HTTP_CLIENT, MESSAGE_REQUEST, MESSAGE_RESPONSE);
   }
 }

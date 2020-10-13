@@ -16,14 +16,14 @@
 
 package de.fornalik.tankschlau.webserviceapi.common;
 
-import de.fornalik.tankschlau.net.BaseRequest;
+import de.fornalik.tankschlau.net.Request;
 
 /**
  * Abstract HTTP request class with base functionalities and <b>additional hook</b> for generating
  * proper request parameters for a push message.
  */
 // TODO unit tests
-public abstract class MessageRequest extends BaseRequest {
+public interface MessageRequest extends Request {
 
   /**
    * Implementation should set or overwrite the "message" parameter with the new value for this
@@ -31,5 +31,5 @@ public abstract class MessageRequest extends BaseRequest {
    *
    * @param content Content of the message (title, text etc.).
    */
-  public abstract void setMessage(MessageContent content);
+  void setMessage(MessageContent content);
 }

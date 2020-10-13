@@ -18,19 +18,20 @@ package de.fornalik.tankschlau.webserviceapi.pushover;
 
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.Response;
-import de.fornalik.tankschlau.webserviceapi.common.MessageClient;
+import de.fornalik.tankschlau.storage.TransactInfo;
 import de.fornalik.tankschlau.webserviceapi.common.MessageContent;
 import de.fornalik.tankschlau.webserviceapi.common.MessageRequest;
+import de.fornalik.tankschlau.webserviceapi.common.MessageService;
 
 import java.util.Objects;
 
 /**
- * Implementation of {@link MessageClient} for pushover.net push message webservices.
+ * Implementation of {@link MessageService} for pushover.net push message webservices.
  *
  * @see <a href="https://pushover.net/api">Pushover Message API documentation</a>
  */
 // TODO unit test, javadoc
-public class PushoverMessageClient implements MessageClient {
+public class PushoverMessageService implements MessageService {
   private final HttpClient httpClient;
   private final MessageRequest request;
   private final Response response;
@@ -41,7 +42,7 @@ public class PushoverMessageClient implements MessageClient {
    * @param httpClient Some implementation of {@link HttpClient} for interaction with webservice.
    * @param request    Some implementation of {@link MessageRequest}, forming a concrete request.
    */
-  public PushoverMessageClient(HttpClient httpClient, MessageRequest request, Response response) {
+  public PushoverMessageService(HttpClient httpClient, MessageRequest request, Response response) {
     this.httpClient = Objects.requireNonNull(httpClient);
     this.request = Objects.requireNonNull(request);
     this.response = Objects.requireNonNull(response);
@@ -72,5 +73,10 @@ public class PushoverMessageClient implements MessageClient {
         .ifPresent((msg) -> System.out.println("Log.Error: " + msg));
 
     return response;
+  }
+
+  @Override
+  public TransactInfo getTransactInfo() {
+    throw new UnsupportedOperationException("To be implemented.");
   }
 }

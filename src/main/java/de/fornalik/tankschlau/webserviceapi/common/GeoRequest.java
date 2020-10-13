@@ -17,13 +17,12 @@
 package de.fornalik.tankschlau.webserviceapi.common;
 
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.net.BaseRequest;
+import de.fornalik.tankschlau.net.Request;
 
 /**
- * Abstract HTTP request class with base functionalities and <b>additional hook</b> for generating
- * proper URL request parameters for {@link Geo} data.
+ * HTTP request interface for generating proper URL request parameters of {@link Geo} data.
  */
-public abstract class GeoRequest extends BaseRequest {
+public interface GeoRequest extends Request {
 
   /**
    * Implementation should set or overwrite the latitude/longitude/distance URL parameters
@@ -32,5 +31,5 @@ public abstract class GeoRequest extends BaseRequest {
    * @param geo The {@link Geo} data.
    * @throws NullPointerException If given Geo instance is null.
    */
-  public abstract void setGeoUrlParameters(Geo geo);
+  void setGeoUrlParameters(Geo geo);
 }

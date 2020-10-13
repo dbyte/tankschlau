@@ -17,13 +17,12 @@
 package de.fornalik.tankschlau.webserviceapi.common;
 
 import de.fornalik.tankschlau.geo.Address;
-import de.fornalik.tankschlau.net.BaseRequest;
+import de.fornalik.tankschlau.net.Request;
 
 /**
- * Abstract HTTP request class with base functionalities and <b>additional hook</b> for generating
- * proper URL request parameters for an {@link Address}.
+ * HTTP request interface for generating proper URL request parameters for an {@link Address}.
  */
-public abstract class AddressRequest extends BaseRequest {
+public interface AddressRequest extends Request {
 
   /**
    * Implementation should set or overwrite the address URL parameters for this request.
@@ -31,7 +30,6 @@ public abstract class AddressRequest extends BaseRequest {
    * @param address The {@link Address} data. Its {@link de.fornalik.tankschlau.geo.Geo}
    *                object should be updated with the resulting latitude & longitude by calling a
    *                geocoding webservice.
-   * @throws NullPointerException If given address is null.
    */
-  public abstract void setAddressUrlParameters(Address address);
+  void setAddressUrlParameters(Address address);
 }

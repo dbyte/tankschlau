@@ -20,11 +20,11 @@ import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.gui.menu.MainMenuBar;
 import de.fornalik.tankschlau.station.*;
-import de.fornalik.tankschlau.storage.GeocodingService;
 import de.fornalik.tankschlau.storage.PetrolStationsRepo;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
-import de.fornalik.tankschlau.webserviceapi.common.MessageClient;
+import de.fornalik.tankschlau.webserviceapi.common.GeocodingService;
+import de.fornalik.tankschlau.webserviceapi.common.MessageService;
 import de.fornalik.tankschlau.webserviceapi.common.PetrolStationMessageContent;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -40,7 +40,7 @@ public class MainWindow extends JFrame {
   private final UserPrefs userPrefs;
   private final PetrolStationsRepo petrolStationsWebRepo;
   private final GeocodingService geoCodingClient;
-  private final MessageClient messageClient;
+  private final MessageService messageService;
   private final PetrolStationMessageContent messageContent;
 
   private DefaultListModel<String> model;
@@ -50,7 +50,7 @@ public class MainWindow extends JFrame {
       UserPrefs userPrefs,
       PetrolStationsRepo petrolStationsWebRepo,
       GeocodingService geoCodingClient,
-      MessageClient messageClient,
+      MessageService messageService,
       PetrolStationMessageContent messageContent) {
 
     super(de.fornalik.tankschlau.TankSchlau.class.getSimpleName());
@@ -58,7 +58,7 @@ public class MainWindow extends JFrame {
     this.userPrefs = userPrefs;
     this.petrolStationsWebRepo = petrolStationsWebRepo;
     this.geoCodingClient = geoCodingClient;
-    this.messageClient = messageClient;
+    this.messageService = messageService;
     this.messageContent = messageContent;
 
     initGui();
@@ -206,9 +206,9 @@ public class MainWindow extends JFrame {
   }
 
   private void sendMessage(PetrolStation cheapestStation, PetrolType petrolType) {
-    messageContent.newInstance();
+    messageContent.reset();
     messageContent.setMessage(cheapestStation, petrolType);
-    messageClient.sendMessage(messageContent);
+    messageService.sendMessage(messageContent);
   }
 
   private String createStationHeader(PetrolStation station) {

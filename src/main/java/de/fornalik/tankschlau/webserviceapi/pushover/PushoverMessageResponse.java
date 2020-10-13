@@ -17,17 +17,25 @@
 package de.fornalik.tankschlau.webserviceapi.pushover;
 
 import de.fornalik.tankschlau.net.BaseResponse;
+import de.fornalik.tankschlau.net.JsonResponse;
 import de.fornalik.tankschlau.net.ResponseBody;
 import de.fornalik.tankschlau.storage.TransactInfo;
 
+import java.util.Optional;
+
 /**
- * Concrete implementation of {@link BaseResponse} for pushover.net webservice.
+ * Concrete implementation of {@link JsonResponse} for pushover.net webservice.
  * Locks the type of the response body to <code>String</code>.
  */
-public class PushoverMessageResponse extends BaseResponse {
-  public PushoverMessageResponse(
-      ResponseBody responseBody,
-      TransactInfo transactInfo) {
+public class PushoverMessageResponse extends BaseResponse implements JsonResponse {
+
+  public PushoverMessageResponse(ResponseBody responseBody, TransactInfo transactInfo) {
+
     super(responseBody, transactInfo);
+  }
+
+  @Override
+  public <T> Optional<T> fromJson(String jsonString, Class<T> targetClass) {
+    return Optional.empty();
   }
 }

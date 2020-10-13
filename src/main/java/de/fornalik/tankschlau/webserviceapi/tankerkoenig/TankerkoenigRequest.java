@@ -25,9 +25,9 @@ import de.fornalik.tankschlau.webserviceapi.common.GeoRequest;
 import java.util.Objects;
 
 /**
- * Implementation of {@link BaseRequest} for web service Tankerkoenig.de
+ * Implementation of {@link GeoRequest} for web service tankerkoenig.de
  */
-public class TankerkoenigRequest extends GeoRequest {
+public class TankerkoenigRequest extends BaseRequest implements GeoRequest {
   private static final String BASE_URL = "https://creativecommons.tankerkoenig.de/json/list.php";
   private static final HttpMethod HTTP_METHOD = HttpMethod.GET;
   private static final String ACCEPT_JSON = "application/json; charset=utf-8";

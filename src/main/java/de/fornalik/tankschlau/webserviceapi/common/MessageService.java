@@ -17,8 +17,9 @@
 package de.fornalik.tankschlau.webserviceapi.common;
 
 import de.fornalik.tankschlau.net.Response;
+import de.fornalik.tankschlau.storage.TransactInfo;
 
-public interface MessageClient {
+public interface MessageService {
 
   /**
    * Implementation should call a push message webservice with the provided
@@ -28,4 +29,10 @@ public interface MessageClient {
    * @return {@link Response} data object with some info about the transaction.
    */
   Response sendMessage(MessageContent content);
+
+  /**
+   * @return Some valuable information about the last transaction with the webservice.
+   * @see TransactInfo
+   */
+  TransactInfo getTransactInfo();
 }

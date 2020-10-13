@@ -14,33 +14,31 @@
  * limitations under the License.
  */
 
-package de.fornalik.tankschlau.net;
+package de.fornalik.tankschlau.webserviceapi.common;
 
+import de.fornalik.tankschlau.geo.Address;
+import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.storage.TransactInfo;
 
+import java.util.Optional;
+
 /**
- * The HTTP response interface used by this application.
+ * Service interface for {@link Geo} model.
  */
-public interface Response {
+public interface GeocodingService {
 
   /**
-   * Gets the final response body, while the type T of its <code>data</code> field is determined
-   * at runtime.
+   * Calls a webservice which delivers latitude/longitude for a given address and wraps it in
+   * a {@link Geo} object.
    *
-   * @return Some implementation instance of a {@link ResponseBody}.
+   * @param forAddress The address for which to retrieve lat/lng data.
+   * @return Optional {@link Geo} object if the service has returned lat/lng.
    */
-  ResponseBody getBody();
+  Optional<Geo> findGeo(Address forAddress);
 
   /**
-   * @return Some implementation of a {@link TransactInfo}
+   * @return Some valuable information about the last transaction with the storage.
+   * @see TransactInfo
    */
   TransactInfo getTransactInfo();
-
-  /**
-   * Deeply recycles instance to default values. No new instance is created,
-   * the old one is retained.
-   *
-   * @implSpec Implementations MUST RETAIN the same instance.
-   */
-  void reset();
 }

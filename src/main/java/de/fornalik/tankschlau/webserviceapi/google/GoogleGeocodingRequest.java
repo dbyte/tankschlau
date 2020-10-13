@@ -17,6 +17,7 @@
 package de.fornalik.tankschlau.webserviceapi.google;
 
 import de.fornalik.tankschlau.geo.Address;
+import de.fornalik.tankschlau.net.BaseRequest;
 import de.fornalik.tankschlau.net.Request;
 import de.fornalik.tankschlau.util.StringLegalizer;
 import de.fornalik.tankschlau.webserviceapi.common.AddressRequest;
@@ -27,7 +28,7 @@ import java.util.Objects;
 /**
  * Implementation of {@link AddressRequest} for Google Geocoding web service.
  */
-public class GoogleGeocodingRequest extends AddressRequest {
+public class GoogleGeocodingRequest extends BaseRequest implements AddressRequest {
   private static final String BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json";
   private static final HttpMethod HTTP_METHOD = HttpMethod.GET;
   private static final String ACCEPT_JSON = "application/json; charset=utf-8";

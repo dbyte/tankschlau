@@ -38,10 +38,6 @@ public abstract class PetrolStationMessageContent implements MessageContent {
     this.l10n = l10n;
   }
 
-  protected Localization getL10n() {
-    return l10n;
-  }
-
   public void setMessage(PetrolStation station, PetrolType petrolType) {
     String stationHeader = createStationHeader(station);
     String petrol = l10n.get("msg.BestPrice", createPetrolString(station, petrolType));
@@ -53,8 +49,10 @@ public abstract class PetrolStationMessageContent implements MessageContent {
 
   private String createStationHeader(PetrolStation station) {
     String stationName = station.address.getName();
-    String open = station.isOpen ? l10n.get("msg.NowOpen") : l10n.get(
-        "msg.NowClosed");
+    String open = station.isOpen
+        ? l10n.get("msg.NowOpen")
+        : l10n.get("msg.NowClosed");
+
     return stationName + " - " + open;
   }
 

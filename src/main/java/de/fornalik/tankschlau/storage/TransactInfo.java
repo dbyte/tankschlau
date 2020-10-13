@@ -62,7 +62,8 @@ public interface TransactInfo {
   void setLicence(String s);
 
   /**
-   * Fully resets instance to default values. No new instance is created, the old one is retained.
+   * Deeply recycles instance to default values. No new instance is created,
+   * the old one is retained.
    *
    * @implSpec Implementations MUST RETAIN the same instance.
    */
