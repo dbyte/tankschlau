@@ -38,4 +38,9 @@ public interface Response {
    * @return Some implementation of a {@link TransactInfo}
    */
   TransactInfo getTransactInfo();
+
+  /**
+   * @return Implementation must return same instance, but fully reset.
+   */
+  Response reset();
 }

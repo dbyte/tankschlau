@@ -24,9 +24,7 @@ public class TransactInfoImpl implements TransactInfo {
   private String status, errorMessage, licence;
 
   public TransactInfoImpl() {
-    this.status = "";
-    this.errorMessage = null;
-    this.licence = "";
+    this.reset();
   }
 
   @Override
@@ -60,8 +58,11 @@ public class TransactInfoImpl implements TransactInfo {
   }
 
   @Override
-  public TransactInfoImpl newInstance() {
-    return new TransactInfoImpl();
+  public TransactInfoImpl reset() {
+    this.licence = "";
+    this.errorMessage = null;
+    this.status = "";
+    return this;
   }
 
   private String nullToEmpty(String s) {

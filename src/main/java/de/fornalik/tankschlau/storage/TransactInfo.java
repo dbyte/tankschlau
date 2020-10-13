@@ -62,7 +62,7 @@ public interface TransactInfo {
   void setLicence(String s);
 
   /**
-   * @return A new, ready-for-use, instance of {@link TransactInfo}.
+   * @return Implementation must return same instance, but fully reset.
    */
-  TransactInfo newInstance();
+  TransactInfo reset();
 }

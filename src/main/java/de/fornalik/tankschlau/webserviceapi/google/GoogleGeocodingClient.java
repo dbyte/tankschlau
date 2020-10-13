@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.HttpClient;
+import de.fornalik.tankschlau.net.Response;
 import de.fornalik.tankschlau.webserviceapi.common.AddressRequest;
 import de.fornalik.tankschlau.webserviceapi.common.GeocodingClient;
 
@@ -36,7 +37,7 @@ public class GoogleGeocodingClient implements GeocodingClient<GoogleGeocodingRes
   private final HttpClient httpClient;
   private final Gson jsonProvider;
   private final AddressRequest request;
-  private GoogleGeocodingResponse response;
+  private Response response;
 
   /**
    * Constructor
@@ -54,9 +55,10 @@ public class GoogleGeocodingClient implements GeocodingClient<GoogleGeocodingRes
   public Optional<Geo> getGeo(Address address) {
     request.setAddressUrlParameters(address);
 
-    response = (GoogleGeocodingResponse) httpClient.newCall(
+    response = httpClient.newCall(
         request,
-        new GoogleGeocodingResponse(jsonProvider));
+        new GoogleGeocodingResponse(jsonProvider),
+        String.class);
 
     Objects.requireNonNull(response, "Response is null.");
 
@@ -65,7 +67,7 @@ public class GoogleGeocodingClient implements GeocodingClient<GoogleGeocodingRes
   }
 
   @Override
-  public GoogleGeocodingResponse getResponse() {
+  public Response getResponse() {
     return response;
   }
 

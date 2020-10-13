@@ -34,9 +34,7 @@ import java.util.Optional;
 public class TankerkoenigResponse extends BaseResponse implements JsonResponse {
 
   private final Gson jsonProvider;
-  private final ResponseBody
   private ResponseDto responseDto;
-  private String licenseString;
 
   public TankerkoenigResponse(
       Gson jsonProvider,
@@ -46,7 +44,6 @@ public class TankerkoenigResponse extends BaseResponse implements JsonResponse {
     super(responseBody, transactInfo);
     this.jsonProvider = Objects.requireNonNull(jsonProvider);
     this.responseDto = null;
-    this.licenseString = "";
   }
 
   @Override
@@ -72,7 +69,7 @@ public class TankerkoenigResponse extends BaseResponse implements JsonResponse {
       getTransactInfo().setErrorMessage(responseDto.getMessage());
 
     if (!responseDto.getLicense().isEmpty())
-      licenseString = responseDto.getLicense();
+      getTransactInfo().setLicence(responseDto.getLicense());
 
     return Optional.empty();
   }
@@ -82,7 +79,7 @@ public class TankerkoenigResponse extends BaseResponse implements JsonResponse {
    * root level JSON object of the webservice response.
    */
   @SuppressWarnings("unused")
-  static class ResponseDto {
+  public static class ResponseDto {
     @SerializedName("ok") private boolean ok;
     @SerializedName("license") private String license;
     @SerializedName("status") private String status;

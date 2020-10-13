@@ -17,6 +17,7 @@
 package de.fornalik.tankschlau.net;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -69,7 +70,14 @@ public class OkHttpClient implements HttpClient {
     }
 
     try {
-      response.getBody().setData(Objects.requireNonNull(okhttpResponse.body()).string());
+      //noinspection OptionalGetWithoutIsPresent
+      response.getBody().get().setData(Objects.requireNonNull(okhttpResponse.body()).string());
+    }
+
+    catch (NoSuchElementException e) {
+      String msg = "Body of response is empty.";
+      response.getTransactInfo().setErrorMessage(msg + " " + getDetails(okhttpResponse));
+      response.getTransactInfo().setStatus("ERROR");
     }
 
     catch (IOException | NullPointerException e) {

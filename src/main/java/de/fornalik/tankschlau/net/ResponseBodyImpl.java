@@ -16,6 +16,8 @@
 
 package de.fornalik.tankschlau.net;
 
+// TODO unit tests
+
 /**
  * The body part of a server response.
  */

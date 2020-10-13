@@ -17,6 +17,10 @@
 package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 
 import com.google.gson.Gson;
+import de.fornalik.tankschlau.net.ResponseBody;
+import de.fornalik.tankschlau.net.ResponseBodyImpl;
+import de.fornalik.tankschlau.storage.TransactInfo;
+import de.fornalik.tankschlau.storage.TransactInfoImpl;
 import de.fornalik.tankschlau.testhelp_common.DomainFixtureHelp;
 import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
 import org.junit.jupiter.api.AfterAll;
@@ -46,8 +50,17 @@ class TankerkoenigResponseTest {
 
   @BeforeEach
   void setUp() {
-    this.tankerkoenigResponse = new TankerkoenigResponse(jsonProvider); // SUT
     this.fixture = new DomainFixtureHelp();
+
+    // No mock as these are tightly coupled with response.
+    ResponseBody responseBody = new ResponseBodyImpl();
+    TransactInfo transactInfo = new TransactInfoImpl();
+
+    // SUT
+    this.tankerkoenigResponse = new TankerkoenigResponse(
+        jsonProvider,
+        responseBody,
+        transactInfo);
   }
 
   @ParameterizedTest
@@ -61,7 +74,7 @@ class TankerkoenigResponseTest {
     fixture.setupFixture(givenFixture);
 
     // when
-    tankerkoenigResponse.fromJson(fixture.jsonFixture);
+    tankerkoenigResponse.fromJson(fixture.jsonFixture, TankerkoenigResponse.ResponseDto.class);
 
     // then
     fixture.assertEqualValues(tankerkoenigResponse);
@@ -77,10 +90,12 @@ class TankerkoenigResponseTest {
     fixture.setupFixture(givenFixture);
 
     // when
-    tankerkoenigResponse.fromJson(fixture.jsonFixture);
+    tankerkoenigResponse.fromJson(fixture.jsonFixture, TankerkoenigResponse.ResponseDto.class);
 
     // then
-    assertEquals(fixture.objectFixture.getLicenseString(), tankerkoenigResponse.getLicenseString());
+    assertEquals(
+        fixture.objectFixture.getLicenseString(),
+        tankerkoenigResponse.getTransactInfo().getLicence());
   }
 
   @Test
@@ -89,10 +104,10 @@ class TankerkoenigResponseTest {
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_LONGITUDE_ERROR);
 
     // when
-    tankerkoenigResponse.fromJson(fixture.jsonFixture);
+    tankerkoenigResponse.fromJson(fixture.jsonFixture, TankerkoenigResponse.ResponseDto.class);
 
     // then
-    assertEquals("", tankerkoenigResponse.getLicenseString());
+    assertEquals("", tankerkoenigResponse.getTransactInfo().getLicence());
   }
 
   @Test
@@ -101,14 +116,18 @@ class TankerkoenigResponseTest {
     String expectedMessagePart = "JSON string could not be converted";
 
     // when
-    tankerkoenigResponse.fromJson(null);
+    tankerkoenigResponse.fromJson(null, TankerkoenigResponse.ResponseDto.class);
 
     // then
     assertTrue(
-        tankerkoenigResponse.getErrorMessage().orElse("").contains(expectedMessagePart),
+        tankerkoenigResponse
+            .getTransactInfo()
+            .getErrorMessage()
+            .orElse("")
+            .contains(expectedMessagePart),
         "\nExpected error message to contain\n"
-            + "\"" + expectedMessagePart + "\"\n"
-            + "but actually is\n"
-            + "\"" + tankerkoenigResponse.getErrorMessage() + "\"");
+        + "\"" + expectedMessagePart + "\"\n"
+        + "but actually is\n"
+        + "\"" + tankerkoenigResponse.getTransactInfo().getErrorMessage() + "\"");
   }
 }

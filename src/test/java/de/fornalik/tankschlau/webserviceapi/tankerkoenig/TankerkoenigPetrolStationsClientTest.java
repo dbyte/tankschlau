@@ -20,6 +20,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.HttpClient;
+import de.fornalik.tankschlau.net.JsonResponse;
+import de.fornalik.tankschlau.net.ResponseBody;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.Petrols;
 import de.fornalik.tankschlau.station.PetrolsJsonAdapter;
@@ -48,7 +50,8 @@ class TankerkoenigPetrolStationsClientTest {
 
   private DomainFixtureHelp fixture;
   private HttpClient httpClientMock;
-  private TankerkoenigResponse tankerkoenigResponseMock;
+  private JsonResponse tankerkoenigResponseMock;
+  private ResponseBody responseBodyMock;
 
   @BeforeAll
   static void beforeAll() {
@@ -78,21 +81,23 @@ class TankerkoenigPetrolStationsClientTest {
     httpClientMock = mock(HttpClient.class);
     GeoRequest geoRequestMock = mock(GeoRequest.class);
     tankerkoenigResponseMock = mock(TankerkoenigResponse.class);
+    responseBodyMock = mock(ResponseBody.class);
 
     sut = new TankerkoenigPetrolStationsClient(
         httpClientMock,
         petrolStationsJsonAdapter,
-        jsonProvider,
-        geoRequestMock);
+        geoRequestMock,
+        tankerkoenigResponseMock);
   }
 
   @Test
   void getAllInNeighbourhood_happy() {
     // given
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_17STATIONS_HAPPY);
+    when(responseBodyMock.getData(String.class)).thenReturn(fixture.jsonFixture);
 
-    when(tankerkoenigResponseMock.getBody()).thenReturn(Optional.of(fixture.jsonFixture));
-    when(httpClientMock.newCall(any(), any())).thenReturn(tankerkoenigResponseMock);
+    when(tankerkoenigResponseMock.getBody()).thenReturn(Optional.of(responseBodyMock));
+    when(httpClientMock.newCall(any(), any(), any())).thenReturn(tankerkoenigResponseMock);
 
     // when
     actualPetrolStations = sut.findAllInNeighbourhood(geoMock);
@@ -105,9 +110,10 @@ class TankerkoenigPetrolStationsClientTest {
   void getAllInNeighbourhood_returnsEmptyPetrolStationsArrayOnEmptyJsonResponse() {
     // given
     String jsonStringResponse = "{}";
+    when(responseBodyMock.getData(String.class)).thenReturn(jsonStringResponse);
 
-    when(tankerkoenigResponseMock.getBody()).thenReturn(Optional.of(jsonStringResponse));
-    when(httpClientMock.newCall(any(), any())).thenReturn(tankerkoenigResponseMock);
+    when(tankerkoenigResponseMock.getBody()).thenReturn(Optional.of(responseBodyMock));
+    when(httpClientMock.newCall(any(), any(), any())).thenReturn(tankerkoenigResponseMock);
 
     // when
     actualPetrolStations = sut.findAllInNeighbourhood(geoMock);
@@ -119,7 +125,7 @@ class TankerkoenigPetrolStationsClientTest {
   @Test
   void getAllInNeighbourhood_shouldCrashWithNullPointerExceptionIfResponseIsNull() {
     // given
-    when(httpClientMock.newCall(any(), any())).thenReturn(null);
+    when(httpClientMock.newCall(any(), any(), any())).thenReturn(null);
 
     // when then
     assertThrows(NullPointerException.class, () -> sut.findAllInNeighbourhood(geoMock));

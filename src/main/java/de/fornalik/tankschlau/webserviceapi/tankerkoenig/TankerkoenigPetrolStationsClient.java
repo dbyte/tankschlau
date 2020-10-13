@@ -63,7 +63,8 @@ public class TankerkoenigPetrolStationsClient implements PetrolStationsDao {
 
   @Override
   public List<PetrolStation> findAllInNeighbourhood(Geo geo) {
-    this.request.setGeoUrlParameters(geo);
+    request.setGeoUrlParameters(geo);
+    response.reset();
 
     // It's guaranteed by newCall(...) that returned response is not null.
     response = (JsonResponse) httpClient.newCall(request, response, String.class);

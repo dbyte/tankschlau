@@ -16,8 +16,8 @@ import static org.mockito.Mockito.mock;
 class OkHttpClientTest {
   HttpClient okHttpClient;
   private Request requestMock;
-  private Response<String> stringResponseMock;
-  private Response<String> actualResponse;
+  private Response jsonResponseMock;
+  private Response actualResponse;
   private okhttp3.Request okHttp3Request;
   private okhttp3.Call okHttp3CallMock;
 
@@ -26,7 +26,7 @@ class OkHttpClientTest {
     // Mock this app's Request & Response
 
     requestMock = mock(Request.class);
-    stringResponseMock = mock(StringResponse.class, Mockito.CALLS_REAL_METHODS);
+    jsonResponseMock = mock(JsonResponse.class, Mockito.CALLS_REAL_METHODS);
 
     // Mock used fragments of okhttp3 library
 
@@ -58,11 +58,11 @@ class OkHttpClientTest {
     helpSetupOkHttp3BaseResponseMock(okHttp3Request, expectedContent);
 
     // when
-    actualResponse = okHttpClient.newCall(requestMock, (StringResponse) stringResponseMock);
+    actualResponse = okHttpClient.newCall(requestMock, jsonResponseMock, String.class);
 
     // then
     assertTrue(actualResponse.getBody().isPresent());
-    assertEquals(expectedContent, actualResponse.getBody().get());
+    assertEquals(expectedContent, actualResponse.getBody().get().getData(String.class));
   }
 
   @Test
@@ -73,7 +73,8 @@ class OkHttpClientTest {
     // when then
     assertDoesNotThrow(() -> okHttpClient.newCall(
         requestMock,
-        (StringResponse) stringResponseMock));
+        jsonResponseMock,
+        String.class));
   }
 
   @Test
@@ -83,18 +84,18 @@ class OkHttpClientTest {
     String expectedPartOfErrorMessage = "Body of response is null.";
 
     // when
-    actualResponse = okHttpClient.newCall(requestMock, (StringResponse) stringResponseMock);
+    actualResponse = okHttpClient.newCall(requestMock, jsonResponseMock, String.class);
 
     // then
     assertFalse(actualResponse.getBody().isPresent());
-    assertTrue(actualResponse.getErrorMessage().isPresent());
+    assertTrue(actualResponse.getTransactInfo().getErrorMessage().isPresent());
 
-    Optional<String> actualErrorMessage = actualResponse.getErrorMessage();
+    Optional<String> actualErrorMessage = actualResponse.getTransactInfo().getErrorMessage();
 
     assertTrue(
         actualErrorMessage.get().contains(expectedPartOfErrorMessage),
         "\nExpected message: \"" + expectedPartOfErrorMessage + "\"\n"
-            + "Actual message: \"" + actualErrorMessage + "\"");
+        + "Actual message: \"" + actualErrorMessage + "\"");
   }
 
   private void helpSetupOkHttp3BaseResponseMock(okhttp3.Request request, String content)

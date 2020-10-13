@@ -42,4 +42,11 @@ public class BaseResponse implements Response {
   public TransactInfo getTransactInfo() {
     return transactInfo;
   }
+
+  @Override
+  public Response reset() {
+    responseBody.setData(null);
+    transactInfo.reset();
+    return this;
+  }
 }
