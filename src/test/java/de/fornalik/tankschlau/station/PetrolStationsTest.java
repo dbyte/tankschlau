@@ -1,7 +1,7 @@
 package de.fornalik.tankschlau.station;
 
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.storage.PetrolStationsService;
+import de.fornalik.tankschlau.storage.PetrolStationsRepo;
 import de.fornalik.tankschlau.testhelp_common.DomainFixtureHelp;
 import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,11 +35,11 @@ class PetrolStationsTest {
   /* The underlying implementation of this method is subject to the corresponding
   net and web service units, so we just do some basic test on its own code paths here. */
   @Test
-  void getAllInNeighbourhood_callsDaoAndReturnsResultingPetrolStations() {
+  void getAllInNeighbourhood_callsServiceAndReturnsResultingPetrolStations() {
     // given
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
 
-    PetrolStationsService clientMock = mock(PetrolStationsService.class);
+    PetrolStationsRepo clientMock = mock(PetrolStationsRepo.class);
     Geo geoMock = mock(Geo.class);
     when(clientMock.getNeighbourhoodStations(geoMock)).thenReturn(fixture.convertToPetrolStations());
 

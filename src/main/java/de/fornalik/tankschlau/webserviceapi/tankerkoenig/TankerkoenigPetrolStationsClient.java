@@ -21,7 +21,7 @@ import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.JsonResponse;
 import de.fornalik.tankschlau.net.Response;
 import de.fornalik.tankschlau.station.PetrolStation;
-import de.fornalik.tankschlau.storage.PetrolStationsDao;
+import de.fornalik.tankschlau.storage.PetrolStationsService;
 import de.fornalik.tankschlau.storage.TransactInfo;
 import de.fornalik.tankschlau.webserviceapi.common.GeoRequest;
 
@@ -30,11 +30,11 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Petrol stations client/DAO implementation for tankerkoenig.de response.
+ * Petrol stations client/service implementation for tankerkoenig.de response.
  *
  * @see PetrolStation
  */
-public class TankerkoenigPetrolStationsClient implements PetrolStationsDao {
+public class TankerkoenigPetrolStationsClient implements PetrolStationsService {
 
   private final HttpClient httpClient;
   private final TankerkoenigJsonAdapter jsonAdapter;

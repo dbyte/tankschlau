@@ -18,7 +18,7 @@ package de.fornalik.tankschlau.webserviceapi.common;
 
 
 /**
- * Must be implemented by all clients that access webservices which might stipulate displaying
+ * Must be implemented by all repositories that access webservices which might stipulate displaying
  * their licence info.
  */
 public interface Licensed {

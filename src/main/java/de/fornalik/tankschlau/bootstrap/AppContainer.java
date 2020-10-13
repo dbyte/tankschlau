@@ -25,7 +25,7 @@ import de.fornalik.tankschlau.net.ResponseBodyImpl;
 import de.fornalik.tankschlau.station.PetrolStations;
 import de.fornalik.tankschlau.station.Petrols;
 import de.fornalik.tankschlau.station.PetrolsJsonAdapter;
-import de.fornalik.tankschlau.storage.PetrolStationsDao;
+import de.fornalik.tankschlau.storage.PetrolStationsRepo;
 import de.fornalik.tankschlau.storage.PetrolStationsService;
 import de.fornalik.tankschlau.storage.TransactInfoImpl;
 import de.fornalik.tankschlau.user.UserPrefs;
@@ -60,9 +60,9 @@ public final class AppContainer {
   public final ApiKeyManager TANKERKOENIG_APIKEY_MANAGER;
   public final GoogleGeocodingClient GEOCODING_CLIENT;
   public final GeoRequest GEO_REQUEST;
-  public final PetrolStationsDao PETROL_STATIONS_DAO;
+  public final PetrolStationsService PETROL_STATIONS_SERVICE;
   public final JsonResponse PETROL_STATIONS_JSON_RESPONSE;
-  public final PetrolStationsService PETROL_STATIONS_WEBSERVICE;
+  public final PetrolStationsRepo PETROL_STATIONS_REPO;
   public final PetrolStations PETROL_STATIONS;
   public final PetrolStationMessageContent PETROL_STATION_MESSAGE_CONTENT;
   public final MessageRequest MESSAGE_REQUEST;
@@ -96,15 +96,15 @@ public final class AppContainer {
         new ResponseBodyImpl(),
         new TransactInfoImpl());
 
-    PETROL_STATIONS_DAO = new TankerkoenigPetrolStationsClient(
+    PETROL_STATIONS_SERVICE = new TankerkoenigPetrolStationsClient(
         HTTP_CLIENT,
         PETROL_STATIONS_JSON_ADAPTER,
         GEO_REQUEST,
         PETROL_STATIONS_JSON_RESPONSE);
 
-    PETROL_STATIONS_WEBSERVICE = new PetrolStationsWebService(PETROL_STATIONS_DAO);
+    PETROL_STATIONS_REPO = new PetrolStationsWebRepo(PETROL_STATIONS_SERVICE);
 
-    PETROL_STATIONS = new PetrolStations(PETROL_STATIONS_WEBSERVICE);
+    PETROL_STATIONS = new PetrolStations(PETROL_STATIONS_REPO);
 
     PETROL_STATION_MESSAGE_CONTENT = new PushoverMessageContent(L10N);
     MESSAGE_REQUEST = new PushoverMessageRequest(PUSHMESSAGE_APIKEY_MANAGER, USER_PREFS);

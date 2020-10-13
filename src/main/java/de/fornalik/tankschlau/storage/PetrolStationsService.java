@@ -16,21 +16,26 @@
 
 package de.fornalik.tankschlau.storage;
 
-
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.station.PetrolStation;
 
 import java.util.List;
 
 /**
- * Service for petrol stations. Interacts with the storage through a DAO.
+ * Service interface for {@link PetrolStation} model.
  */
 public interface PetrolStationsService {
 
   /**
-   * @see PetrolStationsDao#findAllInNeighbourhood(Geo)
+   * Searches for petrol stations around the user's neighbourhood, whereby neighbourhood
+   * is defined by the given {@link Geo} data of the user.
+   *
+   * @param geo {@link Geo} instance. Its latitude & longitude should reflect the current
+   *            location of the user. Its distance field should reflect the maximum search radius
+   *            for petrol stations in the neighbourhood of the users current location.
+   * @return A list of {@link PetrolStation}, or an empty list if no stations were found.
    */
-  List<PetrolStation> getNeighbourhoodStations(Geo geo);
+  List<PetrolStation> findAllInNeighbourhood(Geo geo);
 
   /**
    * @return Some valuable information about the last transaction with the storage.

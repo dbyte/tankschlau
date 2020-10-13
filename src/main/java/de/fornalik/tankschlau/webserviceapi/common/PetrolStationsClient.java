@@ -17,14 +17,14 @@
 package de.fornalik.tankschlau.webserviceapi.common;
 
 
-import de.fornalik.tankschlau.storage.PetrolStationsDao;
+import de.fornalik.tankschlau.storage.PetrolStationsService;
 
 /**
  * Interface for getting petrol stations and their prices via webservice.
  *
  * @param <ResponseType> The type of the {@link de.fornalik.tankschlau.net.Response}.
  */
-public interface PetrolStationsClient<ResponseType> extends PetrolStationsDao, Licensed {
+public interface PetrolStationsClient<ResponseType> extends PetrolStationsService, Licensed {
 
   /**
    * @return The {@link de.fornalik.tankschlau.net.Response} of the last request.

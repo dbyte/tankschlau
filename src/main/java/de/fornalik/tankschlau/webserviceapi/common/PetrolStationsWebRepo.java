@@ -18,7 +18,7 @@ package de.fornalik.tankschlau.webserviceapi.common;
 
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.station.PetrolStation;
-import de.fornalik.tankschlau.storage.PetrolStationsDao;
+import de.fornalik.tankschlau.storage.PetrolStationsRepo;
 import de.fornalik.tankschlau.storage.PetrolStationsService;
 import de.fornalik.tankschlau.storage.TransactInfo;
 
@@ -26,29 +26,29 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * This is the highest abstraction of tankerkoenig.de webservice. It represents its
- * Service Layer. Use this one inside a View Model or the Presentation Layer.
+ * This is the highest abstraction of tankerkoenig.de webservice.
+ * Use this one inside a View Model or the Presentation Layer.
  */
-public class PetrolStationsWebService implements PetrolStationsService {
-  private final PetrolStationsDao dao;
+public class PetrolStationsWebRepo implements PetrolStationsRepo {
+  private final PetrolStationsService service;
 
-  public PetrolStationsWebService(PetrolStationsDao dao) {
-    this.dao = Objects.requireNonNull(dao);
+  public PetrolStationsWebRepo(PetrolStationsService service) {
+    this.service = Objects.requireNonNull(service);
   }
 
   /**
    * Searches for petrol stations around the user's neighbourhood, whereby neighbourhood is
    * defined by the given Geo data of the user.
    *
-   * @see PetrolStationsDao#findAllInNeighbourhood(Geo)
+   * @see PetrolStationsService#findAllInNeighbourhood(Geo)
    */
   @Override
   public List<PetrolStation> getNeighbourhoodStations(Geo geo) {
-    return dao.findAllInNeighbourhood(geo);
+    return service.findAllInNeighbourhood(geo);
   }
 
   @Override
   public TransactInfo getTransactInfo() {
-    return dao.getTransactInfo();
+    return service.getTransactInfo();
   }
 }
