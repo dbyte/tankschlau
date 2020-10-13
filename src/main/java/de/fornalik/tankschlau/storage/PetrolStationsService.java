@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Service interface for {@link PetrolStation} model.
  */
-public interface PetrolStationsService {
+public interface PetrolStationsService extends HasTransactionInfo {
 
   /**
    * Searches for petrol stations around the user's neighbourhood, whereby neighbourhood
@@ -36,10 +36,4 @@ public interface PetrolStationsService {
    * @return A list of {@link PetrolStation}, or an empty list if no stations were found.
    */
   List<PetrolStation> findAllInNeighbourhood(Geo geo);
-
-  /**
-   * @return Some valuable information about the last transaction with the storage.
-   * @see TransactInfo
-   */
-  TransactInfo getTransactInfo();
 }

@@ -25,16 +25,10 @@ import java.util.List;
 /**
  * Repo for petrol stations. Interacts with the storage through a service.
  */
-public interface PetrolStationsRepo {
+public interface PetrolStationsRepo extends HasTransactionInfo {
 
   /**
    * @see PetrolStationsService#findAllInNeighbourhood(Geo)
    */
   List<PetrolStation> getNeighbourhoodStations(Geo geo);
-
-  /**
-   * @return Some valuable information about the last transaction with the storage.
-   * @see TransactInfo
-   */
-  TransactInfo getTransactInfo();
 }

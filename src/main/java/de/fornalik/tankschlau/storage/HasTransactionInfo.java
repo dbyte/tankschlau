@@ -14,28 +14,17 @@
  * limitations under the License.
  */
 
-package de.fornalik.tankschlau.net;
-
-import de.fornalik.tankschlau.storage.HasTransactionInfo;
+package de.fornalik.tankschlau.storage;
 
 /**
- * The HTTP response interface used by this application.
+ * The implementing classes have some valuable information about the last transaction with a
+ * repository or service.
  */
-public interface Response extends HasTransactionInfo {
+public interface HasTransactionInfo {
 
   /**
-   * Gets the final response body, while the type T of its <code>data</code> field is determined
-   * at runtime.
-   *
-   * @return Some implementation instance of a {@link ResponseBody}.
+   * @return Some valuable information about the last transaction with the repository or service.
+   * @see TransactInfo
    */
-  ResponseBody getBody();
-
-  /**
-   * Deeply recycles instance to default values. No new instance is created,
-   * the old one is retained.
-   *
-   * @implSpec Implementations MUST RETAIN the same instance.
-   */
-  void reset();
+  TransactInfo getTransactInfo();
 }

@@ -18,14 +18,14 @@ package de.fornalik.tankschlau.webserviceapi.common;
 
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.storage.TransactInfo;
+import de.fornalik.tankschlau.storage.HasTransactionInfo;
 
 import java.util.Optional;
 
 /**
  * Service interface for {@link Geo} model.
  */
-public interface GeocodingService {
+public interface GeocodingService extends HasTransactionInfo {
 
   /**
    * Calls a webservice which delivers latitude/longitude for a given address and wraps it in
@@ -35,10 +35,4 @@ public interface GeocodingService {
    * @return Optional {@link Geo} object if the service has returned lat/lng.
    */
   Optional<Geo> findGeo(Address forAddress);
-
-  /**
-   * @return Some valuable information about the last transaction with the storage.
-   * @see TransactInfo
-   */
-  TransactInfo getTransactInfo();
 }
