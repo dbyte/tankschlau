@@ -86,7 +86,6 @@ public class GoogleGeocodingResponse extends BaseResponse implements JsonRespons
    * root level json object of the Google Geocoding response.
    */
   static class ResponseDTO {
-    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     @SerializedName("results")
     ArrayList<ResultDTO> results;
     @SerializedName("status") String status;

@@ -37,7 +37,9 @@ public interface Response {
   TransactInfo getTransactInfo();
 
   /**
-   * @return Implementation must return same instance, but fully reset.
+   * Recycles the response instance.
+   *
+   * @implSpec Implementations must RETAIN the instance. No "new" allowed by convention.
    */
-  Response reset();
+  void reset();
 }
