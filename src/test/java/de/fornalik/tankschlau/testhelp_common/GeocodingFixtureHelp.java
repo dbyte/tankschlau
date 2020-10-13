@@ -21,14 +21,15 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.net.Response;
+import de.fornalik.tankschlau.storage.TransactInfo;
 
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GeocodingFixtureHelp {
   public ResponseDTO objectFixture;
@@ -74,30 +75,24 @@ public class GeocodingFixtureHelp {
     assertEquals(fixture.getAsGeo().getDistance(), Optional.empty());
   }
 
-  public void assertEqualValues(Response response) {
-    assert response != null;
+  public void assertEqualValues(TransactInfo transactInfo) {
+    assert transactInfo != null;
     assert objectFixture != null;
 
     // Begin test
 
-    assertEquals(objectFixture.status, response.getTransactInfo().getStatus());
+    assertEquals(objectFixture.status, transactInfo.getStatus());
 
     /*
     Lenient message-check, because at some conditions, we concatenate custom message strings with
     the ones delivered by the webservice.
     */
     assertTrue(
-        response.getTransactInfo().getErrorMessage().orElse("").contains(objectFixture.message),
+        transactInfo.getErrorMessage().orElse("").contains(objectFixture.message),
         "\nExpected error message to contain\n"
         + "\"" + objectFixture.message + "\"\n"
         + "but actually is\n"
-        + "\"" + response.getTransactInfo().getErrorMessage() + "\"");
-
-    /*
-    According to Google Geocoding conventions, we assert that the results array is never null,
-    even if we got a response with an error message.
-    */
-    assertNotNull(objectFixture.results);
+        + "\"" + transactInfo.getErrorMessage() + "\"");
   }
 
   /**

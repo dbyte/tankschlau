@@ -18,8 +18,6 @@ package de.fornalik.tankschlau.net;
 
 import de.fornalik.tankschlau.storage.TransactInfo;
 
-import java.util.Optional;
-
 /**
  * The HTTP response interface used by this application.
  */
@@ -29,10 +27,9 @@ public interface Response {
    * Gets the final response body, while the type T of its <code>data</code> field is determined
    * at runtime.
    *
-   * @return Some implementation instance of a {@link ResponseBody} - or an empty Optional
-   * if there were errors which have not been thrown at request time.
+   * @return Some implementation instance of a {@link ResponseBody}.
    */
-  Optional<ResponseBody> getBody();
+  ResponseBody getBody();
 
   /**
    * @return Some implementation of a {@link TransactInfo}

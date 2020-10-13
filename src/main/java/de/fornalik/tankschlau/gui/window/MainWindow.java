@@ -20,12 +20,12 @@ import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.gui.menu.MainMenuBar;
 import de.fornalik.tankschlau.station.*;
+import de.fornalik.tankschlau.storage.GeocodingService;
 import de.fornalik.tankschlau.storage.PetrolStationsRepo;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.webserviceapi.common.MessageClient;
 import de.fornalik.tankschlau.webserviceapi.common.PetrolStationMessageContent;
-import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingClient;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
@@ -39,7 +39,7 @@ public class MainWindow extends JFrame {
   private final Localization l10n;
   private final UserPrefs userPrefs;
   private final PetrolStationsRepo petrolStationsWebRepo;
-  private final GoogleGeocodingClient geoCodingClient;
+  private final GeocodingService geoCodingClient;
   private final MessageClient messageClient;
   private final PetrolStationMessageContent messageContent;
 
@@ -49,7 +49,7 @@ public class MainWindow extends JFrame {
       Localization l10n,
       UserPrefs userPrefs,
       PetrolStationsRepo petrolStationsWebRepo,
-      GoogleGeocodingClient geoCodingClient,
+      GeocodingService geoCodingClient,
       MessageClient messageClient,
       PetrolStationMessageContent messageContent) {
 

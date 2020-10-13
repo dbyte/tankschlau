@@ -62,7 +62,9 @@ public interface TransactInfo {
   void setLicence(String s);
 
   /**
-   * @return Implementation must return same instance, but fully reset.
+   * Fully resets instance to default values. No new instance is created, the old one is retained.
+   *
+   * @implSpec Implementations MUST RETAIN the same instance.
    */
-  TransactInfo reset();
+  void reset();
 }

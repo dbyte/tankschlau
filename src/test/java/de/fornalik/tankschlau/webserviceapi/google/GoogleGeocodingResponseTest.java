@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.ResponseBody;
 import de.fornalik.tankschlau.storage.TransactInfo;
+import de.fornalik.tankschlau.storage.TransactInfoImpl;
 import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
 import de.fornalik.tankschlau.testhelp_common.GeocodingFixtureHelp;
 import org.junit.jupiter.api.AfterAll;
@@ -39,7 +40,6 @@ class GoogleGeocodingResponseTest {
   private Geo actualGeo;
   private GeocodingFixtureHelp fixture;
   private GoogleGeocodingResponse googleGeocodingResponse;
-  private ResponseBody responseBodyMock;
 
   @BeforeAll
   static void beforeAll() {
@@ -53,8 +53,10 @@ class GoogleGeocodingResponseTest {
 
   @BeforeEach
   void setUp() {
-    responseBodyMock = mock(ResponseBody.class);
-    TransactInfo transactInfoMock = mock(TransactInfo.class);
+    ResponseBody responseBodyMock = mock(ResponseBody.class);
+
+    // No mock - need real object here, tightly coupled
+    TransactInfo transactInfoMock = new TransactInfoImpl();
 
     this.googleGeocodingResponse = new GoogleGeocodingResponse(
         jsonProvider,
@@ -93,7 +95,7 @@ class GoogleGeocodingResponseTest {
       FixtureFiles.GOOGLE_GEO_RESPONSE_52_9541353_8_2396026_Approximate,
       FixtureFiles.GOOGLE_GEO_RESPONSE_MissingApiKey,
       FixtureFiles.GOOGLE_GEO_RESPONSE_ZeroResults})
-  void fromJson_setsResponseFieldsAccordingToGoogleResponse_happy(String givenJsonString) {
+  void fromJson_setsTransactInfoAccordingToGoogleResponse_happy(String givenJsonString) {
     // given
     fixture.setupFixture(givenJsonString);
 
@@ -102,7 +104,7 @@ class GoogleGeocodingResponseTest {
 
     // then
     assertNotNull(googleGeocodingResponse);
-    fixture.assertEqualValues(googleGeocodingResponse);
+    fixture.assertEqualValues(googleGeocodingResponse.getTransactInfo());
   }
 
   @ParameterizedTest

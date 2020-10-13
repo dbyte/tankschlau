@@ -21,7 +21,9 @@ import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.ResponseBody;
+import de.fornalik.tankschlau.net.ResponseBodyImpl;
 import de.fornalik.tankschlau.storage.TransactInfo;
+import de.fornalik.tankschlau.storage.TransactInfoImpl;
 import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
 import de.fornalik.tankschlau.testhelp_common.GeocodingFixtureHelp;
 import de.fornalik.tankschlau.webserviceapi.common.AddressRequest;
@@ -37,8 +39,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 class GoogleGeocodingClientTest {
@@ -76,8 +77,8 @@ class GoogleGeocodingClientTest {
     this.actualGeo = null;
     this.fixture = new GeocodingFixtureHelp();
 
-    responseBodyMock = mock(ResponseBody.class);
-    TransactInfo transactInfoMock = mock(TransactInfo.class);
+    responseBodyMock = mock(ResponseBodyImpl.class);
+    TransactInfo transactInfoMock = mock(TransactInfoImpl.class, CALLS_REAL_METHODS);
 
     // No mock here for GoogleGeocodingResponse... must be a real object, sorry for that :-)
     response = new GoogleGeocodingResponse(jsonProvider, responseBodyMock, transactInfoMock);
@@ -88,7 +89,7 @@ class GoogleGeocodingClientTest {
     when(responseBodyMock.getData(String.class)).thenReturn(fixture.jsonFixture);
     when(httpClientMock.newCall(any(), any(), any())).thenReturn(response);
 
-    this.geocodingClient = new GoogleGeocodingClient(httpClientMock, addressRequestMock);
+    this.geocodingClient = new GoogleGeocodingClient(httpClientMock, addressRequestMock, response);
   }
 
   // endregion
@@ -122,11 +123,11 @@ class GoogleGeocodingClientTest {
   }
 
   @Test
-  void getGeo_returnsEmptyGeoIfResponseBodyIsEmpty() {
+  void getGeo_returnsEmptyGeoIfResponseBodyIsNull() {
     // given
     // (Fixture content does not matter here)
     setupFixture(FixtureFiles.GOOGLE_GEO_RESPONSE_MissingApiKey);
-    when(responseBodyMock.getData(any())).thenReturn(Optional.empty());
+    when(responseBodyMock.getData(any())).thenReturn(null);
 
     // when
     Optional<Geo> actualOptionalGeo = geocodingClient.findGeo(addressMock);

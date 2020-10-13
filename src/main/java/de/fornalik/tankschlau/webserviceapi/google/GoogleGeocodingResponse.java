@@ -45,13 +45,14 @@ public class GoogleGeocodingResponse extends BaseResponse implements JsonRespons
 
   @Override
   public <T> Optional<T> fromJson(String jsonString, Class<T> targetClass) {
-    // Deserialize
-    ResponseDTO responseDto = jsonProvider.fromJson(jsonString, ResponseDTO.class);
-
     /*
-    Deserialize data from JSON data which are of informal type -
+    1. Deserialize data from JSON data which are of informal type -
     like status, licence string, error message because of wrong API key etc.
     */
+    ResponseDTO responseDto = jsonProvider.fromJson(jsonString, ResponseDTO.class);
+
+    getTransactInfo().setLicence("Geo data powered by Google.");
+
     if (responseDto == null) {
       getTransactInfo().setErrorMessage("JSON string could not be converted. String is:\n"
                                         + jsonString);
@@ -65,13 +66,14 @@ public class GoogleGeocodingResponse extends BaseResponse implements JsonRespons
     if (responseDto.message != null && !"".equals(responseDto.message))
       getTransactInfo().setErrorMessage(responseDto.message);
 
+
     if (responseDto.results.size() == 0) {
       getTransactInfo().setErrorMessage(responseDto.message);
       return Optional.empty();
     }
 
     /*
-    From here, we can trust that Google service has set values for latitude, longitude and
+    2. From here, we can trust that Google service has set values for latitude, longitude and
     location type. List "results" is always initialized at construction time of ResponseDTO,
     so can't be null.
     */

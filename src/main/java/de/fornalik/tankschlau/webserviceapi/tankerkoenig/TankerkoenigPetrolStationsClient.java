@@ -37,26 +37,26 @@ import java.util.Objects;
 public class TankerkoenigPetrolStationsClient implements PetrolStationsService {
 
   private final HttpClient httpClient;
-  private final TankerkoenigJsonAdapter jsonAdapter;
+  private final TankerkoenigJsonAdapter tankerkoenigPetrolStationsJsonAdapter;
   private final GeoRequest request;
-  private JsonResponse response;
+  private Response response;
 
   /**
    * Creates a new default {@link TankerkoenigPetrolStationsClient} object for the webservice. <br>
    *
-   * @param httpClient  Some {@link HttpClient} implementation.
-   * @param jsonAdapter Some json adapter implementation for petrol stations.
-   * @param request     Some {@link GeoRequest} implementation.
-   * @param response    Some initialized implementation of a {@link Response} object.
+   * @param httpClient                Some {@link HttpClient} implementation.
+   * @param petrolStationsJsonAdapter Some json adapter implementation for petrol stations.
+   * @param request                   Some {@link GeoRequest} implementation.
+   * @param response                  Some initialized implementation of a {@link Response} object.
    */
   public TankerkoenigPetrolStationsClient(
       HttpClient httpClient,
-      TankerkoenigJsonAdapter jsonAdapter,
+      TankerkoenigJsonAdapter petrolStationsJsonAdapter,
       GeoRequest request,
-      JsonResponse response) {
+      Response response) {
 
     this.httpClient = httpClient;
-    this.jsonAdapter = jsonAdapter;
+    this.tankerkoenigPetrolStationsJsonAdapter = petrolStationsJsonAdapter;
     this.request = request;
     this.response = response;
   }
@@ -67,29 +67,34 @@ public class TankerkoenigPetrolStationsClient implements PetrolStationsService {
     response.reset();
 
     // It's guaranteed by newCall(...) that returned response is not null.
-    response = (JsonResponse) httpClient.newCall(request, response, String.class);
-    // Note: After newCall, the field response.transactInfo may already contain error message etc,
-    // mutated by the http client while processing communication/request/response.
+    response = httpClient.newCall(request, response, String.class);
+
+    /*
+    Note: After newCall, the field response.transactInfo may already contain error message etc,
+    mutated by the http client while processing communication/request/response.
+    */
 
     Objects.requireNonNull(response, "Response is null.");
 
-    if (!response.getBody().isPresent())
+    if (response.getBody() == null)
       return new ArrayList<>();
 
     // Get body data from server response.
-    String jsonString = response.getBody().get().getData(String.class);
+    String jsonString = response.getBody().getData(String.class);
 
-    // Deserialize data from JSON data which are of informal type -
-    // like status, licence string, error message because of wrong API key etc.
-    // Note: Response objects will be mutated there. No need to retrieve any results here.
-    response.fromJson(jsonString, TankerkoenigResponse.ResponseDto.class);
+    /*
+    Deserialize data from JSON data which are of informal type -
+    like status, licence string, error message because of wrong API key etc.
+    Note: Response objects will be mutated there. No need to retrieve any results here.
+    */
+    ((JsonResponse) response).fromJson(jsonString, TankerkoenigResponse.ResponseDto.class);
 
     /*
     At this point we assert a valid JSON document - well formed and determined
     by the webservice's API. So all following processing should crash only if _we_
     messed things up.
     */
-    return jsonAdapter.createPetrolStations(jsonString);
+    return tankerkoenigPetrolStationsJsonAdapter.createPetrolStations(jsonString);
   }
 
   @Override

@@ -1,5 +1,7 @@
 package de.fornalik.tankschlau.net;
 
+import de.fornalik.tankschlau.storage.TransactInfo;
+import de.fornalik.tankschlau.storage.TransactInfoImpl;
 import okhttp3.MediaType;
 import okhttp3.Protocol;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,12 +13,12 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 class OkHttpClientTest {
-  HttpClient okHttpClient;
+  private HttpClient okHttpClient;
   private Request requestMock;
-  private Response jsonResponseMock;
+  private Response baseResponseMock;
   private Response actualResponse;
   private okhttp3.Request okHttp3Request;
   private okhttp3.Call okHttp3CallMock;
@@ -26,7 +28,13 @@ class OkHttpClientTest {
     // Mock this app's Request & Response
 
     requestMock = mock(Request.class);
-    jsonResponseMock = mock(JsonResponse.class, Mockito.CALLS_REAL_METHODS);
+    baseResponseMock = mock(BaseResponse.class);
+
+    ResponseBody responseBodyMock = mock(ResponseBodyImpl.class, CALLS_REAL_METHODS);
+    when(baseResponseMock.getBody()).thenReturn(responseBodyMock);
+
+    TransactInfo transactInfoMock = mock(TransactInfoImpl.class, CALLS_REAL_METHODS);
+    when(baseResponseMock.getTransactInfo()).thenReturn(transactInfoMock);
 
     // Mock used fragments of okhttp3 library
 
@@ -52,17 +60,17 @@ class OkHttpClientTest {
   }
 
   @Test
-  void newCall_returnsProperResponseBody() throws IOException {
+  void newCall_setsResponseBodyDataAsExpected() throws IOException {
     // given
     String expectedContent = "Some string value which should be content of the response body.";
     helpSetupOkHttp3BaseResponseMock(okHttp3Request, expectedContent);
 
     // when
-    actualResponse = okHttpClient.newCall(requestMock, jsonResponseMock, String.class);
+    actualResponse = okHttpClient.newCall(requestMock, baseResponseMock, String.class);
 
     // then
-    assertTrue(actualResponse.getBody().isPresent());
-    assertEquals(expectedContent, actualResponse.getBody().get().getData(String.class));
+    assertNotNull(actualResponse.getBody());
+    assertEquals(expectedContent, actualResponse.getBody().getData(String.class));
   }
 
   @Test
@@ -73,7 +81,7 @@ class OkHttpClientTest {
     // when then
     assertDoesNotThrow(() -> okHttpClient.newCall(
         requestMock,
-        jsonResponseMock,
+        baseResponseMock,
         String.class));
   }
 
@@ -84,10 +92,9 @@ class OkHttpClientTest {
     String expectedPartOfErrorMessage = "Body of response is null.";
 
     // when
-    actualResponse = okHttpClient.newCall(requestMock, jsonResponseMock, String.class);
+    actualResponse = okHttpClient.newCall(requestMock, baseResponseMock, String.class);
 
     // then
-    assertFalse(actualResponse.getBody().isPresent());
     assertTrue(actualResponse.getTransactInfo().getErrorMessage().isPresent());
 
     Optional<String> actualErrorMessage = actualResponse.getTransactInfo().getErrorMessage();
@@ -101,7 +108,8 @@ class OkHttpClientTest {
   private void helpSetupOkHttp3BaseResponseMock(okhttp3.Request request, String content)
   throws IOException {
 
-    okhttp3.ResponseBody body = okhttp3.ResponseBody
+    okhttp3.ResponseBody body = okhttp3
+        .ResponseBody
         .create(
             MediaType.parse("application/json; charset=utf-8"),
             content);
@@ -123,6 +131,6 @@ class OkHttpClientTest {
         .message("")
         .build();
 
-    Mockito.when(okHttp3CallMock.execute()).thenReturn(preparedResponse);
+    when(okHttp3CallMock.execute()).thenReturn(preparedResponse);
   }
 }

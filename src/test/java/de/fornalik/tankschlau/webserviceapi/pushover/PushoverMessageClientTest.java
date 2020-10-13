@@ -19,6 +19,8 @@ package de.fornalik.tankschlau.webserviceapi.pushover;
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.OkHttpClient;
 import de.fornalik.tankschlau.net.Response;
+import de.fornalik.tankschlau.net.ResponseBodyImpl;
+import de.fornalik.tankschlau.storage.TransactInfoImpl;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.common.MessageContent;
@@ -41,6 +43,7 @@ class PushoverMessageClientTest {
 
   private PushoverMessageClient messageClient;
   private MessageContent messageContentMock;
+  private PushoverMessageResponse messageResponseMock;
   private UserPrefs userPrefsMock;
   private ApiKeyManager apiKeyManagerMock;
 
@@ -59,7 +62,12 @@ class PushoverMessageClientTest {
   @BeforeEach
   void setUp() {
     this.messageContentMock = mock(MessageContent.class);
-    this.messageClient = new PushoverMessageClient(httpClientMock, messageRequestMock);
+    this.messageResponseMock = mock(PushoverMessageResponse.class);
+
+    this.messageClient = new PushoverMessageClient(
+        httpClientMock,
+        messageRequestMock,
+        messageResponseMock);
 
     // Inject some API keys via VM Options if needed.
     String pmApiKey = Optional.ofNullable(System.getProperty("pushmessageApiKey"))
@@ -90,15 +98,22 @@ class PushoverMessageClientTest {
     // given
     HttpClient realHttpClient = new OkHttpClient(new okhttp3.OkHttpClient());
 
+    PushoverMessageResponse realResponse = new PushoverMessageResponse(
+        new ResponseBodyImpl(),
+        new TransactInfoImpl());
+
     when(messageContentMock.getTitle())
         .thenReturn("New price for station!");
 
     when(messageContentMock.getMessage())
         .thenReturn("UTF-8? Umlauts! ÖÄÜ öäü ß.\nThis should be a new line");
 
-    MessageRequest request = new PushoverMessageRequest(apiKeyManagerMock, userPrefsMock);
+    MessageRequest realRequest = new PushoverMessageRequest(apiKeyManagerMock, userPrefsMock);
 
-    PushoverMessageClient messageClient = new PushoverMessageClient(realHttpClient, request);
+    PushoverMessageClient messageClient = new PushoverMessageClient(
+        realHttpClient,
+        realRequest,
+        realResponse);
 
     // when
     Response response = messageClient.sendMessage(messageContentMock);

@@ -1,34 +1,42 @@
 package de.fornalik.tankschlau.net;
 
 import de.fornalik.tankschlau.storage.TransactInfo;
+import de.fornalik.tankschlau.storage.TransactInfoImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 // TODO some tests must be taken by ResponseBodyTest ! Move them there.
 
 class BaseResponseTest {
-  private static ResponseBody responseBodyMock = mock(ResponseBody.class);
-  private static TransactInfo transactInfoMock = mock(TransactInfo.class);
+  private ResponseBody responseBodyMock;
+  private TransactInfo transactInfoMock;
 
-  private BaseResponse baseResponse; // SUT
+  private BaseResponse baseResponse; // SUT®
 
   @BeforeEach
   void setUp() {
-    when(responseBodyMock).thenCallRealMethod();
-    when(transactInfoMock).thenCallRealMethod();
+    this.responseBodyMock = mock(ResponseBodyImpl.class, CALLS_REAL_METHODS);
+    this.transactInfoMock = mock(TransactInfoImpl.class, CALLS_REAL_METHODS);
+
     this.baseResponse = new BaseResponse(responseBodyMock, transactInfoMock);
   }
 
   @Test
   void create_returnsProperlyInitializedInstance() {
-    // when then
-    assertEquals(Optional.empty(), baseResponse.getBody());
+    // when
+    this.baseResponse = new BaseResponse(responseBodyMock, transactInfoMock);
+
+    // then
+    assertEquals(responseBodyMock, baseResponse.getBody());
+    assertEquals(transactInfoMock, baseResponse.getTransactInfo());
+
+    assertNull(baseResponse.getBody().getData(String.class));
     assertEquals(Optional.empty(), baseResponse.getTransactInfo().getErrorMessage());
     assertEquals("", baseResponse.getTransactInfo().getStatus());
   }
@@ -39,9 +47,9 @@ class BaseResponseTest {
     String givenString = "This is a string which represents body data";
 
     // when then
-    assertTrue(baseResponse.getBody().isPresent());
-    assertDoesNotThrow(() -> baseResponse.getBody().get().setData(givenString));
-    assertEquals(givenString, baseResponse.getBody().get().getData(String.class));
+    assertNotNull(baseResponse.getBody());
+    assertDoesNotThrow(() -> baseResponse.getBody().setData(givenString));
+    assertEquals(givenString, baseResponse.getBody().getData(String.class));
   }
 
   @Test

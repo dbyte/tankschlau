@@ -18,24 +18,25 @@ package de.fornalik.tankschlau.net;
 
 import de.fornalik.tankschlau.storage.TransactInfo;
 
-import java.util.Optional;
+import java.util.Objects;
 
 /**
  * Base class for a server's {@link Response} which provides body data
  * and an optional error message.
+ * Immutable, use {@link #reset()} to recycle the instance.
  */
 public class BaseResponse implements Response {
   private final ResponseBody responseBody;
   private final TransactInfo transactInfo;
 
   public BaseResponse(ResponseBody responseBody, TransactInfo transactInfo) {
-    this.responseBody = responseBody;
-    this.transactInfo = transactInfo;
+    this.responseBody = Objects.requireNonNull(responseBody);
+    this.transactInfo = Objects.requireNonNull(transactInfo);
   }
 
   @Override
-  public Optional<ResponseBody> getBody() {
-    return Optional.ofNullable(responseBody);
+  public ResponseBody getBody() {
+    return responseBody;
   }
 
   @Override

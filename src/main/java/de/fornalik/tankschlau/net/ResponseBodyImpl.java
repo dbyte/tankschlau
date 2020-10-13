@@ -18,6 +18,8 @@ package de.fornalik.tankschlau.net;
 
 // TODO unit tests
 
+import java.util.Objects;
+
 /**
  * The body part of a server response.
  */
@@ -30,7 +32,9 @@ public class ResponseBodyImpl implements ResponseBody {
 
   @Override
   public <T> T getData(Class<T> ofType) {
-    return ofType.cast(data);
+    return Objects
+        .requireNonNull(ofType, "Argument 'ofType' must not be null")
+        .cast(data);
   }
 
   @Override

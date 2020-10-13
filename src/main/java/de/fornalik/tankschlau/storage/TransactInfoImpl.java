@@ -17,6 +17,7 @@
 package de.fornalik.tankschlau.storage;
 
 import de.fornalik.tankschlau.util.MyToStringBuilder;
+import de.fornalik.tankschlau.util.StringLegalizer;
 
 import java.util.Optional;
 
@@ -44,7 +45,7 @@ public class TransactInfoImpl implements TransactInfo {
 
   @Override
   public void setErrorMessage(String s) {
-    this.errorMessage = s;
+    this.errorMessage = StringLegalizer.create(s).safeTrim().end();
   }
 
   @Override
@@ -58,11 +59,10 @@ public class TransactInfoImpl implements TransactInfo {
   }
 
   @Override
-  public TransactInfoImpl reset() {
+  public void reset() {
     this.licence = "";
     this.errorMessage = null;
     this.status = "";
-    return this;
   }
 
   private String nullToEmpty(String s) {

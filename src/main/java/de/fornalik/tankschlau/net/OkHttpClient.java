@@ -17,7 +17,6 @@
 package de.fornalik.tankschlau.net;
 
 import java.io.IOException;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -49,6 +48,12 @@ public class OkHttpClient implements HttpClient {
 
   @Override
   public <T> Response newCall(Request request, Response response, Class<T> typeOfResponseData) {
+    // Fail early
+    Objects.requireNonNull(request, "request must not be null");
+    Objects.requireNonNull(response, "response must not be null");
+    Objects.requireNonNull(typeOfResponseData, "typeOfResponseData must not be null");
+
+    // Type capability may be extended in the future, e.g. with some Reader or Buffers.
 
     if (typeOfResponseData != String.class) {
       throw new UnsupportedOperationException(
@@ -70,14 +75,7 @@ public class OkHttpClient implements HttpClient {
     }
 
     try {
-      //noinspection OptionalGetWithoutIsPresent
-      response.getBody().get().setData(Objects.requireNonNull(okhttpResponse.body()).string());
-    }
-
-    catch (NoSuchElementException e) {
-      String msg = "Body of response is empty.";
-      response.getTransactInfo().setErrorMessage(msg + " " + getDetails(okhttpResponse));
-      response.getTransactInfo().setStatus("ERROR");
+      response.getBody().setData(Objects.requireNonNull(okhttpResponse.body()).string());
     }
 
     catch (IOException | NullPointerException e) {
@@ -117,6 +115,11 @@ public class OkHttpClient implements HttpClient {
     return okhttpResponse;
   }
 
+  private okhttp3.Response callServer(okhttp3.Request okhttpRequest) throws IOException {
+    okhttp3.Call realCall = okHttp3Client.newCall(okhttpRequest);
+    return realCall.execute(); // throws
+  }
+
   private okhttp3.HttpUrl createUrl() {
 
     okhttp3.HttpUrl.Builder urlBuilder = Objects
@@ -138,7 +141,7 @@ public class OkHttpClient implements HttpClient {
     return okhttpRequestBuilder.build();
   }
 
-  // TODO unit test
+  // TODO outcome unit test
   private okhttp3.RequestBody createJsonRequestBody() {
     if (request.getBodyParameters().isEmpty())
       // Note: Body is only allowed to be null for HTTP "GET" request type.
@@ -150,11 +153,6 @@ public class OkHttpClient implements HttpClient {
         okhttp3.MediaType.parse("application/json; charset=utf-8"),
         jsonBody
     );
-  }
-
-  private okhttp3.Response callServer(okhttp3.Request okhttpRequest) throws IOException {
-    okhttp3.Call realCall = okHttp3Client.newCall(okhttpRequest);
-    return realCall.execute(); // throws
   }
 
   private String getDetails(okhttp3.Response okhttpResponse) {

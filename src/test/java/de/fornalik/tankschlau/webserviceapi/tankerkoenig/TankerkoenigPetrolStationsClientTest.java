@@ -96,7 +96,7 @@ class TankerkoenigPetrolStationsClientTest {
     fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_17STATIONS_HAPPY);
     when(responseBodyMock.getData(String.class)).thenReturn(fixture.jsonFixture);
 
-    when(tankerkoenigResponseMock.getBody()).thenReturn(Optional.of(responseBodyMock));
+    when(tankerkoenigResponseMock.getBody()).thenReturn(responseBodyMock);
     when(httpClientMock.newCall(any(), any(), any())).thenReturn(tankerkoenigResponseMock);
 
     // when
@@ -112,7 +112,7 @@ class TankerkoenigPetrolStationsClientTest {
     String jsonStringResponse = "{}";
     when(responseBodyMock.getData(String.class)).thenReturn(jsonStringResponse);
 
-    when(tankerkoenigResponseMock.getBody()).thenReturn(Optional.of(responseBodyMock));
+    when(tankerkoenigResponseMock.getBody()).thenReturn(responseBodyMock);
     when(httpClientMock.newCall(any(), any(), any())).thenReturn(tankerkoenigResponseMock);
 
     // when

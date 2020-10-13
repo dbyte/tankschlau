@@ -22,6 +22,8 @@ import de.fornalik.tankschlau.webserviceapi.common.MessageClient;
 import de.fornalik.tankschlau.webserviceapi.common.MessageContent;
 import de.fornalik.tankschlau.webserviceapi.common.MessageRequest;
 
+import java.util.Objects;
+
 /**
  * Implementation of {@link MessageClient} for pushover.net push message webservices.
  *
@@ -31,6 +33,7 @@ import de.fornalik.tankschlau.webserviceapi.common.MessageRequest;
 public class PushoverMessageClient implements MessageClient {
   private final HttpClient httpClient;
   private final MessageRequest request;
+  private final Response response;
 
   /**
    * Constructor
@@ -38,20 +41,36 @@ public class PushoverMessageClient implements MessageClient {
    * @param httpClient Some implementation of {@link HttpClient} for interaction with webservice.
    * @param request    Some implementation of {@link MessageRequest}, forming a concrete request.
    */
-  public PushoverMessageClient(HttpClient httpClient, MessageRequest request) {
-    this.httpClient = httpClient;
-    this.request = request;
+  public PushoverMessageClient(HttpClient httpClient, MessageRequest request, Response response) {
+    this.httpClient = Objects.requireNonNull(httpClient);
+    this.request = Objects.requireNonNull(request);
+    this.response = Objects.requireNonNull(response);
   }
 
   @Override
   public Response sendMessage(MessageContent content) {
-     /* request.setMessage(content);
+    request.setMessage(content);
+    response.reset();
 
-    Response response = httpClient.newCall(request, new PushoverMessageResponse());
+    // It's guaranteed by newCall(...) that returned response is not null.
+    httpClient.newCall(request, response, String.class);
 
-    response.getErrorMessage().ifPresent((msg) -> System.out.println("Log.Error: " + msg));
+     /*
+    Note: After newCall, the field response.transactInfo may already contain error message etc,
+    mutated by the http client while processing communication/request/response.
+    */
+    Objects.requireNonNull(response, "Response is null.");
 
-    return response; */
-    return null;
+    /*
+    At this point we assert a valid JSON document - well formed and determined
+    by the webservice's API. So all following processing should crash only if _we_
+    messed things up.
+    */
+    response
+        .getTransactInfo()
+        .getErrorMessage()
+        .ifPresent((msg) -> System.out.println("Log.Error: " + msg));
+
+    return response;
   }
 }
