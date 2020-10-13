@@ -44,13 +44,14 @@ public class PushoverMessageClient implements MessageClient {
   }
 
   @Override
-  public Response<String> sendMessage(MessageContent content) {
-    request.setMessage(content);
+  public Response sendMessage(MessageContent content) {
+     /* request.setMessage(content);
 
-    Response<String> response = httpClient.newCall(request, new PushoverMessageResponse());
+    Response response = httpClient.newCall(request, new PushoverMessageResponse());
 
     response.getErrorMessage().ifPresent((msg) -> System.out.println("Log.Error: " + msg));
 
-    return response;
+    return response; */
+    return null;
   }
 }

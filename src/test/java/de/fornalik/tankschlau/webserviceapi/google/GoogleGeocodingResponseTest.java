@@ -18,6 +18,8 @@ package de.fornalik.tankschlau.webserviceapi.google;
 
 import com.google.gson.Gson;
 import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.net.ResponseBody;
+import de.fornalik.tankschlau.storage.TransactInfo;
 import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
 import de.fornalik.tankschlau.testhelp_common.GeocodingFixtureHelp;
 import org.junit.jupiter.api.AfterAll;
@@ -30,12 +32,14 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 class GoogleGeocodingResponseTest {
   private static Gson jsonProvider;
   private Geo actualGeo;
   private GeocodingFixtureHelp fixture;
   private GoogleGeocodingResponse googleGeocodingResponse;
+  private ResponseBody responseBodyMock;
 
   @BeforeAll
   static void beforeAll() {
@@ -49,14 +53,20 @@ class GoogleGeocodingResponseTest {
 
   @BeforeEach
   void setUp() {
-    this.googleGeocodingResponse = new GoogleGeocodingResponse(jsonProvider); // SUT
+    responseBodyMock = mock(ResponseBody.class);
+    TransactInfo transactInfoMock = mock(TransactInfo.class);
+
+    this.googleGeocodingResponse = new GoogleGeocodingResponse(
+        jsonProvider,
+        responseBodyMock,
+        transactInfoMock); // SUT
     this.actualGeo = null;
     this.fixture = new GeocodingFixtureHelp();
   }
 
   @Test
-  void construct_throwsOnNullJsonProvider() {
-    assertThrows(NullPointerException.class, () -> new GoogleGeocodingResponse(null));
+  void construct_throwsImmediatelyOnNullArguments() {
+    assertThrows(NullPointerException.class, () -> new GoogleGeocodingResponse(null, null, null));
   }
 
   @ParameterizedTest
@@ -69,7 +79,7 @@ class GoogleGeocodingResponseTest {
     fixture.setupFixture(givenJsonString);
 
     // when
-    actualGeo = googleGeocodingResponse.fromJson(fixture.jsonFixture).orElse(null);
+    actualGeo = googleGeocodingResponse.fromJson(fixture.jsonFixture, Geo.class).orElse(null);
 
     // then
     assertNotNull(actualGeo);
@@ -88,7 +98,7 @@ class GoogleGeocodingResponseTest {
     fixture.setupFixture(givenJsonString);
 
     // when
-    googleGeocodingResponse.fromJson(fixture.jsonFixture);
+    googleGeocodingResponse.fromJson(fixture.jsonFixture, Geo.class);
 
     // then
     assertNotNull(googleGeocodingResponse);
@@ -104,7 +114,7 @@ class GoogleGeocodingResponseTest {
     fixture.setupFixture(givenJsonString);
 
     // when
-    Optional<Geo> expectedGeo = googleGeocodingResponse.fromJson(fixture.jsonFixture);
+    Optional<Geo> expectedGeo = googleGeocodingResponse.fromJson(fixture.jsonFixture, Geo.class);
 
     // then
     assertEquals(Optional.empty(), expectedGeo);
@@ -113,12 +123,12 @@ class GoogleGeocodingResponseTest {
   @Test
   void fromJson_returnsEmptyOptionalIfGivenJsonStringIsNullOrEmpty() {
     // when
-    Optional<Geo> actualOptionalGeo = googleGeocodingResponse.fromJson(null);
+    Optional<Geo> actualOptionalGeo = googleGeocodingResponse.fromJson(null, Geo.class);
     // then
     assertEquals(Optional.empty(), actualOptionalGeo);
 
     // when
-    actualOptionalGeo = googleGeocodingResponse.fromJson("");
+    actualOptionalGeo = googleGeocodingResponse.fromJson("", Geo.class);
     // then
     assertEquals(Optional.empty(), actualOptionalGeo);
   }
@@ -129,14 +139,18 @@ class GoogleGeocodingResponseTest {
     String expectedMessagePart = "JSON string could not be converted";
 
     // when
-    googleGeocodingResponse.fromJson(null);
+    googleGeocodingResponse.fromJson(null, String.class);
 
     // then
     assertTrue(
-        googleGeocodingResponse.getErrorMessage().orElse("").contains(expectedMessagePart),
+        googleGeocodingResponse
+            .getTransactInfo()
+            .getErrorMessage()
+            .orElse("")
+            .contains(expectedMessagePart),
         "\nExpected error message to contain\n"
-            + "\"" + expectedMessagePart + "\"\n"
-            + "but actually is\n"
-            + "\"" + googleGeocodingResponse.getErrorMessage() + "\"");
+        + "\"" + expectedMessagePart + "\"\n"
+        + "but actually is\n"
+        + "\"" + googleGeocodingResponse.getTransactInfo().getErrorMessage() + "\"");
   }
 }

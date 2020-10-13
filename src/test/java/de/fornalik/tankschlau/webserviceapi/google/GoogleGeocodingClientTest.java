@@ -20,6 +20,8 @@ import com.google.gson.Gson;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.HttpClient;
+import de.fornalik.tankschlau.net.ResponseBody;
+import de.fornalik.tankschlau.storage.TransactInfo;
 import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
 import de.fornalik.tankschlau.testhelp_common.GeocodingFixtureHelp;
 import de.fornalik.tankschlau.webserviceapi.common.AddressRequest;
@@ -44,11 +46,12 @@ class GoogleGeocodingClientTest {
   private static AddressRequest addressRequestMock;
   private static Gson jsonProvider;
 
-  private GoogleGeocodingClient geocodingClient;
+  private GoogleGeocodingClient geocodingClient; // SUT
   private Geo actualGeo;
   private GeocodingFixtureHelp fixture;
   private Address addressMock;
   private GoogleGeocodingResponse response;
+  private ResponseBody responseBodyMock;
 
   // region -----  SETUP  -----
 
@@ -68,28 +71,24 @@ class GoogleGeocodingClientTest {
 
   @BeforeEach
   void setUp() {
+    this.geocodingClient = null;
     this.addressMock = mock(Address.class);
     this.actualGeo = null;
     this.fixture = new GeocodingFixtureHelp();
 
-    // No mock here... must be a real object, sorry for that :-)
-    response = new GoogleGeocodingResponse(jsonProvider);
+    responseBodyMock = mock(ResponseBody.class);
+    TransactInfo transactInfoMock = mock(TransactInfo.class);
+
+    // No mock here for GoogleGeocodingResponse... must be a real object, sorry for that :-)
+    response = new GoogleGeocodingResponse(jsonProvider, responseBodyMock, transactInfoMock);
   }
 
   private void setupFixture(String path) {
     fixture.setupFixture(path);
+    when(responseBodyMock.getData(String.class)).thenReturn(fixture.jsonFixture);
+    when(httpClientMock.newCall(any(), any(), any())).thenReturn(response);
 
-    response.setBody(fixture.jsonFixture);
-
-    when(httpClientMock.newCall(any(), any())).thenReturn(response);
-
-    this.geocodingClient = new GoogleGeocodingClient(
-        httpClientMock,
-        jsonProvider,
-        addressRequestMock);
-
-    /*when(response.getBody())
-        .thenReturn(Optional.of(fixture.jsonFixture()));*/
+    this.geocodingClient = new GoogleGeocodingClient(httpClientMock, addressRequestMock);
   }
 
   // endregion
@@ -107,7 +106,7 @@ class GoogleGeocodingClientTest {
 
     // when
     //noinspection OptionalGetWithoutIsPresent
-    actualGeo = geocodingClient.getGeo(addressMock).get();
+    actualGeo = geocodingClient.findGeo(addressMock).get();
 
     // then
     fixture.assertEqualValues(actualGeo);
@@ -116,21 +115,21 @@ class GoogleGeocodingClientTest {
   @Test
   void getGeo_shouldCrashWithNullPointerExceptionIfResponseIsNull() {
     // given
-    response = null;
-    when(httpClientMock.newCall(any(), any())).thenReturn(response);
+    when(httpClientMock.newCall(any(), any(), any())).thenReturn(null);
 
     // when then
-    assertThrows(NullPointerException.class, () -> geocodingClient.getGeo(addressMock));
+    assertThrows(NullPointerException.class, () -> geocodingClient.findGeo(addressMock));
   }
 
   @Test
   void getGeo_returnsEmptyGeoIfResponseBodyIsEmpty() {
     // given
-    setupFixture(FixtureFiles.GOOGLE_GEO_RESPONSE_MissingApiKey); // does not matter here
-    response.setBody(null);
+    // (Fixture content does not matter here)
+    setupFixture(FixtureFiles.GOOGLE_GEO_RESPONSE_MissingApiKey);
+    when(responseBodyMock.getData(any())).thenReturn(Optional.empty());
 
     // when
-    Optional<Geo> actualOptionalGeo = geocodingClient.getGeo(addressMock);
+    Optional<Geo> actualOptionalGeo = geocodingClient.findGeo(addressMock);
 
     // when then
     assertEquals(Optional.empty(), actualOptionalGeo);
@@ -142,9 +141,9 @@ class GoogleGeocodingClientTest {
     setupFixture(FixtureFiles.GOOGLE_GEO_RESPONSE_50_1078234_8_5413809_Rooftop);
 
     // when
-    geocodingClient.getGeo(addressMock);
+    geocodingClient.findGeo(addressMock);
 
     // then
-    assertEquals("Geo data powered by Google.", geocodingClient.getLicenseString());
+    assertEquals("Geo data powered by Google.", geocodingClient.getTransactInfo().getLicence());
   }
 }

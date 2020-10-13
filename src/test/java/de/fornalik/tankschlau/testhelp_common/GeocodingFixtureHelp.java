@@ -74,24 +74,24 @@ public class GeocodingFixtureHelp {
     assertEquals(fixture.getAsGeo().getDistance(), Optional.empty());
   }
 
-  public void assertEqualValues(Response<String> response) {
+  public void assertEqualValues(Response response) {
     assert response != null;
     assert objectFixture != null;
 
     // Begin test
 
-    assertEquals(objectFixture.status, response.getStatus());
+    assertEquals(objectFixture.status, response.getTransactInfo().getStatus());
 
     /*
     Lenient message-check, because at some conditions, we concatenate custom message strings with
     the ones delivered by the webservice.
     */
     assertTrue(
-        response.getErrorMessage().orElse("").contains(objectFixture.message),
+        response.getTransactInfo().getErrorMessage().orElse("").contains(objectFixture.message),
         "\nExpected error message to contain\n"
-            + "\"" + objectFixture.message + "\"\n"
-            + "but actually is\n"
-            + "\"" + response.getErrorMessage() + "\"");
+        + "\"" + objectFixture.message + "\"\n"
+        + "but actually is\n"
+        + "\"" + response.getTransactInfo().getErrorMessage() + "\"");
 
     /*
     According to Google Geocoding conventions, we assert that the results array is never null,
@@ -101,13 +101,11 @@ public class GeocodingFixtureHelp {
   }
 
   /**
-   * Transfer class to easily convert a GeocodingClient JSON response file to a
+   * Transfer class to easily convert a JSON response file to a
    * test-fixture response. Conversion is currently processed by the {@link Gson}
    * library. <br>
    * All DTO fields are public mutable for testing purposes. Also, all primitives are wrapped
    * to be able to null them for testing purposes.
-   *
-   * @see de.fornalik.tankschlau.webserviceapi.common.GeocodingClient
    */
   public static class ResponseDTO {
     @SerializedName("status") public String status;
@@ -135,10 +133,6 @@ public class GeocodingFixtureHelp {
 
     public Geo getAsGeo() {
       return new Geo(geometry.location.latitude, geometry.location.longitude);
-    }
-
-    public String getLocationType() {
-      return geometry.locationType;
     }
 
     private static class Geometry {

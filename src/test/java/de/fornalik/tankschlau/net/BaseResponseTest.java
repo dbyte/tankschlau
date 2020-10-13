@@ -1,34 +1,36 @@
 package de.fornalik.tankschlau.net;
 
+import de.fornalik.tankschlau.storage.TransactInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+// TODO some tests must be taken by ResponseBodyTest ! Move them there.
 
 class BaseResponseTest {
-  // Also test with a non string variant.
-  private BaseResponse<Byte> byteResponse;
-  // Test with a string implementation variant.
-  private BaseResponse<String> stringResponse;
+  private static ResponseBody responseBodyMock = mock(ResponseBody.class);
+  private static TransactInfo transactInfoMock = mock(TransactInfo.class);
+
+  private BaseResponse baseResponse; // SUT
 
   @BeforeEach
   void setUp() {
-    this.stringResponse = new BaseResponse<String>() {};
-    this.byteResponse = new BaseResponse<Byte>() {};
+    when(responseBodyMock).thenCallRealMethod();
+    when(transactInfoMock).thenCallRealMethod();
+    this.baseResponse = new BaseResponse(responseBodyMock, transactInfoMock);
   }
 
   @Test
   void create_returnsProperlyInitializedInstance() {
     // when then
-    assertEquals(Optional.empty(), stringResponse.getBody());
-    assertEquals(Optional.empty(), stringResponse.getErrorMessage());
-    assertEquals("", stringResponse.getStatus());
-
-    assertEquals(Optional.empty(), byteResponse.getBody());
-    assertEquals(Optional.empty(), byteResponse.getErrorMessage());
-    assertEquals("", stringResponse.getStatus());
+    assertEquals(Optional.empty(), baseResponse.getBody());
+    assertEquals(Optional.empty(), baseResponse.getTransactInfo().getErrorMessage());
+    assertEquals("", baseResponse.getTransactInfo().getStatus());
   }
 
   @Test
@@ -37,20 +39,9 @@ class BaseResponseTest {
     String givenString = "This is a string which represents body data";
 
     // when then
-    assertDoesNotThrow(() -> stringResponse.setBody(givenString));
-    assertTrue(stringResponse.getBody().isPresent());
-    assertEquals(givenString, stringResponse.getBody().get());
-  }
-
-  @Test
-  void setBody_properlyProcessesByteArgument() {
-    // given
-    Byte expectedByte = 0b1001010;
-
-    // when then
-    assertDoesNotThrow(() -> byteResponse.setBody(expectedByte));
-    assertTrue(byteResponse.getBody().isPresent());
-    assertEquals(expectedByte, byteResponse.getBody().get());
+    assertTrue(baseResponse.getBody().isPresent());
+    assertDoesNotThrow(() -> baseResponse.getBody().get().setData(givenString));
+    assertEquals(givenString, baseResponse.getBody().get().getData(String.class));
   }
 
   @Test
@@ -59,15 +50,15 @@ class BaseResponseTest {
     String givenStatus = "Some status text: Response OK.";
 
     // when then
-    assertDoesNotThrow(() -> stringResponse.setStatus(givenStatus));
-    assertEquals(givenStatus, stringResponse.getStatus());
+    assertDoesNotThrow(() -> baseResponse.getTransactInfo().setStatus(givenStatus));
+    assertEquals(givenStatus, baseResponse.getTransactInfo().getStatus());
   }
 
   @Test
   void getStatus_returnsEmptyStringIfValueIsNull() {
     // when then
-    assertDoesNotThrow(() -> stringResponse.setStatus(null));
-    assertEquals("", stringResponse.getStatus());
+    assertDoesNotThrow(() -> baseResponse.getTransactInfo().setStatus(null));
+    assertEquals("", baseResponse.getTransactInfo().getStatus());
   }
 
   @Test
@@ -77,8 +68,8 @@ class BaseResponseTest {
     String expectedString = "This is an error string";
 
     // when then
-    assertDoesNotThrow(() -> stringResponse.setErrorMessage(givenString));
-    assertTrue(stringResponse.getErrorMessage().isPresent());
-    assertEquals(expectedString, stringResponse.getErrorMessage().get());
+    assertDoesNotThrow(() -> baseResponse.getTransactInfo().setErrorMessage(givenString));
+    assertTrue(baseResponse.getTransactInfo().getErrorMessage().isPresent());
+    assertEquals(expectedString, baseResponse.getTransactInfo().getErrorMessage().get());
   }
 }

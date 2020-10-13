@@ -178,11 +178,8 @@ public class MainWindow extends JFrame {
 
   private Optional<Geo> getUserGeoFromWebRepo(Address userAddress) {
     System.out.println("Log.Info: Requesting geocoding webservice...");
-    Optional<Geo> geo = geoCodingClient.getGeo(userAddress);
-    Optional<String> responseErrorMsg = geoCodingClient
-        .getResponse()
-        .getTransactInfo()
-        .getErrorMessage();
+    Optional<Geo> geo = geoCodingClient.findGeo(userAddress);
+    Optional<String> responseErrorMsg = geoCodingClient.getTransactInfo().getErrorMessage();
 
     if (responseErrorMsg.isPresent()) {
       // Swap that msg with a Logger.

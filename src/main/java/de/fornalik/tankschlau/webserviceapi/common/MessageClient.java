@@ -27,5 +27,5 @@ public interface MessageClient {
    * @param content Describes the content (title, text, etc.) of a message.
    * @return {@link Response} data object with some info about the transaction.
    */
-  Response<String> sendMessage(MessageContent content);
+  Response sendMessage(MessageContent content);
 }

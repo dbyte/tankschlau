@@ -17,9 +17,17 @@
 package de.fornalik.tankschlau.webserviceapi.pushover;
 
 import de.fornalik.tankschlau.net.BaseResponse;
+import de.fornalik.tankschlau.net.ResponseBody;
+import de.fornalik.tankschlau.storage.TransactInfo;
 
 /**
- * Concrete implementation if {@link StringResponse} for pushover.net webservice.
+ * Concrete implementation of {@link BaseResponse} for pushover.net webservice.
  * Locks the type of the response body to <code>String</code>.
  */
-public class PushoverMessageResponse extends BaseResponse<String> {}
+public class PushoverMessageResponse extends BaseResponse {
+  public PushoverMessageResponse(
+      ResponseBody responseBody,
+      TransactInfo transactInfo) {
+    super(responseBody, transactInfo);
+  }
+}

@@ -16,28 +16,27 @@
 
 package de.fornalik.tankschlau.webserviceapi.google;
 
-import com.google.gson.Gson;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.HttpClient;
-import de.fornalik.tankschlau.net.Response;
+import de.fornalik.tankschlau.net.JsonResponse;
+import de.fornalik.tankschlau.storage.GeocodingService;
+import de.fornalik.tankschlau.storage.TransactInfo;
 import de.fornalik.tankschlau.webserviceapi.common.AddressRequest;
-import de.fornalik.tankschlau.webserviceapi.common.GeocodingClient;
 
 import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Implementation of {@link GeocodingClient} for Google Geocoding webservices.
+ * Implementation of {@link GeocodingService} for Google Geocoding webservices.
  *
  * @see
  * <a href="https://developers.google.com/maps/documentation/geocoding/overview#GeocodingResponses">Google documentation: GeocodingResponses</a>
  */
-public class GoogleGeocodingClient implements GeocodingClient<GoogleGeocodingResponse> {
+public class GoogleGeocodingClient implements GeocodingService {
   private final HttpClient httpClient;
-  private final Gson jsonProvider;
   private final AddressRequest request;
-  private Response response;
+  private JsonResponse response;
 
   /**
    * Constructor
@@ -45,34 +44,38 @@ public class GoogleGeocodingClient implements GeocodingClient<GoogleGeocodingRes
    * @param httpClient Some implementation of {@link HttpClient} for interaction with webservice.
    * @param request    Some implementation of {@link AddressRequest}, forming a concrete request.
    */
-  public GoogleGeocodingClient(HttpClient httpClient, Gson jsonProvider, AddressRequest request) {
+  public GoogleGeocodingClient(HttpClient httpClient, AddressRequest request) {
     this.httpClient = Objects.requireNonNull(httpClient);
-    this.jsonProvider = Objects.requireNonNull(jsonProvider);
     this.request = Objects.requireNonNull(request);
   }
 
   @Override
-  public Optional<Geo> getGeo(Address address) {
-    request.setAddressUrlParameters(address);
+  public Optional<Geo> findGeo(Address forAddress) {
+    request.setAddressUrlParameters(Objects.requireNonNull(forAddress));
 
-    response = httpClient.newCall(
-        request,
-        new GoogleGeocodingResponse(jsonProvider),
-        String.class);
+    // It's guaranteed by newCall(...) that returned response is not null.
+    response = (JsonResponse) httpClient.newCall(request, response, String.class);
+    // Note: After newCall, the field response.transactInfo may already contain error message etc,
+    // mutated by the http client while processing communication/request/response.
 
     Objects.requireNonNull(response, "Response is null.");
 
-    // Return populated Geo object if body is present, else return Optional.empty
-    return response.getBody().flatMap(jsonString -> response.fromJson(jsonString));
+    if (!response.getBody().isPresent())
+      return Optional.empty();
+
+    // Get body data from server response.
+    String jsonString = response.getBody().get().getData(String.class);
+
+    /*
+    At this point we assert a valid JSON document - well formed and determined
+    by the webservice's API. So all following processing should crash only if _we_
+    messed things up.
+    */
+    return response.fromJson(jsonString, Geo.class);
   }
 
   @Override
-  public Response getResponse() {
-    return response;
-  }
-
-  @Override
-  public String getLicenseString() {
-    return "Geo data powered by Google.";
+  public TransactInfo getTransactInfo() {
+    return response.getTransactInfo();
   }
 }

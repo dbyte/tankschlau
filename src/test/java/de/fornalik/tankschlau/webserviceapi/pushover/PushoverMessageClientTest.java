@@ -79,7 +79,7 @@ class PushoverMessageClientTest {
   @Test
   void sendMessage_shouldCrashWithNullPointerExceptionIfResponseIsNull() {
     // given
-    when(httpClientMock.newCall(any(), any())).thenReturn(null);
+    when(httpClientMock.newCall(any(), any(), any())).thenReturn(null);
 
     // when then
     assertThrows(NullPointerException.class, () -> messageClient.sendMessage(messageContentMock));
@@ -101,11 +101,11 @@ class PushoverMessageClientTest {
     PushoverMessageClient messageClient = new PushoverMessageClient(realHttpClient, request);
 
     // when
-    Response<String> response = messageClient.sendMessage(messageContentMock);
+    Response response = messageClient.sendMessage(messageContentMock);
 
     // then
     System.out.println("RESPONSE BODY: " + response.getBody());
-    System.out.println("RESPONSE ERROR MESSAGE: " + response.getErrorMessage());
+    System.out.println("RESPONSE ERROR MESSAGE: " + response.getTransactInfo().getErrorMessage());
   }
 
   // TODO unit tests go here

@@ -32,26 +32,22 @@ import java.util.Optional;
  * Locks the type of the response body to <code>String</code>.
  */
 public class TankerkoenigResponse extends BaseResponse implements JsonResponse {
-
   private final Gson jsonProvider;
-  private ResponseDto responseDto;
 
   public TankerkoenigResponse(
       Gson jsonProvider,
       ResponseBody responseBody,
       TransactInfo transactInfo) {
 
-    super(responseBody, transactInfo);
+    super(Objects.requireNonNull(responseBody), Objects.requireNonNull(transactInfo));
     this.jsonProvider = Objects.requireNonNull(jsonProvider);
-    this.responseDto = null;
   }
 
   @Override
   public <T> Optional<T> fromJson(String jsonString, Class<T> targetClass) {
     // Deserialize root level data of of the webservice's JSON response and push it
     // into our existing TransactInfo object.
-
-    responseDto = jsonProvider.fromJson(jsonString, (Type) targetClass);
+    ResponseDto responseDto = jsonProvider.fromJson(jsonString, (Type) targetClass);
 
     if (responseDto == null) {
       getTransactInfo().setErrorMessage(

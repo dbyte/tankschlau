@@ -85,7 +85,6 @@ public final class AppContainer {
 
     GEOCODING_CLIENT = new GoogleGeocodingClient(
         HTTP_CLIENT,
-        JSON_PROVIDER,
         GoogleGeocodingRequest.create(GEOCODING_APIKEY_MANAGER));
 
     GEO_REQUEST = TankerkoenigRequest.create(TANKERKOENIG_APIKEY_MANAGER);

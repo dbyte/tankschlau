@@ -19,7 +19,10 @@ package de.fornalik.tankschlau.webserviceapi.google;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.net.BaseResponse;
 import de.fornalik.tankschlau.net.JsonResponse;
+import de.fornalik.tankschlau.net.ResponseBody;
+import de.fornalik.tankschlau.storage.TransactInfo;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -32,32 +35,38 @@ import java.util.Optional;
  * @see <a href="https://maps.googleapis.com/maps/api/geocode/json">API base URL</a>,
  * <a href="https://developers.google.com/maps/documentation/geocoding/overview#GeocodingResponses">Google documentation: GeocodingResponses</a>
  */
-public class GoogleGeocodingResponse extends JsonResponse {
+public class GoogleGeocodingResponse extends BaseResponse implements JsonResponse {
   private final Gson jsonProvider;
 
-  GoogleGeocodingResponse(Gson jsonProvider) {
+  GoogleGeocodingResponse(Gson jsonProvider, ResponseBody responseBody, TransactInfo transactInfo) {
+    super(Objects.requireNonNull(responseBody), Objects.requireNonNull(transactInfo));
     this.jsonProvider = Objects.requireNonNull(jsonProvider);
   }
 
   @Override
-  public Optional<Geo> fromJson(String jsonString) {
+  public <T> Optional<T> fromJson(String jsonString, Class<T> targetClass) {
     // Deserialize
     ResponseDTO responseDto = jsonProvider.fromJson(jsonString, ResponseDTO.class);
 
+    /*
+    Deserialize data from JSON data which are of informal type -
+    like status, licence string, error message because of wrong API key etc.
+    */
     if (responseDto == null) {
-      setErrorMessage("JSON string could not be converted. String is:\n" + jsonString);
-      setStatus("ERROR");
+      getTransactInfo().setErrorMessage("JSON string could not be converted. String is:\n"
+                                        + jsonString);
+      getTransactInfo().setStatus("ERROR");
       return Optional.empty();
     }
 
     if (responseDto.status != null && !"".equals(responseDto.status))
-      setStatus(responseDto.status);
+      getTransactInfo().setStatus(responseDto.status);
 
     if (responseDto.message != null && !"".equals(responseDto.message))
-      setErrorMessage(responseDto.message);
+      getTransactInfo().setErrorMessage(responseDto.message);
 
     if (responseDto.results.size() == 0) {
-      setErrorMessage(responseDto.message);
+      getTransactInfo().setErrorMessage(responseDto.message);
       return Optional.empty();
     }
 
@@ -67,14 +76,14 @@ public class GoogleGeocodingResponse extends JsonResponse {
     so can't be null.
     */
     ResultDTO firstResult = responseDto.results.get(0);
-    return Optional.of(firstResult.getAsGeo());
+    return Optional.of(targetClass.cast(firstResult.getAsGeo()));
   }
 
   /**
    * Class provides object relational mapping support for Gson. It must correlate with the
    * root level json object of the Google Geocoding response.
    */
-  private static class ResponseDTO {
+  static class ResponseDTO {
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     @SerializedName("results")
     ArrayList<ResultDTO> results;
