@@ -21,7 +21,7 @@ import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.JsonResponse;
 import de.fornalik.tankschlau.net.Response;
 import de.fornalik.tankschlau.station.PetrolStation;
-import de.fornalik.tankschlau.storage.PetrolStationsService;
+import de.fornalik.tankschlau.storage.PetrolStationsRepo;
 import de.fornalik.tankschlau.storage.TransactInfo;
 import de.fornalik.tankschlau.webserviceapi.common.GeoRequest;
 
@@ -34,7 +34,7 @@ import java.util.Objects;
  *
  * @see PetrolStation
  */
-public class TankerkoenigPetrolStationsClient implements PetrolStationsService {
+public class TankerkoenigPetrolStationsRepo implements PetrolStationsRepo {
 
   private final HttpClient httpClient;
   private final TankerkoenigJsonAdapter tankerkoenigPetrolStationsJsonAdapter;
@@ -42,14 +42,14 @@ public class TankerkoenigPetrolStationsClient implements PetrolStationsService {
   private Response response;
 
   /**
-   * Creates a new default {@link TankerkoenigPetrolStationsClient} object for the webservice. <br>
+   * Creates a new default {@link TankerkoenigPetrolStationsRepo} object for the webservice. <br>
    *
    * @param httpClient                Some {@link HttpClient} implementation.
    * @param petrolStationsJsonAdapter Some json adapter implementation for petrol stations.
    * @param request                   Some {@link GeoRequest} implementation.
    * @param response                  Some initialized implementation of a {@link Response} object.
    */
-  public TankerkoenigPetrolStationsClient(
+  public TankerkoenigPetrolStationsRepo(
       HttpClient httpClient,
       TankerkoenigJsonAdapter petrolStationsJsonAdapter,
       GeoRequest request,

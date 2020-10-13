@@ -41,11 +41,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-class TankerkoenigPetrolStationsClientTest {
+class TankerkoenigPetrolStationsRepoToServiceTest {
   private static Gson jsonProvider;
   private static Geo geoMock;
 
-  private TankerkoenigPetrolStationsClient sut;
+  private TankerkoenigPetrolStationsRepo sut;
   private List<PetrolStation> actualPetrolStations;
 
   private DomainFixtureHelp fixture;
@@ -83,7 +83,7 @@ class TankerkoenigPetrolStationsClientTest {
     tankerkoenigResponseMock = mock(TankerkoenigResponse.class);
     responseBodyMock = mock(ResponseBody.class);
 
-    sut = new TankerkoenigPetrolStationsClient(
+    sut = new TankerkoenigPetrolStationsRepo(
         httpClientMock,
         petrolStationsJsonAdapter,
         geoRequestMock,

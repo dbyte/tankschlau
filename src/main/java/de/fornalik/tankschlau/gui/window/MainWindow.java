@@ -20,7 +20,7 @@ import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.gui.menu.MainMenuBar;
 import de.fornalik.tankschlau.station.*;
-import de.fornalik.tankschlau.storage.PetrolStationsRepo;
+import de.fornalik.tankschlau.storage.PetrolStationsService;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.webserviceapi.common.GeocodingService;
@@ -38,7 +38,7 @@ import java.util.Set;
 public class MainWindow extends JFrame {
   private final Localization l10n;
   private final UserPrefs userPrefs;
-  private final PetrolStationsRepo petrolStationsWebRepo;
+  private final PetrolStationsService petrolStationsService;
   private final GeocodingService geoCodingClient;
   private final MessageService messageService;
   private final PetrolStationMessageContent messageContent;
@@ -48,7 +48,7 @@ public class MainWindow extends JFrame {
   public MainWindow(
       Localization l10n,
       UserPrefs userPrefs,
-      PetrolStationsRepo petrolStationsWebRepo,
+      PetrolStationsService petrolStationsService,
       GeocodingService geoCodingClient,
       MessageService messageService,
       PetrolStationMessageContent messageContent) {
@@ -56,7 +56,7 @@ public class MainWindow extends JFrame {
     super(de.fornalik.tankschlau.TankSchlau.class.getSimpleName());
     this.l10n = l10n;
     this.userPrefs = userPrefs;
-    this.petrolStationsWebRepo = petrolStationsWebRepo;
+    this.petrolStationsService = petrolStationsService;
     this.geoCodingClient = geoCodingClient;
     this.messageService = messageService;
     this.messageContent = messageContent;
@@ -138,8 +138,8 @@ public class MainWindow extends JFrame {
     if (!geo.isPresent())
       return new ArrayList<>();
 
-    List<PetrolStation> data = petrolStationsWebRepo.getNeighbourhoodStations((geo.get()));
-    Optional<String> errorMessage = petrolStationsWebRepo.getTransactInfo().getErrorMessage();
+    List<PetrolStation> data = petrolStationsService.getNeighbourhoodStations((geo.get()));
+    Optional<String> errorMessage = petrolStationsService.getTransactInfo().getErrorMessage();
 
     if (errorMessage.isPresent())
       model.addElement(l10n.get("msg.ErrorServerConnection", errorMessage));

@@ -39,7 +39,7 @@ import de.fornalik.tankschlau.webserviceapi.pushover.PushoverMessageRequest;
 import de.fornalik.tankschlau.webserviceapi.pushover.PushoverMessageResponse;
 import de.fornalik.tankschlau.webserviceapi.pushover.PushoverMessageService;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigJsonAdapter;
-import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigPetrolStationsClient;
+import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigPetrolStationsRepo;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigRequest;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigResponse;
 
@@ -61,9 +61,9 @@ public final class AppContainer {
   public final ApiKeyManager TANKERKOENIG_APIKEY_MANAGER;
   public final GeocodingService GEOCODING_CLIENT;
   public final GeoRequest GEO_REQUEST;
-  public final PetrolStationsService PETROL_STATIONS_SERVICE;
-  public final JsonResponse PETROL_STATIONS_JSON_RESPONSE;
   public final PetrolStationsRepo PETROL_STATIONS_REPO;
+  public final JsonResponse PETROL_STATIONS_JSON_RESPONSE;
+  public final PetrolStationsService PETROL_STATIONS_SERVICE;
   public final PetrolStations PETROL_STATIONS;
   public final PetrolStationMessageContent PETROL_STATION_MESSAGE_CONTENT;
   public final MessageRequest MESSAGE_REQUEST;
@@ -101,15 +101,15 @@ public final class AppContainer {
     GEO_REQUEST = TankerkoenigRequest.create(TANKERKOENIG_APIKEY_MANAGER);
     PETROL_STATIONS_JSON_ADAPTER = new TankerkoenigJsonAdapter(JSON_PROVIDER);
 
-    PETROL_STATIONS_SERVICE = new TankerkoenigPetrolStationsClient(
+    PETROL_STATIONS_REPO = new TankerkoenigPetrolStationsRepo(
         HTTP_CLIENT,
         PETROL_STATIONS_JSON_ADAPTER,
         GEO_REQUEST,
         PETROL_STATIONS_JSON_RESPONSE);
 
-    PETROL_STATIONS_REPO = new PetrolStationsWebRepo(PETROL_STATIONS_SERVICE);
+    PETROL_STATIONS_SERVICE = new PetrolStationsWebService(PETROL_STATIONS_REPO);
 
-    PETROL_STATIONS = new PetrolStations(PETROL_STATIONS_REPO);
+    PETROL_STATIONS = new PetrolStations(PETROL_STATIONS_SERVICE);
 
     PETROL_STATION_MESSAGE_CONTENT = new PushoverMessageContent(L10N);
     MESSAGE_REQUEST = new PushoverMessageRequest(PUSHMESSAGE_APIKEY_MANAGER, USER_PREFS);

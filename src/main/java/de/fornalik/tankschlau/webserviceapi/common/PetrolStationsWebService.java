@@ -27,12 +27,12 @@ import java.util.Objects;
 
 /**
  * Highest abstraction of tankerkoenig.de webservice.
- * Use this one inside a View Model or the Presentation Layer.
+ * Use this one with a View Model / Presentation Layer or Controller.
  */
-public class PetrolStationsWebRepo implements PetrolStationsRepo {
-  private final PetrolStationsService service;
+public class PetrolStationsWebService implements PetrolStationsService {
+  private final PetrolStationsRepo service;
 
-  public PetrolStationsWebRepo(PetrolStationsService service) {
+  public PetrolStationsWebService(PetrolStationsRepo service) {
     this.service = Objects.requireNonNull(service);
   }
 
@@ -40,7 +40,7 @@ public class PetrolStationsWebRepo implements PetrolStationsRepo {
    * Searches for petrol stations around the user's neighbourhood, whereby neighbourhood is
    * defined by the given Geo data of the user.
    *
-   * @see PetrolStationsService#findAllInNeighbourhood(Geo)
+   * @see PetrolStationsRepo#findAllInNeighbourhood(Geo)
    */
   @Override
   public List<PetrolStation> getNeighbourhoodStations(Geo geo) {
