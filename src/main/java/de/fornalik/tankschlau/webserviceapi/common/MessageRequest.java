@@ -22,7 +22,6 @@ import de.fornalik.tankschlau.net.Request;
  * Abstract HTTP request class with base functionalities and <b>additional hook</b> for generating
  * proper request parameters for a push message.
  */
-// TODO unit tests
 public interface MessageRequest extends Request {
 
   /**

@@ -130,7 +130,7 @@ public class OkHttpClient implements HttpClient {
     return urlBuilder.build();
   }
 
-  // TODO unit test for use of createJsonRequestBody()
+  // TODO unit test for use of POST with createJsonRequestBody()
   private okhttp3.Request createRequest(okhttp3.HttpUrl url) {
     okhttp3.Request.Builder okhttpRequestBuilder = new okhttp3.Request.Builder()
         .url(url.toString())
