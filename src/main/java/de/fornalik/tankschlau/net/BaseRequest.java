@@ -64,20 +64,21 @@ public abstract class BaseRequest implements Request {
   }
 
   @Override
-  public void appendUrlString(String urlParameter, String s, String encoding) {
-    String existingValue = getUrlParameters().get(urlParameter);
+  public void appendUrlParameterString(String urlParamKey, String inValue, String encoding) {
+    String existingValue = getUrlParameters().get(urlParamKey);
 
     if (existingValue == null)
-      throw new NoSuchElementException(
-          String.format("URL parameter %s does not exist.", urlParameter));
+      throw new NoSuchElementException(String.format(
+          "URL parameter for key '%s' does not exist.", urlParamKey));
 
-    if (encoding != null)
-      s = encodeString(s, encoding);
+    if (encoding == null) {
+      this.urlParameters.put(urlParamKey, existingValue + inValue);
+      return;
+    }
 
-    String newValue = existingValue + s;
+    inValue = encodeString(inValue, encoding);
 
-    // Replace old value.
-    this.urlParameters.put(urlParameter, newValue);
+    this.urlParameters.put(urlParamKey, existingValue + inValue);
   }
 
   @Override
@@ -86,14 +87,12 @@ public abstract class BaseRequest implements Request {
   }
 
   @Override
-  // TODO unit test
   public void putBodyParameter(String key, String value) {
     // Do NOT encode at this point.
     this.bodyParameters.put(key, value);
   }
 
   @Override
-  // TODO unit test
   public Map<String, String> getBodyParameters() {
     return bodyParameters;
   }
@@ -108,14 +107,14 @@ public abstract class BaseRequest implements Request {
     return this.headers;
   }
 
-  private String encodeString(String s, String enc) {
+  private String encodeString(String in, String toEncoding) {
     String encodedString;
 
     try {
-      encodedString = URLEncoder.encode(s, enc);
+      encodedString = URLEncoder.encode(in, toEncoding);
     }
     catch (UnsupportedEncodingException e) {
-      throw new RuntimeException(e.getMessage());
+      throw new RuntimeException("Unsupported URL encoding: '" + e.getMessage() + "'");
     }
 
     return encodedString;

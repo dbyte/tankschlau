@@ -62,12 +62,12 @@ public class GoogleGeocodingRequest extends BaseRequest implements AddressReques
         "address",
         (address.getStreet() + " " + address.getHouseNumber()).trim());
 
-    appendUrlString(
+    appendUrlParameterString(
         "address",
         ",+",
         null);
 
-    appendUrlString(
+    appendUrlParameterString(
         "address",
         (address.getPostCode() + " " + address.getCity()).trim(),
         "UTF-8");

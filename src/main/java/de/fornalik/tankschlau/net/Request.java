@@ -55,7 +55,7 @@ public interface Request {
    * parameters.
    *
    * @param key   ex. "sort"
-   * @param value ex. "price"
+   * @param value unencoded string, ex. "price €"
    */
   void putUrlParameter(String key, String value);
 
@@ -66,7 +66,7 @@ public interface Request {
    * @param encoding     ex. "UTF-8" {@link java.net.URLEncoder}, or null if the string must not
    *                     be encoded.
    */
-  void appendUrlString(String urlParameter, String s, String encoding);
+  void appendUrlParameterString(String urlParameter, String s, String encoding);
 
   /**
    * Getter for URL parameters.
