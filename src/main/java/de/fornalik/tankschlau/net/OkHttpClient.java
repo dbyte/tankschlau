@@ -47,7 +47,11 @@ public class OkHttpClient implements HttpClient {
   }
 
   @Override
-  public <T> Response newCall(Request request, Response response, Class<T> typeOfResponseData) {
+  public <T> Response newCall(
+      final Request request,
+      final Response response,
+      final Class<T> typeOfResponseData) {
+
     // Fail early
     Objects.requireNonNull(request, "request must not be null");
     Objects.requireNonNull(response, "response must not be null");
@@ -83,7 +87,7 @@ public class OkHttpClient implements HttpClient {
     return response;
   }
 
-  private okhttp3.Response realCall(final Request request, Response response)
+  private okhttp3.Response realCall(final Request request, final Response response)
   throws IOException, IllegalStateException {
     this.request = request;
 

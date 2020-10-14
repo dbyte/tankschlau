@@ -39,5 +39,8 @@ public interface HttpClient {
    * @param <T>                The class of a type.
    * @return The populated {@link Response} object which was passed to this method.
    */
-  <T> Response newCall(Request request, Response response, Class<T> typeOfResponseData);
+  <T> Response newCall(
+      final Request request,
+      final Response response,
+      final Class<T> typeOfResponseData);
 }
