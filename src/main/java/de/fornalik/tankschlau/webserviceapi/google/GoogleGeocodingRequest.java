@@ -58,7 +58,7 @@ public class GoogleGeocodingRequest extends BaseRequest implements AddressReques
   public void setAddressUrlParameters(Address address) {
     Objects.requireNonNull(address, "Address must not be null.");
 
-    addUrlParameter(
+    putUrlParameter(
         "address",
         (address.getStreet() + " " + address.getHouseNumber()).trim());
 
@@ -76,15 +76,15 @@ public class GoogleGeocodingRequest extends BaseRequest implements AddressReques
   private void setBaseData() {
     setBaseUrl(StringLegalizer.create(BASE_URL).mandatory().toUrl());
     setHttpMethod(HTTP_METHOD);
-    addHeader("Accept", ACCEPT_JSON);
-    addHeader("Accept-Language", "de");
+    putHeader("Accept", ACCEPT_JSON);
+    putHeader("Accept-Language", "de");
   }
 
   private void setCommonUrlParameters() {
-    addUrlParameter("region", "de");
+    putUrlParameter("region", "de");
 
     /* Only add API key if we got one. Google will inform us about a missing/invalid key
     in its response, where we handle errors anyway. */
-    apiKeyManager.read().ifPresent(value -> addUrlParameter("key", value));
+    apiKeyManager.read().ifPresent(value -> putUrlParameter("key", value));
   }
 }

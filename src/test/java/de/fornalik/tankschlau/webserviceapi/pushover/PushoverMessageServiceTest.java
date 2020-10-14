@@ -71,10 +71,10 @@ class PushoverMessageServiceTest {
 
     // Inject some API keys via VM Options if needed.
     String pmApiKey = Optional.ofNullable(System.getProperty("pushmessageApiKey"))
-                              .orElse("some-fake-abcdef-12345");
+        .orElse("some-fake-abcdef-12345");
 
     String pmUserId = Optional.ofNullable(System.getProperty("pushmessageUserId"))
-                              .orElse("some-fake-aklmnop-666");
+        .orElse("some-fake-aklmnop-666");
 
     // Setup the mocks.
     this.apiKeyManagerMock = mock(ApiKeyManager.class);

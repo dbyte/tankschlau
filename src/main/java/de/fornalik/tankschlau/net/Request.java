@@ -57,7 +57,7 @@ public interface Request {
    * @param key   ex. "sort"
    * @param value ex. "price"
    */
-  void addUrlParameter(String key, String value);
+  void putUrlParameter(String key, String value);
 
   /**
    * @param urlParameter An existing URL parameter which gets extended by the given
@@ -72,7 +72,7 @@ public interface Request {
    * Getter for URL parameters.
    *
    * @return key/value pairs of all URL parameters which were previously
-   * added by {@link #addUrlParameter(String, String)}.
+   * added by {@link #putUrlParameter(String, String)}.
    */
   Map<String, String> getUrlParameters();
 
@@ -84,22 +84,15 @@ public interface Request {
    * @param key   ex. "name"
    * @param value ex. "Joe" - do NOT encode to UTF-8 at this point.
    */
-  void addBodyParameter(String key, String value);
+  void putBodyParameter(String key, String value);
 
   /**
    * Getter for body parameters.
    *
    * @return key/value pairs of all body parameters which were previously
-   * added by {@link #addBodyParameter(String, String)}.
+   * added by {@link #putBodyParameter(String, String)}.
    */
   Map<String, String> getBodyParameters();
-
-  /**
-   * @param to  Token - to which type of body to convert the body parameters.
-   * @param <T> Some class.
-   * @return Request body which can be used by the HTTP client.
-   */
-  <T> T convertBodyParameters(String to);
 
   /**
    * Adds an entry to the request header.
@@ -107,13 +100,13 @@ public interface Request {
    * @param key   ex. "Accept"
    * @param value ex. "application/json; charset=utf-8"
    */
-  void addHeader(String key, String value);
+  void putHeader(String key, String value);
 
   /**
    * Getter for HTTP headers.
    *
    * @return key/value pairs of all HTTP headers which were previously
-   * added by {@link #addHeader(String, String)}.
+   * added by {@link #putHeader(String, String)}.
    */
   Map<String, String> getHeaders();
 

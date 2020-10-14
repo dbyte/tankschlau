@@ -56,10 +56,8 @@ public class OkHttpClient implements HttpClient {
     // Type capability may be extended in the future, e.g. with some Reader or Buffers.
 
     if (typeOfResponseData != String.class) {
-      throw new UnsupportedOperationException(
-          "Support for body data of type "
-          + typeOfResponseData.getSimpleName()
-          + " not yet implemented.");
+      throw new UnsupportedOperationException("Support for body data of type "
+          + typeOfResponseData.getSimpleName() + " not yet implemented.");
     }
 
     okhttp3.Response okhttpResponse;
@@ -91,8 +89,8 @@ public class OkHttpClient implements HttpClient {
   throws IOException, IllegalStateException {
     this.request = request;
 
-    okhttp3.HttpUrl url = createUrl();
-    okhttp3.Request okhttpRequest = createRequest(url);
+    okhttp3.HttpUrl url = adaptUrl();
+    okhttp3.Request okhttpRequest = adaptRequest(url);
     okhttp3.Response okhttpResponse;
 
     try {
@@ -120,7 +118,7 @@ public class OkHttpClient implements HttpClient {
     return realCall.execute(); // throws
   }
 
-  private okhttp3.HttpUrl createUrl() {
+  private okhttp3.HttpUrl adaptUrl() {
 
     okhttp3.HttpUrl.Builder urlBuilder = Objects
         .requireNonNull(okhttp3.HttpUrl.parse(request.getBaseUrl().toString()))
@@ -131,10 +129,10 @@ public class OkHttpClient implements HttpClient {
   }
 
   // TODO unit test for use of POST with createJsonRequestBody()
-  private okhttp3.Request createRequest(okhttp3.HttpUrl url) {
+  private okhttp3.Request adaptRequest(okhttp3.HttpUrl url) {
     okhttp3.Request.Builder okhttpRequestBuilder = new okhttp3.Request.Builder()
         .url(url.toString())
-        .method(request.getHttpMethod().name(), createJsonRequestBody());
+        .method(request.getHttpMethod().name(), adaptRequestBody());
 
     request.getHeaders().forEach(okhttpRequestBuilder::addHeader);
 
@@ -142,23 +140,28 @@ public class OkHttpClient implements HttpClient {
   }
 
   // TODO outcome unit test
-  private okhttp3.RequestBody createJsonRequestBody() {
+  private okhttp3.RequestBody adaptRequestBody() {
     if (request.getBodyParameters().isEmpty())
       // Note: Body is only allowed to be null for HTTP "GET" request type.
       return null;
 
-    String jsonBody = request.convertBodyParameters("JSON_STRING");
+    if (request instanceof JsonRequest) {
+      String jsonBody = ((JsonRequest) request).computeJsonBody();
 
-    return okhttp3.RequestBody.create(
-        okhttp3.MediaType.parse("application/json; charset=utf-8"),
-        jsonBody
-    );
+      return okhttp3.RequestBody.create(
+          okhttp3.MediaType.parse("application/json; charset=utf-8"),
+          jsonBody);
+    }
+
+    throw new UnsupportedOperationException("Adapting request body for "
+        + request.getClass().getSimpleName()
+        + " failed. Correlating adapter method not implemented.");
   }
 
   private String getDetails(okhttp3.Response okhttpResponse) {
     return "HTTP status message: "
-           + okhttpResponse.message()
-           + "\nResponse headers:\n"
-           + okhttpResponse.headers().toString();
+        + okhttpResponse.message()
+        + "\nResponse headers:\n"
+        + okhttpResponse.headers().toString();
   }
 }

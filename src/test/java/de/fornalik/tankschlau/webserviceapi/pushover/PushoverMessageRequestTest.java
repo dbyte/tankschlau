@@ -27,33 +27,37 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class PushoverMessageRequestTest {
+  private PushoverMessageRequest sut;
   private PushoverMessageRequest actualRequest;
   private MessageContent messageContentMock;
   private UserPrefs userPrefsMock;
   private ApiKeyManager apiKeyManagerMock;
 
-
   @BeforeEach
   void setUp() {
     this.actualRequest = null;
 
+    // Setup the mocks.
+    this.apiKeyManagerMock = mock(ApiKeyManager.class);
+    this.userPrefsMock = mock(UserPrefs.class);
+    this.messageContentMock = mock(MessageContent.class);
+
+    this.sut = new PushoverMessageRequest(apiKeyManagerMock, userPrefsMock);
+  }
+
+  private void helpIntegrationTestSetup() {
     // Inject some API keys via VM Options if needed.
     String pmApiKey = Optional.ofNullable(System.getProperty("pushmessageApiKey"))
-                              .orElse("some-fake-abcdef-12345");
+        .orElse("some-fake-abcdef-12345");
 
     String pmUserId = Optional.ofNullable(System.getProperty("pushmessageUserId"))
-                              .orElse("some-fake-aklmnop-666");
+        .orElse("some-fake-aklmnop-666");
 
-    // Setup the mocks.
+    // Re-init the mocks & add behaviour.
     this.apiKeyManagerMock = mock(ApiKeyManager.class);
     when(apiKeyManagerMock.read()).thenReturn(Optional.of(pmApiKey));
 
     this.userPrefsMock = mock(UserPrefs.class);
     when(userPrefsMock.readPushMessageUserId()).thenReturn(Optional.of(pmUserId));
-
-    this.messageContentMock = mock(MessageContent.class);
   }
-
-  // TODO unit tests go here
-
 }

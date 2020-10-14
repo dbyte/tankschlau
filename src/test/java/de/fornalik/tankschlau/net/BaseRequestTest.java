@@ -35,14 +35,14 @@ class BaseRequestTest {
   }
 
   @Test
-  void addUrlParameter_addsMapElementsProperly() {
+  void putUrlParameter_addsMapElementsProperly() {
     // given
     String givenValue01 = "someValue";
     String givenValue02 = "someOtherValue";
 
     // when
-    concreteRequestMock.addUrlParameter("testKey01", givenValue01);
-    concreteRequestMock.addUrlParameter("testKey02", givenValue02);
+    concreteRequestMock.putUrlParameter("testKey01", givenValue01);
+    concreteRequestMock.putUrlParameter("testKey02", givenValue02);
 
     // then
     assertEquals(givenValue01, concreteRequestMock.getUrlParameters().get("testKey01"));
@@ -50,14 +50,14 @@ class BaseRequestTest {
   }
 
   @Test
-  void addUrlParameter_encodesValuesUrlEncodedProperly() {
+  void putUrlParameter_encodesValuesUrlEncodedProperly() {
     // given
     String givenValue01 = "Hallo, hier sind Umlaute öäü";
     String givenValue02 = "Und hier Sonderzeichen &?";
 
     // when
-    concreteRequestMock.addUrlParameter("testKey01", givenValue01);
-    concreteRequestMock.addUrlParameter("testKey02", givenValue02);
+    concreteRequestMock.putUrlParameter("testKey01", givenValue01);
+    concreteRequestMock.putUrlParameter("testKey02", givenValue02);
 
     // then
     assertEquals(
@@ -75,14 +75,14 @@ class BaseRequestTest {
   }
 
   @Test
-  void addHeader_addsMapElementsProperly() {
+  void putHeader_addsMapElementsProperly() {
     // given
     String givenValue01 = "application/json; charset=utf-8";
     String givenValue02 = "no-cache";
 
     // when
-    concreteRequestMock.addHeader("Accept", givenValue01);
-    concreteRequestMock.addHeader("Cache-Control", givenValue02);
+    concreteRequestMock.putHeader("Accept", givenValue01);
+    concreteRequestMock.putHeader("Cache-Control", givenValue02);
 
     // then
     assertEquals(givenValue01, concreteRequestMock.getHeaders().get("Accept"));

@@ -16,7 +16,8 @@
 
 package de.fornalik.tankschlau.webserviceapi.pushover;
 
-import de.fornalik.tankschlau.net.BaseRequest;
+import de.fornalik.tankschlau.net.JsonRequest;
+import de.fornalik.tankschlau.net.JsonRequestImpl;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.StringLegalizer;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
@@ -26,7 +27,7 @@ import de.fornalik.tankschlau.webserviceapi.common.MessageRequest;
 import java.util.Objects;
 
 // TODO unit test, javadoc
-public class PushoverMessageRequest extends BaseRequest implements MessageRequest {
+public class PushoverMessageRequest extends JsonRequestImpl implements MessageRequest, JsonRequest {
   private static final String BASE_URL = "https://api.pushover.net/1/messages.json";
 
   private final ApiKeyManager apiKeyManager;
@@ -54,24 +55,23 @@ public class PushoverMessageRequest extends BaseRequest implements MessageReques
   }
 
   private void setHeaders() {
-    addHeader("Accept", "application/json; charset=utf-8");
+    putHeader("Accept", "application/json; charset=utf-8");
   }
 
   private void setAuthenticationParameters() {
     /* Only add user key if we got one. Pushover will inform us about a missing/invalid user key
     in its response, where we handle errors anyway. */
-    userPrefs.readPushMessageUserId().ifPresent(value -> addBodyParameter("user", value));
+    userPrefs.readPushMessageUserId().ifPresent(value -> putBodyParameter("user", value));
 
     // Dito for API key.
-    apiKeyManager.read().ifPresent(value -> addBodyParameter("token", value));
+    apiKeyManager.read().ifPresent(value -> putBodyParameter("token", value));
   }
 
   @Override
   public void setMessage(MessageContent content) {
     String title = StringLegalizer.create(content.getTitle()).safeTrim().nullToEmpty().end();
     String message = StringLegalizer.create(content.getMessage()).safeTrim().nullToEmpty().end();
-
-    addBodyParameter("title", title);
-    addBodyParameter("message", message);
+    putBodyParameter("title", title);
+    putBodyParameter("message", message);
   }
 }

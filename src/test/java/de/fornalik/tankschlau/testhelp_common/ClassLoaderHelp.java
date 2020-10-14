@@ -23,14 +23,7 @@ import java.util.Objects;
 
 class ClassLoaderHelp {
 
-  /**
-   * @param name     String which represents a resource, separated by "/" as defined
-   *                 in {@link ClassLoader#getResource(String)}. Note that the implicit root of the
-   *                 final resource url is directory "test/resources".
-   * @param forClass The class to get the loader from
-   * @return A {@link FileReader} instance, linked to the resource if resource was found, else
-   * throws RuntimeException. May also throw RTE if resource was not found.
-   */
+  // Note the implicit root of the final resource url is directory "test/resources".
   static FileReader getFileReaderForResource(String name, Class<?> forClass) {
     Objects.requireNonNull(name);
 
@@ -38,7 +31,8 @@ class ClassLoaderHelp {
     URL fileUrl = loader.getResource(name);
 
     if (fileUrl == null)
-      throw new RuntimeException("Resource " + name + " not found for ClassLoader " + loader.toString());
+      throw new RuntimeException(
+          "Resource " + name + " not found for ClassLoader " + loader.toString());
 
     try {
       return new FileReader(fileUrl.getFile());

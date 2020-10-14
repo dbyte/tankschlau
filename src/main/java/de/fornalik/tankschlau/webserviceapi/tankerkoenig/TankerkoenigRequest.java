@@ -64,26 +64,26 @@ public class TankerkoenigRequest extends BaseRequest implements GeoRequest {
         .getDistance()
         .orElseThrow(SearchRadiusException::new);
 
-    addUrlParameter("lat", Double.valueOf(geo.getLatitude()).toString());
-    addUrlParameter("lng", Double.valueOf(geo.getLongitude()).toString());
-    addUrlParameter("rad", maxSearchRadius.toString());
+    putUrlParameter("lat", Double.valueOf(geo.getLatitude()).toString());
+    putUrlParameter("lng", Double.valueOf(geo.getLongitude()).toString());
+    putUrlParameter("rad", maxSearchRadius.toString());
   }
 
   private void setBaseData() {
     setBaseUrl(StringLegalizer.create(BASE_URL).mandatory().toUrl());
     setHttpMethod(HTTP_METHOD);
-    addHeader("Accept", ACCEPT_JSON);
+    putHeader("Accept", ACCEPT_JSON);
   }
 
   private void setCommonUrlParameters() {
     /* As we sort data ourselves, always request "all" petrol types. Per web service API definition
     of Tankerkoenig.de, "sort" must be set to "dist" when requesting "type" with "all". */
-    addUrlParameter("sort", "dist");
-    addUrlParameter("type", "all");
+    putUrlParameter("sort", "dist");
+    putUrlParameter("type", "all");
 
     /* Only add API key if we got one. Tankerkoenig will inform us about a missing/invalid key
     in its response, where we handle errors anyway. */
-    apiKeyManager.read().ifPresent(value -> addUrlParameter("apikey", value));
+    apiKeyManager.read().ifPresent(value -> putUrlParameter("apikey", value));
   }
 
   public static class SearchRadiusException extends IllegalStateException {

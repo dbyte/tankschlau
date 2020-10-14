@@ -16,8 +16,6 @@
 
 package de.fornalik.tankschlau.net;
 
-import com.google.gson.JsonObject;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -60,7 +58,7 @@ public abstract class BaseRequest implements Request {
   }
 
   @Override
-  public void addUrlParameter(String key, String value) {
+  public void putUrlParameter(String key, String value) {
     String encodedValue = encodeString(value, "UTF-8");
     this.urlParameters.put(key, encodedValue);
   }
@@ -89,7 +87,7 @@ public abstract class BaseRequest implements Request {
 
   @Override
   // TODO unit test
-  public void addBodyParameter(String key, String value) {
+  public void putBodyParameter(String key, String value) {
     // Do NOT encode at this point.
     this.bodyParameters.put(key, value);
   }
@@ -100,22 +98,8 @@ public abstract class BaseRequest implements Request {
     return bodyParameters;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
-  // TODO unit test
-  public String convertBodyParameters(String to) {
-    if ("JSON_STRING".equals(to)) {
-      JsonObject jsonObject = new JsonObject();
-      getBodyParameters().forEach(jsonObject::addProperty);
-      return jsonObject.toString();
-
-    } else {
-      throw new IllegalArgumentException("\"" + to + "\" not implemented for conversion.");
-    }
-  }
-
-  @Override
-  public void addHeader(String key, String value) {
+  public void putHeader(String key, String value) {
     this.headers.put(key, value);
   }
 
