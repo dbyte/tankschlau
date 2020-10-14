@@ -58,17 +58,18 @@ public class PushoverMessageService implements MessageService {
     // It's guaranteed by newCall(...) that returned response is not null.
     httpClient.newCall(request, response, String.class);
 
-     /*
-    Note: After newCall, the field response.transactInfo may already contain error message etc,
-    mutated by the http client while processing communication/request/response.
-    */
     Objects.requireNonNull(response, "Response is null.");
 
-    // Process possible error messages from server.
-    response
-        .getTransactInfo()
-        .getErrorMessage()
-        .ifPresent((msg) -> System.out.println("Log.Error: " + msg));
+    /*
+    Note: After newCall, the field response.transactInfo may already contain error message etc,
+    mutated by the http client while processing communication/request/response.
+    Process possible error messages from server.
+    */
+    if (response.getTransactInfo() != null) {
+      response.getTransactInfo()
+          .getErrorMessage()
+          .ifPresent((msg) -> System.out.println("Log.Error: " + msg));
+    }
 
     if (response.getBody() == null)
       return response;
