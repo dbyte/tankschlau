@@ -48,6 +48,10 @@ public class TransactInfoImpl implements TransactInfo {
     this.errorMessage = StringLegalizer.create(s).safeTrim().end();
   }
 
+  /**
+   * @return Licence string default: Empty string. Override as needed.
+   * @implSpec Override according to provider's terms of use!
+   */
   @Override
   public String getLicence() {
     return nullToEmpty(licence);

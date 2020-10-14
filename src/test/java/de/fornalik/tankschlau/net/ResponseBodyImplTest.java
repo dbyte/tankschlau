@@ -35,7 +35,9 @@ class ResponseBodyImplTest {
   @Test
   void getData_castsToProperValueIfValueIsPresent() throws IOException {
     // given
-    ByteArrayInputStream expectedStream = new ByteArrayInputStream(new byte[]{0b10001, 0b110110});
+    ByteArrayInputStream expectedStream = new ByteArrayInputStream(
+        new byte[]{0b1000100, 0b1011011});
+
     responseBody.setData(expectedStream);
 
     // when

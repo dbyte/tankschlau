@@ -5,13 +5,10 @@ import de.fornalik.tankschlau.storage.TransactInfoImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
-
-// TODO some tests must be taken by TransactInfoTest ! Move them there.
 
 class BaseResponseTest {
   private ResponseBody responseBodyMock;
@@ -33,12 +30,8 @@ class BaseResponseTest {
     this.baseResponse = new BaseResponse(responseBodyMock, transactInfoMock);
 
     // then
-    assertEquals(responseBodyMock, baseResponse.getBody());
-    assertEquals(transactInfoMock, baseResponse.getTransactInfo());
-
-    assertNull(baseResponse.getBody().getData(String.class));
-    assertEquals(Optional.empty(), baseResponse.getTransactInfo().getErrorMessage());
-    assertEquals("", baseResponse.getTransactInfo().getStatus());
+    assertNotNull(baseResponse.getBody());
+    assertNotNull(baseResponse.getTransactInfo());
   }
 
   @Test
@@ -55,34 +48,5 @@ class BaseResponseTest {
 
     // when then
     assertEquals(transactInfoMock, baseResponse.getTransactInfo());
-  }
-
-  @Test
-  void setStatus_setsGivenString() {
-    // given
-    String givenStatus = "Some status text: Response OK.";
-
-    // when then
-    assertDoesNotThrow(() -> baseResponse.getTransactInfo().setStatus(givenStatus));
-    assertEquals(givenStatus, baseResponse.getTransactInfo().getStatus());
-  }
-
-  @Test
-  void getStatus_returnsEmptyStringIfValueIsNull() {
-    // when then
-    assertDoesNotThrow(() -> baseResponse.getTransactInfo().setStatus(null));
-    assertEquals("", baseResponse.getTransactInfo().getStatus());
-  }
-
-  @Test
-  void setErrorMessage_setsAndTrimsGivenMessage() {
-    // given
-    String givenString = "    This is an error string  ";
-    String expectedString = "This is an error string";
-
-    // when then
-    assertDoesNotThrow(() -> baseResponse.getTransactInfo().setErrorMessage(givenString));
-    assertTrue(baseResponse.getTransactInfo().getErrorMessage().isPresent());
-    assertEquals(expectedString, baseResponse.getTransactInfo().getErrorMessage().get());
   }
 }

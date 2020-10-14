@@ -48,12 +48,10 @@ public interface TransactInfo {
   void setErrorMessage(String message);
 
   /**
-   * @return Licence string - default implementation is returning an empty string.
-   * @implSpec Implement according to provider's terms of use!
+   * @return Licence string.
+   * @implSpec Override according to provider's terms of use!
    */
-  default String getLicence() {
-    return "";
-  }
+  String getLicence();
 
   /**
    * @param s The licence string.
