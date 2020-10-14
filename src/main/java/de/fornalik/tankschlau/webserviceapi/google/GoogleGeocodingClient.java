@@ -72,10 +72,11 @@ public class GoogleGeocodingClient implements GeocodingService {
     Objects.requireNonNull(response, "Response is null.");
 
     // Process possible error messages from server.
-    response
-        .getTransactInfo()
-        .getErrorMessage()
-        .ifPresent((msg) -> System.out.println("Log.Error: " + msg));
+    if (response.getTransactInfo() != null) {
+      response.getTransactInfo()
+          .getErrorMessage()
+          .ifPresent((msg) -> System.out.println("Log.Error: " + msg));
+    }
 
     if (response.getBody() == null)
       return Optional.empty();
