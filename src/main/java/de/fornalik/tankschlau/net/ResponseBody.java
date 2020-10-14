@@ -35,4 +35,12 @@ public interface ResponseBody {
    *             .class</code>.
    */
   <T> void setData(T data);
+
+  /**
+   * Deeply recycles instance to default values. No new instance is created,
+   * the old one is retained.
+   *
+   * @implSpec Implementations MUST RETAIN the same instance.
+   */
+  void reset();
 }

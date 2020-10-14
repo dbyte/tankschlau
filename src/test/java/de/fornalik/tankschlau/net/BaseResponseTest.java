@@ -11,13 +11,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 
-// TODO some tests must be taken by ResponseBodyTest ! Move them there.
+// TODO some tests must be taken by TransactInfoTest ! Move them there.
 
 class BaseResponseTest {
   private ResponseBody responseBodyMock;
   private TransactInfo transactInfoMock;
 
-  private BaseResponse baseResponse; // SUT®
+  private BaseResponse baseResponse; // SUT
 
   @BeforeEach
   void setUp() {
@@ -42,14 +42,19 @@ class BaseResponseTest {
   }
 
   @Test
-  void setBody_properlyProcessesStringArgument() {
-    // given
-    String givenString = "This is a string which represents body data";
+  void getBody_returnsInstanceOfResponseBody() {
+    assertNotNull(baseResponse);
 
     // when then
-    assertNotNull(baseResponse.getBody());
-    assertDoesNotThrow(() -> baseResponse.getBody().setData(givenString));
-    assertEquals(givenString, baseResponse.getBody().getData(String.class));
+    assertEquals(responseBodyMock, baseResponse.getBody());
+  }
+
+  @Test
+  void getTransactInfo_returnsInstanceOfTransactInfo() {
+    assertNotNull(transactInfoMock);
+
+    // when then
+    assertEquals(transactInfoMock, baseResponse.getTransactInfo());
   }
 
   @Test

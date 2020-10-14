@@ -46,7 +46,7 @@ public class BaseResponse implements Response {
 
   @Override
   public void reset() {
-    responseBody.setData(null);
+    responseBody.reset();
     transactInfo.reset();
   }
 }

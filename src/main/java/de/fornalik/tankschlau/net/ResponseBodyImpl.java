@@ -16,8 +16,6 @@
 
 package de.fornalik.tankschlau.net;
 
-// TODO unit tests
-
 import java.util.Objects;
 
 /**
@@ -40,5 +38,10 @@ public class ResponseBodyImpl implements ResponseBody {
   @Override
   public <T> void setData(T data) {
     this.data = data;
+  }
+
+  @Override
+  public void reset() {
+    setData(null);
   }
 }
