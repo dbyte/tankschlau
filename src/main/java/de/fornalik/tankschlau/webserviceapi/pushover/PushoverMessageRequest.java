@@ -56,6 +56,7 @@ public class PushoverMessageRequest extends JsonRequestImpl implements MessageRe
 
   private void setHeaders() {
     putHeader("Accept", "application/json; charset=utf-8");
+    putBodyParameter("User-Agent", "TankSchlau");
   }
 
   private void setAuthenticationParameters() {

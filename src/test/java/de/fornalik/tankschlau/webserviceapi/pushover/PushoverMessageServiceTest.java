@@ -16,6 +16,7 @@
 
 package de.fornalik.tankschlau.webserviceapi.pushover;
 
+import com.google.gson.Gson;
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.OkHttpClient;
 import de.fornalik.tankschlau.net.Response;
@@ -39,6 +40,7 @@ import static org.mockito.Mockito.when;
 
 class PushoverMessageServiceTest {
   private static HttpClient httpClientMock;
+  private static Gson jsonProvider;
   private static MessageRequest messageRequestMock;
 
   private PushoverMessageService messageClient;
@@ -49,12 +51,14 @@ class PushoverMessageServiceTest {
 
   @BeforeAll
   static void beforeAll() {
+    jsonProvider = new Gson();
     httpClientMock = mock(HttpClient.class);
     messageRequestMock = mock(MessageRequest.class);
   }
 
   @AfterAll
   static void afterAll() {
+    jsonProvider = null;
     httpClientMock = null;
     messageRequestMock = null;
   }
@@ -86,6 +90,7 @@ class PushoverMessageServiceTest {
     HttpClient realHttpClient = new OkHttpClient(new okhttp3.OkHttpClient());
 
     PushoverMessageResponse realResponse = new PushoverMessageResponse(
+        jsonProvider,
         new ResponseBodyImpl(),
         new TransactInfoImpl());
 
@@ -106,6 +111,7 @@ class PushoverMessageServiceTest {
 
     // then
     System.out.println("RESPONSE BODY: " + response.getBody().getData(String.class));
+    System.out.println("RESPONSE STATUS: " + response.getTransactInfo().getStatus());
     System.out.println("RESPONSE ERROR MESSAGE: " + response.getTransactInfo().getErrorMessage());
   }
 

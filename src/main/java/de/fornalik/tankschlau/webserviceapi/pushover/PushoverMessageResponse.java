@@ -16,11 +16,16 @@
 
 package de.fornalik.tankschlau.webserviceapi.pushover;
 
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.net.BaseResponse;
 import de.fornalik.tankschlau.net.JsonResponse;
 import de.fornalik.tankschlau.net.ResponseBody;
 import de.fornalik.tankschlau.storage.TransactInfo;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 // TODO unit tests
@@ -32,14 +37,71 @@ import java.util.Optional;
  * <a href="https://pushover.net/api#response">API response documentation: https://pushover.net/api#response</a>
  */
 public class PushoverMessageResponse extends BaseResponse implements JsonResponse {
+  private final Gson jsonProvider;
 
-  public PushoverMessageResponse(ResponseBody responseBody, TransactInfo transactInfo) {
-
-    super(responseBody, transactInfo);
+  public PushoverMessageResponse(
+      Gson jsonProvider,
+      ResponseBody responseBody,
+      TransactInfo transactInfo) {
+    super(Objects.requireNonNull(responseBody), Objects.requireNonNull(transactInfo));
+    this.jsonProvider = Objects.requireNonNull(jsonProvider);
   }
 
   @Override
   public <T> Optional<T> fromJson(String jsonString, Class<T> targetClass) {
+    /*
+    Deserialize data from JSON which are of informal type -
+    like status, licence string, error message because of invalid API key etc.
+    */
+    ResponseDTO responseDto = jsonProvider.fromJson(jsonString, ResponseDTO.class);
+
+    getTransactInfo().setLicence("Push messages provided by pushover.net");
+
+    if (responseDto == null) {
+      // Concat possibly existing values (from server response) with our custom additions.
+      String existingStatus = getTransactInfo().getStatus();
+      Optional<String> existingErrorMsg = getTransactInfo().getErrorMessage();
+
+      getTransactInfo().setStatus(String.join(" + ", existingStatus, "DESERIALIZATION_ERROR"));
+
+      getTransactInfo().setErrorMessage(
+          String.join(" ", existingErrorMsg.orElse(""),
+              "JSON string could not be deserialized. String is:",
+              jsonString));
+
+      return Optional.empty();
+    }
+
+    getTransactInfo().setStatus(String.valueOf(responseDto.status));
+
+    getTransactInfo().setErrorMessage(processErrorList(responseDto.errors));
+
     return Optional.empty();
+  }
+
+  private String processErrorList(List<String> errorList) {
+    // Must return null if no errors exist.
+    if (errorList == null || errorList.size() == 0)
+      return null;
+
+    String stringBuilder = "Pushover reported " + errorList.size() + " error(s): ";
+    return String.join(", ", stringBuilder);
+  }
+
+  /**
+   * Class provides object relational mapping support for Gson. It must correlate with the
+   * root level json object of the pushover.net response.
+   */
+  static class ResponseDTO {
+    @SerializedName("status") int status;
+    @SerializedName("request") String requestToken;
+    @SerializedName("secret") String secretError;
+    @SerializedName("token") String tokenError;
+    @SerializedName("user") String userError;
+    @SerializedName("errors") ArrayList<String> errors;
+
+    ResponseDTO() {
+      this.errors = new ArrayList<>();
+    }
   }
 }

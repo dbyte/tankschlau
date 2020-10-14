@@ -71,17 +71,23 @@ public class GoogleGeocodingClient implements GeocodingService {
 
     Objects.requireNonNull(response, "Response is null.");
 
+    // Process possible error messages from server.
+    response
+        .getTransactInfo()
+        .getErrorMessage()
+        .ifPresent((msg) -> System.out.println("Log.Error: " + msg));
+
     if (response.getBody() == null)
       return Optional.empty();
-
-    // Get body data of server response.
-    String jsonString = response.getBody().getData(String.class);
 
     /*
     At this point we assert a valid JSON document - well formed and determined
     by the webservice's API. So all following processing should crash only if _we_
     messed things up.
     */
+    // Get body data of server response.
+    String jsonString = response.getBody().getData(String.class);
+
     return ((JsonResponse) response).fromJson(jsonString, Geo.class);
   }
 

@@ -110,8 +110,8 @@ public class MainWindow extends JFrame {
 
         model.addElement(
             "********** "
-            + l10n.get("msg.CurrentPricesSortedBy", sortedFor.name())
-            + " **********");
+                + l10n.get("msg.CurrentPricesSortedBy", sortedFor.name())
+                + " **********");
 
         model.addElement(" ");
 
@@ -163,7 +163,7 @@ public class MainWindow extends JFrame {
       if (!geoFromWebRepo.isPresent()) {
         // Swap that msg with a Logger.
         String msg = "Log.Error: Requesting webservice for Geo data based on user's address did "
-                     + "not return required lat/lng.";
+            + "not return required lat/lng.";
         System.out.println(msg);
 
         return address;
@@ -184,8 +184,8 @@ public class MainWindow extends JFrame {
     if (responseErrorMsg.isPresent()) {
       // Swap that msg with a Logger.
       String message = "Log.Error: Requesting webservice for Geo data based on user's "
-                       + "address did not return required lat/lng: "
-                       + responseErrorMsg.get();
+          + "address did not return required lat/lng: "
+          + responseErrorMsg.get();
 
       System.out.println(message);
       return Optional.empty();
@@ -209,6 +209,13 @@ public class MainWindow extends JFrame {
     messageContent.reset();
     messageContent.setMessage(cheapestStation, petrolType);
     messageService.sendMessage(messageContent);
+
+    Optional<String> responseErrorMsg = messageService.getTransactInfo().getErrorMessage();
+    if (responseErrorMsg.isPresent()) {
+      // Swap that msg with a Logger.
+      String message = "Log.Error: Sending push message failed: " + responseErrorMsg.get();
+      System.out.println(message);
+    }
   }
 
   private String createStationHeader(PetrolStation station) {

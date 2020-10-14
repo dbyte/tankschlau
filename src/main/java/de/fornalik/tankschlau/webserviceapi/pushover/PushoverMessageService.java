@@ -17,6 +17,7 @@
 package de.fornalik.tankschlau.webserviceapi.pushover;
 
 import de.fornalik.tankschlau.net.HttpClient;
+import de.fornalik.tankschlau.net.JsonResponse;
 import de.fornalik.tankschlau.net.Response;
 import de.fornalik.tankschlau.storage.TransactInfo;
 import de.fornalik.tankschlau.webserviceapi.common.MessageContent;
@@ -63,16 +64,24 @@ public class PushoverMessageService implements MessageService {
     */
     Objects.requireNonNull(response, "Response is null.");
 
-    /*
-    At this point we assert a valid JSON document - well formed and determined
-    by the webservice's API. So all following processing should crash only if _we_
-    messed things up.
-    */
+    // Process possible error messages from server.
     response
         .getTransactInfo()
         .getErrorMessage()
         .ifPresent((msg) -> System.out.println("Log.Error: " + msg));
 
+    if (response.getBody() == null)
+      return response;
+
+    /*
+    At this point we assert a valid JSON document - well formed and determined
+    by the webservice's API. So all following processing should crash only if _we_
+    messed things up.
+    */
+    // Get body data of server response.
+    String jsonString = response.getBody().getData(String.class);
+
+    ((JsonResponse) response).fromJson(jsonString, Void.class);
     return response;
   }
 

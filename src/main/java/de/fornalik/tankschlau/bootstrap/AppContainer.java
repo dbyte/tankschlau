@@ -113,7 +113,10 @@ public final class AppContainer {
 
     PETROL_STATION_MESSAGE_CONTENT = new PushoverMessageContent(L10N);
     MESSAGE_REQUEST = new PushoverMessageRequest(PUSHMESSAGE_APIKEY_MANAGER, USER_PREFS);
-    MESSAGE_RESPONSE = new PushoverMessageResponse(new ResponseBodyImpl(), new TransactInfoImpl());
+    MESSAGE_RESPONSE = new PushoverMessageResponse(
+        JSON_PROVIDER,
+        new ResponseBodyImpl(),
+        new TransactInfoImpl());
     MESSAGE_CLIENT = new PushoverMessageService(HTTP_CLIENT, MESSAGE_REQUEST, MESSAGE_RESPONSE);
   }
 }
