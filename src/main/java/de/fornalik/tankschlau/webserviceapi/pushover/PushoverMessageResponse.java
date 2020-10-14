@@ -23,9 +23,13 @@ import de.fornalik.tankschlau.storage.TransactInfo;
 
 import java.util.Optional;
 
+// TODO unit tests
+
 /**
- * Concrete implementation of {@link JsonResponse} for pushover.net webservice.
- * Locks the type of the response body to <code>String</code>.
+ * Implementation of {@link JsonResponse} for pushover.net webservice.
+ *
+ * @see
+ * <a href="https://pushover.net/api#response">API response documentation: https://pushover.net/api#response</a>
  */
 public class PushoverMessageResponse extends BaseResponse implements JsonResponse {
 

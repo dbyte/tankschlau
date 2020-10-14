@@ -126,6 +126,9 @@ public class FixtureFiles {
   public static final String PUSHOVER_RESPONSE_STATUS_0_INVALID_SECRET =
       PUSHOVER_RESPONSE_DIR + "Status_0_InvalidSecret.json";
 
+  public static final String PUSHOVER_RESPONSE_STATUS_0_INVALID_USER =
+      PUSHOVER_RESPONSE_DIR + "Status_0_InvalidUser.json";
+
   // endregion
 
   // --------------------------------------------------------------------------

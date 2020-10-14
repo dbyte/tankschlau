@@ -1,0 +1,8 @@
+{
+  "user": "invalid",
+  "errors": [
+    "user identifier is invalid"
+  ],
+  "status": 0,
+  "request": "5042853c-402d-4a18-abcb-168734a801de"
+}

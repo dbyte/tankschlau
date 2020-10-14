@@ -101,12 +101,6 @@ class PushoverMessageServiceTest {
     realMessageContent.setTitle("New price for station!");
     realMessageContent.setMessage("UTF-8? Umlauts! ÖÄÜ öäü ß.\nThis should be a new line");
 
-   /* when(messageContentMock.getTitle())
-        .thenReturn("New price for station!");
-
-    when(messageContentMock.getMessage())
-        .thenReturn("UTF-8? Umlauts! ÖÄÜ öäü ß.\nThis should be a new line");*/
-
     // when
     Response response = messageClient.sendMessage(realMessageContent);
 

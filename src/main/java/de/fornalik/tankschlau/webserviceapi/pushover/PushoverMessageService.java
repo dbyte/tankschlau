@@ -28,7 +28,8 @@ import java.util.Objects;
 /**
  * Implementation of {@link MessageService} for pushover.net push message webservices.
  *
- * @see <a href="https://pushover.net/api">Pushover Message API documentation</a>
+ * @see
+ * <a href="https://pushover.net/api">Pushover Message API documentation: https://pushover.net/api</a>
  */
 // TODO unit test, javadoc
 public class PushoverMessageService implements MessageService {
