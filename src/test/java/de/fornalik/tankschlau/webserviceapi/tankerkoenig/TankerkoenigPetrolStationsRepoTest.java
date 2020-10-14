@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class TankerkoenigPetrolStationsRepoTest {
@@ -120,14 +119,5 @@ class TankerkoenigPetrolStationsRepoTest {
 
     // then
     assertEquals(0, actualPetrolStations.size());
-  }
-
-  @Test
-  void getAllInNeighbourhood_shouldCrashWithNullPointerExceptionIfResponseIsNull() {
-    // given
-    when(httpClientMock.newCall(any(), any(), any())).thenReturn(null);
-
-    // when then
-    assertThrows(NullPointerException.class, () -> sut.findAllInNeighbourhood(geoMock));
   }
 }

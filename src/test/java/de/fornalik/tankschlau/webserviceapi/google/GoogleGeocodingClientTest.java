@@ -37,7 +37,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -111,15 +110,6 @@ class GoogleGeocodingClientTest {
 
     // then
     fixture.assertEqualValues(actualGeo);
-  }
-
-  @Test
-  void getGeo_shouldCrashWithNullPointerExceptionIfResponseIsNull() {
-    // given
-    when(httpClientMock.newCall(any(), any(), any())).thenReturn(null);
-
-    // when then
-    assertThrows(NullPointerException.class, () -> geocodingClient.findGeo(addressMock));
   }
 
   @Test
