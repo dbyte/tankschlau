@@ -69,12 +69,18 @@ public class TankerkoenigPetrolStationsRepo implements PetrolStationsRepo {
     // It's guaranteed by newCall(...) that returned response is not null.
     response = httpClient.newCall(request, response, String.class);
 
+    Objects.requireNonNull(response, "Response is null.");
+
     /*
     Note: After newCall, the field response.transactInfo may already contain error message etc,
     mutated by the http client while processing communication/request/response.
+    Process possible error messages from server.
     */
-
-    Objects.requireNonNull(response, "Response is null.");
+    if (response.getTransactInfo() != null) {
+      response.getTransactInfo()
+          .getErrorMessage()
+          .ifPresent((msg) -> System.out.println("Log.Error: " + msg));
+    }
 
     if (response.getBody() == null)
       return new ArrayList<>();
