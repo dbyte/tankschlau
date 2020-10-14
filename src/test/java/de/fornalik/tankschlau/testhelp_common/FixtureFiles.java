@@ -87,6 +87,7 @@ public class FixtureFiles {
       TANKERKOENIG_NEIGHBOURHOOD_JSON_RESPONSE_DIR + "LongitudeOutOfBoundsError.json";
 
   // endregion
+  // --------------------------------------------------------------------------
   // region Google Geocoding responses
 
   public static final String GOOGLE_GEO_RESPONSE_DIR =
@@ -111,6 +112,23 @@ public class FixtureFiles {
       GOOGLE_GEO_RESPONSE_DIR + "ZeroResults.json";
 
   // endregion
+  // --------------------------------------------------------------------------
+  // region Pushover Message Responses
+
+  public static final String PUSHOVER_RESPONSE_DIR = "response_fixtures/pushmessage/pushover/";
+
+  public static final String PUSHOVER_RESPONSE_STATUS_1 =
+      PUSHOVER_RESPONSE_DIR + "Status_1.json";
+
+  public static final String PUSHOVER_RESPONSE_STATUS_0_INVALID_TOKEN =
+      PUSHOVER_RESPONSE_DIR + "Status_0_InvalidToken.json";
+
+  public static final String PUSHOVER_RESPONSE_STATUS_0_INVALID_SECRET =
+      PUSHOVER_RESPONSE_DIR + "Status_0_InvalidSecret.json";
+
+  // endregion
+
+  // --------------------------------------------------------------------------
 
   private FixtureFiles() {
   }

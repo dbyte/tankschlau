@@ -69,19 +69,6 @@ class PushoverMessageServiceTest {
         messageRequestMock,
         messageResponseMock);
 
-    // Inject some API keys via VM Options if needed.
-    String pmApiKey = Optional.ofNullable(System.getProperty("pushmessageApiKey"))
-        .orElse("some-fake-abcdef-12345");
-
-    String pmUserId = Optional.ofNullable(System.getProperty("pushmessageUserId"))
-        .orElse("some-fake-aklmnop-666");
-
-    // Setup the mocks.
-    this.apiKeyManagerMock = mock(ApiKeyManager.class);
-    when(apiKeyManagerMock.read()).thenReturn(Optional.of(pmApiKey));
-
-    this.userPrefsMock = mock(UserPrefs.class);
-    when(userPrefsMock.readPushMessageUserId()).thenReturn(Optional.of(pmUserId));
   }
 
   @Test
@@ -102,12 +89,7 @@ class PushoverMessageServiceTest {
         new ResponseBodyImpl(),
         new TransactInfoImpl());
 
-    when(messageContentMock.getTitle())
-        .thenReturn("New price for station!");
-
-    when(messageContentMock.getMessage())
-        .thenReturn("UTF-8? Umlauts! ÖÄÜ öäü ß.\nThis should be a new line");
-
+    helpIntegrationTestSetup();
     MessageRequest realRequest = new PushoverMessageRequest(apiKeyManagerMock, userPrefsMock);
 
     PushoverMessageService messageClient = new PushoverMessageService(
@@ -115,13 +97,39 @@ class PushoverMessageServiceTest {
         realRequest,
         realResponse);
 
+    MessageContent realMessageContent = new PushoverMessageContent(null);
+    realMessageContent.setTitle("New price for station!");
+    realMessageContent.setMessage("UTF-8? Umlauts! ÖÄÜ öäü ß.\nThis should be a new line");
+
+   /* when(messageContentMock.getTitle())
+        .thenReturn("New price for station!");
+
+    when(messageContentMock.getMessage())
+        .thenReturn("UTF-8? Umlauts! ÖÄÜ öäü ß.\nThis should be a new line");*/
+
     // when
-    Response response = messageClient.sendMessage(messageContentMock);
+    Response response = messageClient.sendMessage(realMessageContent);
 
     // then
-    System.out.println("RESPONSE BODY: " + response.getBody());
+    System.out.println("RESPONSE BODY: " + response.getBody().getData(String.class));
     System.out.println("RESPONSE ERROR MESSAGE: " + response.getTransactInfo().getErrorMessage());
   }
 
-  // TODO unit tests go here
+  // TODO more unit tests go here
+
+  private void helpIntegrationTestSetup() {
+    // Inject some API keys via VM Options if needed.
+    String pmApiKey = Optional.ofNullable(System.getProperty("pushmessageApiKey"))
+        .orElse("some-fake-abcdef-12345");
+
+    String pmUserId = Optional.ofNullable(System.getProperty("pushmessageUserId"))
+        .orElse("some-fake-aklmnop-666");
+
+    // Re-init the mocks & add behaviour.
+    this.apiKeyManagerMock = mock(ApiKeyManager.class);
+    when(apiKeyManagerMock.read()).thenReturn(Optional.of(pmApiKey));
+
+    this.userPrefsMock = mock(UserPrefs.class);
+    when(userPrefsMock.readPushMessageUserId()).thenReturn(Optional.of(pmUserId));
+  }
 }

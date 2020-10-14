@@ -1,0 +1,8 @@
+{
+  "token": "invalid",
+  "errors": [
+    "application token is invalid"
+  ],
+  "status": 0,
+  "request": "e09876543-d123-7xa2-j6cc-0ef3443d1b62"
+}
