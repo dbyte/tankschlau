@@ -65,7 +65,6 @@ public class OkHttpClient implements HttpClient {
     try {
       okhttpResponse = this.realCall(request, response);
     }
-
     catch (IOException | IllegalStateException e) {
       // Nothing to do here, as okhttp3 error messages should have been pushed into
       // field response.errorMessage in method realCall.
@@ -75,7 +74,6 @@ public class OkHttpClient implements HttpClient {
     try {
       response.getBody().setData(Objects.requireNonNull(okhttpResponse.body()).string());
     }
-
     catch (IOException | NullPointerException e) {
       String msg = "Body of response could not be converted to string.";
       response.getTransactInfo().setErrorMessage(msg + " " + getDetails(okhttpResponse));
@@ -106,6 +104,7 @@ public class OkHttpClient implements HttpClient {
       response
           .getTransactInfo()
           .setErrorMessage("Body of response is null.\n" + getDetails(okhttpResponse));
+
       //noinspection OptionalGetWithoutIsPresent
       throw new IllegalStateException(response.getTransactInfo().getErrorMessage().get());
     }
@@ -128,7 +127,6 @@ public class OkHttpClient implements HttpClient {
     return urlBuilder.build();
   }
 
-  // TODO unit test for use of POST with createJsonRequestBody()
   private okhttp3.Request adaptRequest(okhttp3.HttpUrl url) {
     okhttp3.Request.Builder okhttpRequestBuilder = new okhttp3.Request.Builder()
         .url(url.toString())
@@ -139,7 +137,6 @@ public class OkHttpClient implements HttpClient {
     return okhttpRequestBuilder.build();
   }
 
-  // TODO outcome unit test
   private okhttp3.RequestBody adaptRequestBody() {
     if (request.getBodyParameters().isEmpty())
       // Note: Body is only allowed to be null for HTTP "GET" request type.

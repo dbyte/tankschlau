@@ -6,7 +6,6 @@ import okhttp3.MediaType;
 import okhttp3.Protocol;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -25,7 +24,7 @@ class OkHttpClientTest {
 
   @BeforeEach
   void setUp() {
-    // Mock this app's Request & Response
+    // Mock custom Request & Response
 
     requestMock = mock(Request.class);
     baseResponseMock = mock(BaseResponse.class);
@@ -38,7 +37,7 @@ class OkHttpClientTest {
 
     // Mock used fragments of okhttp3 library
 
-    // okhttp3.Request is a final class, so not mockable.
+    // okhttp3.Request is a final class, do not mock for now.
     okHttp3Request = new okhttp3.Request.Builder()
         .url("https://does-not-matter.com")
         .build();
@@ -46,9 +45,9 @@ class OkHttpClientTest {
     okhttp3.OkHttpClient okHttp3ClientMock = mock(okhttp3.OkHttpClient.class);
     okHttp3CallMock = mock(okhttp3.Call.class);
 
-    Mockito.when(requestMock.getBaseUrl()).thenReturn(okHttp3Request.url().url());
-    Mockito.when(requestMock.getHttpMethod()).thenReturn(Request.HttpMethod.GET);
-    Mockito.when(okHttp3ClientMock.newCall(Mockito.any())).thenReturn(okHttp3CallMock);
+    when(requestMock.getBaseUrl()).thenReturn(okHttp3Request.url().url());
+    when(requestMock.getHttpMethod()).thenReturn(Request.HttpMethod.GET);
+    when(okHttp3ClientMock.newCall(any())).thenReturn(okHttp3CallMock);
 
     actualResponse = null;
     okHttpClient = new OkHttpClient(okHttp3ClientMock);
@@ -71,6 +70,14 @@ class OkHttpClientTest {
     // then
     assertNotNull(actualResponse.getBody());
     assertEquals(expectedContent, actualResponse.getBody().getData(String.class));
+  }
+
+  @Test
+  void newCall_throwsUnsupportedOperationExceptionIfTypeOfResponseDataIsNotString() {
+    // when then
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> actualResponse = okHttpClient.newCall(requestMock, baseResponseMock, Double.class));
   }
 
   @Test
@@ -102,17 +109,14 @@ class OkHttpClientTest {
     assertTrue(
         actualErrorMessage.get().contains(expectedPartOfErrorMessage),
         "\nExpected message: \"" + expectedPartOfErrorMessage + "\"\n"
-        + "Actual message: \"" + actualErrorMessage + "\"");
+            + "Actual message: \"" + actualErrorMessage + "\"");
   }
 
   private void helpSetupOkHttp3BaseResponseMock(okhttp3.Request request, String content)
   throws IOException {
 
-    okhttp3.ResponseBody body = okhttp3
-        .ResponseBody
-        .create(
-            MediaType.parse("application/json; charset=utf-8"),
-            content);
+    okhttp3.ResponseBody body = okhttp3.ResponseBody.create(
+        MediaType.parse("application/json; charset=utf-8"), content);
 
     helpSetupOkHttp3ResponseMock(request, body);
   }
