@@ -20,8 +20,6 @@ import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.StringLegalizer;
 import de.fornalik.tankschlau.webserviceapi.common.PetrolStationMessageContent;
 
-// TODO unit tests
-
 /**
  * Concrete implementation of {@link PetrolStationMessageContent} regarding petrol station messages
  * with webservice pushover.net
