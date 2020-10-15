@@ -136,14 +136,15 @@ class TankerkoenigJsonAdapterTest {
   @Test
   void createPetrolStations_addressAcceptsEmptyHouseNumber() {
     // given
-    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_HOUSENUM_AND_BRAND);
+    fixture
+        .setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_EMPTY_HOUSENUM_AND_BRAND);
 
     // when
     actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture);
 
     // then
-    assertNotNull(actualPetrolStations.get(0).address);
-    assertEquals("", actualPetrolStations.get(0).address.getHouseNumber());
+    assertNotNull(actualPetrolStations.get(0).getAddress());
+    assertEquals("", actualPetrolStations.get(0).getAddress().getHouseNumber());
   }
 
   @Test
@@ -160,7 +161,8 @@ class TankerkoenigJsonAdapterTest {
   @Test
   void createPetrolStations_returnsEmptyOptionalGeoObjectIfAllGeoElementsAreMissing() {
     // given
-    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_ALL_GEO_ELEM);
+    fixture
+        .setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_ALL_GEO_ELEM);
 
     // when
     actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture);
@@ -168,8 +170,8 @@ class TankerkoenigJsonAdapterTest {
     // then
     assertNotNull(actualPetrolStations);
     assertEquals(1, actualPetrolStations.size());
-    assertNotNull(actualPetrolStations.get(0).address);
-    assertEquals(Optional.empty(), actualPetrolStations.get(0).address.getGeo());
+    assertNotNull(actualPetrolStations.get(0).getAddress());
+    assertEquals(Optional.empty(), actualPetrolStations.get(0).getAddress().getGeo());
   }
 
   @Test
@@ -181,25 +183,26 @@ class TankerkoenigJsonAdapterTest {
     actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture);
 
     // then
-    assertNotNull(actualPetrolStations.get(0).address);
-    assertTrue(actualPetrolStations.get(0).address.getGeo().isPresent());
+    assertNotNull(actualPetrolStations.get(0).getAddress());
+    assertTrue(actualPetrolStations.get(0).getAddress().getGeo().isPresent());
     assertEquals(
         Optional.empty(),
-        actualPetrolStations.get(0).address.getGeo().get().getDistance());
+        actualPetrolStations.get(0).getAddress().getGeo().get().getDistance());
   }
 
   @Test
   void createPetrolStations_setsGeoLatLonToZeroOnMissingGeoLatLonElements() {
     // given
-    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_LAT_LON_ELEM);
+    fixture
+        .setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_LAT_LON_ELEM);
 
     // when
     actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture);
 
     // then
-    assertTrue(actualPetrolStations.get(0).address.getGeo().isPresent());
-    assertEquals(0.0, actualPetrolStations.get(0).address.getGeo().get().getLatitude());
-    assertEquals(0.0, actualPetrolStations.get(0).address.getGeo().get().getLongitude());
+    assertTrue(actualPetrolStations.get(0).getAddress().getGeo().isPresent());
+    assertEquals(0.0, actualPetrolStations.get(0).getAddress().getGeo().get().getLatitude());
+    assertEquals(0.0, actualPetrolStations.get(0).getAddress().getGeo().get().getLongitude());
   }
 
   @Test

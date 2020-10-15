@@ -42,13 +42,13 @@ public abstract class PetrolStationMessageContent implements MessageContent {
     String stationHeader = createStationHeader(station);
     String petrol = l10n.get("msg.BestPrice", createPetrolString(station, petrolType));
     String distance = createDistanceString(station);
-    String street = station.address.getStreetAndHouseNumber();
+    String street = station.getAddress().getStreetAndHouseNumber();
 
     this.setMessage(petrol + "\n" + distance + "\n\n" + stationHeader + "\n" + street);
   }
 
   private String createStationHeader(PetrolStation station) {
-    String stationName = station.address.getName();
+    String stationName = station.getAddress().getName();
     String open = station.isOpen
         ? l10n.get("msg.NowOpen")
         : l10n.get("msg.NowClosed");
@@ -57,7 +57,8 @@ public abstract class PetrolStationMessageContent implements MessageContent {
   }
 
   private String createPetrolString(PetrolStation station, PetrolType type) {
-    String msg = l10n.get("msg.NoPetrolDataForStation", type.name(), station.address.getName());
+    String msg = l10n
+        .get("msg.NoPetrolDataForStation", type.name(), station.getAddress().getName());
 
     return station
         .findPetrol(type)
@@ -66,7 +67,7 @@ public abstract class PetrolStationMessageContent implements MessageContent {
   }
 
   private String createDistanceString(PetrolStation station) {
-    Optional<Geo> geo = station.address.getGeo();
+    Optional<Geo> geo = station.getAddress().getGeo();
 
     return geo.isPresent()
         ? geo.get().getDistanceAwayString(l10n)

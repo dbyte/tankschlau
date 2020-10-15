@@ -28,7 +28,7 @@ public class PetrolStation {
   @SerializedName("id") public final UUID uuid;
   @SerializedName("brand") public final String brand;
   @SerializedName("isOpen") public final boolean isOpen;
-  public final Address address;
+  private final Address address;
   private final HashSet<Petrol> petrols;
 
   /**
@@ -86,5 +86,9 @@ public class PetrolStation {
         .append("address", address)
         .append("petrols", petrols)
         .toString();
+  }
+
+  public Address getAddress() {
+    return address;
   }
 }

@@ -176,7 +176,7 @@ class PetrolStationsTest {
   }
 
   private double helpGetDistanceForSort(PetrolStation forPetrolStation) {
-    return forPetrolStation.address
+    return forPetrolStation.getAddress()
         .getGeo()
         .flatMap(Geo::getDistance)
         .orElse(9999.99);
@@ -191,7 +191,7 @@ class PetrolStationsTest {
       System.out.println("Sorted for petrol type " + forPetrolType + ":");
       System.out.print("PETROL > ");
       System.out.print(Petrols.findPetrol(elem.getPetrols(), forPetrolType));
-      System.out.print(" | DISTANCE > " + elem.address.getGeo().flatMap(Geo::getDistance));
+      System.out.print(" | DISTANCE > " + elem.getAddress().getGeo().flatMap(Geo::getDistance));
       System.out.println();
     });
   }

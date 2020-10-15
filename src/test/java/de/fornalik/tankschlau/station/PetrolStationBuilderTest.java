@@ -58,7 +58,7 @@ class PetrolStationBuilderTest {
     PetrolStationBuilder sut = PetrolStationBuilder
         .create(expectedPetrolStation.uuid)
         .withBrand(expectedPetrolStation.brand)
-        .withAddress(expectedPetrolStation.address)
+        .withAddress(expectedPetrolStation.getAddress())
         .withIsOpen(expectedPetrolStation.isOpen)
         .withPetrols(expectedPetrolStation.getPetrols());
 
@@ -68,7 +68,7 @@ class PetrolStationBuilderTest {
     // then
     assertEquals(expectedPetrolStation.uuid, actualPetrolStation.uuid);
     assertEquals(expectedPetrolStation.brand, actualPetrolStation.brand);
-    assertEquals(expectedPetrolStation.address, actualPetrolStation.address);
+    assertEquals(expectedPetrolStation.getAddress(), actualPetrolStation.getAddress());
     assertEquals(expectedPetrolStation.isOpen, actualPetrolStation.isOpen);
     assertEquals(expectedPetrolStation.getPetrols(), actualPetrolStation.getPetrols());
   }

@@ -199,7 +199,7 @@ public class MainWindow extends JFrame {
     List<Petrol> petrols = Petrols.getSortedByPetrolTypeAndPrice(petrolsUnsorted);
 
     model.addElement(createStationHeader(station));
-    model.addElement(station.address.getStreetAndHouseNumber());
+    model.addElement(station.getAddress().getStreetAndHouseNumber());
     petrols.forEach((petrol) -> model.addElement(createPetrolString(station, petrol.type)));
     model.addElement(createDistanceString(station));
     model.addElement("\t");
@@ -219,14 +219,15 @@ public class MainWindow extends JFrame {
   }
 
   private String createStationHeader(PetrolStation station) {
-    String stationName = station.address.getName();
+    String stationName = station.getAddress().getName();
     String open = station.isOpen ? l10n.get("msg.NowOpen") : l10n.get(
         "msg.NowClosed");
     return stationName + " - " + open;
   }
 
   private String createPetrolString(PetrolStation station, PetrolType type) {
-    String msg = l10n.get("msg.NoPetrolDataForStation", type.name(), station.address.getName());
+    String msg = l10n
+        .get("msg.NoPetrolDataForStation", type.name(), station.getAddress().getName());
 
     return station
         .findPetrol(type)
@@ -235,7 +236,7 @@ public class MainWindow extends JFrame {
   }
 
   private String createDistanceString(PetrolStation station) {
-    Optional<Geo> geo = station.address.getGeo();
+    Optional<Geo> geo = station.getAddress().getGeo();
 
     return geo.isPresent()
         ? geo.get().getDistanceAwayString(l10n)

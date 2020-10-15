@@ -98,7 +98,7 @@ public class PetrolStations {
     }
 
     private Double getDistanceForSort(PetrolStation station) {
-      return station.address
+      return station.getAddress()
           .getGeo()
           .flatMap(Geo::getDistance)
           .orElse(999999D);

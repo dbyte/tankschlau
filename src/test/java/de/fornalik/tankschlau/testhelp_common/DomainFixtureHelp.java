@@ -183,8 +183,8 @@ public class DomainFixtureHelp {
     assertEquals(fixture.brand, petrolStation.brand);
     assertEquals(fixture.isOpen, petrolStation.isOpen);
 
-    Assertions.assertNotNull(petrolStation.address);
-    this.assertEqualValues(petrolStation.address, objectFixture.stations.indexOf(fixture));
+    Assertions.assertNotNull(petrolStation.getAddress());
+    this.assertEqualValues(petrolStation.getAddress(), objectFixture.stations.indexOf(fixture));
 
     Set<Petrol> actualPetrols = new HashSet<>(petrolStation.getPetrols());
     this.assertEqualValuesIgnoringSort(actualPetrols, objectFixture.stations.indexOf(fixture));

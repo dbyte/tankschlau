@@ -53,7 +53,7 @@ class PetrolStationMessageContentTest {
   @Test
   void setMessage_() {
     // given
-    when(petrolStationMock.address.getName()).thenReturn("Some station name");
+    when(petrolStationMock.getAddress().getName()).thenReturn("Some station name");
 
     // when
     messageContent.setMessage(petrolStationMock, petrolTypeE5);
