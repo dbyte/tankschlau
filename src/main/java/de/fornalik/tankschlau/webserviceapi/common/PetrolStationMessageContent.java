@@ -16,8 +16,6 @@
 
 package de.fornalik.tankschlau.webserviceapi.common;
 
-// TODO unit tests, javadoc
-
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.station.Petrol;
 import de.fornalik.tankschlau.station.PetrolStation;
@@ -30,7 +28,6 @@ import java.util.Optional;
  * Abstract implementation of {@link MessageContent} for (push) message content regarding
  * a {@link PetrolStation}.
  */
-
 public abstract class PetrolStationMessageContent implements MessageContent {
   private final Localization l10n;
 
@@ -38,6 +35,12 @@ public abstract class PetrolStationMessageContent implements MessageContent {
     this.l10n = l10n;
   }
 
+  /**
+   * Formats a ready-to-use push message text.
+   *
+   * @param station    Petrol station that drives the message content.
+   * @param petrolType Petrol type for which to show the current price regarding the given station.
+   */
   public void setMessage(PetrolStation station, PetrolType petrolType) {
     String stationHeader = createStationHeader(station);
     String petrol = l10n.get("msg.BestPrice", createPetrolString(station, petrolType));
