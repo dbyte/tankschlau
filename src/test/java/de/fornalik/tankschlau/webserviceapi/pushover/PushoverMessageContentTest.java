@@ -26,8 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertSame;
  * We do only test getters/setters with non-standard functionality here.
  */
 class PushoverMessageContentTest {
-  PushoverMessageContent sut;
-  String actualString;
+  private PushoverMessageContent sut;
+  private String actualString;
 
   @BeforeEach
   void setUp() {
