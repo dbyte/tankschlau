@@ -43,6 +43,7 @@ public class PushoverMessageResponse extends BaseResponse implements JsonRespons
       Gson jsonProvider,
       ResponseBody responseBody,
       TransactInfo transactInfo) {
+
     super(Objects.requireNonNull(responseBody), Objects.requireNonNull(transactInfo));
     this.jsonProvider = Objects.requireNonNull(jsonProvider);
   }
@@ -62,11 +63,11 @@ public class PushoverMessageResponse extends BaseResponse implements JsonRespons
       String existingStatus = getTransactInfo().getStatus();
       Optional<String> existingErrorMsg = getTransactInfo().getErrorMessage();
 
-      getTransactInfo().setStatus(String.join(" + ", existingStatus, "DESERIALIZATION_ERROR"));
+      getTransactInfo().setStatus(String.join(" & ", existingStatus, "DESERIALIZATION_ERROR"));
 
       getTransactInfo().setErrorMessage(
           String.join(" ", existingErrorMsg.orElse(""),
-              "JSON string could not be deserialized. String is:",
+              " & JSON string could not be deserialized. String is:",
               jsonString));
 
       return Optional.empty();

@@ -17,10 +17,8 @@
 package de.fornalik.tankschlau.webserviceapi.pushover;
 
 import com.google.gson.Gson;
-import de.fornalik.tankschlau.net.HttpClient;
-import de.fornalik.tankschlau.net.OkHttpClient;
-import de.fornalik.tankschlau.net.Response;
-import de.fornalik.tankschlau.net.ResponseBodyImpl;
+import de.fornalik.tankschlau.net.*;
+import de.fornalik.tankschlau.storage.TransactInfo;
 import de.fornalik.tankschlau.storage.TransactInfoImpl;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
@@ -33,10 +31,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.*;
 
 class PushoverMessageServiceTest {
   private static HttpClient httpClientMock;
@@ -45,7 +41,8 @@ class PushoverMessageServiceTest {
 
   private PushoverMessageService messageClient;
   private MessageContent messageContentMock;
-  private PushoverMessageResponse messageResponseMock;
+  private PushoverMessageResponse messageResponse;
+  private ResponseBody responseBodyMock;
   private UserPrefs userPrefsMock;
   private ApiKeyManager apiKeyManagerMock;
 
@@ -66,22 +63,17 @@ class PushoverMessageServiceTest {
   @BeforeEach
   void setUp() {
     this.messageContentMock = mock(MessageContent.class);
-    this.messageResponseMock = mock(PushoverMessageResponse.class);
+
+    responseBodyMock = mock(ResponseBodyImpl.class);
+    TransactInfo transactInfoMock = mock(TransactInfoImpl.class, CALLS_REAL_METHODS);
+
+    // No mock here for PushoverMessageResponse... must be a real object, sorry for that :-)
+    messageResponse = new PushoverMessageResponse(jsonProvider, responseBodyMock, transactInfoMock);
 
     this.messageClient = new PushoverMessageService(
         httpClientMock,
         messageRequestMock,
-        messageResponseMock);
-
-  }
-
-  @Test
-  void sendMessage_shouldCrashWithNullPointerExceptionIfResponseIsNull() {
-    // given
-    when(httpClientMock.newCall(any(), any(), any())).thenReturn(null);
-
-    // when then
-    assertThrows(NullPointerException.class, () -> messageClient.sendMessage(messageContentMock));
+        messageResponse);
   }
 
   @Test
@@ -110,6 +102,11 @@ class PushoverMessageServiceTest {
     Response response = messageClient.sendMessage(realMessageContent);
 
     // then
+    // Assert that response and response.getTransactInfo() are guaranteed to be non-null
+    // in all cases except exceptions (-;
+    assertNotNull(response);
+    assertNotNull(response.getTransactInfo());
+
     System.out.println("RESPONSE BODY: " + response.getBody().getData(String.class));
     System.out.println("RESPONSE STATUS: " + response.getTransactInfo().getStatus());
     System.out.println("RESPONSE ERROR MESSAGE: " + response.getTransactInfo().getErrorMessage());

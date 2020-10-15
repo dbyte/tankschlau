@@ -79,9 +79,9 @@ public class OkHttpClient implements HttpClient {
       response.getBody().setData(Objects.requireNonNull(okhttpResponse.body()).string());
     }
     catch (IOException | NullPointerException e) {
+      response.getTransactInfo().setStatus("HTTP_CLIENT_ERROR");
       String msg = "Body of response could not be converted to string.";
       response.getTransactInfo().setErrorMessage(msg + " " + getDetails(okhttpResponse));
-      response.getTransactInfo().setStatus("ERROR");
     }
 
     return response;
@@ -99,14 +99,14 @@ public class OkHttpClient implements HttpClient {
       okhttpResponse = callServer(okhttpRequest); //throws
     }
     catch (IOException e) {
-      response.getTransactInfo().setStatus("ERROR");
+      response.getTransactInfo().setStatus("HTTP_CLIENT_ERROR");
       response.getTransactInfo().setErrorMessage(e.getMessage());
       throw e;
     }
 
     if (okhttpResponse.body() == null) {
-      response
-          .getTransactInfo()
+      response.getTransactInfo().setStatus("HTTP_CLIENT_ERROR");
+      response.getTransactInfo()
           .setErrorMessage("Body of response is null.\n" + getDetails(okhttpResponse));
 
       //noinspection OptionalGetWithoutIsPresent
