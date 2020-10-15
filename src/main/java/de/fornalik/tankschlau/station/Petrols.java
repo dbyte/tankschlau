@@ -41,6 +41,7 @@ public class Petrols {
     ArrayList<Petrol> petrolsList = new ArrayList<>(petrols);
 
     class ComparatorByOrdinalPetrolTypeAndPrice implements Comparator<Petrol> {
+      @Override
       public int compare(Petrol petrolA, Petrol petrolB) {
         return new CompareToBuilder()
             .append(petrolA.type.ordinal(), petrolB.type.ordinal())
@@ -65,8 +66,8 @@ public class Petrols {
     if (in == null || petrolType == null) return Optional.empty();
 
     List<Petrol> foundPetrols = in.stream()
-                                  .filter(petrol -> petrol.type == petrolType)
-                                  .collect(Collectors.toCollection(ArrayList::new));
+        .filter(petrol -> petrol.type == petrolType)
+        .collect(Collectors.toCollection(ArrayList::new));
 
     int countResults = foundPetrols.size();
 
