@@ -27,6 +27,8 @@ import java.util.ResourceBundle;
  * ResourceBundle/Locale wrapper for localized strings and region formats. Singleton.
  */
 public class Localization {
+  public static final String APP_NAME = "TankSchlau";
+
   private static Localization INSTANCE;
   private ResourceBundle bundle;
   private Locale locale;

@@ -31,7 +31,7 @@ public class Geo {
   @SerializedName("lat") private final double latitude;
   @SerializedName("lng") private final double longitude;
   @SerializedName("dist") private Double distance;
-  private static transient Localization l10n = Localization.getInstance();
+  private static final transient Localization l10n = Localization.getInstance();
 
   /**
    * Constructor

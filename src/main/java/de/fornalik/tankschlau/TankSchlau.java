@@ -23,7 +23,7 @@ import javax.swing.*;
 import java.util.Optional;
 
 public final class TankSchlau {
-  final AppContainer container = new AppContainer();
+  private final AppContainer container = new AppContainer();
 
   public static void main(String[] args) {
     final TankSchlau instance = new TankSchlau();
@@ -34,7 +34,6 @@ public final class TankSchlau {
   private void invokeGui() {
     SwingUtilities.invokeLater(
         () -> new MainWindow(
-            container.L10N,
             container.USER_PREFS,
             container.PETROL_STATIONS_SERVICE,
             container.GEOCODING_CLIENT,

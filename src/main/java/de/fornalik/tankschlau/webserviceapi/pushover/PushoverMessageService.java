@@ -88,6 +88,6 @@ public class PushoverMessageService implements MessageService {
 
   @Override
   public TransactInfo getTransactInfo() {
-    throw new UnsupportedOperationException("To be implemented.");
+   return response.getTransactInfo();
   }
 }

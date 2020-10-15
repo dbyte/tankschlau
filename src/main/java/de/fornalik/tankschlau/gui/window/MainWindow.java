@@ -36,7 +36,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public class MainWindow extends JFrame {
-  private final Localization l10n;
+  private static final Localization l10n = Localization.getInstance();
   private final UserPrefs userPrefs;
   private final PetrolStationsService petrolStationsService;
   private final GeocodingService geoCodingClient;
@@ -46,15 +46,13 @@ public class MainWindow extends JFrame {
   private DefaultListModel<String> model;
 
   public MainWindow(
-      Localization l10n,
       UserPrefs userPrefs,
       PetrolStationsService petrolStationsService,
       GeocodingService geoCodingClient,
       MessageService messageService,
       PetrolStationMessageContent messageContent) {
 
-    super(de.fornalik.tankschlau.TankSchlau.class.getSimpleName());
-    this.l10n = l10n;
+    super(Localization.APP_NAME);
     this.userPrefs = userPrefs;
     this.petrolStationsService = petrolStationsService;
     this.geoCodingClient = geoCodingClient;
