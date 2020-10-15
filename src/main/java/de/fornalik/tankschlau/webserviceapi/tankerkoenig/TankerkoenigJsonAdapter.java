@@ -89,9 +89,9 @@ public class TankerkoenigJsonAdapter {
     // Build the final petrol station. The builder will throw if data do not match the
     // business rules.
     return PetrolStationBuilder
-        .create(rawPetrolStation.uuid)
-        .withBrand(rawPetrolStation.brand)
-        .withIsOpen(rawPetrolStation.isOpen)
+        .create(rawPetrolStation.getUuid())
+        .withBrand(rawPetrolStation.getBrand())
+        .withIsOpen(rawPetrolStation.isOpen())
         .withPetrols(createPetrols(jsonStr))
         .withAddress(createAddress(jsonStr))
         .build();

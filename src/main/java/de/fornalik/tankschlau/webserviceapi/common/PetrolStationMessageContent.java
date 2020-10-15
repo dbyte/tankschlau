@@ -49,7 +49,7 @@ public abstract class PetrolStationMessageContent implements MessageContent {
 
   private String createStationHeader(PetrolStation station) {
     String stationName = station.getAddress().getName();
-    String open = station.isOpen
+    String open = station.isOpen()
         ? l10n.get("msg.NowOpen")
         : l10n.get("msg.NowClosed");
 

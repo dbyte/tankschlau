@@ -156,10 +156,10 @@ class PetrolStationsTest {
 
       String failureMessage = String.format(
           "TEST FAILED!\n"
-          + "stationA (uuid %s) is not properly sorted to stationB (uuid %s).\n"
-          + "priceA: %f, distanceA: %f compared to next priceB: %f, distanceB: %f "
-          + "is a wrong sort order.",
-          stationA.uuid, stationB.uuid, priceA, distanceA, priceB, distanceB);
+              + "stationA (uuid %s) is not properly sorted to stationB (uuid %s).\n"
+              + "priceA: %f, distanceA: %f compared to next priceB: %f, distanceB: %f "
+              + "is a wrong sort order.",
+          stationA.getUuid(), stationB.getUuid(), priceA, distanceA, priceB, distanceB);
 
       fail(failureMessage);
     }

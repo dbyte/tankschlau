@@ -32,7 +32,7 @@ class PetrolStationBuilderTest {
     PetrolStation actualStation = sut.build();
 
     // when, then
-    assertEquals(expectedUUID, actualStation.uuid);
+    assertEquals(expectedUUID, actualStation.getUuid());
   }
 
   @Test
@@ -56,20 +56,20 @@ class PetrolStationBuilderTest {
         mockHelp.petrolsFixture);
 
     PetrolStationBuilder sut = PetrolStationBuilder
-        .create(expectedPetrolStation.uuid)
-        .withBrand(expectedPetrolStation.brand)
+        .create(expectedPetrolStation.getUuid())
+        .withBrand(expectedPetrolStation.getBrand())
         .withAddress(expectedPetrolStation.getAddress())
-        .withIsOpen(expectedPetrolStation.isOpen)
+        .withIsOpen(expectedPetrolStation.isOpen())
         .withPetrols(expectedPetrolStation.getPetrols());
 
     // when
     PetrolStation actualPetrolStation = sut.build();
 
     // then
-    assertEquals(expectedPetrolStation.uuid, actualPetrolStation.uuid);
-    assertEquals(expectedPetrolStation.brand, actualPetrolStation.brand);
+    assertEquals(expectedPetrolStation.getUuid(), actualPetrolStation.getUuid());
+    assertEquals(expectedPetrolStation.getBrand(), actualPetrolStation.getBrand());
     assertEquals(expectedPetrolStation.getAddress(), actualPetrolStation.getAddress());
-    assertEquals(expectedPetrolStation.isOpen, actualPetrolStation.isOpen);
+    assertEquals(expectedPetrolStation.isOpen(), actualPetrolStation.isOpen());
     assertEquals(expectedPetrolStation.getPetrols(), actualPetrolStation.getPetrols());
   }
 

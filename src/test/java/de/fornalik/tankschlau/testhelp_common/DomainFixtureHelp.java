@@ -171,7 +171,7 @@ public class DomainFixtureHelp {
     // Find required fixture for the PetrolStation under test.
     StationDTO fixture = objectFixture.stations
         .stream()
-        .filter(fixt -> fixt.uuid.equals(petrolStation.uuid))
+        .filter(fixt -> fixt.uuid.equals(petrolStation.getUuid()))
         .findFirst()
         .orElse(null);
 
@@ -179,9 +179,9 @@ public class DomainFixtureHelp {
 
     // Begin test
 
-    assertEquals(fixture.uuid, petrolStation.uuid);
-    assertEquals(fixture.brand, petrolStation.brand);
-    assertEquals(fixture.isOpen, petrolStation.isOpen);
+    assertEquals(fixture.uuid, petrolStation.getUuid());
+    assertEquals(fixture.brand, petrolStation.getBrand());
+    assertEquals(fixture.isOpen, petrolStation.isOpen());
 
     Assertions.assertNotNull(petrolStation.getAddress());
     this.assertEqualValues(petrolStation.getAddress(), objectFixture.stations.indexOf(fixture));

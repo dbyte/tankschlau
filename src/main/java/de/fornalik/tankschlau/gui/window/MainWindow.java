@@ -220,7 +220,7 @@ public class MainWindow extends JFrame {
 
   private String createStationHeader(PetrolStation station) {
     String stationName = station.getAddress().getName();
-    String open = station.isOpen ? l10n.get("msg.NowOpen") : l10n.get(
+    String open = station.isOpen() ? l10n.get("msg.NowOpen") : l10n.get(
         "msg.NowClosed");
     return stationName + " - " + open;
   }

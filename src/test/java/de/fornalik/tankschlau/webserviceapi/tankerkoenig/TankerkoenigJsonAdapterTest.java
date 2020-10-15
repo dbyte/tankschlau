@@ -106,7 +106,7 @@ class TankerkoenigJsonAdapterTest {
     actualPetrolStations = sut.createPetrolStations(fixture.jsonFixture);
 
     // then
-    assertEquals("", actualPetrolStations.get(0).brand);
+    assertEquals("", actualPetrolStations.get(0).getBrand());
   }
 
   @Test

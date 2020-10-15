@@ -39,9 +39,9 @@ class PetrolStationTest {
     );
 
     // then
-    assertEquals(mockHelp.uuidFixture, sut.uuid);
-    assertEquals("brand", sut.brand);
-    assertTrue(sut.isOpen);
+    assertEquals(mockHelp.uuidFixture, sut.getUuid());
+    assertEquals("brand", sut.getBrand());
+    assertTrue(sut.isOpen());
     assertEquals(mockHelp.addressMock, sut.getAddress());
     assertEquals(mockHelp.petrolsFixture, sut.getPetrols());
   }

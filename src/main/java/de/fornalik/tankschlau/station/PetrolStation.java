@@ -25,9 +25,9 @@ import java.util.*;
 public class PetrolStation {
   private static final String MUST_NOT_BE_NULL = " must not be null";
 
-  @SerializedName("id") public final UUID uuid;
-  @SerializedName("brand") public final String brand;
-  @SerializedName("isOpen") public final boolean isOpen;
+  @SerializedName("id") private final UUID uuid;
+  @SerializedName("brand") private final String brand;
+  @SerializedName("isOpen") private final boolean isOpen;
   private final Address address;
   private final HashSet<Petrol> petrols;
 
@@ -90,5 +90,17 @@ public class PetrolStation {
 
   public Address getAddress() {
     return address;
+  }
+
+  public UUID getUuid() {
+    return uuid;
+  }
+
+  public String getBrand() {
+    return brand;
+  }
+
+  public boolean isOpen() {
+    return isOpen;
   }
 }
