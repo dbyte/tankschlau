@@ -16,7 +16,6 @@
 
 package de.fornalik.tankschlau.webserviceapi.pushover;
 
-import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.StringLegalizer;
 import de.fornalik.tankschlau.webserviceapi.common.PetrolStationMessageContent;
 
@@ -28,9 +27,7 @@ public class PushoverMessageContent extends PetrolStationMessageContent {
   private String title;
   private String message;
 
-  public PushoverMessageContent(Localization l10n) {
-    super(l10n);
-  }
+  public PushoverMessageContent() {}
 
   @Override
   public String getTitle() {

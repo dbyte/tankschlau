@@ -31,7 +31,7 @@ class PushoverMessageContentTest {
 
   @BeforeEach
   void setUp() {
-    sut = new PushoverMessageContent(null);
+    sut = new PushoverMessageContent();
     actualString = null;
   }
 

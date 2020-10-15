@@ -50,7 +50,6 @@ import java.util.Locale;
  * Avoid tight coupling to any classes by ONLY calling it's members from the root of the app.
  */
 public final class AppContainer {
-  public final Localization L10N;
   public final UserPrefs USER_PREFS;
   public final HttpClient HTTP_CLIENT;
   public final Gson JSON_PROVIDER;
@@ -75,8 +74,8 @@ public final class AppContainer {
     Setup application context dependency graph
     */
 
-    L10N = Localization.getInstance();
-    L10N.configure(Locale.GERMANY);
+    Localization l10n = Localization.getInstance();
+    l10n.configure(Locale.GERMANY);
 
     USER_PREFS = new UserPrefs("/de/fornalik/tankschlau");
     HTTP_CLIENT = new OkHttpClient(new okhttp3.OkHttpClient());
@@ -113,7 +112,7 @@ public final class AppContainer {
 
     PETROL_STATIONS = new PetrolStations(PETROL_STATIONS_SERVICE);
 
-    PETROL_STATION_MESSAGE_CONTENT = new PushoverMessageContent(L10N);
+    PETROL_STATION_MESSAGE_CONTENT = new PushoverMessageContent();
     MESSAGE_REQUEST = new PushoverMessageRequest(PUSHMESSAGE_APIKEY_MANAGER, USER_PREFS);
     MESSAGE_RESPONSE = new PushoverMessageResponse(
         JSON_PROVIDER,

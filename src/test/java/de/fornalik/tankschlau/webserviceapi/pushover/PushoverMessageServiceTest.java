@@ -94,7 +94,7 @@ class PushoverMessageServiceTest {
         realRequest,
         realResponse);
 
-    MessageContent realMessageContent = new PushoverMessageContent(null);
+    MessageContent realMessageContent = new PushoverMessageContent();
     realMessageContent.setTitle("New price for station!");
     realMessageContent.setMessage("UTF-8? Umlauts! ÖÄÜ öäü ß.\nThis should be a new line");
 

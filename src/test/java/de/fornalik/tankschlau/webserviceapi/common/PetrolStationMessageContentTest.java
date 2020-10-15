@@ -26,6 +26,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 
+import java.util.Locale;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,37 +34,40 @@ import static org.mockito.Mockito.*;
 
 class PetrolStationMessageContentTest {
   private PetrolStationMessageContent messageContentStub; // SUT
-  private Localization l10nMock;
+  private Localization l10nSingleton;
   private PetrolStation petrolStationMock;
   private Petrol petrolMock;
-  // private Address addressMock;
   private Geo geoMock;
 
   @BeforeEach
   void setUp() {
-    l10nMock = mock(Localization.class);
     petrolStationMock = mock(PetrolStation.class, Mockito.RETURNS_DEEP_STUBS);
     petrolMock = mock(Petrol.class);
-    // addressMock = mock(Address.class);
     geoMock = mock(Geo.class);
 
-    messageContentStub = new PetrolStationMessageContentStub(l10nMock);
+    l10nSingleton = Localization.getInstance();
+    messageContentStub = new PetrolStationMessageContentStub();
   }
 
   @ParameterizedTest
   @ValueSource(booleans = {true, false})
   void setMessage_fromPetrolStationData_formatsContentAsExpected(boolean stationIsOpen) {
     // given
-    String expectedBestPriceString = "Neuer Bestpreis! DIESEL: 1,219 €";
+    l10nSingleton.configure(Locale.GERMANY);
+
+    String expectedBestPriceString = "DIESEL: 1,219 €";
+    String expectedHeadline = l10nSingleton.get("msg.BestPrice", expectedBestPriceString);
     String expectedDistanceString = "5.3 km entfernt";
     String expectedPetrolStationName = "Tankstelle Gluckenkopp";
     String expectedStreetName = "Schlampstrasse 55";
-
     String expectedOpenedString = "jetzt geöffnet";
-    String expectedClosedString = "jetzt geschlossen";
+    String expectedClosedString = "geschlossen";
     String expectedOpenCloseString = stationIsOpen ? expectedOpenedString : expectedClosedString;
 
     when(geoMock.getDistanceAwayString()).thenReturn(expectedDistanceString);
+
+    when(petrolStationMock.findPetrol(any())).thenReturn(Optional.ofNullable(petrolMock));
+    when(petrolMock.getTypeAndPrice()).thenReturn(expectedBestPriceString);
 
     when(petrolStationMock.isOpen()).thenReturn(stationIsOpen);
     when(petrolStationMock.getAddress().getName()).thenReturn(expectedPetrolStationName);
@@ -71,19 +75,11 @@ class PetrolStationMessageContentTest {
     when(petrolStationMock.getAddress().getStreetAndHouseNumber()).thenReturn(expectedStreetName);
     when(petrolStationMock.findPetrol(any())).thenReturn(Optional.ofNullable(petrolMock));
 
-    when(l10nMock.get("msg.BestPrice", petrolMock.getTypeAndPrice()))
-        .thenReturn(expectedBestPriceString);
-
-    when(l10nMock.get("msg.NowOpen")).thenReturn(expectedOpenedString);
-    when(l10nMock.get("msg.NowClosed")).thenReturn(expectedClosedString);
-    when(l10nMock.get("msg.NoPetrolDataForStation"))
-        .thenReturn("Keine Spritpreise für diese Station vorhanden.");
-
     // when
     messageContentStub.setMessage(petrolStationMock, PetrolType.E5);
 
     // then
-    String expectedConcatenationResult = expectedBestPriceString
+    String expectedConcatenationResult = expectedHeadline
         + "\n" + expectedDistanceString
         + "\n\n" + expectedPetrolStationName + " - " + expectedOpenCloseString
         + "\n" + expectedStreetName;
@@ -91,14 +87,10 @@ class PetrolStationMessageContentTest {
     assertEquals(expectedConcatenationResult, messageContentStub.getMessage());
   }
 
-  // Stub that implements the abstract subject under test.
+  // Stub implements the abstract subject under test.
   private static class PetrolStationMessageContentStub extends PetrolStationMessageContent {
     private String title;
     private String message;
-
-    protected PetrolStationMessageContentStub(Localization mock) {
-      super(mock);
-    }
 
     @Override
     public String getTitle() {

@@ -29,11 +29,7 @@ import java.util.Optional;
  * a {@link PetrolStation}.
  */
 public abstract class PetrolStationMessageContent implements MessageContent {
-  private final Localization l10n;
-
-  protected PetrolStationMessageContent(Localization l10n) {
-    this.l10n = l10n;
-  }
+  private static final Localization l10n = Localization.getInstance();
 
   /**
    * Formats a ready-to-use push message text.
