@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.fornalik.tankschlau.bootstrap;
+package de.fornalik.tankschlau;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -49,7 +49,7 @@ import java.util.Locale;
  * Describes a the dependency graph throughout the application.
  * Avoid tight coupling to any classes by ONLY calling it's members from the root of the app.
  */
-public final class AppContainer {
+public final class TankSchlauBootstrap {
   public final UserPrefs USER_PREFS;
   public final HttpClient HTTP_CLIENT;
   public final Gson JSON_PROVIDER;
@@ -69,7 +69,7 @@ public final class AppContainer {
   public final JsonResponse MESSAGE_RESPONSE;
   public final MessageService MESSAGE_CLIENT;
 
-  public AppContainer() {
+  public TankSchlauBootstrap() {
     /*
     Setup application context dependency graph
     */

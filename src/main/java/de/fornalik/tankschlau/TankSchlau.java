@@ -16,14 +16,13 @@
 
 package de.fornalik.tankschlau;
 
-import de.fornalik.tankschlau.bootstrap.AppContainer;
 import de.fornalik.tankschlau.gui.window.MainWindow;
 
 import javax.swing.*;
 import java.util.Optional;
 
 public final class TankSchlau {
-  private final AppContainer container = new AppContainer();
+  private final TankSchlauBootstrap container = new TankSchlauBootstrap();
 
   public static void main(String[] args) {
     final TankSchlau instance = new TankSchlau();
@@ -45,15 +44,15 @@ public final class TankSchlau {
     // Offer option to pass some data at startup. Ex: -Dmyproperty="My value"
 
     Optional.ofNullable(System.getProperty("petrolStationsApiKey"))
-            .ifPresent(container.TANKERKOENIG_APIKEY_MANAGER::write);
+        .ifPresent(container.TANKERKOENIG_APIKEY_MANAGER::write);
 
     Optional.ofNullable(System.getProperty("geocodingApiKey"))
-            .ifPresent(container.GEOCODING_APIKEY_MANAGER::write);
+        .ifPresent(container.GEOCODING_APIKEY_MANAGER::write);
 
     Optional.ofNullable(System.getProperty("pushmessageApiKey"))
-            .ifPresent(container.PUSHMESSAGE_APIKEY_MANAGER::write);
+        .ifPresent(container.PUSHMESSAGE_APIKEY_MANAGER::write);
 
     Optional.ofNullable(System.getProperty("pushmessageUserId"))
-            .ifPresent(container.USER_PREFS::writePushMessageUserId);
+        .ifPresent(container.USER_PREFS::writePushMessageUserId);
   }
 }
