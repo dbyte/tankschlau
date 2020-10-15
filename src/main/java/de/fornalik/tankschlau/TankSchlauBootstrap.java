@@ -49,27 +49,27 @@ import java.util.Locale;
  * Describes a the dependency graph throughout the application.
  * Avoid tight coupling to any classes by ONLY calling it's members from the root of the app.
  */
-public final class TankSchlauBootstrap {
-  public final UserPrefs USER_PREFS;
-  public final HttpClient HTTP_CLIENT;
-  public final Gson JSON_PROVIDER;
-  public final TankerkoenigJsonAdapter PETROL_STATIONS_JSON_ADAPTER;
-  public final ApiKeyStore API_KEY_STORE;
-  public final ApiKeyManager PUSHMESSAGE_APIKEY_MANAGER;
-  public final ApiKeyManager GEOCODING_APIKEY_MANAGER;
-  public final ApiKeyManager TANKERKOENIG_APIKEY_MANAGER;
-  public final GeocodingService GEOCODING_CLIENT;
-  public final GeoRequest GEO_REQUEST;
-  public final PetrolStationsRepo PETROL_STATIONS_REPO;
-  public final JsonResponse PETROL_STATIONS_JSON_RESPONSE;
-  public final PetrolStationsService PETROL_STATIONS_SERVICE;
-  public final PetrolStations PETROL_STATIONS;
-  public final PetrolStationMessageContent PETROL_STATION_MESSAGE_CONTENT;
-  public final MessageRequest MESSAGE_REQUEST;
-  public final JsonResponse MESSAGE_RESPONSE;
-  public final MessageService MESSAGE_CLIENT;
+final class TankSchlauBootstrap {
+  final UserPrefs userPrefs;
+  final HttpClient httpClient;
+  final Gson jsonProvider;
+  final TankerkoenigJsonAdapter tankerkoenigJsonAdapter;
+  final ApiKeyStore apiKeyStore;
+  final ApiKeyManager apiKeyManager;
+  final ApiKeyManager geocodingApikeyManager;
+  final ApiKeyManager tankerkoenigApikeyManager;
+  final GeocodingService geocodingService;
+  final GeoRequest geoRequest;
+  final PetrolStationsRepo petrolStationsRepo;
+  final JsonResponse petrolStationsJsonResponse;
+  final PetrolStationsService petrolStationsService;
+  final PetrolStations petrolStations;
+  final PetrolStationMessageContent petrolStationMessageContent;
+  final MessageRequest messageRequest;
+  final JsonResponse messageResponse;
+  final MessageService messageClient;
 
-  public TankSchlauBootstrap() {
+  TankSchlauBootstrap() {
     /*
     Setup application context dependency graph
     */
@@ -77,47 +77,47 @@ public final class TankSchlauBootstrap {
     Localization l10n = Localization.getInstance();
     l10n.configure(Locale.GERMANY);
 
-    USER_PREFS = new UserPrefs("/de/fornalik/tankschlau");
-    HTTP_CLIENT = new OkHttpClient(new okhttp3.OkHttpClient());
+    userPrefs = new UserPrefs("/de/fornalik/tankschlau");
+    httpClient = new OkHttpClient(new okhttp3.OkHttpClient());
 
-    JSON_PROVIDER = new GsonBuilder()
+    jsonProvider = new GsonBuilder()
         .registerTypeAdapter(Petrols.class, new PetrolsJsonAdapter())
         .create();
 
-    API_KEY_STORE = new UserPrefsApiKeyStore(USER_PREFS);
-    PUSHMESSAGE_APIKEY_MANAGER = ApiKeyManager.createForPushMessage(API_KEY_STORE);
-    GEOCODING_APIKEY_MANAGER = ApiKeyManager.createForGeocoding(API_KEY_STORE);
-    TANKERKOENIG_APIKEY_MANAGER = ApiKeyManager.createForPetrolStations(API_KEY_STORE);
+    apiKeyStore = new UserPrefsApiKeyStore(userPrefs);
+    apiKeyManager = ApiKeyManager.createForPushMessage(apiKeyStore);
+    geocodingApikeyManager = ApiKeyManager.createForGeocoding(apiKeyStore);
+    tankerkoenigApikeyManager = ApiKeyManager.createForPetrolStations(apiKeyStore);
 
-    PETROL_STATIONS_JSON_RESPONSE = new TankerkoenigResponse(
-        JSON_PROVIDER,
+    petrolStationsJsonResponse = new TankerkoenigResponse(
+        jsonProvider,
         new ResponseBodyImpl(),
         new TransactInfoImpl());
 
-    GEOCODING_CLIENT = new GoogleGeocodingClient(
-        HTTP_CLIENT,
-        GoogleGeocodingRequest.create(GEOCODING_APIKEY_MANAGER),
-        PETROL_STATIONS_JSON_RESPONSE);
+    geocodingService = new GoogleGeocodingClient(
+        httpClient,
+        GoogleGeocodingRequest.create(geocodingApikeyManager),
+        petrolStationsJsonResponse);
 
-    GEO_REQUEST = TankerkoenigRequest.create(TANKERKOENIG_APIKEY_MANAGER);
-    PETROL_STATIONS_JSON_ADAPTER = new TankerkoenigJsonAdapter(JSON_PROVIDER);
+    geoRequest = TankerkoenigRequest.create(tankerkoenigApikeyManager);
+    tankerkoenigJsonAdapter = new TankerkoenigJsonAdapter(jsonProvider);
 
-    PETROL_STATIONS_REPO = new TankerkoenigPetrolStationsRepo(
-        HTTP_CLIENT,
-        PETROL_STATIONS_JSON_ADAPTER,
-        GEO_REQUEST,
-        PETROL_STATIONS_JSON_RESPONSE);
+    petrolStationsRepo = new TankerkoenigPetrolStationsRepo(
+        httpClient,
+        tankerkoenigJsonAdapter,
+        geoRequest,
+        petrolStationsJsonResponse);
 
-    PETROL_STATIONS_SERVICE = new PetrolStationsWebService(PETROL_STATIONS_REPO);
+    petrolStationsService = new PetrolStationsWebService(petrolStationsRepo);
 
-    PETROL_STATIONS = new PetrolStations(PETROL_STATIONS_SERVICE);
+    petrolStations = new PetrolStations(petrolStationsService);
 
-    PETROL_STATION_MESSAGE_CONTENT = new PushoverMessageContent();
-    MESSAGE_REQUEST = new PushoverMessageRequest(PUSHMESSAGE_APIKEY_MANAGER, USER_PREFS);
-    MESSAGE_RESPONSE = new PushoverMessageResponse(
-        JSON_PROVIDER,
+    petrolStationMessageContent = new PushoverMessageContent();
+    messageRequest = new PushoverMessageRequest(apiKeyManager, userPrefs);
+    messageResponse = new PushoverMessageResponse(
+        jsonProvider,
         new ResponseBodyImpl(),
         new TransactInfoImpl());
-    MESSAGE_CLIENT = new PushoverMessageService(HTTP_CLIENT, MESSAGE_REQUEST, MESSAGE_RESPONSE);
+    messageClient = new PushoverMessageService(httpClient, messageRequest, messageResponse);
   }
 }

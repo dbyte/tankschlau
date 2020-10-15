@@ -33,26 +33,26 @@ public final class TankSchlau {
   private void invokeGui() {
     SwingUtilities.invokeLater(
         () -> new MainWindow(
-            container.USER_PREFS,
-            container.PETROL_STATIONS_SERVICE,
-            container.GEOCODING_CLIENT,
-            container.MESSAGE_CLIENT,
-            container.PETROL_STATION_MESSAGE_CONTENT));
+            container.userPrefs,
+            container.petrolStationsService,
+            container.geocodingService,
+            container.messageClient,
+            container.petrolStationMessageContent));
   }
 
   private void processVmOptions() {
     // Offer option to pass some data at startup. Ex: -Dmyproperty="My value"
 
     Optional.ofNullable(System.getProperty("petrolStationsApiKey"))
-        .ifPresent(container.TANKERKOENIG_APIKEY_MANAGER::write);
+        .ifPresent(container.tankerkoenigApikeyManager::write);
 
     Optional.ofNullable(System.getProperty("geocodingApiKey"))
-        .ifPresent(container.GEOCODING_APIKEY_MANAGER::write);
+        .ifPresent(container.geocodingApikeyManager::write);
 
     Optional.ofNullable(System.getProperty("pushmessageApiKey"))
-        .ifPresent(container.PUSHMESSAGE_APIKEY_MANAGER::write);
+        .ifPresent(container.apiKeyManager::write);
 
     Optional.ofNullable(System.getProperty("pushmessageUserId"))
-        .ifPresent(container.USER_PREFS::writePushMessageUserId);
+        .ifPresent(container.userPrefs::writePushMessageUserId);
   }
 }
