@@ -239,7 +239,7 @@ public class MainWindow extends JFrame {
     Optional<Geo> geo = station.getAddress().getGeo();
 
     return geo.isPresent()
-        ? geo.get().getDistanceAwayString(l10n)
+        ? geo.get().getDistanceAwayString()
         : l10n.get("msg.Unknown");
   }
 }

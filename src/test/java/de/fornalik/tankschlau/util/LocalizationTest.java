@@ -27,8 +27,9 @@ class LocalizationTest {
 
   private static Localization createLocalization(Locale forLocale) {
     // Return a subject under test.
-    String baseName = "LocaleTestStrings";
-    return new Localization(ResourceBundle.getBundle(baseName, forLocale));
+    Localization loc = Localization.newInstance();
+    loc.configure(forLocale, ResourceBundle.getBundle("LocaleTestStrings", forLocale));
+    return loc;
   }
 
   @Test

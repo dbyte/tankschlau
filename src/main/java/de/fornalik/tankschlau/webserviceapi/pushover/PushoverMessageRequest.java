@@ -19,6 +19,7 @@ package de.fornalik.tankschlau.webserviceapi.pushover;
 import de.fornalik.tankschlau.net.JsonRequest;
 import de.fornalik.tankschlau.net.JsonRequestImpl;
 import de.fornalik.tankschlau.user.UserPrefs;
+import de.fornalik.tankschlau.util.Global;
 import de.fornalik.tankschlau.util.StringLegalizer;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.common.MessageContent;
@@ -55,7 +56,7 @@ public class PushoverMessageRequest extends JsonRequestImpl implements MessageRe
 
   private void setHeaders() {
     putHeader("Accept", "application/json; charset=utf-8");
-    putBodyParameter("User-Agent", "TankSchlau");
+    putBodyParameter("User-Agent", Global.APP_NAME);
   }
 
   private void setAuthenticationParameters() {

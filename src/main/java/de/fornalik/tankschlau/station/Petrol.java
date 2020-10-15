@@ -16,12 +16,11 @@
 
 package de.fornalik.tankschlau.station;
 
+import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.MyToStringBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.text.NumberFormat;
-import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -29,10 +28,8 @@ import java.util.Objects;
  */
 public class Petrol {
   private static final String NBSP_AND_EUR = "\u00A0\u20AC";
-
   public final PetrolType type;
   public final double price;
-  private transient final NumberFormat numberFormat;
 
   /**
    * Constructor
@@ -43,7 +40,6 @@ public class Petrol {
   public Petrol(PetrolType type, double price) {
     this.type = Objects.requireNonNull(type, "type must not be null.");
     this.price = price;
-    this.numberFormat = createCurrencyFormat();
   }
 
   /**
@@ -52,14 +48,8 @@ public class Petrol {
    * german petrol prices only.
    */
   public String getTypeAndPrice() {
-    return type.name() + " " + numberFormat.format(price) + NBSP_AND_EUR;
-  }
-
-  private NumberFormat createCurrencyFormat() {
-    NumberFormat nf = NumberFormat.getInstance(Locale.GERMANY);
-    nf.setMaximumFractionDigits(3);
-    nf.setMinimumFractionDigits(2);
-    return nf;
+    return type.name()
+        + " " + Localization.getInstance().priceFormat().format(price) + NBSP_AND_EUR;
   }
 
   @Override

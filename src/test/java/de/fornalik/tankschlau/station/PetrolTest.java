@@ -1,13 +1,22 @@
 package de.fornalik.tankschlau.station;
 
+import de.fornalik.tankschlau.util.Localization;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class PetrolTest {
+
+  @BeforeAll
+  static void beforeAll() {
+    // We must configure the Singleton here
+    Localization.getInstance().configure(Locale.GERMANY);
+  }
 
   @Test
   void getTypeAndPrice_returnsConcatenatedStringForGermanLocale() {

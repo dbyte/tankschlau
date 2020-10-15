@@ -17,39 +17,69 @@
 package de.fornalik.tankschlau.util;
 
 import java.text.MessageFormat;
+import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
 /**
- * ResourceBundle/Locale facade for localized strings. This is meant to be handled like a
- * Singleton - instantiate a single object for the lifecycle of the application.
+ * ResourceBundle/Locale wrapper for localized strings and region formats. Singleton.
  */
 public class Localization {
-  private final ResourceBundle bundle;
+  private static Localization INSTANCE;
+  private ResourceBundle bundle;
+  private Locale locale;
+
+  private Localization() {}
 
   /**
-   * Configure app for the given language/region, which have been defined within the given
-   * {@link ResourceBundle}.
-   *
-   * @param bundle Target {@link ResourceBundle} enclosing the property files
-   * @see #Localization(Locale)
+   * @return Singleton - defaults to our custom german language/format settings at creation time.
+   * @see #newInstance()
    */
-  public Localization(ResourceBundle bundle) {
-    this.bundle = bundle;
+  public static Localization getInstance() {
+    if (INSTANCE != null)
+      return INSTANCE;
+
+    INSTANCE = newInstance();
+    return INSTANCE;
   }
 
   /**
-   * Configure app for the given language/region. The implicit {@link ResourceBundle} bundle
-   * for this constructor is "/resources/LocaleStrings". Take the overloaded constructor to
-   * explicitly set a different bundle.
+   * Unlike {@link #getInstance()}, this factory does <b>NOT</b> return the singleton.
+   * <p>
+   * Defaults to our custom german settings and language bundle "/resources/LocaleStrings".
+   * To change these settings afterwards, call {@link #configure(Locale)} or
+   * {@link #configure(Locale, ResourceBundle)}.
    *
-   * @param locale language token, ex. use {@link Locale#GERMAN}
-   * @see #Localization(ResourceBundle)
+   * @see #getInstance()
    */
-  public Localization(Locale locale) {
-    this(ResourceBundle.getBundle("LocaleStrings", locale));
+  public static synchronized Localization newInstance() {
+    Localization loc = new Localization();
+    loc.configure(Locale.GERMANY);
+    return loc;
+  }
+
+  /**
+   * Configure app for the given language/region. Implicitly sets path to production bundle of
+   * language properties files.
+   *
+   * @param locale App language and formats.
+   */
+  public void configure(Locale locale) {
+    this.configure(locale, ResourceBundle.getBundle("LocaleStrings", locale));
+  }
+
+  /**
+   * Configure app for the given language/region. Unlike {@link #configure(Locale)}, this one
+   * does NOT implicitly set the path to production bundle of language properties files.
+   *
+   * @param bundle Target {@link ResourceBundle} for the language property files.
+   * @param locale Region for specific formats we use.
+   */
+  public void configure(Locale locale, ResourceBundle bundle) {
+    this.bundle = bundle;
+    this.locale = locale;
   }
 
   /**
@@ -87,5 +117,26 @@ public class Localization {
    */
   public String get(String key) {
     return get(key, (Object) null);
+  }
+
+  /**
+   * @return The application-wide price formatter. Decimal separator depending on Locale settings.
+   */
+  public NumberFormat priceFormat() {
+    NumberFormat nf = NumberFormat.getInstance(locale);
+    nf.setMaximumFractionDigits(3);
+    nf.setMinimumFractionDigits(2);
+    return nf;
+  }
+
+  /**
+   * @return The application-wide kilometers formatter. Decimal separator depending on Locale
+   * settings.
+   */
+  public NumberFormat kmFormat() {
+    NumberFormat nf = NumberFormat.getInstance(locale);
+    nf.setMaximumFractionDigits(2);
+    nf.setMinimumFractionDigits(0);
+    return nf;
   }
 }

@@ -63,7 +63,7 @@ class PetrolStationMessageContentTest {
     String expectedClosedString = "jetzt geschlossen";
     String expectedOpenCloseString = stationIsOpen ? expectedOpenedString : expectedClosedString;
 
-    when(geoMock.getDistanceAwayString(l10nMock)).thenReturn(expectedDistanceString);
+    when(geoMock.getDistanceAwayString()).thenReturn(expectedDistanceString);
 
     when(petrolStationMock.isOpen()).thenReturn(stationIsOpen);
     when(petrolStationMock.getAddress().getName()).thenReturn(expectedPetrolStationName);

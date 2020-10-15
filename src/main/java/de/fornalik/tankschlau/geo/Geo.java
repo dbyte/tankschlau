@@ -22,8 +22,6 @@ import de.fornalik.tankschlau.util.MyToStringBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.text.NumberFormat;
-import java.util.Locale;
 import java.util.Optional;
 
 /**
@@ -32,8 +30,8 @@ import java.util.Optional;
 public class Geo {
   @SerializedName("lat") private final double latitude;
   @SerializedName("lng") private final double longitude;
-  private transient final NumberFormat kmFormat;
   @SerializedName("dist") private Double distance;
+  private static transient Localization l10n = Localization.getInstance();
 
   /**
    * Constructor
@@ -55,7 +53,6 @@ public class Geo {
   public Geo(double lat, double lon, Double distance) {
     this.latitude = lat;
     this.longitude = lon;
-    this.kmFormat = createKmFormat();
 
     throwOnInvalidCoordinates();
     setDistance(distance);
@@ -85,22 +82,14 @@ public class Geo {
   }
 
   /**
-   * @param l10n {@link Localization}
    * @return Localized string - ex. "10,5 km entfernt", or "unbekannt" if distance is empty.
    */
-  public String getDistanceAwayString(Localization l10n) {
+  public String getDistanceAwayString() {
     String distanceString = getDistance().isPresent()
-        ? kmFormat.format(getDistance().get())
+        ? l10n.kmFormat().format(getDistance().get())
         : l10n.get("msg.Unknown");
 
     return l10n.get("msg.KmAway", distanceString);
-  }
-
-  private NumberFormat createKmFormat() {
-    NumberFormat nf = NumberFormat.getInstance(Locale.GERMANY);
-    nf.setMaximumFractionDigits(2);
-    nf.setMinimumFractionDigits(0);
-    return nf;
   }
 
   private void throwOnInvalidDistance(Double km) throws InvalidGeoDataException {

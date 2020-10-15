@@ -75,7 +75,9 @@ public final class AppContainer {
     Setup application context dependency graph
     */
 
-    L10N = new Localization(Locale.GERMAN);
+    L10N = Localization.getInstance();
+    L10N.configure(Locale.GERMANY);
+
     USER_PREFS = new UserPrefs("/de/fornalik/tankschlau");
     HTTP_CLIENT = new OkHttpClient(new okhttp3.OkHttpClient());
 
