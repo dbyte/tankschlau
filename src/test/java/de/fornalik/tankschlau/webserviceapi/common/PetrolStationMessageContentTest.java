@@ -22,7 +22,8 @@ import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolType;
 import de.fornalik.tankschlau.util.Localization;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 
 import java.util.Optional;
@@ -49,19 +50,22 @@ class PetrolStationMessageContentTest {
     messageContentStub = new PetrolStationMessageContentStub(l10nMock);
   }
 
-  @Test
-  void setMessage_formatsTextAsExpected() {
+  @ParameterizedTest
+  @ValueSource(booleans = {true, false})
+  void setMessage_fromPetrolStationData_formatsContentAsExpected(boolean stationIsOpen) {
     // given
     String expectedBestPriceString = "Neuer Bestpreis! DIESEL: 1,219 €";
     String expectedDistanceString = "5.3 km entfernt";
     String expectedPetrolStationName = "Tankstelle Gluckenkopp";
     String expectedStreetName = "Schlampstrasse 55";
+
     String expectedOpenedString = "jetzt geöffnet";
     String expectedClosedString = "jetzt geschlossen";
+    String expectedOpenCloseString = stationIsOpen ? expectedOpenedString : expectedClosedString;
 
     when(geoMock.getDistanceAwayString(l10nMock)).thenReturn(expectedDistanceString);
 
-    when(petrolStationMock.isOpen()).thenReturn(true);
+    when(petrolStationMock.isOpen()).thenReturn(stationIsOpen);
     when(petrolStationMock.getAddress().getName()).thenReturn(expectedPetrolStationName);
     when(petrolStationMock.getAddress().getGeo()).thenReturn(Optional.of(geoMock));
     when(petrolStationMock.getAddress().getStreetAndHouseNumber()).thenReturn(expectedStreetName);
@@ -81,7 +85,7 @@ class PetrolStationMessageContentTest {
     // then
     String expectedConcatenationResult = expectedBestPriceString
         + "\n" + expectedDistanceString
-        + "\n\n" + expectedPetrolStationName + " - " + expectedOpenedString
+        + "\n\n" + expectedPetrolStationName + " - " + expectedOpenCloseString
         + "\n" + expectedStreetName;
 
     assertEquals(expectedConcatenationResult, messageContentStub.getMessage());
