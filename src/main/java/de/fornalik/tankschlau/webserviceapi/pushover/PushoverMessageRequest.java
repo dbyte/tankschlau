@@ -26,7 +26,6 @@ import de.fornalik.tankschlau.webserviceapi.common.MessageRequest;
 
 import java.util.Objects;
 
-// TODO unit test, javadoc
 public class PushoverMessageRequest extends JsonRequestImpl implements MessageRequest, JsonRequest {
   private static final String BASE_URL = "https://api.pushover.net/1/messages.json";
 
