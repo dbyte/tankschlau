@@ -63,7 +63,6 @@ public class PushoverMessageService implements MessageService {
     /*
     Note: After newCall, the field response.transactInfo may already contain error message etc,
     mutated by the http client while processing communication/request/response.
-    Process possible error messages from server.
     */
 
     if (response.getBody() == null)
