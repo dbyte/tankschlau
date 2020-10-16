@@ -59,23 +59,31 @@ public class PushoverMessageResponse extends BaseResponse implements JsonRespons
     getTransactInfo().setLicence("Push messages provided by pushover.net");
 
     if (responseDto == null) {
-      // Concat possibly existing values (from server response) with our custom additions.
-      String existingStatus = getTransactInfo().getStatus();
-      Optional<String> existingErrorMsg = getTransactInfo().getErrorMessage();
+      // Create error message.
+      // Append our custom error to possibly existing ones (from server response).
 
+      String existingStatus = getTransactInfo().getStatus();
       getTransactInfo().setStatus(String.join(" & ", existingStatus, "DESERIALIZATION_ERROR"));
 
-      getTransactInfo().setErrorMessage(
-          String.join(" ", existingErrorMsg.orElse(""),
-              " & JSON string could not be deserialized. String is:",
-              jsonString));
+      Optional<String> existingErrorMsg = getTransactInfo().getErrorMessage();
+      existingErrorMsg.ifPresent(errMsg ->
+          getTransactInfo()
+              .setErrorMessage(
+                  String.join(
+                      " ",
+                      errMsg,
+                      " & JSON string could not be deserialized. String is:",
+                      jsonString)
+              ));
 
       return Optional.empty();
     }
 
     getTransactInfo().setStatus(String.valueOf(responseDto.status));
 
-    getTransactInfo().setErrorMessage(processErrorList(responseDto.errors));
+    String pushoverErrorMsg = processErrorList(responseDto.errors);
+    if (!"".equals(pushoverErrorMsg))
+      getTransactInfo().setErrorMessage(pushoverErrorMsg);
 
     return Optional.empty();
   }
@@ -85,15 +93,15 @@ public class PushoverMessageResponse extends BaseResponse implements JsonRespons
     if (errorList == null || errorList.size() == 0)
       return null;
 
-    String stringBuilder = "Pushover reported " + errorList.size() + " error(s): ";
-    return String.join(", ", stringBuilder);
+    String customErrorMsg = "Pushover reported " + errorList.size() + " error(s): ";
+    return customErrorMsg + String.join(", ", errorList);
   }
 
   /**
    * Class provides object relational mapping support for Gson. It must correlate with the
    * root level json object of the pushover.net response.
    */
-  static class ResponseDTO {
+  private static class ResponseDTO {
     @SerializedName("status") int status;
     @SerializedName("request") String requestToken;
     @SerializedName("secret") String secretError;
