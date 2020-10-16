@@ -100,7 +100,7 @@ class GoogleGeocodingClientTest {
       FixtureFiles.GOOGLE_GEO_RESPONSE_52_5006049_13_3136007_GeometricCenter,
       FixtureFiles.GOOGLE_GEO_RESPONSE_52_9541353_8_2396026_Approximate,
   })
-  void getGeo_returnsProperGeoInstanceOnHappyResponse(String fixturePath) {
+  void findGeo_returnsProperGeoInstanceOnHappyResponse(String fixturePath) {
     // given
     setupFixture(fixturePath);
 
@@ -113,7 +113,7 @@ class GoogleGeocodingClientTest {
   }
 
   @Test
-  void getGeo_returnsEmptyGeoIfResponseBodyIsNull() {
+  void findGeo_returnsEmptyGeoIfResponseBodyIsNull() {
     // given
     // (Fixture content does not matter here)
     setupFixture(FixtureFiles.GOOGLE_GEO_RESPONSE_MissingApiKey);
@@ -127,7 +127,7 @@ class GoogleGeocodingClientTest {
   }
 
   @Test
-  void getGeo_returnsExpectedLicenceInfo() {
+  void findGeo_returnsExpectedLicenceInfo() {
     // given
     setupFixture(FixtureFiles.GOOGLE_GEO_RESPONSE_50_1078234_8_5413809_Rooftop);
 
