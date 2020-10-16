@@ -28,8 +28,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-// TODO unit tests
-
 /**
  * Implementation of {@link JsonResponse} for pushover.net webservice.
  *
