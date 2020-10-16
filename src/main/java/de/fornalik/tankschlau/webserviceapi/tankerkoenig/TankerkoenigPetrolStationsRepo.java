@@ -76,11 +76,6 @@ public class TankerkoenigPetrolStationsRepo implements PetrolStationsRepo {
     mutated by the http client while processing communication/request/response.
     Process possible error messages from server.
     */
-    if (response.getTransactInfo() != null) {
-      response.getTransactInfo()
-          .getErrorMessage()
-          .ifPresent((msg) -> System.out.println("Log.Error: " + msg));
-    }
 
     if (response.getBody() == null)
       return new ArrayList<>();

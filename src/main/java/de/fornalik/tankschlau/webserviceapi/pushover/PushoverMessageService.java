@@ -32,7 +32,7 @@ import java.util.Objects;
  * @see
  * <a href="https://pushover.net/api">Pushover Message API documentation: https://pushover.net/api</a>
  */
-// TODO unit test, javadoc
+// TODO unit test
 public class PushoverMessageService implements MessageService {
   private final HttpClient httpClient;
   private final MessageRequest request;
@@ -65,11 +65,6 @@ public class PushoverMessageService implements MessageService {
     mutated by the http client while processing communication/request/response.
     Process possible error messages from server.
     */
-    if (response.getTransactInfo() != null) {
-      response.getTransactInfo()
-          .getErrorMessage()
-          .ifPresent((msg) -> System.out.println("Log.Error: " + msg));
-    }
 
     if (response.getBody() == null)
       return response;
