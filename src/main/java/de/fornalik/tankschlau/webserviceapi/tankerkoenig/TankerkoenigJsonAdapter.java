@@ -22,6 +22,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.gui.window.MainWindow;
 import de.fornalik.tankschlau.station.Petrol;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolStationBuilder;
@@ -31,8 +32,10 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 public class TankerkoenigJsonAdapter {
+  private static final Logger LOGGER = Logger.getLogger(MainWindow.class.getName());
   private final Gson jsonProvider;
 
   public TankerkoenigJsonAdapter(Gson jsonProvider) {
@@ -53,8 +56,8 @@ public class TankerkoenigJsonAdapter {
    */
   List<PetrolStation> createPetrolStations(String jsonString) {
     if (jsonString == null || "".equals(jsonString)) {
-      // Replace msg with a logger.
-      System.err.println("Log.Error: JSON string is null or empty: " + jsonString);
+      LOGGER.severe("JSON string is null or empty: " + jsonString);
+
       return new ArrayList<>();
     }
 
@@ -64,8 +67,8 @@ public class TankerkoenigJsonAdapter {
         .get("stations");
 
     if (stationsJsonElement == null || !stationsJsonElement.isJsonArray()) {
-      // Replace msg with a logger.
-      System.err.println("Log.Error: No stations found in JSON: " + jsonString);
+      LOGGER.severe("No stations found in JSON: " + jsonString);
+
       return new ArrayList<>();
     }
 

@@ -31,6 +31,7 @@ import de.fornalik.tankschlau.storage.TransactInfoImpl;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.user.UserPrefsApiKeyStore;
 import de.fornalik.tankschlau.util.Localization;
+import de.fornalik.tankschlau.util.LoggingConfig;
 import de.fornalik.tankschlau.webserviceapi.common.*;
 import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingClient;
 import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingRequest;
@@ -73,6 +74,8 @@ final class TankSchlauBootstrap {
     /*
     Setup application context dependency graph
     */
+
+    LoggingConfig.init();
 
     Localization l10n = Localization.getInstance();
     l10n.configure(Locale.GERMANY);

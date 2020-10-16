@@ -34,8 +34,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Logger;
 
 public class MainWindow extends JFrame {
+  private static final Logger LOGGER = Logger.getLogger(MainWindow.class.getName());
   private static final Localization l10n = Localization.getInstance();
   private final UserPrefs userPrefs;
   private final PetrolStationsService petrolStationsService;
@@ -120,11 +122,8 @@ public class MainWindow extends JFrame {
       }
 
       catch (Exception e) {
-        model.add(
-            1,
-            l10n.get("msg.ErrorWhileRequestingPrices", e.getClass().getTypeName()));
-
-        model.add(2, e.getMessage());
+        LOGGER.warning(l10n.get("msg.ErrorWhileRequestingPrices", e.getClass().getTypeName()));
+        LOGGER.warning(e.getMessage());
         e.printStackTrace();
       }
     });
@@ -140,10 +139,10 @@ public class MainWindow extends JFrame {
     Optional<String> errorMessage = petrolStationsService.getTransactInfo().getErrorMessage();
 
     if (errorMessage.isPresent())
-      model.addElement(l10n.get("msg.ErrorServerConnection", errorMessage));
+      LOGGER.warning(l10n.get("msg.ErrorServerConnection", errorMessage));
 
     if (data.size() == 0) {
-      System.out.println(l10n.get("msg.NoPetrolStationsFoundInNeighbourhood"));
+      LOGGER.warning(l10n.get("msg.NoPetrolStationsFoundInNeighbourhood"));
     }
 
     return data;
@@ -159,10 +158,9 @@ public class MainWindow extends JFrame {
       Optional<Geo> geoFromWebRepo = getUserGeoFromWebRepo(address);
 
       if (!geoFromWebRepo.isPresent()) {
-        // Swap that msg with a Logger.
-        String msg = "Log.Error: Requesting webservice for Geo data based on user's address did "
-            + "not return required lat/lng.";
-        System.out.println(msg);
+        LOGGER.warning(
+            "Requesting webservice for Geo data based on user's address did not return required "
+                + "latitude/longitude.");
 
         return address;
       }
@@ -175,17 +173,17 @@ public class MainWindow extends JFrame {
   }
 
   private Optional<Geo> getUserGeoFromWebRepo(Address userAddress) {
-    System.out.println("Log.Info: Requesting geocoding webservice...");
+    LOGGER.info("Requesting geocoding webservice...");
+
     Optional<Geo> geo = geoCodingClient.findGeo(userAddress);
     Optional<String> responseErrorMsg = geoCodingClient.getTransactInfo().getErrorMessage();
 
     if (responseErrorMsg.isPresent()) {
-      // Swap that msg with a Logger.
-      String message = "Log.Error: Requesting webservice for Geo data based on user's "
-          + "address did not return required lat/lng: "
-          + responseErrorMsg.get();
+      LOGGER.warning(
+          "Requesting webservice for Geo data based on user's address did not return required "
+              + "latitude/longitude: "
+              + responseErrorMsg.get());
 
-      System.out.println(message);
       return Optional.empty();
     }
 
@@ -209,17 +207,12 @@ public class MainWindow extends JFrame {
     messageService.sendMessage(messageContent);
 
     Optional<String> responseErrorMsg = messageService.getTransactInfo().getErrorMessage();
-    if (responseErrorMsg.isPresent()) {
-      // Swap that msg with a Logger.
-      String message = "Log.Error: Sending push message failed: " + responseErrorMsg.get();
-      System.out.println(message);
-    }
+    responseErrorMsg.ifPresent(errMsg -> LOGGER.warning("Sending push message failed: " + errMsg));
   }
 
   private String createStationHeader(PetrolStation station) {
     String stationName = station.getAddress().getName();
-    String open = station.isOpen() ? l10n.get("msg.NowOpen") : l10n.get(
-        "msg.NowClosed");
+    String open = station.isOpen() ? l10n.get("msg.NowOpen") : l10n.get("msg.NowClosed");
     return stationName + " - " + open;
   }
 

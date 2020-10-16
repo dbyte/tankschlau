@@ -20,17 +20,23 @@ import de.fornalik.tankschlau.gui.window.MainWindow;
 
 import javax.swing.*;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 public final class TankSchlau {
-  private final TankSchlauBootstrap container = new TankSchlauBootstrap();
+  private static Logger logger;
+  private static TankSchlauBootstrap container;
 
   public static void main(String[] args) {
+    container = new TankSchlauBootstrap();
+    logger = Logger.getLogger(TankSchlau.class.getName());
+
     final TankSchlau instance = new TankSchlau();
     instance.processVmOptions();
     instance.invokeGui();
   }
 
   private void invokeGui() {
+    logger.finest("Invoking GUI");
     SwingUtilities.invokeLater(
         () -> new MainWindow(
             container.userPrefs,
@@ -42,6 +48,8 @@ public final class TankSchlau {
 
   private void processVmOptions() {
     // Offer option to pass some data at startup. Ex: -Dmyproperty="My value"
+
+    logger.finest("Processing VM options");
 
     Optional.ofNullable(System.getProperty("petrolStationsApiKey"))
         .ifPresent(container.tankerkoenigApikeyManager::write);
