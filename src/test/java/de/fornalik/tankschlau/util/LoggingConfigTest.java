@@ -16,31 +16,25 @@
 
 package de.fornalik.tankschlau.util;
 
-import java.io.InputStream;
+import org.junit.jupiter.api.Test;
+
 import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
-/**
- * Wrapper for the used logging system
- */
-public class LoggingConfig {
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-  /**
-   * Call once at boot time!
-   * Implicitly calls constructor of <code>LoggingFormatter</code>, if logging.properties
-   */
-  public static void init() {
-    try {
-      InputStream stream = LoggingConfig.class.getClassLoader()
-          .getResourceAsStream("logging.properties");
+class LoggingConfigTest {
 
-      LogManager.getLogManager().readConfiguration(stream);
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
+  @Test
+  void init_shouldSetConsoleHandlerFormatterToUseCustomFormatter() {
+    // given
+    String expectedPropertyValue = "de.fornalik.tankschlau.util.LoggingFormatter";
 
-    Logger logger = Logger.getLogger(LoggingConfig.class.getName());
-    logger.finest("Logger initialized.");
+    // when
+    LoggingConfig.init();
+    String actualPropertyValue = LogManager.getLogManager()
+        .getProperty("java.util.logging.ConsoleHandler.formatter");
+
+    // then
+    assertEquals(expectedPropertyValue, actualPropertyValue);
   }
 }
