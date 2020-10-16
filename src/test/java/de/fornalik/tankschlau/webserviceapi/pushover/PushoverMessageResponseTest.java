@@ -17,7 +17,6 @@
 package de.fornalik.tankschlau.webserviceapi.pushover;
 
 import com.google.gson.Gson;
-import de.fornalik.tankschlau.net.Response;
 import de.fornalik.tankschlau.net.ResponseBody;
 import de.fornalik.tankschlau.storage.TransactInfo;
 import de.fornalik.tankschlau.storage.TransactInfoImpl;
@@ -30,13 +29,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 class PushoverMessageResponseTest {
   private static Gson jsonProvider;
-  private Response actualResponse;
+  ResponseBody responseBodyMock;
+  TransactInfo transactInfoMock;
   private PushoverFixtureHelp fixture;
   private PushoverMessageResponse pushoverMessageResponse;
 
@@ -52,17 +53,16 @@ class PushoverMessageResponseTest {
 
   @BeforeEach
   void setUp() {
-    ResponseBody responseBodyMock = mock(ResponseBody.class);
+    responseBodyMock = mock(ResponseBody.class);
 
     // No mock - need real object here
-    TransactInfo transactInfoMock = new TransactInfoImpl();
+    transactInfoMock = new TransactInfoImpl();
 
     this.pushoverMessageResponse = new PushoverMessageResponse(
         jsonProvider,
         responseBodyMock,
         transactInfoMock); // SUT
 
-    this.actualResponse = null;
     this.fixture = new PushoverFixtureHelp();
   }
 
@@ -84,14 +84,32 @@ class PushoverMessageResponseTest {
     // when
     pushoverMessageResponse.fromJson(fixture.jsonFixture, Void.class);
 
-    System.out.println(pushoverMessageResponse.getTransactInfo().getErrorMessage());
-
     // then
     assertNotNull(pushoverMessageResponse.getTransactInfo());
     fixture.assertEqualValues(pushoverMessageResponse.getTransactInfo());
   }
 
   @Test
-  void fromJson_() {
+  void fromJson_createsErrorMessageIfResponseIsNull() {
+    // when
+    pushoverMessageResponse.fromJson(null, Void.class);
+
+    // then
+    assertTrue(pushoverMessageResponse.getTransactInfo().getErrorMessage().isPresent());
+    assertTrue(pushoverMessageResponse.getTransactInfo()
+        .getErrorMessage().get()
+        .contains("JSON string could not be deserialized."));
+  }
+
+  @Test
+  void fromJson_doesNotSetErrorMessageIfErrorListIsEmpty() {
+    // given
+    fixture.setupFixture(FixtureFiles.PUSHOVER_RESPONSE_STATUS_1);
+
+    // when
+    pushoverMessageResponse.fromJson(fixture.jsonFixture, Void.class);
+
+    // then
+    assertEquals(Optional.empty(), pushoverMessageResponse.getTransactInfo().getErrorMessage());
   }
 }

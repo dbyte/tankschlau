@@ -65,16 +65,12 @@ public class PushoverMessageResponse extends BaseResponse implements JsonRespons
       String existingStatus = getTransactInfo().getStatus();
       getTransactInfo().setStatus(String.join(" & ", existingStatus, "DESERIALIZATION_ERROR"));
 
+      String errorMsg = "JSON string could not be deserialized. String is: " + jsonString;
       Optional<String> existingErrorMsg = getTransactInfo().getErrorMessage();
-      existingErrorMsg.ifPresent(errMsg ->
-          getTransactInfo()
-              .setErrorMessage(
-                  String.join(
-                      " ",
-                      errMsg,
-                      " & JSON string could not be deserialized. String is:",
-                      jsonString)
-              ));
+      if (existingErrorMsg.isPresent()) {
+        errorMsg = existingErrorMsg.get() + " & " + errorMsg;
+      }
+      getTransactInfo().setErrorMessage(errorMsg);
 
       return Optional.empty();
     }
