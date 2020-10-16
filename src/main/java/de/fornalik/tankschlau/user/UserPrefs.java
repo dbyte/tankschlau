@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -35,6 +36,7 @@ import java.util.prefs.Preferences;
  * Windows OS).</span>
  */
 public class UserPrefs {
+  private static final Logger LOGGER = Logger.getLogger(UserPrefs.class.getName());
   private final Preferences realPrefs;
 
   public UserPrefs(String node) {
@@ -155,6 +157,7 @@ public class UserPrefs {
     }
     catch (BackingStoreException e) {
       e.printStackTrace();
+      LOGGER.severe("No user preferences found. " + e.getMessage());
       return true;
     }
 

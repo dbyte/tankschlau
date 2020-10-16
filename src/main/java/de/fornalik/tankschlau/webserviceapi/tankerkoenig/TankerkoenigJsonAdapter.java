@@ -22,7 +22,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.gui.window.MainWindow;
 import de.fornalik.tankschlau.station.Petrol;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolStationBuilder;
@@ -35,7 +34,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 public class TankerkoenigJsonAdapter {
-  private static final Logger LOGGER = Logger.getLogger(MainWindow.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(TankerkoenigJsonAdapter.class.getName());
   private final Gson jsonProvider;
 
   public TankerkoenigJsonAdapter(Gson jsonProvider) {
@@ -56,7 +55,7 @@ public class TankerkoenigJsonAdapter {
    */
   List<PetrolStation> createPetrolStations(String jsonString) {
     if (jsonString == null || "".equals(jsonString)) {
-      LOGGER.severe("JSON string is null or empty: " + jsonString);
+      LOGGER.warning("JSON response string is null or empty: " + jsonString);
 
       return new ArrayList<>();
     }

@@ -72,6 +72,7 @@ public class MainWindow extends JFrame {
         System.setProperty("apple.laf.useScreenMenuBar", "true");
       }
       catch (Exception e) {
+        LOGGER.severe(e.getMessage());
         e.printStackTrace();
         System.exit(-1);
       }

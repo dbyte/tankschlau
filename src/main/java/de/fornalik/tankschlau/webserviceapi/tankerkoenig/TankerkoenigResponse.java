@@ -26,12 +26,14 @@ import de.fornalik.tankschlau.storage.TransactInfo;
 import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 /**
  * Concrete implementation of {@link JsonResponse} for tankerkoenig.de webservice.
  * Locks the type of the response body to <code>String</code>.
  */
 public class TankerkoenigResponse extends BaseResponse implements JsonResponse {
+  private static final Logger LOGGER = Logger.getLogger(TankerkoenigResponse.class.getName());
   private final Gson jsonProvider;
 
   public TankerkoenigResponse(
@@ -50,11 +52,11 @@ public class TankerkoenigResponse extends BaseResponse implements JsonResponse {
     ResponseDto responseDto = jsonProvider.fromJson(jsonString, (Type) targetClass);
 
     if (responseDto == null) {
-      getTransactInfo().setErrorMessage(
-          "JSON string could not be converted. String is:\n"
-          + jsonString);
-
+      String errMsg = "JSON string could not be converted. String is: " + jsonString;
+      getTransactInfo().setErrorMessage(errMsg);
       getTransactInfo().setStatus("ERROR");
+      LOGGER.warning(errMsg);
+
       return Optional.empty();
     }
 

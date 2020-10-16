@@ -85,7 +85,7 @@ class LocalizationTest {
 
     // then
     assertEquals(
-        "*** Localized string not found for key 'DoesNotExist' ***",
+        "*** Localized string not found for key 'DoesNotExist'. ***",
         actualLocalizedText);
   }
 

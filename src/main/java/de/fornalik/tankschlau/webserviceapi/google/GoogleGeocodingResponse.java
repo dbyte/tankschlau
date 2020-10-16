@@ -27,6 +27,7 @@ import de.fornalik.tankschlau.storage.TransactInfo;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 /**
  * Concrete implementation of {@link JsonResponse} for Google Geocoding webservice.
@@ -36,6 +37,7 @@ import java.util.Optional;
  * <a href="https://developers.google.com/maps/documentation/geocoding/overview#GeocodingResponses">Google documentation: GeocodingResponses</a>
  */
 public class GoogleGeocodingResponse extends BaseResponse implements JsonResponse {
+  private static final Logger LOGGER = Logger.getLogger(GoogleGeocodingResponse.class.getName());
   private final Gson jsonProvider;
 
   GoogleGeocodingResponse(Gson jsonProvider, ResponseBody responseBody, TransactInfo transactInfo) {
@@ -54,9 +56,11 @@ public class GoogleGeocodingResponse extends BaseResponse implements JsonRespons
     getTransactInfo().setLicence("Geo data powered by Google.");
 
     if (responseDto == null) {
-      getTransactInfo().setErrorMessage("JSON string could not be converted. String is:\n"
-                                        + jsonString);
+      String errMsg = "JSON string could not be converted. String is: " + jsonString;
+      getTransactInfo().setErrorMessage(errMsg);
       getTransactInfo().setStatus("ERROR");
+      LOGGER.warning(errMsg);
+
       return Optional.empty();
     }
 

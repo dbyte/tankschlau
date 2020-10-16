@@ -19,12 +19,14 @@ package de.fornalik.tankschlau.net;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 /**
  * okhttp3 implementation of the {@link HttpClient} interface.
  */
 public class OkHttpClient implements HttpClient {
 
+  private static final Logger LOGGER = Logger.getLogger(OkHttpClient.class.getName());
   private final okhttp3.OkHttpClient okHttp3Client;
   private Request request;
 
@@ -32,7 +34,7 @@ public class OkHttpClient implements HttpClient {
    * Constructor
    * <br><br>
    * In production, do a one-time-instantiation of this class at startup time.
-   * Side note: According to the okhttp3 docs, it's perfectly o.k. to its the client for the
+   * Side note: According to the okhttp3 docs, it's perfectly o.k. to retain the instance for the
    * lifecycle of the app.
    *
    * @param okHttp3Client Instance of {@link okhttp3.OkHttpClient} to be adapted.
@@ -60,8 +62,12 @@ public class OkHttpClient implements HttpClient {
     // Type capability may be extended in the future, e.g. with some Reader or Buffers.
 
     if (typeOfResponseData != String.class) {
-      throw new UnsupportedOperationException("Support for body data of type "
-          + typeOfResponseData.getSimpleName() + " not yet implemented.");
+      String errMsg = "Support for body data of type "
+          + typeOfResponseData.getSimpleName()
+          + " not yet implemented.";
+
+      LOGGER.severe(errMsg);
+      throw new UnsupportedOperationException(errMsg);
     }
 
     okhttp3.Response okhttpResponse;
@@ -71,7 +77,7 @@ public class OkHttpClient implements HttpClient {
     }
     catch (IOException | IllegalStateException e) {
       // Nothing to do here, as okhttp3 error messages should have been pushed into
-      // field response.errorMessage in method realCall.
+      // field response.errorMessage in method this.realCall.
       return response;
     }
 
@@ -80,8 +86,9 @@ public class OkHttpClient implements HttpClient {
     }
     catch (IOException | NullPointerException e) {
       response.getTransactInfo().setStatus("HTTP_CLIENT_ERROR");
-      String msg = "Body of response could not be converted to string.";
+      String msg = "Body of response could not be converted to string. " + e.getMessage();
       response.getTransactInfo().setErrorMessage(msg + " " + getDetails(okhttpResponse));
+      LOGGER.warning(msg);
     }
 
     return response;
@@ -99,18 +106,19 @@ public class OkHttpClient implements HttpClient {
       okhttpResponse = callServer(okhttpRequest); //throws
     }
     catch (IOException e) {
+      String errMsg = e.getMessage();
       response.getTransactInfo().setStatus("HTTP_CLIENT_ERROR");
-      response.getTransactInfo().setErrorMessage(e.getMessage());
+      response.getTransactInfo().setErrorMessage(errMsg);
+      LOGGER.warning(errMsg);
       throw e;
     }
 
     if (okhttpResponse.body() == null) {
+      String errMsg = "Body of response is null.\n" + getDetails(okhttpResponse);
       response.getTransactInfo().setStatus("HTTP_CLIENT_ERROR");
-      response.getTransactInfo()
-          .setErrorMessage("Body of response is null.\n" + getDetails(okhttpResponse));
-
-      //noinspection OptionalGetWithoutIsPresent
-      throw new IllegalStateException(response.getTransactInfo().getErrorMessage().get());
+      response.getTransactInfo().setErrorMessage(errMsg);
+      LOGGER.warning(errMsg);
+      throw new IllegalStateException(errMsg);
     }
 
     return okhttpResponse;
@@ -154,9 +162,12 @@ public class OkHttpClient implements HttpClient {
           jsonBody);
     }
 
-    throw new UnsupportedOperationException("Adapting request body for "
+    String errMsg = "Adapting request body for "
         + request.getClass().getSimpleName()
-        + " failed. Correlating adapter method not implemented.");
+        + " failed. Correlating adapter method not implemented.";
+
+    LOGGER.severe(errMsg);
+    throw new UnsupportedOperationException(errMsg);
   }
 
   private String getDetails(okhttp3.Response okhttpResponse) {

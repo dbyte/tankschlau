@@ -36,8 +36,8 @@ public class LoggingConfig {
 
       LogManager.getLogManager().readConfiguration(stream);
     }
-    catch (Exception ex) {
-      ex.printStackTrace();
+    catch (Exception e) {
+      e.printStackTrace();
     }
 
     Logger logger = Logger.getLogger(LoggingConfig.class.getName());

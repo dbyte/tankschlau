@@ -22,11 +22,13 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.logging.Logger;
 
 /**
  * Abstract HTTP request class with base functionalities.
  */
 public abstract class BaseRequest implements Request {
+  private static final Logger LOGGER = Logger.getLogger(BaseRequest.class.getName());
 
   private final Map<String, String> urlParameters = new HashMap<>();
   private final Map<String, String> bodyParameters = new HashMap<>();
@@ -114,6 +116,7 @@ public abstract class BaseRequest implements Request {
       encodedString = URLEncoder.encode(in, toEncoding);
     }
     catch (UnsupportedEncodingException e) {
+      LOGGER.severe("Unsupported URL encoding: '" + e.getMessage() + "'");
       throw new RuntimeException("Unsupported URL encoding: '" + e.getMessage() + "'");
     }
 

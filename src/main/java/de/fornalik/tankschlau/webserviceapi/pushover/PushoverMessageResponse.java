@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 /**
  * Implementation of {@link JsonResponse} for pushover.net webservice.
@@ -35,6 +36,7 @@ import java.util.Optional;
  * <a href="https://pushover.net/api#response">API response documentation: https://pushover.net/api#response</a>
  */
 public class PushoverMessageResponse extends BaseResponse implements JsonResponse {
+  private static final Logger LOGGER = Logger.getLogger(PushoverMessageResponse.class.getName());
   private final Gson jsonProvider;
 
   public PushoverMessageResponse(
@@ -69,6 +71,7 @@ public class PushoverMessageResponse extends BaseResponse implements JsonRespons
         errorMsg = existingErrorMsg.get() + " & " + errorMsg;
       }
       getTransactInfo().setErrorMessage(errorMsg);
+      LOGGER.warning(errorMsg);
 
       return Optional.empty();
     }

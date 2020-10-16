@@ -22,13 +22,14 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 /**
  * ResourceBundle/Locale wrapper for localized strings and region formats. Singleton.
  */
 public class Localization {
   public static final String APP_NAME = "TankSchlau";
-
+  private static final Logger LOGGER = Logger.getLogger(Localization.class.getName());
   private static Localization INSTANCE;
   private ResourceBundle bundle;
   private Locale locale;
@@ -101,7 +102,9 @@ public class Localization {
       pattern = bundle.getString(key);
     }
     catch (MissingResourceException e) {
-      return "*** Localized string not found for key '" + key + "' ***";
+      String errMsg = "Localized string not found for key '" + key + "'.";
+      LOGGER.severe(errMsg + " " + e.getMessage());
+      return "*** " + errMsg + " ***";
     }
 
     if (args == null)
