@@ -121,6 +121,7 @@ class PushoverMessageServiceTest {
     // in all cases except exceptions (-;
     assertNotNull(response);
     assertNotNull(response.getTransactInfo());
+    assertEquals("1", messageClient.getTransactInfo().getStatus());
 
     System.out.println("RESPONSE BODY: " + response.getBody().getData(String.class));
     System.out.println("RESPONSE STATUS: " + response.getTransactInfo().getStatus());
