@@ -20,6 +20,8 @@ import com.google.gson.Gson;
 import de.fornalik.tankschlau.net.*;
 import de.fornalik.tankschlau.storage.TransactInfo;
 import de.fornalik.tankschlau.storage.TransactInfoImpl;
+import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
+import de.fornalik.tankschlau.testhelp_common.PushoverFixtureHelp;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.common.MessageContent;
@@ -31,7 +33,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class PushoverMessageServiceTest {
@@ -39,6 +41,7 @@ class PushoverMessageServiceTest {
   private static Gson jsonProvider;
   private static MessageRequest messageRequestMock;
 
+  private PushoverFixtureHelp fixture;
   private PushoverMessageService messageClient;
   private MessageContent messageContentMock;
   private PushoverMessageResponse messageResponse;
@@ -62,6 +65,7 @@ class PushoverMessageServiceTest {
 
   @BeforeEach
   void setUp() {
+    this.fixture = new PushoverFixtureHelp();
     this.messageContentMock = mock(MessageContent.class);
 
     responseBodyMock = mock(ResponseBodyImpl.class);
@@ -69,6 +73,17 @@ class PushoverMessageServiceTest {
 
     // No mock here for PushoverMessageResponse... must be a real object, sorry for that :-)
     messageResponse = new PushoverMessageResponse(jsonProvider, responseBodyMock, transactInfoMock);
+
+    this.messageClient = new PushoverMessageService(
+        httpClientMock,
+        messageRequestMock,
+        messageResponse);
+  }
+
+  private void setupFixture(String path) {
+    fixture.setupFixture(path);
+    when(responseBodyMock.getData(String.class)).thenReturn(fixture.jsonFixture);
+    when(httpClientMock.newCall(any(), any(), any())).thenReturn(messageResponse);
 
     this.messageClient = new PushoverMessageService(
         httpClientMock,
@@ -112,7 +127,24 @@ class PushoverMessageServiceTest {
     System.out.println("RESPONSE ERROR MESSAGE: " + response.getTransactInfo().getErrorMessage());
   }
 
-  // TODO more unit tests go here
+  @Test
+  void sendMessage_throwsNullPointerExceptionIfMessageContentIsNull() {
+    assertThrows(NullPointerException.class, () -> messageClient.sendMessage(null));
+  }
+
+  @Test
+  void getTransactInfo_returnsExpectedLicenceInfo() {
+    // given
+    setupFixture(FixtureFiles.PUSHOVER_RESPONSE_STATUS_1);
+
+    // when
+    messageClient.sendMessage(messageContentMock);
+
+    // then
+    assertEquals(
+        "Push messages provided by pushover.net",
+        messageClient.getTransactInfo().getLicence());
+  }
 
   private void helpIntegrationTestSetup() {
     // Inject some API keys via VM Options if needed.

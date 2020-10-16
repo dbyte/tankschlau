@@ -32,7 +32,6 @@ import java.util.Objects;
  * @see
  * <a href="https://pushover.net/api">Pushover Message API documentation: https://pushover.net/api</a>
  */
-// TODO unit test
 public class PushoverMessageService implements MessageService {
   private final HttpClient httpClient;
   private final MessageRequest request;
@@ -52,7 +51,7 @@ public class PushoverMessageService implements MessageService {
 
   @Override
   public Response sendMessage(MessageContent content) {
-    request.setMessage(content);
+    request.setMessage(Objects.requireNonNull(content));
     response.reset();
 
     // It's guaranteed by newCall(...) that returned response is not null.
