@@ -17,6 +17,7 @@
 package de.fornalik.tankschlau.util;
 
 import java.io.InputStream;
+import java.util.logging.Handler;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
@@ -24,28 +25,41 @@ import java.util.logging.Logger;
  * Wrapper for the used logging system
  */
 public class LoggingConfig {
+  // Create our custom handler which sends log messages to a Swing TextArea.
+  public static final Handler SWING_LOGGING_HANDLER = new SwingLoggingHandler();
 
   /**
    * Call once at boot time!
    * Implicitly calls constructor of <code>LoggingFormatter</code>, if logging.properties
    */
   public static void init() {
-    LogManager.getLogManager().reset();
+    LogManager globalLogManager = LogManager.getLogManager();
+    globalLogManager.reset();
 
     try {
+      // Read & parse from logging.properties. ...
       InputStream stream = LoggingConfig.class.getClassLoader()
           .getResourceAsStream("logging.properties");
+      // ... to the LogManager singleton
+      globalLogManager.readConfiguration(stream);
 
-      LogManager.getLogManager().readConfiguration(stream);
+      // Here is a hook to bind our handler with a custom formatter:
+      SWING_LOGGING_HANDLER.setFormatter(new LoggingFormatter());
+      //swingLogHandler.setLevel(Level.INFO);  // Better set it in properties
+
+      // Determine the overall context for the handler and create a logger with our custom
+      // handler for that context.
+      Logger appContextLogger = Logger.getLogger("de.fornalik.tankschlau");
+      appContextLogger.addHandler(SWING_LOGGING_HANDLER);
+
+      // Add logger (and implicitly its handler) to the global LogManager
+      globalLogManager.addLogger(appContextLogger);
     }
     catch (Exception e) {
       e.printStackTrace();
     }
 
-
     Logger logger = Logger.getLogger(LoggingConfig.class.getName());
     logger.finest("Logger initialized.");
-
-    Logger l2 = Logger.getLogger("");
   }
 }

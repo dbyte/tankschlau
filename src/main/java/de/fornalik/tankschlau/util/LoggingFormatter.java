@@ -83,6 +83,8 @@ public class LoggingFormatter extends Formatter {
   private String extractSimpleSourceClassName(LogRecord record) {
     // Converts e.g. "some.package.path.TankSchlau" to "TankSchlau".
     String sourceClassName = record.getSourceClassName();
+    if (sourceClassName == null) return "Unknown";
+
     int lastDot = sourceClassName.lastIndexOf(".");
 
     if (lastDot > -1 && lastDot < sourceClassName.length())
