@@ -16,6 +16,7 @@
 
 package de.fornalik.tankschlau.gui;
 
+import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.storage.GeocodingWorker;
 import de.fornalik.tankschlau.user.UserPrefs;
@@ -27,14 +28,18 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 /**
  * User preferences panel for user location
  */
-class PrefsAddressPanel extends JPanel implements PrefsFactoryMixin {
+class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMixin {
 
   private static final Dimension totalDimension = new Dimension(350, 250);
+
   private static WorkerService<Geo> workerService;
+  private final UserPrefs userPrefs;
 
   private final JTextField textStreet;
   private final JTextField textHouseNumber;
@@ -44,25 +49,28 @@ class PrefsAddressPanel extends JPanel implements PrefsFactoryMixin {
   private final JTextField textGeoLongitude;
   private final JButton btnGeoRequest;
 
-  private final FooterPanel footerPanel;
   private final BtnGeoRequestController btnGeoRequestController;
+  private final FooterPanel footerPanel;
 
   PrefsAddressPanel(UserPrefs userPrefs, FooterPanel footerPanel) {
     super();
 
     workerService = new SwingWorkerService<>(new GeocodingWorker());
-
+    this.userPrefs = userPrefs;
     this.footerPanel = footerPanel;
-    this.textStreet = new JTextField();
-    this.textHouseNumber = new JTextField();
-    this.textPostCode = new JTextField();
-    this.textCity = new JTextField();
-    this.textGeoLatitude = new JTextField();
-    this.textGeoLongitude = new JTextField();
-    this.btnGeoRequest = this.createGeoRequestButton();
 
+    this.textStreet = createTextField();
+    this.textHouseNumber = createTextField();
+    this.textPostCode = createTextField();
+    this.textCity = createTextField();
+    this.textGeoLatitude = createTextField();
+    this.textGeoLongitude = createTextField();
+
+    this.btnGeoRequest = this.createGeoRequestButton();
     this.btnGeoRequestController = new BtnGeoRequestController();
+
     this.initView();
+    this.populateFields();
   }
 
   private void initView() {
@@ -146,19 +154,82 @@ class PrefsAddressPanel extends JPanel implements PrefsFactoryMixin {
 
   private void initEventListeners() {
     textStreet.getDocument().addDocumentListener(btnGeoRequestController);
+    textStreet.addFocusListener(this);
+    textHouseNumber.addFocusListener(this);
     textCity.getDocument().addDocumentListener(btnGeoRequestController);
+    textCity.addFocusListener(this);
     textPostCode.getDocument().addDocumentListener(btnGeoRequestController);
+    textPostCode.addFocusListener(this);
+    textGeoLatitude.addFocusListener(this);
+    textGeoLongitude.addFocusListener(this);
 
     // Fire event to BtnGeoRequestController, will initialize button state.
     textStreet.setText(" ");
     textStreet.setText("");
   }
 
-  // region Listeners
+  private void populateFields() {
+    userPrefs.readAddress().ifPresent(adr -> {
+      textStreet.setText(adr.getStreet());
+      textHouseNumber.setText(adr.getHouseNumber());
+      textPostCode.setText(adr.getPostCode());
+      textCity.setText(adr.getCity());
+
+      adr.getGeo().ifPresent(geo -> {
+        textGeoLatitude.setText(String.valueOf(geo.getLatitude()));
+        textGeoLongitude.setText(String.valueOf(geo.getLongitude()));
+      });
+    });
+  }
+
+  private void writeAddress() {
+    Address address = new Address(
+        "",
+        textStreet.getText(),
+        textHouseNumber.getText(),
+        textCity.getText(),
+        textPostCode.getText(),
+        createGeoFromFields());
+
+    userPrefs.writeAddress(address);
+  }
+
+  private Geo createGeoFromFields() {
+    Geo geo = null;
+    double lat, lng;
+
+    if (!textGeoLatitude.getText().isEmpty() && !textGeoLongitude.getText().isEmpty()) {
+      try {
+        lat = Double.parseDouble(textGeoLatitude.getText());
+        lng = Double.parseDouble(textGeoLongitude.getText());
+        geo = new Geo(lat, lng);
+      }
+      catch (NumberFormatException e) {
+        textGeoLatitude.setText("");
+        textGeoLongitude.setText("");
+        Toolkit.getDefaultToolkit().beep();
+      }
+    }
+
+    return geo;
+  }
+
+  // region Listeners/Callbacks
   // =====================================================================
 
+  @Override
+  public void focusGained(FocusEvent e) {
+    // No need.
+  }
+
+  @Override
+  public void focusLost(FocusEvent e) {
+    writeAddress();
+  }
+
   /**
-   * Controls the "enabled" state of button {@link #btnGeoRequest}.
+   * Controls the "enabled" state of button {@link #btnGeoRequest} depending on address fields
+   * validation.
    */
   private class BtnGeoRequestController implements DocumentListener {
     @Override

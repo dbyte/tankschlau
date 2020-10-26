@@ -32,6 +32,7 @@ interface PrefsFactoryMixin {
    * and centered vertically.
    *
    * @param text The text to be displayed by the label.
+   * @return A custom formatted {@link JLabel}.
    */
   default JLabel createLabel(String text) {
     JLabel label = new JLabel(text);
@@ -52,6 +53,7 @@ interface PrefsFactoryMixin {
    *                            <code>RIGHT</code>,
    *                            <code>LEADING</code> or
    *                            <code>TRAILING</code>.
+   * @return A custom formatted {@link JLabel}.
    */
   default JLabel createLabel(String text, int horizontalAlignment) {
     JLabel label = new JLabel(text, horizontalAlignment);
@@ -73,6 +75,23 @@ interface PrefsFactoryMixin {
     return titledBorder;
   }
 
+  /**
+   * Creates a new customized text field.
+   *
+   * @return A custom formatted/styled {@link JTextField}.
+   */
+  default JTextField createTextField() {
+    JTextField field = new JTextField();
+    field.setFont(field.getFont().deriveFont(Font.PLAIN, 12f));
+    field.setForeground(CustomColor.FIELD_TEXT);
+    return field;
+  }
+
+  /**
+   * Creates a new customized password field.
+   *
+   * @return A custom formatted/styled {@link JPasswordField}.
+   */
   default JPasswordField createPasswordField() {
     JPasswordField field = new JPasswordField();
     field.setFont(new Font("monospaced", Font.PLAIN, 9));

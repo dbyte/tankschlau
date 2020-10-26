@@ -25,6 +25,7 @@ class CustomColor {
 
   static final Color BUTTON_FOREGROUND = new Color(40, 40, 40);
   static final Color LABEL_TEXT = new Color(40, 40, 40);
+  static final Color FIELD_TEXT = new Color(40, 40, 40);
   static final Color BOX_HEADER_TEXT = new Color(60, 60, 60);
   static final Color TABLE_TEXT = new Color(30, 30, 30);
   static final Color LOG_TEXT = new Color(65, 65, 65);
