@@ -30,6 +30,8 @@ public class LoggingConfig {
    * Implicitly calls constructor of <code>LoggingFormatter</code>, if logging.properties
    */
   public static void init() {
+    LogManager.getLogManager().reset();
+
     try {
       InputStream stream = LoggingConfig.class.getClassLoader()
           .getResourceAsStream("logging.properties");
@@ -40,7 +42,10 @@ public class LoggingConfig {
       e.printStackTrace();
     }
 
+
     Logger logger = Logger.getLogger(LoggingConfig.class.getName());
     logger.finest("Logger initialized.");
+
+    Logger l2 = Logger.getLogger("");
   }
 }

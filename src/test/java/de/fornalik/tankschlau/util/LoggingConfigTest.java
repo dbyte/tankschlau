@@ -16,6 +16,8 @@
 
 package de.fornalik.tankschlau.util;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.logging.LogManager;
@@ -23,6 +25,16 @@ import java.util.logging.LogManager;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LoggingConfigTest {
+
+  @BeforeAll
+  static void beforeAll() {
+    LogManager.getLogManager().reset();
+  }
+
+  @AfterAll
+  static void afterAll() {
+    LogManager.getLogManager().reset();
+  }
 
   @Test
   void init_shouldSetConsoleHandlerFormatterToUseCustomFormatter() {
