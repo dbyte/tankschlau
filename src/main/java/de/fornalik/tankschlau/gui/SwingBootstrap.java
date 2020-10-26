@@ -16,7 +16,6 @@
 
 package de.fornalik.tankschlau.gui;
 
-import de.fornalik.tankschlau.storage.PetrolStationsService;
 import de.fornalik.tankschlau.storage.PetrolStationsWorker;
 import de.fornalik.tankschlau.user.UserPrefs;
 
@@ -30,11 +29,11 @@ public final class SwingBootstrap {
 
   public SwingBootstrap(
       final UserPrefs userPrefs,
-      final PetrolStationsService petrolStationsService) {
+      final PetrolStationsWorker petrolStationsWorker) {
 
     SwingUtilities.invokeLater(() -> new MainWindow(
         userPrefs,
-        new SwingWorkerService<>(new PetrolStationsWorker(petrolStationsService))
+        new SwingWorkerService<>(petrolStationsWorker)
             /*container.petrolStationsService,
             container.geocodingService,
             container.messageClient,

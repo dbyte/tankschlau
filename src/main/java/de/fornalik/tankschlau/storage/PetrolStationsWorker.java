@@ -75,9 +75,10 @@ public class PetrolStationsWorker implements RunnableCallbackWorker<List<PetrolS
       Thread.currentThread().interrupt();
     }
 
-    LOGGER.info("Work done.");
-
-    callback.accept(data);
+    finally {
+      LOGGER.info("Work done.");
+      callback.accept(data);
+    }
   }
 
   private List<PetrolStation> findPetrolStations() {

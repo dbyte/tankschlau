@@ -37,9 +37,9 @@ public final class TankSchlau {
   private void startSwingApplication() {
     logger.finest("Invoking GUI");
 
-    SwingBootstrap swingBootstrap = new SwingBootstrap(
+    new SwingBootstrap(
         container.userPrefs,
-        container.petrolStationsService);
+        container.petrolStationsWorker);
   }
 
   private void processVmOptions() {

@@ -27,6 +27,7 @@ import de.fornalik.tankschlau.station.Petrols;
 import de.fornalik.tankschlau.station.PetrolsJsonAdapter;
 import de.fornalik.tankschlau.storage.PetrolStationsRepo;
 import de.fornalik.tankschlau.storage.PetrolStationsService;
+import de.fornalik.tankschlau.storage.PetrolStationsWorker;
 import de.fornalik.tankschlau.storage.TransactInfoImpl;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.user.UserPrefsApiKeyStore;
@@ -65,6 +66,7 @@ final class TankSchlauBootstrap {
   final JsonResponse petrolStationsJsonResponse;
   final PetrolStationsService petrolStationsService;
   final PetrolStations petrolStations;
+  final PetrolStationsWorker petrolStationsWorker;
   final PetrolStationMessageContent petrolStationMessageContent;
   final MessageRequest messageRequest;
   final JsonResponse messageResponse;
@@ -114,6 +116,8 @@ final class TankSchlauBootstrap {
     petrolStationsService = new PetrolStationsWebService(petrolStationsRepo);
 
     petrolStations = new PetrolStations(petrolStationsService);
+
+    petrolStationsWorker = new PetrolStationsWorker(petrolStationsService);
 
     petrolStationMessageContent = new PushoverMessageContent();
     messageRequest = new PushoverMessageRequest(apiKeyManager, userPrefs);
