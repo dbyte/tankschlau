@@ -97,13 +97,16 @@ public class PrefsApiKeyPanel extends JPanel implements FocusListener, PrefsFact
 
   @Override
   public void focusLost(FocusEvent e) {
-    if (e.getSource() == textPetrolStationsServiceApiKey) {
+    if (!(e.getSource() instanceof JPasswordField)) return;
+    JPasswordField field = (JPasswordField) e.getSource();
+
+    if (field == textPetrolStationsServiceApiKey) {
       apiKeyManagerPetrolStations.write(getApiKeyFromField(textPetrolStationsServiceApiKey));
     }
-    else if (e.getSource() == textGeocodingServiceApiKey) {
+    else if (field == textGeocodingServiceApiKey) {
       apiKeyManagerGeocoding.write(getApiKeyFromField(textGeocodingServiceApiKey));
     }
-    else if (e.getSource() == textMessageServiceApiKey) {
+    else if (field == textMessageServiceApiKey) {
       apiKeyManagerPushMessage.write(getApiKeyFromField(textMessageServiceApiKey));
     }
   }
