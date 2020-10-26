@@ -16,7 +16,7 @@
 
 package de.fornalik.tankschlau;
 
-import de.fornalik.tankschlau.gui.window.MainWindow;
+import de.fornalik.tankschlau.gui.MainWindowOld;
 
 import javax.swing.*;
 import java.util.Optional;
@@ -38,7 +38,7 @@ public final class TankSchlau {
   private void invokeGui() {
     logger.finest("Invoking GUI");
     SwingUtilities.invokeLater(
-        () -> new MainWindow(
+        () -> new MainWindowOld(
             container.userPrefs,
             container.petrolStationsService,
             container.geocodingService,

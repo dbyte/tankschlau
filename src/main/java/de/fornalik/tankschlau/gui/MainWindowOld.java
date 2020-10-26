@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.fornalik.tankschlau.gui.window;
+package de.fornalik.tankschlau.gui;
 
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
@@ -36,8 +36,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 
-public class MainWindow extends JFrame {
-  private static final Logger LOGGER = Logger.getLogger(MainWindow.class.getName());
+public class MainWindowOld extends JFrame {
+  private static final Logger LOGGER = Logger.getLogger(MainWindowOld.class.getName());
   private static final Localization l10n = Localization.getInstance();
   private final UserPrefs userPrefs;
   private final PetrolStationsService petrolStationsService;
@@ -47,7 +47,7 @@ public class MainWindow extends JFrame {
 
   private DefaultListModel<String> model;
 
-  public MainWindow(
+  public MainWindowOld(
       UserPrefs userPrefs,
       PetrolStationsService petrolStationsService,
       GeocodingService geoCodingClient,
