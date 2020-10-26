@@ -20,6 +20,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.*;
 import java.awt.*;
+import java.util.regex.Pattern;
 
 /**
  * Mixin Interface for creating pre-factored user preference components.
@@ -82,7 +83,6 @@ interface PrefsFactoryMixin {
    */
   default JTextField createTextField() {
     JTextField field = new JTextField();
-    field.setFont(field.getFont().deriveFont(Font.PLAIN, 12f));
     field.setForeground(CustomColor.FIELD_TEXT);
     return field;
   }
@@ -119,6 +119,7 @@ interface PrefsFactoryMixin {
    */
   class NumbersOnly extends DocumentFilter {
     final int maxDigits;
+    final Pattern regex = Pattern.compile("^[0-9]+$");
 
     public NumbersOnly(int maxDigits) {
       this.maxDigits = maxDigits;
@@ -133,7 +134,7 @@ interface PrefsFactoryMixin {
       text += str;
 
       if ((doc.getLength() + str.length() - length) <= maxDigits
-          && text.matches("^[0-9]+$")) {
+          && text.matches(regex.pattern())) {
         super.replace(filterBypass, offs, length, str, a);
       }
       else {
@@ -149,7 +150,7 @@ interface PrefsFactoryMixin {
       String text = doc.getText(0, doc.getLength());
       text += str;
 
-      if ((doc.getLength() + str.length()) <= maxDigits && text.matches("^[0-9]+$")) {
+      if ((doc.getLength() + str.length()) <= maxDigits && text.matches(regex.pattern())) {
         super.insertString(filterBypass, offs, str, a);
       }
       else {
