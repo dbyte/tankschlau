@@ -73,6 +73,13 @@ interface PrefsFactoryMixin {
     return titledBorder;
   }
 
+  default JPasswordField createPasswordField() {
+    JPasswordField field = new JPasswordField();
+    field.setFont(new Font("monospaced", Font.PLAIN, 9));
+    field.setForeground(CustomColor.PASSWORD_DOTS);
+    return field;
+  }
+
   /**
    * Creates a new default JTextField with an activated integer number filter.
    *

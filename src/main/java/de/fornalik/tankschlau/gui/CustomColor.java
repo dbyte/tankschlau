@@ -28,4 +28,5 @@ class CustomColor {
   static final Color BOX_HEADER_TEXT = new Color(60, 60, 60);
   static final Color TABLE_TEXT = new Color(30, 30, 30);
   static final Color LOG_TEXT = new Color(65, 65, 65);
+  static final Color PASSWORD_DOTS = new Color(110, 110, 110);
 }

@@ -16,30 +16,41 @@
 
 package de.fornalik.tankschlau.gui;
 
-import de.fornalik.tankschlau.user.UserPrefs;
+import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
+import de.fornalik.tankschlau.webserviceapi.common.ApiKeyStore;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 /**
  * User preferences panel for API keys of some webservices.
  */
-public class PrefsApiKeyPanel extends JPanel implements PrefsFactoryMixin {
+public class PrefsApiKeyPanel extends JPanel implements FocusListener, PrefsFactoryMixin {
 
-  private static final Dimension totalDimension = new Dimension(380, 108);
+  private static final Dimension totalDimension = new Dimension(440, 108);
 
   private final JPasswordField textPetrolStationsServiceApiKey;
   private final JPasswordField textGeocodingServiceApiKey;
   private final JPasswordField textMessageServiceApiKey;
+  private final ApiKeyManager apiKeyManagerPetrolStations;
+  private final ApiKeyManager apiKeyManagerGeocoding;
+  private final ApiKeyManager apiKeyManagerPushMessage;
 
-  public PrefsApiKeyPanel(UserPrefs userPrefs) {
+  public PrefsApiKeyPanel(ApiKeyStore apiKeyStore) {
     super();
 
-    this.textPetrolStationsServiceApiKey = new JPasswordField();
-    this.textGeocodingServiceApiKey = new JPasswordField();
-    this.textMessageServiceApiKey = new JPasswordField();
+    this.apiKeyManagerPetrolStations = ApiKeyManager.createForPetrolStations(apiKeyStore);
+    this.apiKeyManagerGeocoding = ApiKeyManager.createForGeocoding(apiKeyStore);
+    this.apiKeyManagerPushMessage = ApiKeyManager.createForPushMessage(apiKeyStore);
+
+    this.textPetrolStationsServiceApiKey = createPasswordField();
+    this.textGeocodingServiceApiKey = createPasswordField();
+    this.textMessageServiceApiKey = createPasswordField();
 
     this.initView();
+    this.populateFields();
   }
 
   private void initView() {
@@ -51,6 +62,8 @@ public class PrefsApiKeyPanel extends JPanel implements PrefsFactoryMixin {
     setMaximumSize(totalDimension);
     setMinimumSize(totalDimension);
 
+    configureFields();
+
     add(createLabel("Petrol Station Service"));
     add(textPetrolStationsServiceApiKey);
 
@@ -59,5 +72,39 @@ public class PrefsApiKeyPanel extends JPanel implements PrefsFactoryMixin {
 
     add(createLabel("Push Message Service"));
     add(textMessageServiceApiKey);
+  }
+
+  private void configureFields() {
+    textPetrolStationsServiceApiKey.addFocusListener(this);
+    textGeocodingServiceApiKey.addFocusListener(this);
+    textMessageServiceApiKey.addFocusListener(this);
+  }
+
+  private void populateFields() {
+    textPetrolStationsServiceApiKey.setText(apiKeyManagerPetrolStations.read().orElse(""));
+    textGeocodingServiceApiKey.setText(apiKeyManagerGeocoding.read().orElse(""));
+    textMessageServiceApiKey.setText(apiKeyManagerPushMessage.read().orElse(""));
+  }
+
+  private String getApiKeyFromField(JPasswordField field) {
+    return String.valueOf(field.getPassword());
+  }
+
+  @Override
+  public void focusGained(FocusEvent e) {
+    // No need
+  }
+
+  @Override
+  public void focusLost(FocusEvent e) {
+    if (e.getSource() == textPetrolStationsServiceApiKey) {
+      apiKeyManagerPetrolStations.write(getApiKeyFromField(textPetrolStationsServiceApiKey));
+    }
+    else if (e.getSource() == textGeocodingServiceApiKey) {
+      apiKeyManagerGeocoding.write(getApiKeyFromField(textGeocodingServiceApiKey));
+    }
+    else if (e.getSource() == textMessageServiceApiKey) {
+      apiKeyManagerPushMessage.write(getApiKeyFromField(textMessageServiceApiKey));
+    }
   }
 }

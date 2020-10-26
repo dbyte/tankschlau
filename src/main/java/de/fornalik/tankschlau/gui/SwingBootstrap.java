@@ -18,22 +18,25 @@ package de.fornalik.tankschlau.gui;
 
 import de.fornalik.tankschlau.storage.PetrolStationsWorker;
 import de.fornalik.tankschlau.user.UserPrefs;
+import de.fornalik.tankschlau.webserviceapi.common.ApiKeyStore;
 
 import javax.swing.*;
 
 /**
- * Describes a the dependency graph throughout the Swing GUI.
+ * Describes the dependency graph throughout the Swing GUI.
  * Avoid tight coupling to any classes by ONLY calling it's members from the root of the Swing GUI.
  */
 public final class SwingBootstrap {
 
   public SwingBootstrap(
       final UserPrefs userPrefs,
+      final ApiKeyStore apiKeyStore,
       final PetrolStationsWorker petrolStationsWorker) {
 
     SwingUtilities.invokeLater(() -> new MainWindow(
         userPrefs,
-        new SwingWorkerService<>(petrolStationsWorker)
+        new SwingWorkerService<>(petrolStationsWorker),
+        apiKeyStore
             /*container.petrolStationsService,
             container.geocodingService,
             container.messageClient,

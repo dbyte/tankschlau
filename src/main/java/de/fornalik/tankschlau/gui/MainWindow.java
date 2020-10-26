@@ -20,6 +20,7 @@ import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.WorkerService;
+import de.fornalik.tankschlau.webserviceapi.common.ApiKeyStore;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,7 +36,11 @@ class MainWindow extends JFrame {
   private final JPanel domainPanelTab, prefsPanelTab;
   private final JPanel footerPanel;
 
-  MainWindow(UserPrefs userPrefs, WorkerService<List<PetrolStation>> petrolStationsWorkerService) {
+  MainWindow(
+      UserPrefs userPrefs,
+      WorkerService<List<PetrolStation>> petrolStationsWorkerService,
+      ApiKeyStore apiKeyStore) {
+
     super(Localization.APP_NAME);
 
     this.footerPanel = new FooterPanel();
@@ -45,7 +50,7 @@ class MainWindow extends JFrame {
         userPrefs,
         petrolStationsWorkerService);
 
-    this.prefsPanelTab = new PrefsPanel(userPrefs, (FooterPanel) this.footerPanel);
+    this.prefsPanelTab = new PrefsPanel(userPrefs, apiKeyStore, (FooterPanel) this.footerPanel);
 
     this.initView();
   }

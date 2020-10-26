@@ -17,6 +17,7 @@
 package de.fornalik.tankschlau.gui;
 
 import de.fornalik.tankschlau.user.UserPrefs;
+import de.fornalik.tankschlau.webserviceapi.common.ApiKeyStore;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,10 +30,10 @@ class PrefsPanel extends JPanel {
   private final JPanel prefsAddressPanel;
   private final JPanel prefsApiKeyPanel;
 
-  PrefsPanel(UserPrefs userPrefs, FooterPanel footerPanel) {
+  PrefsPanel(UserPrefs userPrefs, ApiKeyStore apiKeyStore, FooterPanel footerPanel) {
     this.prefsCyclePanel = new PrefsCyclePanel(userPrefs);
     this.prefsAddressPanel = new PrefsAddressPanel(userPrefs, footerPanel);
-    this.prefsApiKeyPanel = new PrefsApiKeyPanel(userPrefs);
+    this.prefsApiKeyPanel = new PrefsApiKeyPanel(apiKeyStore);
     this.initView();
   }
 
