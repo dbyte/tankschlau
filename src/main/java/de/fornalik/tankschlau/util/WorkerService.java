@@ -28,6 +28,8 @@ import java.util.function.Consumer;
  */
 public interface WorkerService<ResultType> {
 
+  RunnableCallbackWorker<ResultType> getWorker();
+
   /**
    * Execute some worker only once.
    *

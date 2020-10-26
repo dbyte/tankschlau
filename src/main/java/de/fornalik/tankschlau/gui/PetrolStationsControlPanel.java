@@ -16,8 +16,12 @@
 
 package de.fornalik.tankschlau.gui;
 
+import de.fornalik.tankschlau.geo.Address;
+import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.station.PetrolStation;
-import de.fornalik.tankschlau.storage.PetrolStationWorker;
+import de.fornalik.tankschlau.storage.PetrolStationsWorker;
+import de.fornalik.tankschlau.user.UserPrefs;
+import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.WorkerService;
 
 import javax.swing.*;
@@ -32,14 +36,22 @@ import java.util.concurrent.TimeUnit;
  */
 class PetrolStationsControlPanel extends JPanel implements ActionListener {
 
+  private static final Localization L10N = Localization.getInstance();
   private static WorkerService<List<PetrolStation>> workerService;
+  private final UserPrefs userPrefs;
   private final JButton btnStartOneShotWork, btnStartCyclicWork, btnRemoveAllData;
   private final PetrolsStationsTableModel dataTableModel;
   private final FooterPanel footerPanel;
 
-  PetrolStationsControlPanel(PetrolsStationsTableModel dataTableModel, FooterPanel footerPanel) {
-    workerService = new SwingWorkerService<>(new PetrolStationWorker());
+  PetrolStationsControlPanel(
+      PetrolsStationsTableModel dataTableModel,
+      FooterPanel footerPanel,
+      UserPrefs userPrefs,
+      WorkerService<List<PetrolStation>> petrolStationsWorkerService) {
 
+    workerService = petrolStationsWorkerService;
+
+    this.userPrefs = userPrefs;
     this.dataTableModel = dataTableModel;
     this.footerPanel = footerPanel;
     this.btnStartOneShotWork = new JButton();
@@ -142,6 +154,7 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == btnStartOneShotWork) {
       // Start a non blocking thread
+      ((PetrolStationsWorker) workerService.getWorker()).setUserGeo(getUserGeo());
       workerService.startOneShot(this::onOneShotWorkerFinished);
       onOneShotWorkerStarted();
     }
@@ -150,6 +163,7 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
       String actionCommand = btnStartCyclicWork.getActionCommand();
 
       if (!"STOP".equals(actionCommand)) {
+        ((PetrolStationsWorker) workerService.getWorker()).setUserGeo(getUserGeo());
         // Start a cycle every x seconds
         workerService.setTimeUnit(TimeUnit.SECONDS);
         workerService.startCyclic(this::onSingleCycleFinished, 10);
@@ -168,5 +182,14 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
     else if (e.getSource() == btnRemoveAllData) {
       dataTableModel.removeAllData();
     }
+  }
+
+  private Geo getUserGeo() {
+    Address address = userPrefs.readAddress()
+        .orElseThrow(() -> new IllegalStateException(L10N.get(
+            "msg.UnableToRequestPetrolStations_ReasonNoGeoForUser")));
+
+    return address.getGeo().orElseThrow(() -> new IllegalStateException(L10N.get(
+        "msg.UnableToRequestPetrolStations_ReasonNoGeoForUser")));
   }
 }

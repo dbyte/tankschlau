@@ -22,22 +22,28 @@ import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolStationBuilder;
 import de.fornalik.tankschlau.util.RunnableCallbackWorker;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 /**
- * Simulate some operations which should be logged into the Swing TextArea.
+ * Worker for PetrolStationsService.
  */
-public class PetrolStationWorker implements RunnableCallbackWorker<List<PetrolStation>> {
-  public static final Logger LOGGER = Logger.getLogger(PetrolStationWorker.class.getName());
+public class PetrolStationsWorker implements RunnableCallbackWorker<List<PetrolStation>> {
+  public static final Logger LOGGER = Logger.getLogger(PetrolStationsWorker.class.getName());
+  private final PetrolStationsService petrolStationsService;
+
+  private Geo userGeo;
   private Consumer<List<PetrolStation>> callback;
 
-  public PetrolStationWorker() {
+  public PetrolStationsWorker(PetrolStationsService petrolStationsService) {
+    this.petrolStationsService = Objects.requireNonNull(petrolStationsService);
+    this.userGeo = null;
     this.callback = null;
+  }
+
+  public void setUserGeo(Geo userGeo) {
+    this.userGeo = Objects.requireNonNull(userGeo);
   }
 
   @Override
@@ -47,19 +53,12 @@ public class PetrolStationWorker implements RunnableCallbackWorker<List<PetrolSt
 
   @Override
   public void run() {
-    LOGGER.info("doing work 3 seconds");
+    LOGGER.info("Requesting petrol stations webservice");
     List<PetrolStation> data = new ArrayList<>();
 
     try {
       // int divisionByZero = 1 / 0;
-      Thread.sleep(3000);
-      data = createDemoData();
-    }
-
-    catch (InterruptedException e) {
-      e.printStackTrace();
-      LOGGER.severe("Interrupted: " + e.getMessage());
-      return;
+      data = findPetrolStations();
     }
 
     catch (Exception e) {
@@ -79,6 +78,20 @@ public class PetrolStationWorker implements RunnableCallbackWorker<List<PetrolSt
     LOGGER.info("Work done.");
 
     callback.accept(data);
+  }
+
+  private List<PetrolStation> findPetrolStations() {
+    List<PetrolStation> data = petrolStationsService.getNeighbourhoodStations((userGeo));
+    Optional<String> errorMessage = petrolStationsService.getTransactInfo().getErrorMessage();
+
+    /*if (errorMessage.isPresent())
+      LOGGER.warning(l10n.get("msg.ErrorServerConnection", errorMessage));
+
+    if (data.size() == 0) {
+      LOGGER.warning(l10n.get("msg.NoPetrolStationsFoundInNeighbourhood"));
+    }*/
+
+    return data;
   }
 
   private List<PetrolStation> createDemoData() {

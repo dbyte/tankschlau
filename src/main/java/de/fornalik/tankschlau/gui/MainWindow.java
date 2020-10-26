@@ -16,26 +16,35 @@
 
 package de.fornalik.tankschlau.gui;
 
+import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
+import de.fornalik.tankschlau.util.WorkerService;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
+
 
 /**
  * The app's main JFrame.
  */
-public class MainWindow extends JFrame {
+class MainWindow extends JFrame {
 
   private static final Dimension DEFAULT_WINDOW_DIMENSION = new Dimension(1200, 800);
   private final JPanel domainPanelTab, prefsPanelTab;
   private final JPanel footerPanel;
 
-  public MainWindow(UserPrefs userPrefs) {
+  MainWindow(UserPrefs userPrefs, WorkerService<List<PetrolStation>> petrolStationsWorkerService) {
     super(Localization.APP_NAME);
 
     this.footerPanel = new FooterPanel();
-    this.domainPanelTab = new MainPanel(userPrefs, (FooterPanel) this.footerPanel);
+
+    this.domainPanelTab = new MainPanel(
+        (FooterPanel) this.footerPanel,
+        userPrefs,
+        petrolStationsWorkerService);
+
     this.prefsPanelTab = new PrefsPanel(userPrefs, (FooterPanel) this.footerPanel);
 
     this.initView();

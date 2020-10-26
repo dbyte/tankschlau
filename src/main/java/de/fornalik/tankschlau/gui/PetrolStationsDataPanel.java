@@ -16,26 +16,37 @@
 
 package de.fornalik.tankschlau.gui;
 
+import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.user.UserPrefs;
+import de.fornalik.tankschlau.util.WorkerService;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 /**
  * The app's main representation of data, using a JTable.
  */
-class DataPanel extends JPanel {
+class PetrolStationsDataPanel extends JPanel {
 
   private final JPanel dataControlPanel;
   private final JTable dataTable;
   private final JScrollPane dataScrollPane;
 
-  DataPanel(UserPrefs userPrefs, FooterPanel footerPanel) {
+  PetrolStationsDataPanel(
+      FooterPanel footerPanel,
+      UserPrefs userPrefs,
+      WorkerService<List<PetrolStation>> petrolStationsWorkerService) {
+
     PetrolsStationsTableModel dataTableModel = new PetrolsStationsTableModel();
     this.dataTable = new JTable(dataTableModel);
 
     this.dataScrollPane = new JScrollPane(dataTable);
-    this.dataControlPanel = new PetrolStationsControlPanel(dataTableModel, footerPanel);
+    this.dataControlPanel = new PetrolStationsControlPanel(
+        dataTableModel,
+        footerPanel,
+        userPrefs,
+        petrolStationsWorkerService);
 
     initView();
   }

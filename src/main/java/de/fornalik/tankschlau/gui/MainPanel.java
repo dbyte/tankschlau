@@ -16,10 +16,13 @@
 
 package de.fornalik.tankschlau.gui;
 
+import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.user.UserPrefs;
+import de.fornalik.tankschlau.util.WorkerService;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 /**
  * Main content of the app, represented in MainWindowOld.
@@ -29,8 +32,16 @@ class MainPanel extends JPanel {
   private final JPanel logPanel;
   private final JPanel dataPanel;
 
-  MainPanel(UserPrefs userPrefs, FooterPanel footerPanel) {
-    this.dataPanel = new DataPanel(userPrefs, footerPanel);
+  MainPanel(
+      FooterPanel footerPanel,
+      UserPrefs userPrefs,
+      WorkerService<List<PetrolStation>> petrolStationsWorkerService) {
+
+    this.dataPanel = new PetrolStationsDataPanel(
+        footerPanel,
+        userPrefs,
+        petrolStationsWorkerService);
+
     this.logPanel = new LogPanel();
 
     this.initView();

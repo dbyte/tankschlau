@@ -34,10 +34,8 @@ import java.util.logging.Logger;
 class SwingWorkerService<ResultType> implements WorkerService<ResultType> {
   private static final Logger LOGGER = Logger.getLogger(SwingWorkerService.class.getName());
   private static final int INITIAL_DELAY_SECONDS = 3;
-
   private final RunnableCallbackWorker<ResultType> worker;
   private final ScheduledExecutorService workerSchedule;
-
   private ScheduledFuture<?> workerFuture;
   private ScheduledExecutorService countdownAgent;
   private TimeUnit timeUnit;
@@ -48,6 +46,11 @@ class SwingWorkerService<ResultType> implements WorkerService<ResultType> {
     this.workerFuture = null;
     this.countdownAgent = Executors.newSingleThreadScheduledExecutor();
     this.timeUnit = TimeUnit.SECONDS; // default
+  }
+
+  @Override
+  public RunnableCallbackWorker<ResultType> getWorker() {
+    return worker;
   }
 
   @Override
@@ -77,20 +80,20 @@ class SwingWorkerService<ResultType> implements WorkerService<ResultType> {
     workerFuture = workerSchedule.scheduleAtFixedRate(
         worker, INITIAL_DELAY_SECONDS, intervall, timeUnit);
 
-    LOGGER.info("Cyclic PetrolStationWorker started.");
+    LOGGER.info("Cyclic PetrolStationsWorker started.");
   }
 
   @Override
   public void stopCyclic() {
     if (workerFuture == null) {
-      LOGGER.warning("Cyclic PetrolStationWorker has no future that can be stopped.");
+      LOGGER.warning("Cyclic PetrolStationsWorker has no future that can be stopped.");
       return;
     }
 
     workerFuture.cancel(false);
     countdownAgent.shutdown();
 
-    LOGGER.info("Cyclic PetrolStationWorker stopped (running task continues until finished).");
+    LOGGER.info("Cyclic PetrolStationsWorker stopped (running task continues until finished).");
   }
 
   @Override
