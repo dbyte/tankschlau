@@ -106,12 +106,19 @@ public class UserPrefs {
     geo.getDistance().ifPresent(dist -> realPrefs.putDouble("geo.distance", dist));
   }
 
-  public Optional<PetrolType> readPreferredPetrolType() {
-    if (checkPrefsMissing("petrol.preferredtype"))
-      return Optional.empty();
+  public PetrolType readPreferredPetrolType() {
+    checkPrefsMissing("petrol.preferredtype");
+    String petrolTypeString;
 
-    String petrolTypeString = realPrefs.get("petrol.preferredtype", null);
-    return Optional.of(PetrolType.valueOf(PetrolType.class, petrolTypeString));
+    try {
+      petrolTypeString = realPrefs.get("petrol.preferredtype", PetrolType.E5.name());
+    }
+    catch (IllegalStateException e) {
+      LOGGER.warning(e.getMessage());
+      petrolTypeString = PetrolType.E5.name();
+    }
+
+    return PetrolType.valueOf(PetrolType.class, petrolTypeString);
   }
 
   public void writePreferredPetrolType(PetrolType type) {
@@ -169,15 +176,43 @@ public class UserPrefs {
 
   // TODO unit tests
   public void registerChangeListener(String forKey, Consumer<String> callback) {
-    this.getRealPrefs()
-        .addPreferenceChangeListener(new ChangeListener(forKey, callback));
+    this.getRealPrefs().addPreferenceChangeListener(new ConsumerChangeListener(forKey, callback));
   }
 
-  private static class ChangeListener implements PreferenceChangeListener {
-    private final String forKey;
-    private final Consumer<String> callback;
+  // TODO unit tests
+  public void registerChangeListener(String forKey, Runnable callback) {
+    this.getRealPrefs().addPreferenceChangeListener(new RunnableChangeListener(forKey, callback));
+  }
 
-    public ChangeListener(String forKey, Consumer<String> callback) {
+  private static class ConsumerChangeListener extends ChangeListener<Consumer<String>> {
+
+    protected ConsumerChangeListener(String forKey, Consumer<String> callback) {
+      super(forKey, callback);
+    }
+
+    @Override
+    protected void doCallback(PreferenceChangeEvent evt) {
+      callback.accept(evt.getNewValue());
+    }
+  }
+
+  private static class RunnableChangeListener extends ChangeListener<Runnable> {
+
+    protected RunnableChangeListener(String forKey, Runnable callback) {
+      super(forKey, callback);
+    }
+
+    @Override
+    protected void doCallback(PreferenceChangeEvent evt) {
+      callback.run();
+    }
+  }
+
+  private static abstract class ChangeListener<T> implements PreferenceChangeListener {
+    protected final String forKey;
+    protected final T callback;
+
+    protected ChangeListener(String forKey, T callback) {
       this.forKey = forKey;
       this.callback = callback;
     }
@@ -187,8 +222,11 @@ public class UserPrefs {
       if (callback == null || forKey == null)
         return;
 
-      if (evt.getKey().equals(forKey))
-        callback.accept(evt.getNewValue());
+      if (evt.getKey().equals(forKey)) {
+        doCallback(evt);
+      }
     }
+
+    protected abstract void doCallback(PreferenceChangeEvent evt);
   }
 }

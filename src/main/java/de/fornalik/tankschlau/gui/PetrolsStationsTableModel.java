@@ -17,7 +17,10 @@
 package de.fornalik.tankschlau.gui;
 
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.station.*;
+import de.fornalik.tankschlau.station.Petrol;
+import de.fornalik.tankschlau.station.PetrolStation;
+import de.fornalik.tankschlau.station.PetrolStations;
+import de.fornalik.tankschlau.station.Petrols;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 
@@ -42,12 +45,14 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
   private static final Localization L10N = Localization.getInstance();
   private static final Logger LOGGER = Logger.getLogger(PetrolsStationsTableModel.class.getName());
   private static final String[] columns = new String[5];
+
   private final List<PetrolStation> petrolStations;
   private final UserPrefs userPrefs;
 
   PetrolsStationsTableModel(UserPrefs userPrefs) {
     super();
     this.userPrefs = userPrefs;
+    this.userPrefs.registerChangeListener("petrol.preferredtype", this::sortPetrolStations);
     this.petrolStations = new ArrayList<>();
     this.initColumnIdentifiers();
   }
@@ -120,20 +125,14 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
     int rowCountBeforeInsert = getRowCount();
 
     this.petrolStations.addAll(petrolStations);
-    this.sortPetrolStations();
     fireTableRowsInserted(rowCountBeforeInsert, petrolStations.size());
+    this.sortPetrolStations();
   }
 
   private void sortPetrolStations() {
-    PetrolType preferredPetrolType = userPrefs.readPreferredPetrolType().orElseGet(() -> {
-      PetrolType defaultType = PetrolType.E5;
-      LOGGER.warning("Please choose a preferred petrol type. Now sorting by default: "
-          + defaultType.getReadableName());
-
-      return defaultType;
-    });
-
-    PetrolStations.sortByPriceAndDistanceForPetrolType(petrolStations, preferredPetrolType);
+    PetrolStations
+        .sortByPriceAndDistanceForPetrolType(petrolStations, userPrefs.readPreferredPetrolType());
+    fireTableDataChanged();
   }
 
   private String petrolsToHtml(Set<Petrol> petrols) {

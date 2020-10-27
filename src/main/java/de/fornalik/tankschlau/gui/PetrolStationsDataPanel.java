@@ -86,11 +86,7 @@ class PetrolStationsDataPanel extends JPanel {
   }
 
   private JPanel createDataHeaderPanel() {
-    String petrolTypeString = userPrefs.readPreferredPetrolType()
-        .map(PetrolType::getReadableName)
-        .orElse(L10N.get("msg.Unknown"));
-
-    setHeaderText(petrolTypeString);
+    setHeaderText(userPrefs.readPreferredPetrolType().getReadableName());
     headerLabel.setForeground(CustomColor.BOX_HEADER_TEXT);
 
     JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));

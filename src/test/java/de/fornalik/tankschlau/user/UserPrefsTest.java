@@ -28,8 +28,7 @@ import org.mockito.Mockito;
 import java.util.Optional;
 import java.util.prefs.BackingStoreException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for UserPrefs. We execute combined write/read tests.
@@ -144,26 +143,26 @@ class UserPrefsTest {
   void writePreferredPetrolType_writesProperly(PetrolType givenPetrolType) {
     // when
     prefs.writePreferredPetrolType(givenPetrolType);
-    Optional<PetrolType> actualPetrolType = prefs.readPreferredPetrolType();
+    PetrolType actualPetrolType = prefs.readPreferredPetrolType();
 
     // then
-    assertTrue(actualPetrolType.isPresent());
-    assertEquals(givenPetrolType, actualPetrolType.get());
+    assertNotNull(actualPetrolType);
+    assertEquals(givenPetrolType, actualPetrolType);
   }
 
   @ParameterizedTest
   @ValueSource(booleans = {false, true})
-  void readPreferredPetrolType_returnsEmptyOptionalIfPrefDoesNotExist(boolean removeNode)
+  void readPreferredPetrolType_returnsDefaultValueIfPrefDoesNotExist(boolean removeNode)
   throws BackingStoreException {
     // given
     if (removeNode)
       prefs.getRealPrefs().removeNode();
 
     // when
-    Optional<PetrolType> actualPetrolType = prefs.readPreferredPetrolType();
+    PetrolType actualPetrolType = prefs.readPreferredPetrolType();
 
     // then
-    assertEquals(Optional.empty(), actualPetrolType);
+    assertEquals(PetrolType.E5, actualPetrolType);
   }
 
   @Test

@@ -80,14 +80,8 @@ class PetrolTypePanel extends JPanel implements ActionListener {
   private void readSelectionFromUserPrefs() {
     List<AbstractButton> allRadioButtons = Collections.list(petrolTypeBtnGroup.getElements());
 
-    // Select first radio button if no preference exist yet.
-    if (!userPrefs.readPreferredPetrolType().isPresent()) {
-      allRadioButtons.get(0).setSelected(true);
-      return;
-    }
-
     for (AbstractButton radioButton : allRadioButtons) {
-      if (userPrefs.readPreferredPetrolType().get().name().equals(radioButton.getActionCommand())) {
+      if (userPrefs.readPreferredPetrolType().name().equals(radioButton.getActionCommand())) {
         radioButton.setSelected(true);
         break;
       }

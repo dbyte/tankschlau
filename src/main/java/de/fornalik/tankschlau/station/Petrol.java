@@ -48,7 +48,7 @@ public class Petrol {
    * german petrol prices only.
    */
   public String getTypeAndPrice() {
-    return type.name()
+    return type.getReadableName()
         + " " + Localization.getInstance().priceFormat().format(price) + NBSP_AND_EUR;
   }
 
