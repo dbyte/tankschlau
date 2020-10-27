@@ -1,11 +1,9 @@
 package de.fornalik.tankschlau.station;
 
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.storage.PetrolStationsService;
 import de.fornalik.tankschlau.testhelp_common.DomainFixtureHelp;
 import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -15,8 +13,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class PetrolStationsTest {
   PetrolStations.PriceAndDistanceComparator comparatorUnderTest;
@@ -30,26 +26,6 @@ class PetrolStationsTest {
     givenPetrolStations = null;
     actualPetrolStations = null;
     comparatorUnderTest = null;
-  }
-
-  /* The underlying implementation of this method is subject to the corresponding
-  net and web service units, so we just do some basic test on its own code paths here. */
-  @Test
-  void getAllInNeighbourhood_callsServiceAndReturnsResultingPetrolStations() {
-    // given
-    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
-
-    PetrolStationsService clientMock = mock(PetrolStationsService.class);
-    Geo geoMock = mock(Geo.class);
-    when(clientMock.getNeighbourhoodStations(geoMock)).thenReturn(fixture.convertToPetrolStations());
-
-    PetrolStations petrolStationService = new PetrolStations(clientMock);
-
-    // when
-    actualPetrolStations = petrolStationService.getAllInNeighbourhood(geoMock);
-
-    // then
-    fixture.assertEqualValuesIgnoringSort(actualPetrolStations);
   }
 
   @ParameterizedTest
@@ -77,7 +53,8 @@ class PetrolStationsTest {
     // given
     comparatorUnderTest = new PetrolStations.PriceAndDistanceComparator(givenPetrolType);
 
-    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_COMPARE_TWO_2ND_IS_CHEAPER_AND_FURTHER);
+    fixture
+        .setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_COMPARE_TWO_2ND_IS_CHEAPER_AND_FURTHER);
     givenPetrolStations = fixture.convertToPetrolStations();
     PetrolStation expectedPetrolStation = givenPetrolStations.get(1);
 
@@ -98,7 +75,8 @@ class PetrolStationsTest {
     // given
     comparatorUnderTest = new PetrolStations.PriceAndDistanceComparator(givenPetrolType);
 
-    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_COMPARE_TWO_EQUAL_PRICES_BUT_2ND_IS_CLOSER);
+    fixture
+        .setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_COMPARE_TWO_EQUAL_PRICES_BUT_2ND_IS_CLOSER);
     givenPetrolStations = fixture.convertToPetrolStations();
     PetrolStation expectedPetrolStation = givenPetrolStations.get(1);
 
@@ -116,7 +94,8 @@ class PetrolStationsTest {
   @EnumSource(PetrolType.class)
   void sortByPriceAndDistanceForPetrolType_happy(PetrolType givenPetrolType) {
     // given
-    fixture.setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
+    fixture
+        .setupFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MULTI_34STATIONS_HAPPY);
 
     // Convert from fixture-stations to a List of real PetrolStation objects.
     givenPetrolStations = fixture.convertToPetrolStations();

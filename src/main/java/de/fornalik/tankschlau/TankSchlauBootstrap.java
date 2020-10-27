@@ -22,7 +22,6 @@ import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.JsonResponse;
 import de.fornalik.tankschlau.net.OkHttpClient;
 import de.fornalik.tankschlau.net.ResponseBodyImpl;
-import de.fornalik.tankschlau.station.PetrolStations;
 import de.fornalik.tankschlau.station.Petrols;
 import de.fornalik.tankschlau.station.PetrolsJsonAdapter;
 import de.fornalik.tankschlau.storage.PetrolStationsRepo;
@@ -65,7 +64,6 @@ final class TankSchlauBootstrap {
   final PetrolStationsRepo petrolStationsRepo;
   final JsonResponse petrolStationsJsonResponse;
   final PetrolStationsService petrolStationsService;
-  final PetrolStations petrolStations;
   final PetrolStationsWorker petrolStationsWorker;
   final PetrolStationMessageContent petrolStationMessageContent;
   final MessageRequest messageRequest;
@@ -114,8 +112,6 @@ final class TankSchlauBootstrap {
         petrolStationsJsonResponse);
 
     petrolStationsService = new PetrolStationsWebService(petrolStationsRepo);
-
-    petrolStations = new PetrolStations(petrolStationsService);
 
     petrolStationsWorker = new PetrolStationsWorker(petrolStationsService);
 

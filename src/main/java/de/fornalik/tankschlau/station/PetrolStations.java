@@ -17,29 +17,15 @@
 package de.fornalik.tankschlau.station;
 
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.storage.PetrolStationsService;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 /**
- * Service class for dealing with data collections of a {@link PetrolStation}.
+ * Utility class for dealing with data collections of a {@link PetrolStation}.
  */
 public class PetrolStations {
-  private final PetrolStationsService petrolStationsService;
-
-  /**
-   * Constructor
-   *
-   * @param petrolStationsWebService Some {@link PetrolStationsService} implementation.
-   */
-  public PetrolStations(PetrolStationsService petrolStationsWebService) {
-    this.petrolStationsService = Objects.requireNonNull(
-        petrolStationsWebService,
-        PetrolStationsService.class.getSimpleName() + " must not be null");
-  }
 
   /**
    * Sorts a {@code List} of {@link PetrolStation} first by price and then by distance.
@@ -53,17 +39,6 @@ public class PetrolStations {
       PetrolType type) {
 
     petrolStations.sort(new PriceAndDistanceComparator(type));
-  }
-
-  /**
-   * Gets a list of petrol stations around the user's neighbourhood, whereby neighbourhood
-   * Basically, it's a service wrapper for
-   * {@link PetrolStationsService#getNeighbourhoodStations(Geo)} (Geo)}.
-   *
-   * @param geo {@link Geo} data wrapping the user's current location.
-   */
-  public List<PetrolStation> getAllInNeighbourhood(Geo geo) {
-    return petrolStationsService.getNeighbourhoodStations(geo);
   }
 
   /**
