@@ -16,6 +16,8 @@
 
 package de.fornalik.tankschlau.gui;
 
+import de.fornalik.tankschlau.station.PetrolType;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -53,7 +55,7 @@ class PetrolTypePanel extends JPanel implements ActionListener {
     ButtonGroup buttonGroup = new ButtonGroup();
 
     for (PetrolType petrolType : petrolTypes) {
-      JRadioButton radioButton = new JRadioButton(petrolType.name());
+      JRadioButton radioButton = new JRadioButton(petrolType.getReadableName());
       radioButton.setForeground(CustomColor.BUTTON_FOREGROUND);
       radioButton.addActionListener(this);
       buttonGroup.add(radioButton);
@@ -66,9 +68,5 @@ class PetrolTypePanel extends JPanel implements ActionListener {
   @Override
   public void actionPerformed(ActionEvent e) {
 
-  }
-
-  private enum PetrolType {
-    DIESEL, E5, E10
   }
 }
