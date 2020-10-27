@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.PreferenceChangeEvent;
@@ -168,21 +168,27 @@ public class UserPrefs {
   }
 
   // TODO unit tests
-  public void registerChangeListener(BiConsumer<String, String> callback) {
-    this.getRealPrefs().addPreferenceChangeListener(new ChangeListener(callback));
+  public void registerChangeListener(String forKey, Consumer<String> callback) {
+    this.getRealPrefs()
+        .addPreferenceChangeListener(new ChangeListener(forKey, callback));
   }
 
   private static class ChangeListener implements PreferenceChangeListener {
-    private final BiConsumer<String, String> callback;
+    private final String forKey;
+    private final Consumer<String> callback;
 
-    public ChangeListener(BiConsumer<String, String> callback) {
+    public ChangeListener(String forKey, Consumer<String> callback) {
+      this.forKey = forKey;
       this.callback = callback;
     }
 
     @Override
     public void preferenceChange(PreferenceChangeEvent evt) {
-      if (callback == null) return;
-      callback.accept(evt.getKey(), evt.getNewValue());
+      if (callback == null || forKey == null)
+        return;
+
+      if (evt.getKey().equals(forKey))
+        callback.accept(evt.getNewValue());
     }
   }
 }

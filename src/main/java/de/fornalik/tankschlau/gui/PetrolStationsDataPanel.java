@@ -66,7 +66,7 @@ class PetrolStationsDataPanel extends JPanel {
     setOpaque(true);
     setMinimumSize(new Dimension(0, 150));
 
-    userPrefs.registerChangeListener(this::onUserPrefsChange);
+    userPrefs.registerChangeListener("petrol.preferredtype", this::onUserPrefsChange);
 
     configureDataTable();
     configureDataScrollPane();
@@ -136,9 +136,7 @@ class PetrolStationsDataPanel extends JPanel {
         new Dimension(width, Short.MAX_VALUE));
   }
 
-  private void onUserPrefsChange(String key, String value) {
-    if (key.equals("petrol.preferredtype")) {
-      setHeaderText(PetrolType.valueOf(value).getReadableName());
-    }
+  private void onUserPrefsChange(String newValue) {
+    setHeaderText(PetrolType.valueOf(newValue).getReadableName());
   }
 }
