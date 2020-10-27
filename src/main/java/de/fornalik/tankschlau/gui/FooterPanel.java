@@ -16,6 +16,8 @@
 
 package de.fornalik.tankschlau.gui;
 
+import de.fornalik.tankschlau.util.Localization;
+
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
@@ -28,6 +30,7 @@ import java.util.logging.Logger;
  */
 class FooterPanel extends JPanel {
 
+  private static final Localization L10N = Localization.getInstance();
   private static final Logger LOGGER = Logger.getLogger(FooterPanel.class.getName());
 
   private final JLabel labelCountdown, labelWork;
@@ -57,14 +60,14 @@ class FooterPanel extends JPanel {
   }
 
   private void configureCountdownLabel() {
-    labelCountdown.setText("Cyclic worker deactivated");
+    labelCountdown.setText(L10N.get("label.AutoUpdateStopped"));
     labelCountdown.setHorizontalAlignment(SwingConstants.LEFT);
     labelCountdown.setFont(labelCountdown.getFont().deriveFont(12F));
     labelCountdown.setForeground(Color.getHSBColor(0F, 0F, 0.76F));
   }
 
   private void configureWorkLabel() {
-    labelWork.setText("No activity");
+    labelWork.setText(L10N.get("label.NoNetworkActivity"));
     labelWork.setIcon(null);
     labelWork.setPreferredSize(new Dimension(getMaximumSize().width, 40));
     labelWork.setHorizontalAlignment(SwingConstants.CENTER);
@@ -94,18 +97,18 @@ class FooterPanel extends JPanel {
 
   void onOneShotWorkerStarted(String name) {
     String legalizedName = name != null ? name : "";
-    labelWork.setText((legalizedName + " Worker running").trim());
+    labelWork.setText((L10N.get("label.TaskRunning", legalizedName)).trim());
     labelWork.setIcon(iconWork);
   }
 
   void onOneShotWorkerFinished() {
-    labelWork.setText("No activity");
+    labelWork.setText(L10N.get("label.NoNetworkActivity"));
     labelWork.setIcon(null);
   }
 
   void onCyclicWorkerStopped() {
-    labelCountdown.setText("Cyclic worker deactivated");
-    labelWork.setText("No activity");
+    labelCountdown.setText(L10N.get("label.AutoUpdateStopped"));
+    labelWork.setText(L10N.get("label.NoNetworkActivity"));
     labelWork.setIcon(null);
   }
 
@@ -115,15 +118,15 @@ class FooterPanel extends JPanel {
     final ImageIcon workerIndicator;
 
     if (remaining <= 0) {
-      textForCyclicWorker = "Waiting for Worker to finish...";
-      textForSingleWorker = "Worker running";
+      textForCyclicWorker = L10N.get("label.WaitingForTaskFinish");
+      textForSingleWorker = L10N.get("label.TaskRunning", "").trim();
       workerIndicator = iconWork;
     }
 
     else {
       textForCyclicWorker =
-          "Worker starts in: " + remaining + " " + timeUnit.name().toLowerCase();
-      textForSingleWorker = "No activity";
+          L10N.get("label.TaskCountdown", remaining + " " + timeUnit.name().toLowerCase());
+      textForSingleWorker = L10N.get("label.NoNetworkActivity");
       workerIndicator = null;
     }
 
