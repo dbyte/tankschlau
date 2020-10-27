@@ -17,6 +17,7 @@
 package de.fornalik.tankschlau.gui;
 
 import de.fornalik.tankschlau.user.UserPrefs;
+import de.fornalik.tankschlau.util.Localization;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -29,6 +30,7 @@ import java.awt.event.FocusListener;
  */
 class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
 
+  private static final Localization L10N = Localization.getInstance();
   private static final int minimumCycleRate = 3;
   private static final int defaultCycleRate = 300;
   private static final int defaultRowHeight = 25;
@@ -47,7 +49,7 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
   private void initView() {
     setLayout(new GridBagLayout());
     setOpaque(true);
-    setBorder(createTitledBorder("Cyclic background services"));
+    setBorder(createTitledBorder(L10N.get("borderTitle.AutomaticDataUpdate")));
     setMaximumSize(totalDimension);
 
     constraints.anchor = GridBagConstraints.WEST;
@@ -62,7 +64,7 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
 
   private void createCycleRatePref() {
     constraints.gridx = 0;
-    JLabel labelCycleEvery = createLabel("Cycle every", SwingConstants.LEFT);
+    JLabel labelCycleEvery = createLabel(L10N.get("label.CycleEvery"), SwingConstants.LEFT);
     addToPanel(labelCycleEvery, 120, constraints);
 
     constraints.gridx = 1;
@@ -71,7 +73,7 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
     addToPanel(textCycleRate, 60, constraints);
 
     constraints.gridx = 2;
-    addToPanel(createLabel("seconds", SwingConstants.LEFT), 100, constraints);
+    addToPanel(createLabel(L10N.get("label.Seconds"), SwingConstants.LEFT), 100, constraints);
   }
 
   private void addToPanel(

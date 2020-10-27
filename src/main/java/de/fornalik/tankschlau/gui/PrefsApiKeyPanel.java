@@ -16,6 +16,7 @@
 
 package de.fornalik.tankschlau.gui;
 
+import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyStore;
 
@@ -29,6 +30,7 @@ import java.awt.event.FocusListener;
  */
 public class PrefsApiKeyPanel extends JPanel implements FocusListener, PrefsFactoryMixin {
 
+  private static final Localization L10N = Localization.getInstance();
   private static final Dimension totalDimension = new Dimension(440, 108);
 
   private final JPasswordField textPetrolStationsServiceApiKey;
@@ -57,20 +59,20 @@ public class PrefsApiKeyPanel extends JPanel implements FocusListener, PrefsFact
     setLayout(new GridLayout(3, 2));
     setAlignmentX(Component.LEFT_ALIGNMENT);
     setOpaque(true);
-    setBorder(createTitledBorder("API Keys"));
+    setBorder(createTitledBorder(L10N.get("borderTitle.ApiKeys")));
     setPreferredSize(totalDimension);
     setMaximumSize(totalDimension);
     setMinimumSize(totalDimension);
 
     configureFields();
 
-    add(createLabel("Petrol Station Service"));
+    add(createLabel(L10N.get("label.TankerkoenigService")));
     add(textPetrolStationsServiceApiKey);
 
-    add(createLabel("Geocoding Service"));
+    add(createLabel("Google Geocoding Webservice"));
     add(textGeocodingServiceApiKey);
 
-    add(createLabel("Push Message Service"));
+    add(createLabel("Pushover Message Webservice"));
     add(textMessageServiceApiKey);
   }
 

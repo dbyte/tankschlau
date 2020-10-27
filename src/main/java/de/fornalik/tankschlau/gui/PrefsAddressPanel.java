@@ -20,6 +20,7 @@ import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.storage.GeocodingWorker;
 import de.fornalik.tankschlau.user.UserPrefs;
+import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.WorkerService;
 
 import javax.swing.*;
@@ -36,6 +37,7 @@ import java.awt.event.FocusListener;
  */
 class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMixin {
 
+  private static final Localization L10N = Localization.getInstance();
   private static final Dimension totalDimension = new Dimension(350, 250);
 
   private static WorkerService<Geo> workerService;
@@ -77,7 +79,7 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setAlignmentX(Component.LEFT_ALIGNMENT);
     setOpaque(true);
-    setBorder(createTitledBorder("Your location"));
+    setBorder(createTitledBorder(L10N.get("borderTitle.YourLocation")));
     setPreferredSize(totalDimension);
     setMaximumSize(totalDimension);
     setMinimumSize(totalDimension);
@@ -94,16 +96,16 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
   private JPanel createAddressFieldsPanel() {
     JPanel panel = createGridPanel(4);
 
-    panel.add(createLabel("Street"));
+    panel.add(createLabel(L10N.get("label.AdrStreet")));
     panel.add(textStreet);
 
-    panel.add(createLabel("House Number"));
+    panel.add(createLabel(L10N.get("label.AdrHouseNumber")));
     panel.add(textHouseNumber);
 
-    panel.add(createLabel("Post Code"));
+    panel.add(createLabel(L10N.get("label.AdrPostcode")));
     panel.add(textPostCode);
 
-    panel.add(createLabel("City"));
+    panel.add(createLabel(L10N.get("label.AdrCity")));
     panel.add(textCity);
 
     return panel;
@@ -112,17 +114,17 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
   private JPanel createGeoFieldsPanel() {
     JPanel panel = createGridPanel(2);
 
-    panel.add(createLabel("Latitude"));
+    panel.add(createLabel(L10N.get("label.Latitude")));
     panel.add(textGeoLatitude);
 
-    panel.add(createLabel("Longitude"));
+    panel.add(createLabel(L10N.get("label.Longitude")));
     panel.add(textGeoLongitude);
 
     return panel;
   }
 
   private JButton createGeoRequestButton() {
-    JButton btnRequestGeo = new JButton("Evaluate latitude/longitude by address");
+    JButton btnRequestGeo = new JButton(L10N.get("button.EvaluateLatLonByAddress"));
     btnRequestGeo.setAlignmentX(LEFT_ALIGNMENT);
     btnRequestGeo.setMinimumSize(new Dimension(totalDimension.width - 10, 30));
     btnRequestGeo.setMaximumSize(new Dimension(totalDimension.width - 10, 30));

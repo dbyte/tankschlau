@@ -33,6 +33,7 @@ import java.util.logging.Logger;
  * Chooser for preferred PetrolType.
  */
 class PetrolTypePanel extends JPanel implements ActionListener {
+
   private static final Localization L10N = Localization.getInstance();
   private static final Logger LOGGER = Logger.getLogger(PetrolTypePanel.class.getName());
 
