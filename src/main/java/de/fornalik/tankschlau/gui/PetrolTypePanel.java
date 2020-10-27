@@ -18,6 +18,7 @@ package de.fornalik.tankschlau.gui;
 
 import de.fornalik.tankschlau.station.PetrolType;
 import de.fornalik.tankschlau.user.UserPrefs;
+import de.fornalik.tankschlau.util.Localization;
 import org.apache.commons.lang3.EnumUtils;
 
 import javax.swing.*;
@@ -32,6 +33,7 @@ import java.util.logging.Logger;
  * Chooser for preferred PetrolType.
  */
 class PetrolTypePanel extends JPanel implements ActionListener {
+  private static final Localization L10N = Localization.getInstance();
   private static final Logger LOGGER = Logger.getLogger(PetrolTypePanel.class.getName());
 
   private final UserPrefs userPrefs;
@@ -54,7 +56,7 @@ class PetrolTypePanel extends JPanel implements ActionListener {
 
   private JPanel createHeaderLabel() {
     JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    JLabel label = new JLabel("Preferred Petrol Type");
+    JLabel label = new JLabel(L10N.get("label.PreferredPetrolType"));
     label.setForeground(CustomColor.LABEL_TEXT);
 
     panel.add(label);

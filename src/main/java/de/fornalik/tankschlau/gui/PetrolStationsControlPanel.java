@@ -67,9 +67,9 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
     setPreferredSize(new Dimension(190, this.getHeight()));
     setMaximumSize(new Dimension(190, Short.MAX_VALUE));
 
-    addButton(btnStartOneShotWork, this, "Work!");
-    addButton(btnStartCyclicWork, this, "Cycle work!");
-    addButton(btnRemoveAllData, this, "Clear data");
+    addButton(btnStartOneShotWork, this, L10N.get("button.UpdateOnce"));
+    addButton(btnStartCyclicWork, this, L10N.get("button.UpdateCyclic"));
+    addButton(btnRemoveAllData, this, L10N.get("button.EmptyTableView"));
 
     add(createSeparator());
     add(createPetrolTypeChooser());
@@ -94,7 +94,6 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
     panel.setMaximumSize(new Dimension(getMaximumSize().width, 100));
     panel.setPreferredSize(new Dimension(getMaximumSize().width, 100));
     panel.setAlignmentX(CENTER_ALIGNMENT);
-    // panel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
 
     return panel;
   }
@@ -111,7 +110,7 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
   private void onCyclicWorkerStarted() {
     SwingUtilities.invokeLater(() -> {
       btnStartCyclicWork.setActionCommand("STOP");
-      btnStartCyclicWork.setText("Stop Cycling");
+      btnStartCyclicWork.setText(L10N.get("button.StopCycling"));
       btnStartOneShotWork.setEnabled(false);
     });
   }
@@ -119,7 +118,7 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
   private void onCyclicWorkerStopped() {
     SwingUtilities.invokeLater(() -> {
       btnStartCyclicWork.setActionCommand("START");
-      btnStartCyclicWork.setText("Cycle work!");
+      btnStartCyclicWork.setText(L10N.get("button.UpdateCyclic"));
       btnStartOneShotWork.setEnabled(true);
       footerPanel.onCyclicWorkerStopped();
     });

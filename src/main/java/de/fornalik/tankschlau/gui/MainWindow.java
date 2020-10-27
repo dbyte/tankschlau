@@ -31,7 +31,7 @@ import java.util.List;
  * The app's main JFrame.
  */
 class MainWindow extends JFrame {
-
+  private static final Localization L10N = Localization.getInstance();
   private static final Dimension DEFAULT_WINDOW_DIMENSION = new Dimension(1200, 800);
   private final JPanel domainPanelTab, prefsPanelTab;
   private final JPanel footerPanel;
@@ -77,8 +77,8 @@ class MainWindow extends JFrame {
 
   private JTabbedPane createTabbedPane() {
     JTabbedPane tabbedPane = new JTabbedPane();
-    tabbedPane.addTab("Domain", domainPanelTab);
-    tabbedPane.addTab("Preferences", prefsPanelTab);
+    tabbedPane.addTab(L10N.get("tab.PetrolPrices"), domainPanelTab);
+    tabbedPane.addTab(L10N.get("tab.Preferences"), prefsPanelTab);
     tabbedPane.setSelectedIndex(0);
 
     tabbedPane.setPreferredSize(DEFAULT_WINDOW_DIMENSION);

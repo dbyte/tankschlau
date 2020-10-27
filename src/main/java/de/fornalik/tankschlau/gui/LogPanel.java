@@ -16,6 +16,7 @@
 
 package de.fornalik.tankschlau.gui;
 
+import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.LoggingConfig;
 import de.fornalik.tankschlau.util.SwingLoggingHandler;
 
@@ -28,6 +29,7 @@ import java.awt.event.ActionListener;
  * Shows and drives logging. The log records are represented in a JTextArea by a custom Log Handler.
  */
 class LogPanel extends JPanel {
+  private static final Localization L10N = Localization.getInstance();
 
   private final JLabel labelLogHeader;
   private final JTextArea textAreaLog;
@@ -67,8 +69,7 @@ class LogPanel extends JPanel {
   }
 
   private JPanel createLogHeaderPanel() {
-    labelLogHeader.setText("Log");
-    // labelLogHeader.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+    labelLogHeader.setText(L10N.get("label.Log"));
     labelLogHeader.setForeground(CustomColor.BOX_HEADER_TEXT);
 
     JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -93,11 +94,10 @@ class LogPanel extends JPanel {
   private JPanel createLogButtonPanel() {
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-    // panel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
     panel.add(btnClearLog);
 
     btnClearLog.setAlignmentY(CENTER_ALIGNMENT);
-    btnClearLog.setText("Clear");
+    btnClearLog.setText(L10N.get("button.ClearLogView"));
     btnClearLog.setMinimumSize(new Dimension(190, 30));
     btnClearLog.setMaximumSize(new Dimension(190, 30));
     btnClearLog.setPreferredSize(new Dimension(190, 30));

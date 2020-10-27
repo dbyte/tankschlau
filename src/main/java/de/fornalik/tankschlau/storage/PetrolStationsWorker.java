@@ -77,7 +77,7 @@ public class PetrolStationsWorker implements RunnableCallbackWorker<List<PetrolS
     }
 
     finally {
-      LOGGER.fine("Work done.");
+      LOGGER.info(L10N.get("msg.PriceRequestDone"));
       callback.accept(data);
     }
   }

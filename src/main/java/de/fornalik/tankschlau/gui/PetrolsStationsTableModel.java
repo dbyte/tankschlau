@@ -37,12 +37,12 @@ import java.util.logging.Logger;
  * its owned Worker.
  */
 class PetrolsStationsTableModel extends AbstractTableModel implements Serializable {
-  public static final String COL_NAME = "Name";
-  public static final String COL_PRICES = "Preis";
-  public static final String COL_STREET = "Ort";
-  public static final String COL_DISTANCE = "Entfernung";
-  public static final String COL_IS_OPEN = "Status";
   private static final Localization L10N = Localization.getInstance();
+  public static final String COL_NAME = L10N.get("tableHeader.Name");
+  public static final String COL_PRICES = L10N.get("tableHeader.Price");
+  public static final String COL_STREET = L10N.get("tableHeader.Place");
+  public static final String COL_DISTANCE = L10N.get("tableHeader.Distance");
+  public static final String COL_IS_OPEN = L10N.get("tableHeader.Status");
   private static final Logger LOGGER = Logger.getLogger(PetrolsStationsTableModel.class.getName());
   private static final String[] columns = new String[5];
 
