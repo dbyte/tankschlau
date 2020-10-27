@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
+// TODO unit tests
 /**
  * Simulate some operations which should be logged into the Swing TextArea.
  */

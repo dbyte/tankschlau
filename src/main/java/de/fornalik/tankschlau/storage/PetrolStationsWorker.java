@@ -25,6 +25,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
+// TODO unit tests
 /**
  * Worker for PetrolStationsService.
  */
