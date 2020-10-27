@@ -89,7 +89,7 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
   }
 
   private JPanel createPetrolTypeChooser() {
-    PetrolTypePanel panel = new PetrolTypePanel();
+    PetrolTypePanel panel = new PetrolTypePanel(userPrefs);
     panel.setMinimumSize(new Dimension(getMaximumSize().width, 100));
     panel.setMaximumSize(new Dimension(getMaximumSize().width, 100));
     panel.setPreferredSize(new Dimension(getMaximumSize().width, 100));

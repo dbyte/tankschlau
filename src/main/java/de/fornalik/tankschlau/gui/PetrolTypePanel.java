@@ -17,20 +17,32 @@
 package de.fornalik.tankschlau.gui;
 
 import de.fornalik.tankschlau.station.PetrolType;
+import de.fornalik.tankschlau.user.UserPrefs;
+import org.apache.commons.lang3.EnumUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Chooser for preferred PetrolType.
  */
 class PetrolTypePanel extends JPanel implements ActionListener {
+  private static final Logger LOGGER = Logger.getLogger(PetrolTypePanel.class.getName());
 
-  PetrolTypePanel() {
+  private final UserPrefs userPrefs;
+  private final ButtonGroup petrolTypeBtnGroup;
+
+  PetrolTypePanel(UserPrefs userPrefs) {
+    this.userPrefs = userPrefs;
+    this.petrolTypeBtnGroup = new ButtonGroup();
 
     this.initView();
+    this.readSelectionFromUserPrefs();
   }
 
   private void initView() {
@@ -52,21 +64,57 @@ class PetrolTypePanel extends JPanel implements ActionListener {
   private JPanel createRadioPanel() {
     JPanel panel = new JPanel(new GridLayout(0, 1));
     PetrolType[] petrolTypes = PetrolType.values();
-    ButtonGroup buttonGroup = new ButtonGroup();
 
     for (PetrolType petrolType : petrolTypes) {
       JRadioButton radioButton = new JRadioButton(petrolType.getReadableName());
       radioButton.setForeground(CustomColor.BUTTON_FOREGROUND);
       radioButton.addActionListener(this);
-      buttonGroup.add(radioButton);
+      radioButton.setActionCommand(petrolType.name());
+      petrolTypeBtnGroup.add(radioButton);
       panel.add(radioButton);
     }
 
     return panel;
   }
 
+  private void readSelectionFromUserPrefs() {
+    List<AbstractButton> allRadioButtons = Collections.list(petrolTypeBtnGroup.getElements());
+
+    // Select first radio button if no preference exist yet.
+    if (!userPrefs.readPreferredPetrolType().isPresent()) {
+      allRadioButtons.get(0).setSelected(true);
+      return;
+    }
+
+    for (AbstractButton radioButton : allRadioButtons) {
+      if (userPrefs.readPreferredPetrolType().get().name().equals(radioButton.getActionCommand())) {
+        radioButton.setSelected(true);
+        break;
+      }
+    }
+  }
+
+  private void writeSelectionToUserPrefs(String petrolTypeString) {
+    if (petrolTypeString == null || petrolTypeString.isEmpty()) {
+      String errMsg = "Illegal petrol type selection: Empty or null string.";
+      LOGGER.severe(errMsg);
+      throw new IllegalStateException(errMsg);
+    }
+
+    if (!EnumUtils.isValidEnum(PetrolType.class, petrolTypeString)) {
+      String errMsg = "Illegal petrol type selection: " + petrolTypeString;
+      LOGGER.severe(errMsg);
+      throw new IllegalStateException(errMsg);
+    }
+
+    userPrefs.writePreferredPetrolType(PetrolType.valueOf(petrolTypeString));
+  }
+
   @Override
   public void actionPerformed(ActionEvent e) {
+    if (!(e.getSource() instanceof JRadioButton)) return;
 
+    String enumString = petrolTypeBtnGroup.getSelection().getActionCommand();
+    writeSelectionToUserPrefs(enumString);
   }
 }
