@@ -16,7 +16,10 @@
 
 package de.fornalik.tankschlau.station;
 
+import org.apache.commons.lang3.StringUtils;
+
 public enum PetrolType {
+
   DIESEL("diesel"),
   E5("e5"),
   E10("e10");
@@ -29,5 +32,9 @@ public enum PetrolType {
 
   public String getJsonKey() {
     return this.jsonKey;
+  }
+
+  public String getReadableName() {
+    return StringUtils.capitalize(this.name().toLowerCase());
   }
 }

@@ -23,4 +23,11 @@ class PetrolTypeTest {
     assertEquals("e5", PetrolType.E5.getJsonKey());
     assertEquals("diesel", PetrolType.DIESEL.getJsonKey());
   }
+
+  @Test
+  void getReadableName_happy() {
+    assertEquals("E10", PetrolType.E10.getReadableName());
+    assertEquals("E5", PetrolType.E5.getReadableName());
+    assertEquals("Diesel", PetrolType.DIESEL.getReadableName());
+  }
 }
