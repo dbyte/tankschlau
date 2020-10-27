@@ -64,6 +64,13 @@ public class Localization {
   }
 
   /**
+   * @return The current Locale for the app.
+   */
+  public Locale getLocale() {
+    return locale;
+  }
+
+  /**
    * Configure app for the given language/region. Implicitly sets path to production bundle of
    * language properties files.
    *

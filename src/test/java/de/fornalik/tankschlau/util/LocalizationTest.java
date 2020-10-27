@@ -35,6 +35,20 @@ class LocalizationTest {
   }
 
   @Test
+  void getLocale_returnsCurrentLocale() {
+    // given
+    Localization l10n = Localization.newInstance();
+    l10n.configure(Locale.ENGLISH);
+    Locale actualLocale;
+
+    // when
+    actualLocale = l10n.getLocale();
+
+    // then
+    assertEquals(Locale.ENGLISH, actualLocale);
+  }
+
+  @Test
   void get_withoutPlaceholders_returnsExpectedLocalizedTextForEachProvidedLanguage() {
     // given
     String givenKey = "msg.WithoutPlaceholders";
