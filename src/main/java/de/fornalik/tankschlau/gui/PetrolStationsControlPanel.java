@@ -126,7 +126,7 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
   }
 
   private void onSingleCycleFinished(List<PetrolStation> data) {
-    SwingUtilities.invokeLater(() -> dataTableModel.addData(data));
+    SwingUtilities.invokeLater(() -> dataTableModel.addPetrolStations(data));
   }
 
   private void onOneShotWorkerStarted() {
@@ -139,7 +139,7 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
 
   private void onOneShotWorkerFinished(List<PetrolStation> data) {
     SwingUtilities.invokeLater(() -> {
-      dataTableModel.addData(data);
+      dataTableModel.addPetrolStations(data);
       btnStartCyclicWork.setEnabled(true);
       btnStartOneShotWork.setEnabled(true);
       footerPanel.onOneShotWorkerFinished();
@@ -153,7 +153,6 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
   @Override
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == btnStartOneShotWork) {
-      // Start a non blocking thread
       ((PetrolStationsWorker) workerService.getWorker()).setUserGeo(getUserGeo());
       workerService.startOneShot(this::onOneShotWorkerFinished);
       onOneShotWorkerStarted();
@@ -180,7 +179,7 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
     }
 
     else if (e.getSource() == btnRemoveAllData) {
-      dataTableModel.removeAllData();
+      dataTableModel.removeAllPetrolStations();
     }
   }
 

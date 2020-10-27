@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 class SwingWorkerService<ResultType> implements WorkerService<ResultType> {
   private static final Logger LOGGER = Logger.getLogger(SwingWorkerService.class.getName());
   private static final int INITIAL_DELAY_SECONDS = 3;
+
   private final RunnableCallbackWorker<ResultType> worker;
   private final ScheduledExecutorService workerSchedule;
   private ScheduledFuture<?> workerFuture;
@@ -68,7 +69,7 @@ class SwingWorkerService<ResultType> implements WorkerService<ResultType> {
     worker.setCallback(callback);
     ExecutorService executorService = Executors.newSingleThreadExecutor();
     executorService.submit(worker);
-    LOGGER.info("One Shot Worker started.");
+    LOGGER.fine("One Shot Worker started.");
   }
 
   @Override
@@ -80,20 +81,20 @@ class SwingWorkerService<ResultType> implements WorkerService<ResultType> {
     workerFuture = workerSchedule.scheduleAtFixedRate(
         worker, INITIAL_DELAY_SECONDS, intervall, timeUnit);
 
-    LOGGER.info("Cyclic PetrolStationsWorker started.");
+    LOGGER.fine("Cyclic Worker started.");
   }
 
   @Override
   public void stopCyclic() {
     if (workerFuture == null) {
-      LOGGER.warning("Cyclic PetrolStationsWorker has no future that can be stopped.");
+      LOGGER.warning("Cyclic Worker has no future that can be stopped.");
       return;
     }
 
     workerFuture.cancel(false);
     countdownAgent.shutdown();
 
-    LOGGER.info("Cyclic PetrolStationsWorker stopped (running task continues until finished).");
+    LOGGER.fine("Cyclic Worker stopped (running task continues until finished).");
   }
 
   @Override

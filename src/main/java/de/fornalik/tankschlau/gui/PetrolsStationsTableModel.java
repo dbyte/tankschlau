@@ -17,9 +17,9 @@
 package de.fornalik.tankschlau.gui;
 
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.station.Petrol;
-import de.fornalik.tankschlau.station.PetrolStation;
-import de.fornalik.tankschlau.station.Petrols;
+import de.fornalik.tankschlau.station.*;
+import de.fornalik.tankschlau.user.UserPrefs;
+import de.fornalik.tankschlau.util.Localization;
 
 import javax.swing.table.AbstractTableModel;
 import java.io.Serializable;
@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
 /**
  * Handles the domain table model and its data, which is a result of the WorkerService and
@@ -38,13 +39,16 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
   public static final String COL_STREET = "Ort";
   public static final String COL_DISTANCE = "Entfernung";
   public static final String COL_IS_OPEN = "Status";
-
+  private static final Localization L10N = Localization.getInstance();
+  private static final Logger LOGGER = Logger.getLogger(PetrolsStationsTableModel.class.getName());
   private static final String[] columns = new String[5];
-  private final List<PetrolStation> data;
+  private final List<PetrolStation> petrolStations;
+  private final UserPrefs userPrefs;
 
-  PetrolsStationsTableModel() {
+  PetrolsStationsTableModel(UserPrefs userPrefs) {
     super();
-    data = new ArrayList<>();
+    this.userPrefs = userPrefs;
+    this.petrolStations = new ArrayList<>();
     this.initColumnIdentifiers();
   }
 
@@ -63,7 +67,7 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
 
   @Override
   public int getRowCount() {
-    return data.size();
+    return petrolStations.size();
   }
 
   @Override
@@ -78,34 +82,58 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
 
   @Override
   public Object getValueAt(int rowIndex, int columnIndex) {
-    PetrolStation record = data.get(rowIndex);
+    PetrolStation record = petrolStations.get(rowIndex);
 
     switch (columnIndex) {
       case 0:
         return record.getAddress().getName();
+
       case 1:
         return petrolsToHtml(record.getPetrols());
+
       case 2:
         return record.getAddress().getStreet();
+
       case 3:
-        return record.getAddress().getGeo().flatMap(Geo::getDistance).orElse(0.0);
+        return record.getAddress()
+            .getGeo()
+            .map(Geo::getDistanceAwayString)
+            .orElse(L10N.get("msg.Unknown"));
+
       case 4:
-        return record.isOpen() ? "Now open" : "Closed";
+        return record.isOpen() ? L10N.get("msg.NowOpen") : L10N.get("msg.NowClosed");
+
       default:
         return "Unregistered column index: " + columnIndex;
     }
   }
 
-  synchronized void removeAllData() {
-    this.data.clear();
+  synchronized void removeAllPetrolStations() {
+    this.petrolStations.clear();
     fireTableDataChanged();
   }
 
-  synchronized void addData(List<PetrolStation> data) {
-    if (data.size() == 0) return;
+  synchronized void addPetrolStations(List<PetrolStation> petrolStations) {
+    this.removeAllPetrolStations();
+
+    if (petrolStations.size() == 0) return;
     int rowCountBeforeInsert = getRowCount();
-    this.data.addAll(data);
-    fireTableRowsInserted(rowCountBeforeInsert, data.size());
+
+    this.petrolStations.addAll(petrolStations);
+    this.sortPetrolStations();
+    fireTableRowsInserted(rowCountBeforeInsert, petrolStations.size());
+  }
+
+  private void sortPetrolStations() {
+    PetrolType preferredPetrolType = userPrefs.readPreferredPetrolType().orElseGet(() -> {
+      PetrolType defaultType = PetrolType.E5;
+      LOGGER.warning("Please choose a preferred petrol type. Now sorting by default: "
+          + defaultType.getReadableName());
+
+      return defaultType;
+    });
+
+    PetrolStations.sortByPriceAndDistanceForPetrolType(petrolStations, preferredPetrolType);
   }
 
   private String petrolsToHtml(Set<Petrol> petrols) {

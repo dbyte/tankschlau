@@ -54,7 +54,7 @@ public class PetrolStationsWorker implements RunnableCallbackWorker<List<PetrolS
 
   @Override
   public void run() {
-    LOGGER.info("Requesting petrol stations webservice");
+    LOGGER.info(L10N.get("msg.PriceRequestRunning"));
     List<PetrolStation> data = new ArrayList<>();
 
     try {
@@ -77,7 +77,7 @@ public class PetrolStationsWorker implements RunnableCallbackWorker<List<PetrolS
     }
 
     finally {
-      LOGGER.info("Work done.");
+      LOGGER.fine("Work done.");
       callback.accept(data);
     }
   }

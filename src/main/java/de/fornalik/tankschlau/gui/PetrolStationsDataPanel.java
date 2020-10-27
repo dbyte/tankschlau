@@ -17,7 +17,9 @@
 package de.fornalik.tankschlau.gui;
 
 import de.fornalik.tankschlau.station.PetrolStation;
+import de.fornalik.tankschlau.station.PetrolType;
 import de.fornalik.tankschlau.user.UserPrefs;
+import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.WorkerService;
 
 import javax.swing.*;
@@ -28,17 +30,23 @@ import java.util.List;
  * The app's main representation of data, using a JTable.
  */
 class PetrolStationsDataPanel extends JPanel {
+  private static final Localization L10N = Localization.getInstance();
+
+  private final UserPrefs userPrefs;
 
   private final JPanel dataControlPanel;
   private final JTable dataTable;
   private final JScrollPane dataScrollPane;
+  private final JLabel headerLabel;
 
   PetrolStationsDataPanel(
       FooterPanel footerPanel,
       UserPrefs userPrefs,
       WorkerService<List<PetrolStation>> petrolStationsWorkerService) {
 
-    PetrolsStationsTableModel dataTableModel = new PetrolsStationsTableModel();
+    this.userPrefs = userPrefs;
+
+    PetrolsStationsTableModel dataTableModel = new PetrolsStationsTableModel(userPrefs);
     this.dataTable = new JTable(dataTableModel);
 
     this.dataScrollPane = new JScrollPane(dataTable);
@@ -48,6 +56,8 @@ class PetrolStationsDataPanel extends JPanel {
         userPrefs,
         petrolStationsWorkerService);
 
+    this.headerLabel = new JLabel();
+
     initView();
   }
 
@@ -56,9 +66,7 @@ class PetrolStationsDataPanel extends JPanel {
     setOpaque(true);
     setMinimumSize(new Dimension(0, 150));
 
-    JPanel dataHeaderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    dataHeaderPanel.add(new Label("Data"));
-    dataHeaderPanel.setMaximumSize(new Dimension(getMaximumSize().width, 18));
+    userPrefs.registerChangeListener(this::onUserPrefsChange);
 
     configureDataTable();
     configureDataScrollPane();
@@ -78,14 +86,22 @@ class PetrolStationsDataPanel extends JPanel {
   }
 
   private JPanel createDataHeaderPanel() {
-    JLabel label = new JLabel("Data");
-    label.setForeground(CustomColor.BOX_HEADER_TEXT);
+    String petrolTypeString = userPrefs.readPreferredPetrolType()
+        .map(PetrolType::getReadableName)
+        .orElse(L10N.get("msg.Unknown"));
+
+    setHeaderText(petrolTypeString);
+    headerLabel.setForeground(CustomColor.BOX_HEADER_TEXT);
 
     JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    panel.add(label);
+    panel.add(headerLabel);
     panel.setMaximumSize(new Dimension(getMaximumSize().width, 25));
 
     return panel;
+  }
+
+  private void setHeaderText(String petrolTypeString) {
+    headerLabel.setText(L10N.get("msg.CurrentPricesSortedBy", petrolTypeString));
   }
 
   private void configureDataScrollPane() {
@@ -118,5 +134,11 @@ class PetrolStationsDataPanel extends JPanel {
 
     dataControlPanel.setMaximumSize(
         new Dimension(width, Short.MAX_VALUE));
+  }
+
+  private void onUserPrefsChange(String key, String value) {
+    if (key.equals("petrol.preferredtype")) {
+      setHeaderText(PetrolType.valueOf(value).getReadableName());
+    }
   }
 }

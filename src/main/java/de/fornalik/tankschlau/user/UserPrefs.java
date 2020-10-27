@@ -25,8 +25,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 
 /**
@@ -162,5 +165,24 @@ public class UserPrefs {
     }
 
     return !registeredKeysSet.containsAll(keysToCheckSet);
+  }
+
+  // TODO unit tests
+  public void registerChangeListener(BiConsumer<String, String> callback) {
+    this.getRealPrefs().addPreferenceChangeListener(new ChangeListener(callback));
+  }
+
+  private static class ChangeListener implements PreferenceChangeListener {
+    private final BiConsumer<String, String> callback;
+
+    public ChangeListener(BiConsumer<String, String> callback) {
+      this.callback = callback;
+    }
+
+    @Override
+    public void preferenceChange(PreferenceChangeEvent evt) {
+      if (callback == null) return;
+      callback.accept(evt.getKey(), evt.getNewValue());
+    }
   }
 }
