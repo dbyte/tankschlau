@@ -249,7 +249,7 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
       changeGeoRequestButtonState();
     }
 
-    public void changeGeoRequestButtonState() {
+    private void changeGeoRequestButtonState() {
       boolean enabled = textStreet.getDocument().getLength() > 0
           && textCity.getDocument().getLength() >= 2
           && textPostCode.getDocument().getLength() >= 4;
