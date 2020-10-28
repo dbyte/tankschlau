@@ -125,6 +125,27 @@ public class UserPrefs {
     realPrefs.put("petrol.preferredtype", type.toString());
   }
 
+  public int readPetrolStationsUpdateCycleRate() {
+    checkPrefsMissing("petrolstations.updatecyclerate");
+    final int defaultRate = 300;
+    int rateSeconds;
+
+    try {
+      rateSeconds = realPrefs.getInt("petrolstations.updatecyclerate", defaultRate);
+    }
+    catch (IllegalStateException e) {
+      LOGGER.warning(e.getMessage());
+      rateSeconds = defaultRate;
+    }
+
+    return rateSeconds;
+  }
+
+  public void writePetrolStationsUpdateCycleRate(int seconds) {
+    if (seconds < 0) return;
+    realPrefs.putInt("petrolstations.updatecyclerate", seconds);
+  }
+
   public Optional<String> readPushMessageUserId() {
     String key = "pushmessage.userid";
 

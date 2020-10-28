@@ -31,18 +31,21 @@ import java.awt.event.FocusListener;
 class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
 
   private static final Localization L10N = Localization.getInstance();
-  private static final int minimumCycleRate = 3;
-  private static final int defaultCycleRate = 300;
-  private static final int defaultRowHeight = 25;
+  private static final int MINIMUM_CYCLE_RATE = 5;
+  private static final int DEFAULT_CYCLE_RATE = 300;
+  private static final int DEFAULT_ROW_HEIGHT = 25;
   private static final Dimension totalDimension = new Dimension(350, 70);
 
   private final JTextField textCycleRate;
   private final GridBagConstraints constraints;
 
-  PrefsCyclePanel(UserPrefs userPrefs) {
-    this.textCycleRate = createNumbersOnlyTextField(5);
+  private final UserPrefs userPrefs;
 
+  PrefsCyclePanel(UserPrefs userPrefs) {
+    this.userPrefs = userPrefs;
+    this.textCycleRate = createNumbersOnlyTextField(5);
     this.constraints = new GridBagConstraints();
+
     this.initView();
   }
 
@@ -68,7 +71,7 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
     addToPanel(labelCycleEvery, 120, constraints);
 
     constraints.gridx = 1;
-    textCycleRate.setText(String.valueOf(defaultCycleRate));
+    textCycleRate.setText(String.valueOf(userPrefs.readPetrolStationsUpdateCycleRate()));
     textCycleRate.addFocusListener(new CycleFocusListener());
     addToPanel(textCycleRate, 60, constraints);
 
@@ -86,15 +89,15 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
   }
 
   private void setSize(JComponent component, int width) {
-    component.setMinimumSize(new Dimension(width, defaultRowHeight));
-    component.setMaximumSize(new Dimension(width, defaultRowHeight));
-    component.setPreferredSize(new Dimension(width, defaultRowHeight));
+    component.setMinimumSize(new Dimension(width, DEFAULT_ROW_HEIGHT));
+    component.setMaximumSize(new Dimension(width, DEFAULT_ROW_HEIGHT));
+    component.setPreferredSize(new Dimension(width, DEFAULT_ROW_HEIGHT));
   }
 
   /**
    * Corrects given cycle rate when losing focus (if necessary).
    */
-  private static class CycleFocusListener implements FocusListener {
+  private class CycleFocusListener implements FocusListener {
     @Override
     public void focusGained(FocusEvent e) {
       // Empty implementation
@@ -110,23 +113,29 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
         return;
 
       int length = textField.getDocument().getLength();
-      if (length == 0)
-        textField.setText(String.valueOf(defaultCycleRate));
+      if (length == 0) {
+        textField.setText(String.valueOf(DEFAULT_CYCLE_RATE));
+        return;
+      }
 
       String text;
+
       try {
         text = textField.getDocument().getText(0, length);
-        if (text == null || "".equals(text)) text = "0";
+        if (text == null || "".equals(text))
+          text = "0";
       }
       catch (BadLocationException ex) {
         ex.printStackTrace();
         text = "0";
       }
 
-      if (Integer.parseInt(text) < minimumCycleRate) {
+      if (Integer.parseInt(text) < MINIMUM_CYCLE_RATE) {
         Toolkit.getDefaultToolkit().beep();
-        textField.setText(String.valueOf(defaultCycleRate));
+        textField.setText(String.valueOf(DEFAULT_CYCLE_RATE));
       }
+
+      userPrefs.writePetrolStationsUpdateCycleRate(Integer.parseInt(text));
     }
   }
 }

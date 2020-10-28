@@ -165,6 +165,45 @@ class UserPrefsTest {
     assertEquals(PetrolType.E5, actualPetrolType);
   }
 
+  @ParameterizedTest
+  @ValueSource(ints = {0, 1, 10, 20, 300, 9999})
+  void writePetrolStationsUpdateCycleRate_writesProperly(int givenCycleRateSeconds) {
+    // when
+    prefs.writePetrolStationsUpdateCycleRate(givenCycleRateSeconds);
+    int actualRate = prefs.readPetrolStationsUpdateCycleRate();
+
+    // then
+    assertEquals(givenCycleRateSeconds, actualRate);
+  }
+
+  @Test
+  void writePetrolStationsUpdateCycleRate_doesNotWriteIfRateIsLessThanZero() {
+    // given
+    prefs.writePetrolStationsUpdateCycleRate(20);
+
+    // when
+    prefs.writePetrolStationsUpdateCycleRate(-1);
+    int actualRate = prefs.readPetrolStationsUpdateCycleRate();
+
+    // then
+    assertNotEquals(-1, actualRate);
+  }
+
+  @ParameterizedTest
+  @ValueSource(booleans = {false, true})
+  void readPetrolStationsUpdateCycleRate_returnsDefaultValueIfPrefDoesNotExist(boolean removeNode)
+  throws BackingStoreException {
+    // given
+    if (removeNode)
+      prefs.getRealPrefs().removeNode();
+
+    // when
+    int actualRate = prefs.readPetrolStationsUpdateCycleRate();
+
+    // then
+    assertEquals(300, actualRate);
+  }
+
   @Test
   void writePushMessageUserId_writesProperly() {
     // given

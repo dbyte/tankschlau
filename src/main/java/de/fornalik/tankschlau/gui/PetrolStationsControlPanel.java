@@ -164,7 +164,9 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
         ((PetrolStationsWorker) workerService.getWorker()).setUserGeo(getUserGeo());
         // Start a cycle every x seconds
         workerService.setTimeUnit(TimeUnit.SECONDS);
-        workerService.startCyclic(this::onSingleCycleFinished, 10);
+        workerService.startCyclic(
+            this::onSingleCycleFinished,
+            userPrefs.readPetrolStationsUpdateCycleRate());
 
         workerService.processCountdown((remaining) ->
             this.updateCountdown(remaining, workerService.getTimeUnit()));
