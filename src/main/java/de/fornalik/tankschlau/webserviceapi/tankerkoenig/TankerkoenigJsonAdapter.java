@@ -56,7 +56,6 @@ public class TankerkoenigJsonAdapter {
   List<PetrolStation> createPetrolStations(String jsonString) {
     if (jsonString == null || "".equals(jsonString)) {
       LOGGER.warning("JSON response string is null or empty: " + jsonString);
-
       return new ArrayList<>();
     }
 
@@ -66,8 +65,7 @@ public class TankerkoenigJsonAdapter {
         .get("stations");
 
     if (stationsJsonElement == null || !stationsJsonElement.isJsonArray()) {
-      LOGGER.severe("No stations found in JSON: " + jsonString);
-
+      LOGGER.warning("No stations found in JSON: " + jsonString);
       return new ArrayList<>();
     }
 

@@ -26,6 +26,7 @@ import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 // TODO unit tests
+
 /**
  * Worker for PetrolStationsService.
  */
@@ -86,8 +87,8 @@ public class PetrolStationsWorker implements RunnableCallbackWorker<List<PetrolS
     List<PetrolStation> data = petrolStationsService.getNeighbourhoodStations((userGeo));
     Optional<String> errorMessage = petrolStationsService.getTransactInfo().getErrorMessage();
 
-    if (errorMessage.isPresent())
-      LOGGER.warning(L10N.get("msg.ErrorServerConnection", errorMessage));
+    errorMessage.ifPresent(
+        message -> LOGGER.warning(L10N.get("msg.ErrorServerConnection", message)));
 
     if (data.size() == 0) {
       LOGGER.warning(L10N.get("msg.NoPetrolStationsFoundInNeighbourhood"));
