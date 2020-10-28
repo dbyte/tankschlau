@@ -79,11 +79,6 @@ final class TankSchlauBootstrap {
         .registerTypeAdapter(Petrols.class, new PetrolsJsonAdapter())
         .create();
 
-    JsonResponse petrolStationsJsonResponse = new TankerkoenigResponse(
-        jsonProvider,
-        new ResponseBodyImpl(),
-        new TransactInfoImpl());
-
     JsonResponse geocodingResponse = new GoogleGeocodingResponse(
         jsonProvider,
         new ResponseBodyImpl(),
@@ -96,14 +91,17 @@ final class TankSchlauBootstrap {
 
     geocodingWorker = new GeocodingWorker(geocodingService);
 
-    GeoRequest geoRequest = TankerkoenigRequest.create(tankerkoenigApikeyManager);
-
     TankerkoenigJsonAdapter tankerkoenigJsonAdapter = new TankerkoenigJsonAdapter(jsonProvider);
+
+    JsonResponse petrolStationsJsonResponse = new TankerkoenigResponse(
+        jsonProvider,
+        new ResponseBodyImpl(),
+        new TransactInfoImpl());
 
     PetrolStationsRepo petrolStationsRepo = new TankerkoenigPetrolStationsRepo(
         httpClient,
         tankerkoenigJsonAdapter,
-        geoRequest,
+        TankerkoenigRequest.create(tankerkoenigApikeyManager),
         petrolStationsJsonResponse);
 
     PetrolStationsService petrolStationsService = new PetrolStationsWebService(petrolStationsRepo);
