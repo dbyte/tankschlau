@@ -73,6 +73,7 @@ class PetrolTypePanel extends JPanel implements ActionListener {
       radioButton.setForeground(CustomColor.BUTTON_FOREGROUND);
       radioButton.addActionListener(this);
       radioButton.setActionCommand(petrolType.name());
+      radioButton.setFocusable(false);
       petrolTypeBtnGroup.add(radioButton);
       panel.add(radioButton);
     }
