@@ -40,7 +40,8 @@ public final class TankSchlau {
     new SwingBootstrap(
         container.userPrefs,
         container.apiKeyStore,
-        container.petrolStationsWorker);
+        container.petrolStationsWorker,
+        container.geocodingWorker);
   }
 
   private void processVmOptions() {

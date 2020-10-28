@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package de.fornalik.tankschlau.webserviceapi.common;
+package de.fornalik.tankschlau.storage;
 
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.storage.HasTransactionInfo;
 
 import java.util.Optional;
 

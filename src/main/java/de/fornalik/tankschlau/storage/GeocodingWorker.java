@@ -16,11 +16,14 @@
 
 package de.fornalik.tankschlau.storage;
 
+import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.RunnableCallbackWorker;
 
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
@@ -31,12 +34,20 @@ import java.util.logging.Logger;
  */
 public class GeocodingWorker implements RunnableCallbackWorker<Geo> {
 
-  public static final Logger LOGGER = Logger.getLogger(GeocodingWorker.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(GeocodingWorker.class.getName());
   private static final Localization L10N = Localization.getInstance();
+
+  private final GeocodingService geocodingService;
+  private Address userAddress;
   private Consumer<Geo> callback;
 
-  public GeocodingWorker() {
+  public GeocodingWorker(GeocodingService geocodingService) {
+    this.geocodingService = geocodingService;
     this.callback = null;
+  }
+
+  public void setUserAddress(Address userAddress) {
+    this.userAddress = Objects.requireNonNull(userAddress);
   }
 
   @Override
@@ -51,7 +62,7 @@ public class GeocodingWorker implements RunnableCallbackWorker<Geo> {
 
     try {
       // int divisionByZero = 1 / 0;
-      data = findGeo();
+      data = findUserGeo();
     }
 
     catch (Exception e) {
@@ -71,12 +82,19 @@ public class GeocodingWorker implements RunnableCallbackWorker<Geo> {
     callback.accept(data);
   }
 
-  private Geo findGeo() {
-    LOGGER.warning(L10N.get("msg.NoGeocodingResultsForAddress"));
-    return null;
-  }
+  private Geo findUserGeo() {
+    Optional<Geo> geo = geocodingService.findGeo(userAddress);
+    Optional<String> responseErrorMsg = geocodingService.getTransactInfo().getErrorMessage();
 
-  private Geo createDemoData() {
-    return new Geo(52.983041830, 48.19385643, 4.123);
+    if (responseErrorMsg.isPresent()) {
+      LOGGER.warning(L10N.get("msg.NoGeocodingResultsForAddress", responseErrorMsg.get()));
+      return null;
+    }
+    else if (!geo.isPresent()) {
+      LOGGER.warning(L10N.get("msg.NoGeocodingResultsForAddress", ""));
+      return null;
+    }
+
+    return geo.get();
   }
 }

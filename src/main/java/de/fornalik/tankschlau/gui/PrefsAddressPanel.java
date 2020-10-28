@@ -31,12 +31,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.Optional;
+import java.util.logging.Logger;
 
 /**
  * User preferences panel for user location
  */
 class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMixin {
 
+  private static final Logger LOGGER = Logger.getLogger(PrefsAddressPanel.class.getName());
   private static final Localization L10N = Localization.getInstance();
   private static final Dimension totalDimension = new Dimension(350, 250);
 
@@ -54,10 +57,14 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
   private final BtnGeoRequestController btnGeoRequestController;
   private final FooterPanel footerPanel;
 
-  PrefsAddressPanel(UserPrefs userPrefs, FooterPanel footerPanel) {
+  PrefsAddressPanel(
+      UserPrefs userPrefs,
+      FooterPanel footerPanel,
+      WorkerService<Geo> geocodingWorkerService) {
+
     super();
 
-    workerService = new SwingWorkerService<>(new GeocodingWorker());
+    workerService = geocodingWorkerService;
     this.userPrefs = userPrefs;
     this.footerPanel = footerPanel;
 
@@ -184,6 +191,17 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
     });
   }
 
+  private Optional<Address> readAndVerifyAddress() {
+    Optional<Address> address = userPrefs.readAddress();
+
+    if (address.isPresent() && address.get().isValid()) {
+      return address;
+    }
+
+    LOGGER.warning(L10N.get("msg.IncompleteUserAddress"));
+    return Optional.empty();
+  }
+
   private void writeAddress() {
     Address address = new Address(
         "",
@@ -264,12 +282,22 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
   private class BtnGeoRequestListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
-      workerService.startOneShot(this::onOneShotWorkerFinished);
-      btnGeoRequest.setEnabled(false);
-      footerPanel.onOneShotWorkerStarted("Geocoding");
+      Optional<Address> address = readAndVerifyAddress();
+      if (!address.isPresent()) return;
+
+      ((GeocodingWorker) workerService.getWorker()).setUserAddress(address.get());
+      workerService.startOneShot(this::onGeocodingWorkerFinished);
+      this.onGeocodingWorkerStarted();
     }
 
-    private void onOneShotWorkerFinished(Geo data) {
+    private void onGeocodingWorkerStarted() {
+      SwingUtilities.invokeLater(() -> {
+        btnGeoRequest.setEnabled(false);
+        footerPanel.onOneShotWorkerStarted("Geocoding");
+      });
+    }
+
+    private void onGeocodingWorkerFinished(Geo data) {
       SwingUtilities.invokeLater(() -> {
         btnGeoRequest.setEnabled(true);
         footerPanel.onOneShotWorkerFinished();
@@ -277,6 +305,9 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
 
         textGeoLatitude.setText(String.valueOf(data.getLatitude()));
         textGeoLongitude.setText(String.valueOf(data.getLongitude()));
+
+        // Write to user preferences
+        writeAddress();
       });
     }
   }

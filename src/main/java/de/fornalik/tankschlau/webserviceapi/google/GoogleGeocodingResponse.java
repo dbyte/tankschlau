@@ -40,7 +40,10 @@ public class GoogleGeocodingResponse extends BaseResponse implements JsonRespons
   private static final Logger LOGGER = Logger.getLogger(GoogleGeocodingResponse.class.getName());
   private final Gson jsonProvider;
 
-  GoogleGeocodingResponse(Gson jsonProvider, ResponseBody responseBody, TransactInfo transactInfo) {
+  public GoogleGeocodingResponse(
+      Gson jsonProvider,
+      ResponseBody responseBody,
+      TransactInfo transactInfo) {
     super(Objects.requireNonNull(responseBody), Objects.requireNonNull(transactInfo));
     this.jsonProvider = Objects.requireNonNull(jsonProvider);
   }

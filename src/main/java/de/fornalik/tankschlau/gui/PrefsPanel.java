@@ -16,7 +16,9 @@
 
 package de.fornalik.tankschlau.gui;
 
+import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.user.UserPrefs;
+import de.fornalik.tankschlau.util.WorkerService;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyStore;
 
 import javax.swing.*;
@@ -30,9 +32,14 @@ class PrefsPanel extends JPanel {
   private final JPanel prefsAddressPanel;
   private final JPanel prefsApiKeyPanel;
 
-  PrefsPanel(UserPrefs userPrefs, ApiKeyStore apiKeyStore, FooterPanel footerPanel) {
+  PrefsPanel(
+      UserPrefs userPrefs,
+      ApiKeyStore apiKeyStore,
+      WorkerService<Geo> geocodingWorkerService,
+      FooterPanel footerPanel) {
+
     this.prefsCyclePanel = new PrefsCyclePanel(userPrefs);
-    this.prefsAddressPanel = new PrefsAddressPanel(userPrefs, footerPanel);
+    this.prefsAddressPanel = new PrefsAddressPanel(userPrefs, footerPanel, geocodingWorkerService);
     this.prefsApiKeyPanel = new PrefsApiKeyPanel(apiKeyStore);
     this.initView();
   }

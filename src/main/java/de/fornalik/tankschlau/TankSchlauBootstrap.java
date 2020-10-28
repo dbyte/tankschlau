@@ -24,10 +24,7 @@ import de.fornalik.tankschlau.net.OkHttpClient;
 import de.fornalik.tankschlau.net.ResponseBodyImpl;
 import de.fornalik.tankschlau.station.Petrols;
 import de.fornalik.tankschlau.station.PetrolsJsonAdapter;
-import de.fornalik.tankschlau.storage.PetrolStationsRepo;
-import de.fornalik.tankschlau.storage.PetrolStationsService;
-import de.fornalik.tankschlau.storage.PetrolStationsWorker;
-import de.fornalik.tankschlau.storage.TransactInfoImpl;
+import de.fornalik.tankschlau.storage.*;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.user.UserPrefsApiKeyStore;
 import de.fornalik.tankschlau.util.Localization;
@@ -35,6 +32,7 @@ import de.fornalik.tankschlau.util.LoggingConfig;
 import de.fornalik.tankschlau.webserviceapi.common.*;
 import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingClient;
 import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingRequest;
+import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingResponse;
 import de.fornalik.tankschlau.webserviceapi.pushover.PushoverMessageContent;
 import de.fornalik.tankschlau.webserviceapi.pushover.PushoverMessageRequest;
 import de.fornalik.tankschlau.webserviceapi.pushover.PushoverMessageResponse;
@@ -60,6 +58,7 @@ final class TankSchlauBootstrap {
   final ApiKeyManager geocodingApikeyManager;
   final ApiKeyManager tankerkoenigApikeyManager;
   final GeocodingService geocodingService;
+  final GeocodingWorker geocodingWorker;
   final GeoRequest geoRequest;
   final PetrolStationsRepo petrolStationsRepo;
   final JsonResponse petrolStationsJsonResponse;
@@ -97,12 +96,20 @@ final class TankSchlauBootstrap {
         new ResponseBodyImpl(),
         new TransactInfoImpl());
 
+    JsonResponse geocodingResponse = new GoogleGeocodingResponse(
+        jsonProvider,
+        new ResponseBodyImpl(),
+        new TransactInfoImpl());
+
     geocodingService = new GoogleGeocodingClient(
         httpClient,
         GoogleGeocodingRequest.create(geocodingApikeyManager),
-        petrolStationsJsonResponse);
+        geocodingResponse);
+
+    geocodingWorker = new GeocodingWorker(geocodingService);
 
     geoRequest = TankerkoenigRequest.create(tankerkoenigApikeyManager);
+
     tankerkoenigJsonAdapter = new TankerkoenigJsonAdapter(jsonProvider);
 
     petrolStationsRepo = new TankerkoenigPetrolStationsRepo(

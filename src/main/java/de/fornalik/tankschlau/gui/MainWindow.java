@@ -16,6 +16,7 @@
 
 package de.fornalik.tankschlau.gui;
 
+import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
@@ -38,8 +39,9 @@ class MainWindow extends JFrame {
 
   MainWindow(
       UserPrefs userPrefs,
+      ApiKeyStore apiKeyStore,
       WorkerService<List<PetrolStation>> petrolStationsWorkerService,
-      ApiKeyStore apiKeyStore) {
+      WorkerService<Geo> geocodingWorkerService) {
 
     super(Localization.APP_NAME);
 
@@ -50,7 +52,11 @@ class MainWindow extends JFrame {
         userPrefs,
         petrolStationsWorkerService);
 
-    this.prefsPanelTab = new PrefsPanel(userPrefs, apiKeyStore, (FooterPanel) this.footerPanel);
+    this.prefsPanelTab = new PrefsPanel(
+        userPrefs,
+        apiKeyStore,
+        geocodingWorkerService,
+        (FooterPanel) this.footerPanel);
 
     this.initView();
   }
