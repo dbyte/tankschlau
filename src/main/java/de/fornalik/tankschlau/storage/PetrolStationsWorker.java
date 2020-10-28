@@ -30,7 +30,7 @@ import java.util.logging.Logger;
  * Worker for PetrolStationsService.
  */
 public class PetrolStationsWorker implements RunnableCallbackWorker<List<PetrolStation>> {
-  public static final Logger LOGGER = Logger.getLogger(PetrolStationsWorker.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(PetrolStationsWorker.class.getName());
   private static final Localization L10N = Localization.getInstance();
 
   private final PetrolStationsService petrolStationsService;
