@@ -50,24 +50,12 @@ import java.util.Locale;
  */
 final class TankSchlauBootstrap {
   final UserPrefs userPrefs;
-  final HttpClient httpClient;
-  final Gson jsonProvider;
-  final TankerkoenigJsonAdapter tankerkoenigJsonAdapter;
   final ApiKeyStore apiKeyStore;
   final ApiKeyManager apiKeyManager;
   final ApiKeyManager geocodingApikeyManager;
   final ApiKeyManager tankerkoenigApikeyManager;
-  final GeocodingService geocodingService;
   final GeocodingWorker geocodingWorker;
-  final GeoRequest geoRequest;
-  final PetrolStationsRepo petrolStationsRepo;
-  final JsonResponse petrolStationsJsonResponse;
-  final PetrolStationsService petrolStationsService;
   final PetrolStationsWorker petrolStationsWorker;
-  final PetrolStationMessageContent petrolStationMessageContent;
-  final MessageRequest messageRequest;
-  final JsonResponse messageResponse;
-  final MessageService messageClient;
 
   TankSchlauBootstrap() {
     /*
@@ -80,18 +68,18 @@ final class TankSchlauBootstrap {
     l10n.configure(Locale.GERMANY);
 
     userPrefs = new UserPrefs("/de/fornalik/tankschlau");
-    httpClient = new OkHttpClient(new okhttp3.OkHttpClient());
-
-    jsonProvider = new GsonBuilder()
-        .registerTypeAdapter(Petrols.class, new PetrolsJsonAdapter())
-        .create();
-
     apiKeyStore = new UserPrefsApiKeyStore(userPrefs);
     apiKeyManager = ApiKeyManager.createForPushMessage(apiKeyStore);
     geocodingApikeyManager = ApiKeyManager.createForGeocoding(apiKeyStore);
     tankerkoenigApikeyManager = ApiKeyManager.createForPetrolStations(apiKeyStore);
 
-    petrolStationsJsonResponse = new TankerkoenigResponse(
+    HttpClient httpClient = new OkHttpClient(new okhttp3.OkHttpClient());
+
+    Gson jsonProvider = new GsonBuilder()
+        .registerTypeAdapter(Petrols.class, new PetrolsJsonAdapter())
+        .create();
+
+    JsonResponse petrolStationsJsonResponse = new TankerkoenigResponse(
         jsonProvider,
         new ResponseBodyImpl(),
         new TransactInfoImpl());
@@ -101,33 +89,36 @@ final class TankSchlauBootstrap {
         new ResponseBodyImpl(),
         new TransactInfoImpl());
 
-    geocodingService = new GoogleGeocodingClient(
+    GeocodingService geocodingService = new GoogleGeocodingClient(
         httpClient,
         GoogleGeocodingRequest.create(geocodingApikeyManager),
         geocodingResponse);
 
     geocodingWorker = new GeocodingWorker(geocodingService);
 
-    geoRequest = TankerkoenigRequest.create(tankerkoenigApikeyManager);
+    GeoRequest geoRequest = TankerkoenigRequest.create(tankerkoenigApikeyManager);
 
-    tankerkoenigJsonAdapter = new TankerkoenigJsonAdapter(jsonProvider);
+    TankerkoenigJsonAdapter tankerkoenigJsonAdapter = new TankerkoenigJsonAdapter(jsonProvider);
 
-    petrolStationsRepo = new TankerkoenigPetrolStationsRepo(
+    PetrolStationsRepo petrolStationsRepo = new TankerkoenigPetrolStationsRepo(
         httpClient,
         tankerkoenigJsonAdapter,
         geoRequest,
         petrolStationsJsonResponse);
 
-    petrolStationsService = new PetrolStationsWebService(petrolStationsRepo);
+    PetrolStationsService petrolStationsService = new PetrolStationsWebService(petrolStationsRepo);
 
     petrolStationsWorker = new PetrolStationsWorker(petrolStationsService);
 
-    petrolStationMessageContent = new PushoverMessageContent();
-    messageRequest = new PushoverMessageRequest(apiKeyManager, userPrefs);
-    messageResponse = new PushoverMessageResponse(
+    PetrolStationMessageContent petrolStationMessageContent = new PushoverMessageContent();
+    MessageRequest messageRequest = new PushoverMessageRequest(apiKeyManager, userPrefs);
+    JsonResponse messageResponse = new PushoverMessageResponse(
         jsonProvider,
         new ResponseBodyImpl(),
         new TransactInfoImpl());
-    messageClient = new PushoverMessageService(httpClient, messageRequest, messageResponse);
+    MessageService messageClient = new PushoverMessageService(
+        httpClient,
+        messageRequest,
+        messageResponse);
   }
 }
