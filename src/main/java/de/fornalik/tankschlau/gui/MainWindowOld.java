@@ -111,7 +111,6 @@ public class MainWindowOld extends JFrame {
 
         model.addElement(
             "********** "
-                + l10n.get("msg.CurrentPricesSortedBy", sortedFor.name())
                 + " **********");
 
         model.addElement(" ");
@@ -123,7 +122,7 @@ public class MainWindowOld extends JFrame {
       }
 
       catch (Exception e) {
-        LOGGER.warning(l10n.get("msg.ErrorWhileRequestingPrices", e.getClass().getTypeName()));
+        // LOGGER.warning(l10n.get("msg.ErrorWhileRequestingPrices", e.getClass().getTypeName()));
         LOGGER.warning(e.getMessage());
         e.printStackTrace();
       }
@@ -139,12 +138,12 @@ public class MainWindowOld extends JFrame {
     List<PetrolStation> data = petrolStationsService.getNeighbourhoodStations((geo.get()));
     Optional<String> errorMessage = petrolStationsService.getTransactInfo().getErrorMessage();
 
-    if (errorMessage.isPresent())
+/*    if (errorMessage.isPresent())
       LOGGER.warning(l10n.get("msg.ErrorServerConnection", errorMessage));
 
     if (data.size() == 0) {
       LOGGER.warning(l10n.get("msg.NoPetrolStationsFoundInNeighbourhood"));
-    }
+    }*/
 
     return data;
   }
@@ -152,8 +151,7 @@ public class MainWindowOld extends JFrame {
   private Address getUserPrefAddress() {
     Address address = userPrefs
         .readAddress()
-        .orElseThrow(() -> new IllegalStateException(l10n.get(
-            "msg.UnableToRequestPetrolStations_ReasonNoGeoForUser")));
+        .orElseThrow(() -> new IllegalStateException("blabla"));
 
     if (!address.getGeo().isPresent()) {
       Optional<Geo> geoFromWebRepo = getUserGeoFromWebRepo(address);
@@ -218,8 +216,7 @@ public class MainWindowOld extends JFrame {
   }
 
   private String createPetrolString(PetrolStation station, PetrolType type) {
-    String msg = l10n
-        .get("msg.NoPetrolDataForStation", type.name(), station.getAddress().getName());
+    String msg = "blabla";
 
     return station
         .findPetrol(type)
