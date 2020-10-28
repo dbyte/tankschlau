@@ -273,6 +273,8 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
       SwingUtilities.invokeLater(() -> {
         btnGeoRequest.setEnabled(true);
         footerPanel.onOneShotWorkerFinished();
+        if (data == null) return;
+
         textGeoLatitude.setText(String.valueOf(data.getLatitude()));
         textGeoLongitude.setText(String.valueOf(data.getLongitude()));
       });

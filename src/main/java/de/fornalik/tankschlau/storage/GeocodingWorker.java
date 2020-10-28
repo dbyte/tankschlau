@@ -17,6 +17,7 @@
 package de.fornalik.tankschlau.storage;
 
 import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.RunnableCallbackWorker;
 
 import java.util.Arrays;
@@ -24,11 +25,14 @@ import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 // TODO unit tests
+
 /**
  * Simulate some operations which should be logged into the Swing TextArea.
  */
 public class GeocodingWorker implements RunnableCallbackWorker<Geo> {
+
   public static final Logger LOGGER = Logger.getLogger(GeocodingWorker.class.getName());
+  private static final Localization L10N = Localization.getInstance();
   private Consumer<Geo> callback;
 
   public GeocodingWorker() {
@@ -42,19 +46,12 @@ public class GeocodingWorker implements RunnableCallbackWorker<Geo> {
 
   @Override
   public void run() {
-    LOGGER.info("Requesting Geocoding data");
+    LOGGER.info(L10N.get("msg.GeocodingRequestRunning"));
     Geo data = null;
 
     try {
       // int divisionByZero = 1 / 0;
-      Thread.sleep(2000);
-      data = createDemoData();
-    }
-
-    catch (InterruptedException e) {
-      e.printStackTrace();
-      LOGGER.severe("Interrupted: " + e.getMessage());
-      return;
+      data = findGeo();
     }
 
     catch (Exception e) {
@@ -65,15 +62,18 @@ public class GeocodingWorker implements RunnableCallbackWorker<Geo> {
 
       LOGGER.severe(errMsg);
 
-      // Interrupt to This does NOT invoke an InterruptedException as I'm interrupting myself,
-      // which is always
-      // permitted.
+      // Interrupting my own thread does NOT invoke an InterruptedException and is always permitted.
       Thread.currentThread().interrupt();
     }
 
-    LOGGER.info("Work done.");
+    LOGGER.info(L10N.get("msg.GeocodingRequestDone"));
 
     callback.accept(data);
+  }
+
+  private Geo findGeo() {
+    LOGGER.warning(L10N.get("msg.NoGeocodingResultsForAddress"));
+    return null;
   }
 
   private Geo createDemoData() {
