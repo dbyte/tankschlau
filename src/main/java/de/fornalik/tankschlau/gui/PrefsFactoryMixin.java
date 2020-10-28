@@ -18,7 +18,10 @@ package de.fornalik.tankschlau.gui;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.swing.text.*;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 import java.awt.*;
 import java.util.regex.Pattern;
 
@@ -102,40 +105,87 @@ interface PrefsFactoryMixin {
   /**
    * Creates a new default JTextField with an activated integer number filter.
    *
-   * @param maxDigits Maximum allowed digits.
+   * @param maxChars Maximum allowed characters.
    * @return The instance of the new JTextField with an activated DocumentFilter.
    */
-  default JTextField createNumbersOnlyTextField(int maxDigits) {
-    if (maxDigits <= 0)
-      throw new IllegalArgumentException("maxDigits must be greater than 0.");
+  default JTextField createIntegerOnlyTextField(int maxChars) {
+    if (maxChars <= 0)
+      throw new IllegalArgumentException("maxChars must be greater than 0.");
 
     JTextField textField = new JTextField();
-    ((AbstractDocument) textField.getDocument()).setDocumentFilter(new NumbersOnly(maxDigits));
+    ((AbstractDocument) textField.getDocument()).setDocumentFilter(new NumbersOnly(maxChars));
     return textField;
   }
 
   /**
-   * Filters only positive Integers of a JTextField with a given amount of max. digits.
+   * Creates a new default JTextField with an activated integer or float number filter.
+   *
+   * @param maxChars Maximum allowed characters.
+   * @return The instance of the new JTextField with an activated DocumentFilter.
    */
-  class NumbersOnly extends DocumentFilter {
-    final int maxDigits;
-    final Pattern regex = Pattern.compile("^[0-9]+$");
+  default JTextField createIntegerOrFloatOnlyTextField(int maxChars) {
+    if (maxChars <= 0)
+      throw new IllegalArgumentException("maxChars must be greater than 0.");
 
-    public NumbersOnly(int maxDigits) {
-      this.maxDigits = maxDigits;
+    JTextField textField = new JTextField();
+    ((AbstractDocument) textField.getDocument())
+        .setDocumentFilter(new IntegerOrFloatOnly(maxChars));
+    return textField;
+  }
+
+  /**
+   * Filters only positive Floats or Integers of a JTextField with a given amount of
+   * maximum characters.
+   */
+  class IntegerOrFloatOnly extends NumbersOnly {
+    private final Pattern regex = Pattern.compile("^(0|[1-9]\\d*)(\\.\\d*)?$");
+
+    IntegerOrFloatOnly(int maxDigits) {
+      super(maxDigits);
     }
 
     @Override
-    public void replace(FilterBypass filterBypass, int offs, int length, String str, AttributeSet a)
+    protected Pattern getRegex() {
+      return regex;
+    }
+  }
+
+  /**
+   * Filters only positive Integers of a JTextField with a given amount of maximum characters.
+   */
+  class NumbersOnly extends DocumentFilter {
+    protected final int maxChars;
+    private final Pattern regex = Pattern.compile("^[0-9]+$");
+
+    NumbersOnly(int maxChars) {
+      this.maxChars = maxChars;
+    }
+
+    protected Pattern getRegex() {
+      return regex;
+    }
+
+    // Source: https://stackoverflow.com/a/63964109
+
+    @Override
+    public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+      String text = fb.getDocument().getText(0, fb.getDocument().getLength());
+      String newText = text.substring(0, offset) + text.substring(offset + length);
+
+      if (newText.matches(getRegex().pattern()) || newText.length() == 0) {
+        super.remove(fb, offset, length);
+      }
+    }
+
+    @Override
+    public void replace(FilterBypass fb, int offset, int length, String _text, AttributeSet attrs)
     throws BadLocationException {
 
-      Document doc = filterBypass.getDocument();
-      String text = doc.getText(0, doc.getLength());
-      text += str;
+      String text = fb.getDocument().getText(0, fb.getDocument().getLength());
+      String newText = text.substring(0, offset) + _text + text.substring(offset + length);
 
-      if ((doc.getLength() + str.length() - length) <= maxDigits
-          && text.matches(regex.pattern())) {
-        super.replace(filterBypass, offs, length, str, a);
+      if (newText.length() <= maxChars && newText.matches(getRegex().pattern())) {
+        super.replace(fb, offset, length, _text, attrs);
       }
       else {
         Toolkit.getDefaultToolkit().beep();
@@ -143,15 +193,15 @@ interface PrefsFactoryMixin {
     }
 
     @Override
-    public void insertString(FilterBypass filterBypass, int offs, String str, AttributeSet a)
+    public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
     throws BadLocationException {
 
-      Document doc = filterBypass.getDocument();
-      String text = doc.getText(0, doc.getLength());
-      text += str;
+      String text = fb.getDocument().getText(0, fb.getDocument().getLength());
+      String newText = text.substring(0, offset) + string + text.substring(offset);
 
-      if ((doc.getLength() + str.length()) <= maxDigits && text.matches(regex.pattern())) {
-        super.insertString(filterBypass, offs, str, a);
+      if ((fb.getDocument().getLength() + string.length()) <= maxChars
+          && newText.matches(getRegex().pattern())) {
+        super.insertString(fb, offset, string, attr);
       }
       else {
         Toolkit.getDefaultToolkit().beep();

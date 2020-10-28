@@ -71,11 +71,11 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
 
     this.textStreet = createTextField();
     this.textHouseNumber = createTextField();
-    this.textPostCode = createTextField();
+    this.textPostCode = createIntegerOnlyTextField(5); // German postcodes
     this.textCity = createTextField();
-    this.textGeoLatitude = createTextField();
-    this.textGeoLongitude = createTextField();
-    this.textSearchRadius = createTextField();
+    this.textGeoLatitude = createIntegerOrFloatOnlyTextField(20);
+    this.textGeoLongitude = createIntegerOrFloatOnlyTextField(20);
+    this.textSearchRadius = createIntegerOrFloatOnlyTextField(5);
 
     this.btnGeoRequest = this.createGeoRequestButton();
     this.btnGeoRequestController = new BtnGeoRequestController();
@@ -208,23 +208,22 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
   }
 
   private void writeAddressToUserPrefs() {
+    //if (isValidUserAddress())
     userPrefs.writeAddress(createAddressFromFields());
   }
 
   private Address createAddressFromFields() {
-    Address address = new Address(
+    if (!isValidUserAddress()) {
+      LOGGER.warning(L10N.get("msg.IncompleteUserAddress"));
+    }
+
+    return new Address(
         "",
         textStreet.getText(),
         textHouseNumber.getText(),
         textCity.getText(),
         textPostCode.getText(),
         createGeoFromFields());
-
-    if (!isValidUserAddress()) {
-      LOGGER.warning(L10N.get("msg.IncompleteUserAddress"));
-    }
-
-    return address;
   }
 
   private boolean isValidUserAddress() {

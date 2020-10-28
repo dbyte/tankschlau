@@ -43,7 +43,7 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
 
   PrefsCyclePanel(UserPrefs userPrefs) {
     this.userPrefs = userPrefs;
-    this.textCycleRate = createNumbersOnlyTextField(5);
+    this.textCycleRate = createIntegerOnlyTextField(5);
     this.constraints = new GridBagConstraints();
 
     this.initView();
