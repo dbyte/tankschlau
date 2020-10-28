@@ -33,7 +33,7 @@ import java.util.List;
  */
 class MainWindow extends JFrame {
   private static final Localization L10N = Localization.getInstance();
-  private static final Dimension DEFAULT_WINDOW_DIMENSION = new Dimension(1200, 800);
+  private static final Dimension DEFAULT_WINDOW_DIMENSION = new Dimension(1400, 900);
   private final JPanel domainPanelTab, prefsPanelTab;
   private final JPanel footerPanel;
 
