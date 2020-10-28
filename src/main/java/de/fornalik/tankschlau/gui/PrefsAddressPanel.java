@@ -105,7 +105,7 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
   }
 
   private JPanel createAddressFieldsPanel() {
-    JPanel panel = createGridPanel(4, 2);
+    JPanel panel = createGridPanel(4);
 
     panel.add(createLabel(L10N.get("label.AdrStreet")));
     panel.add(textStreet);
@@ -123,7 +123,7 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
   }
 
   private JPanel createGeoFieldsPanel() {
-    JPanel panel = createGridPanel(2, 2);
+    JPanel panel = createGridPanel(2);
 
     panel.add(createLabel(L10N.get("label.AdrLatitude")));
     panel.add(textGeoLatitude);
@@ -135,7 +135,7 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
   }
 
   private JPanel createDistancePanel() {
-    JPanel panel = createGridPanel(1, 2);
+    JPanel panel = createGridPanel(1);
 
     panel.add(createLabel(L10N.get("label.PetrolStationsSearchRadius")));
     panel.add(textSearchRadius);
@@ -156,7 +156,7 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
     return btnRequestGeo;
   }
 
-  private JPanel createGridPanel(int rows, int columns) {
+  private JPanel createGridPanel(int rows) {
     JPanel panel = new JPanel(new GridLayout(rows, 2));
     panel.setAlignmentX(LEFT_ALIGNMENT);
     panel.setPreferredSize(new Dimension(totalDimension.width, rows * 25 + 4 * rows));
