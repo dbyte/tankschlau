@@ -310,7 +310,7 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
     private void onGeocodingWorkerStarted() {
       SwingUtilities.invokeLater(() -> {
         btnGeoRequest.setEnabled(false);
-        footerPanel.onOneShotWorkerStarted("Geocoding");
+        footerPanel.onOneShotWorkerStarted(L10N.get("msg.GeocodingRequestRunning"));
       });
     }
 

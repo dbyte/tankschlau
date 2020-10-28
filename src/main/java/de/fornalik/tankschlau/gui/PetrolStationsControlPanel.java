@@ -132,7 +132,7 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
     SwingUtilities.invokeLater(() -> {
       btnStartCyclicWork.setEnabled(false);
       btnStartOneShotWork.setEnabled(false);
-      footerPanel.onOneShotWorkerStarted("Petrol Station");
+      footerPanel.onOneShotWorkerStarted(L10N.get("msg.PetrolStationRequestRunning"));
     });
   }
 

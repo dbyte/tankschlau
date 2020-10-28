@@ -97,7 +97,7 @@ class FooterPanel extends JPanel {
 
   void onOneShotWorkerStarted(String name) {
     String legalizedName = name != null ? name : "";
-    labelWork.setText((L10N.get("label.TaskRunning", legalizedName)).trim());
+    labelWork.setText(legalizedName);
     labelWork.setIcon(iconWork);
   }
 
