@@ -92,7 +92,7 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
         return petrolsToHtml(petrolStation.getPetrols());
 
       case 2:
-        return petrolStation.getAddress().getStreet();
+        return petrolStation.getAddress().getStreetAndHouseNumber();
 
       case 3:
         return petrolStation.getAddress()
@@ -101,7 +101,7 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
             .orElse(L10N.get("msg.Unknown"));
 
       case 4:
-        return petrolStation.isOpen() ? L10N.get("msg.NowOpen") : L10N.get("msg.NowClosed");
+        return isOpenToHtml(petrolStation.isOpen());
 
       default:
         return "Unregistered column index: " + columnIndex;
@@ -132,6 +132,26 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
     fireTableDataChanged();
   }
 
+  // TODO This finally belongs to the View Layer, wrong class for a display method.
+  private String isOpenToHtml(boolean isOpen) {
+    StringBuilder out = new StringBuilder("<html>");
+
+    if (isOpen) {
+      out.append("<p>")
+          .append(L10N.get("msg.NowOpen"))
+          .append("</p>");
+    }
+    else {
+      out.append("<p style=\"color:#B71414;\">")
+          .append(L10N.get("msg.NowClosed"))
+          .append("</p>");
+    }
+
+    out.append("</html>");
+    return out.toString();
+  }
+
+  // TODO This finally belongs to the View Layer, wrong class for a display method.
   private String petrolsToHtml(Set<Petrol> petrols) {
     if (petrols.size() == 0)
       return "";
