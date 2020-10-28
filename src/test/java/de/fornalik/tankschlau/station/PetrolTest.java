@@ -22,7 +22,7 @@ class PetrolTest {
   void getTypeAndPrice_returnsConcatenatedStringForGermanLocale() {
     // given
     Map<String, Petrol> givenPetrols = new TreeMap<>();
-    givenPetrols.put("DIESEL 0,978\u00A0\u20AC", new Petrol(PetrolType.DIESEL, 0.978));
+    givenPetrols.put("Diesel 0,978\u00A0\u20AC", new Petrol(PetrolType.DIESEL, 0.978));
     givenPetrols.put("E5 1,00\u00A0\u20AC", new Petrol(PetrolType.E5, 1.00));
     givenPetrols.put("E10 0,00\u00A0\u20AC", new Petrol(PetrolType.E10, 0));
 
