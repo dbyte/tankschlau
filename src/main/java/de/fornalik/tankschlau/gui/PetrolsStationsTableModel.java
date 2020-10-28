@@ -17,10 +17,7 @@
 package de.fornalik.tankschlau.gui;
 
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.station.Petrol;
-import de.fornalik.tankschlau.station.PetrolStation;
-import de.fornalik.tankschlau.station.PetrolStations;
-import de.fornalik.tankschlau.station.Petrols;
+import de.fornalik.tankschlau.station.*;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 
@@ -85,26 +82,26 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
 
   @Override
   public Object getValueAt(int rowIndex, int columnIndex) {
-    PetrolStation record = petrolStations.get(rowIndex);
+    PetrolStation petrolStation = petrolStations.get(rowIndex);
 
     switch (columnIndex) {
       case 0:
-        return record.getAddress().getName();
+        return petrolStation.getAddress().getName();
 
       case 1:
-        return petrolsToHtml(record.getPetrols());
+        return petrolsToHtml(petrolStation.getPetrols());
 
       case 2:
-        return record.getAddress().getStreet();
+        return petrolStation.getAddress().getStreet();
 
       case 3:
-        return record.getAddress()
+        return petrolStation.getAddress()
             .getGeo()
             .map(Geo::getDistanceAwayString)
             .orElse(L10N.get("msg.Unknown"));
 
       case 4:
-        return record.isOpen() ? L10N.get("msg.NowOpen") : L10N.get("msg.NowClosed");
+        return petrolStation.isOpen() ? L10N.get("msg.NowOpen") : L10N.get("msg.NowClosed");
 
       default:
         return "Unregistered column index: " + columnIndex;
@@ -131,6 +128,7 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
   private void sortPetrolStations() {
     PetrolStations
         .sortByPriceAndDistanceForPetrolType(petrolStations, userPrefs.readPreferredPetrolType());
+
     fireTableDataChanged();
   }
 
@@ -138,20 +136,27 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
     if (petrols.size() == 0)
       return "";
 
+    final PetrolType preferredPetrolType = userPrefs.readPreferredPetrolType();
     final List<Petrol> petrolList = Petrols.getSortedByPetrolTypeAndPrice(petrols);
-    final String lineBreak = "<br>";
 
+    // Format as html as we need multiple lines and colors for the prices per row.
     StringBuilder out = new StringBuilder("<html>");
 
     for (Petrol petrol : petrolList) {
       StringTokenizer st = new StringTokenizer(petrol.getTypeAndPrice(), " ");
       String tabbed = String.format("%-12s", st.nextElement()) + st.nextElement();
 
-      out.append(tabbed.replace(" ", "&nbsp;")).append("<br>");
-    }
+      // Color non-preferred petrol types and their prices light grey.
+      if (petrol.type == preferredPetrolType) {
+        tabbed = "<p>" + tabbed + "</p>";
+      }
+      else {
+        tabbed = "<p style=\"color:#c2c2c2;\">" + tabbed + "</p>";
+      }
 
-    // Remove last <br>
-    out.replace(out.lastIndexOf(lineBreak), out.lastIndexOf(lineBreak) + lineBreak.length(), "");
+      // Convert padding to html-non-breaking-spaces.
+      out.append(tabbed.replace(" ", "&nbsp;"));
+    }
 
     out.append("</html>");
 
