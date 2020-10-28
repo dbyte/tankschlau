@@ -170,7 +170,7 @@ public class UserPrefs {
 
   public void writeApiKey(String id, String apiKey) {
     id = StringLegalizer.create(id).mandatory().end();
-    apiKey = StringLegalizer.create(apiKey).mandatory().end();
+    apiKey = StringLegalizer.create(apiKey).nullToEmpty().end();
 
     realPrefs.put(id, apiKey);
   }
