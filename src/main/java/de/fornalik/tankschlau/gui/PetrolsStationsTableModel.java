@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.logging.Logger;
 
 /**
  * Handles the domain table model and its data, which is a result of the WorkerService and
@@ -43,7 +42,6 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
   public static final String COL_STREET = L10N.get("tableHeader.Place");
   public static final String COL_DISTANCE = L10N.get("tableHeader.Distance");
   public static final String COL_IS_OPEN = L10N.get("tableHeader.Status");
-  private static final Logger LOGGER = Logger.getLogger(PetrolsStationsTableModel.class.getName());
   private static final String[] columns = new String[5];
 
   private final List<PetrolStation> petrolStations;
@@ -115,7 +113,8 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
 
   synchronized void removeAllPetrolStations() {
     this.petrolStations.clear();
-    fireTableDataChanged();
+    //fireTableDataChanged();
+    fireTableRowsDeleted(0, getRowCount());
   }
 
   synchronized void addPetrolStations(List<PetrolStation> petrolStations) {

@@ -23,13 +23,17 @@ import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.WorkerService;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import java.awt.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
  * The app's main representation of data, using a JTable.
  */
-class PetrolStationsDataPanel extends JPanel {
+class PetrolStationsDataPanel extends JPanel implements TableModelListener {
   private static final Localization L10N = Localization.getInstance();
 
   private final UserPrefs userPrefs;
@@ -38,6 +42,7 @@ class PetrolStationsDataPanel extends JPanel {
   private final JTable dataTable;
   private final JScrollPane dataScrollPane;
   private final JLabel headerLabel;
+  private final JLabel lastUpdateLabel;
 
   PetrolStationsDataPanel(
       FooterPanel footerPanel,
@@ -47,6 +52,7 @@ class PetrolStationsDataPanel extends JPanel {
     this.userPrefs = userPrefs;
 
     PetrolsStationsTableModel dataTableModel = new PetrolsStationsTableModel(userPrefs);
+    dataTableModel.addTableModelListener(this);
     this.dataTable = new JTable(dataTableModel);
 
     this.dataScrollPane = new JScrollPane(dataTable);
@@ -57,6 +63,7 @@ class PetrolStationsDataPanel extends JPanel {
         petrolStationsWorkerService);
 
     this.headerLabel = new JLabel();
+    this.lastUpdateLabel = new JLabel();
 
     initView();
   }
@@ -86,11 +93,16 @@ class PetrolStationsDataPanel extends JPanel {
   }
 
   private JPanel createDataHeaderPanel() {
+    // Init label texts
     setHeaderText(userPrefs.readPreferredPetrolType().getReadableName());
+    setLastUpdateText(LocalDateTime.MIN);
+
     headerLabel.setForeground(CustomColor.BOX_HEADER_TEXT);
+    lastUpdateLabel.setForeground(CustomColor.BOX_HEADER_TEXT);
 
     JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     panel.add(headerLabel);
+    panel.add(lastUpdateLabel);
     panel.setMaximumSize(new Dimension(getMaximumSize().width, 25));
 
     return panel;
@@ -98,6 +110,20 @@ class PetrolStationsDataPanel extends JPanel {
 
   private void setHeaderText(String petrolTypeString) {
     headerLabel.setText(L10N.get("msg.CurrentPricesSortedBy", petrolTypeString));
+  }
+
+  private void setLastUpdateText(LocalDateTime lastUpdateAt) {
+    // Set display text of last petrol stations update time.
+    if (lastUpdateAt == LocalDateTime.MIN) {
+      lastUpdateLabel.setText("");
+      return;
+    }
+
+    DateTimeFormatter formatter = DateTimeFormatter
+        .ofPattern("dd.MM.yyyy HH:mm:ss", L10N.getLocale());
+
+    String lastUpdateStr = formatter.format(lastUpdateAt);
+    lastUpdateLabel.setText(L10N.get("msg.LastUpdateAt", lastUpdateStr));
   }
 
   private void configureDataScrollPane() {
@@ -134,5 +160,18 @@ class PetrolStationsDataPanel extends JPanel {
 
   private void onUserPrefsChange(String newValue) {
     setHeaderText(PetrolType.valueOf(newValue).getReadableName());
+  }
+
+  // Set last update time display text according to the data event.
+  @Override
+  public void tableChanged(TableModelEvent e) {
+    if (e.getType() == TableModelEvent.INSERT) {
+      setLastUpdateText(LocalDateTime.now());
+    }
+    else if (e.getType() == TableModelEvent.DELETE) {
+      if (dataTable.getModel().getRowCount() == 0) {
+        setLastUpdateText(LocalDateTime.MIN);
+      }
+    }
   }
 }
