@@ -71,6 +71,9 @@ public class GoogleGeocodingRequest extends BaseRequest implements AddressReques
         "address",
         (address.getPostCode() + " " + address.getCity()).trim(),
         "UTF-8");
+
+    // Additionally, refresh the API key parameter in case the API key has changed within GUI or so.
+    setApiKeyParameter();
   }
 
   private void setBaseData() {
@@ -82,7 +85,10 @@ public class GoogleGeocodingRequest extends BaseRequest implements AddressReques
 
   private void setCommonUrlParameters() {
     putUrlParameter("region", "de");
+    setApiKeyParameter();
+  }
 
+  private void setApiKeyParameter() {
     /* Only add API key if we got one. Google will inform us about a missing/invalid key
     in its response, where we handle errors anyway. */
     apiKeyManager.read().ifPresent(value -> putUrlParameter("key", value));
