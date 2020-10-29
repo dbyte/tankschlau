@@ -137,7 +137,8 @@ class FooterPanel extends JPanel {
 
     else {
       textForCyclicWorker =
-          L10N.get("label.TaskCountdown", remaining + " " + timeUnit.name().toLowerCase());
+          L10N.get("label.TaskCountdown", remaining + " " + L10N.get("timeUnit." + timeUnit));
+
       textForSingleWorker = L10N.get("label.NoNetworkActivity");
       workerIndicator = null;
     }
