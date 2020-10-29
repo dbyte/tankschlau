@@ -18,7 +18,7 @@ package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.Request;
-import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
+import de.fornalik.tankschlau.user.ApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.common.GeoRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

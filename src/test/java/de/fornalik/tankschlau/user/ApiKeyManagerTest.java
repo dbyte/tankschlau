@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.fornalik.tankschlau.webserviceapi.common;
+package de.fornalik.tankschlau.user;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -170,10 +170,10 @@ class ApiKeyManagerTest {
 
     // then
     Mockito.inOrder(apiKeyStoreMock)
-           .verify(
-               apiKeyStoreMock,
-               calls(1))
-           .write(expectedId, expectedApiKey);
+        .verify(
+            apiKeyStoreMock,
+            calls(1))
+        .write(expectedId, expectedApiKey);
   }
 
   @Test

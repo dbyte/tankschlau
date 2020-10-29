@@ -3,6 +3,8 @@ package de.fornalik.tankschlau.util;
 import javax.swing.*;
 import java.util.logging.LogRecord;
 
+// TODO unit tests
+
 public class SwingLoggingHandler extends java.util.logging.Handler {
   private JTextArea textArea;
 

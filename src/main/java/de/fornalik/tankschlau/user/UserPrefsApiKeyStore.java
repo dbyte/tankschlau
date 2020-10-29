@@ -16,8 +16,6 @@
 
 package de.fornalik.tankschlau.user;
 
-import de.fornalik.tankschlau.webserviceapi.common.ApiKeyStore;
-
 import java.util.Optional;
 
 /**

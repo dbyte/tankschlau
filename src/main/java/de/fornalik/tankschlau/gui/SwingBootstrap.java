@@ -18,8 +18,8 @@ package de.fornalik.tankschlau.gui;
 
 import de.fornalik.tankschlau.service.GeocodingWorker;
 import de.fornalik.tankschlau.service.PetrolStationsWorker;
+import de.fornalik.tankschlau.user.ApiKeyStore;
 import de.fornalik.tankschlau.user.UserPrefs;
-import de.fornalik.tankschlau.webserviceapi.common.ApiKeyStore;
 import de.fornalik.tankschlau.webserviceapi.common.PetrolStationMessageWorker;
 
 import javax.swing.*;

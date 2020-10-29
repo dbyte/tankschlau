@@ -17,9 +17,9 @@
 package de.fornalik.tankschlau.gui;
 
 import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.user.ApiKeyStore;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.WorkerService;
-import de.fornalik.tankschlau.webserviceapi.common.ApiKeyStore;
 
 import javax.swing.*;
 import java.awt.*;

@@ -18,8 +18,8 @@ package de.fornalik.tankschlau.webserviceapi.google;
 
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.net.Request;
+import de.fornalik.tankschlau.user.ApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.common.AddressRequest;
-import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

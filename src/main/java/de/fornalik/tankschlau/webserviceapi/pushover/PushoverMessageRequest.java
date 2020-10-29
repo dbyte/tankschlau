@@ -18,10 +18,10 @@ package de.fornalik.tankschlau.webserviceapi.pushover;
 
 import de.fornalik.tankschlau.net.JsonRequest;
 import de.fornalik.tankschlau.net.JsonRequestImpl;
+import de.fornalik.tankschlau.user.ApiKeyManager;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.StringLegalizer;
-import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.common.MessageContent;
 import de.fornalik.tankschlau.webserviceapi.common.MessageRequest;
 

@@ -16,10 +16,10 @@
 
 package de.fornalik.tankschlau.gui;
 
+import de.fornalik.tankschlau.user.ApiKeyManager;
+import de.fornalik.tankschlau.user.ApiKeyStore;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
-import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
-import de.fornalik.tankschlau.webserviceapi.common.ApiKeyStore;
 
 import javax.swing.*;
 import java.awt.*;

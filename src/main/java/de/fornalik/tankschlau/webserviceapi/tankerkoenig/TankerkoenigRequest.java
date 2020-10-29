@@ -18,8 +18,8 @@ package de.fornalik.tankschlau.webserviceapi.tankerkoenig;
 
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.BaseRequest;
+import de.fornalik.tankschlau.user.ApiKeyManager;
 import de.fornalik.tankschlau.util.StringLegalizer;
-import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.common.GeoRequest;
 
 import java.util.Objects;
