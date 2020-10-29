@@ -16,15 +16,44 @@
 
 package de.fornalik.tankschlau.webserviceapi.common;
 
+import de.fornalik.tankschlau.station.PetrolStation;
+import de.fornalik.tankschlau.station.PetrolStations;
+import de.fornalik.tankschlau.station.PetrolType;
+import de.fornalik.tankschlau.util.Localization;
+
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.logging.Logger;
 
 public class MessageWorker {
+  private static final Localization L10N = Localization.getInstance();
+  private static final Logger LOGGER = Logger.getLogger(MessageWorker.class.getName());
 
-  private MessageService messageService;
-  private MessageContent messageContent;
+  private final MessageService messageService;
+  private final MessageContent messageContent;
 
   public MessageWorker(MessageService messageService, MessageContent messageContent) {
     this.messageService = Objects.requireNonNull(messageService);
     this.messageContent = Objects.requireNonNull(messageContent);
+  }
+
+  public void checkSendMessage(List<PetrolStation> stations, PetrolType petrolType) {
+    if (stations == null || stations.size() == 0) {
+      return;
+    }
+
+    PetrolStations.sortByPriceAndDistanceForPetrolType(stations, petrolType);
+    PetrolStation cheapestStation = stations.get(0);
+
+    messageContent.reset();
+    ((PetrolStationMessageContent) messageContent).setMessage(cheapestStation, petrolType);
+
+    messageService.sendMessage(messageContent);
+
+    Optional<String> responseErrorMsg = messageService.getTransactInfo().getErrorMessage();
+
+    responseErrorMsg.ifPresent(
+        errMsg -> LOGGER.warning(L10N.get("msg.SendPushMessageFailed", errMsg)));
   }
 }

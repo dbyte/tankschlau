@@ -40,7 +40,9 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
 
   private static final Logger LOGGER = Logger.getLogger(FooterPanel.class.getName());
   private static final Localization L10N = Localization.getInstance();
-  private static WorkerService<List<PetrolStation>> workerService;
+
+  private final WorkerService<List<PetrolStation>> workerService;
+  private final MessageWorker messageWorker;
   private final UserPrefs userPrefs;
   private final JButton btnStartOneShotWork, btnStartCyclicWork, btnRemoveAllData;
   private final PetrolsStationsTableModel dataTableModel;
@@ -53,7 +55,8 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
       WorkerService<List<PetrolStation>> petrolStationsWorkerService,
       MessageWorker messageWorker) {
 
-    workerService = petrolStationsWorkerService;
+    this.workerService = petrolStationsWorkerService;
+    this.messageWorker = messageWorker;
 
     this.userPrefs = userPrefs;
     this.dataTableModel = dataTableModel;
@@ -134,17 +137,9 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
     });
   }
 
-  private void onSingleCycleFinished(List<PetrolStation> data) {
-    /*private void sendMessage(PetrolStation cheapestStation, PetrolType petrolType) {
-      messageContent.reset();
-      messageContent.setMessage(cheapestStation, petrolType);
-      messageService.sendMessage(messageContent);
-
-      Optional<String> responseErrorMsg = messageService.getTransactInfo().getErrorMessage();
-      responseErrorMsg.ifPresent(errMsg -> LOGGER.warning("Sending push message failed: " +
-      errMsg));
-    }*/
-    SwingUtilities.invokeLater(() -> dataTableModel.addPetrolStations(data));
+  private void onSingleCycleFinished(List<PetrolStation> petrolStations) {
+    SwingUtilities.invokeLater(() -> dataTableModel.addPetrolStations(petrolStations));
+    messageWorker.checkSendMessage(petrolStations, userPrefs.readPreferredPetrolType());
   }
 
   private void onOneShotWorkerStarted() {
@@ -155,9 +150,9 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
     });
   }
 
-  private void onOneShotWorkerFinished(List<PetrolStation> data) {
+  private void onOneShotWorkerFinished(List<PetrolStation> petrolStations) {
     SwingUtilities.invokeLater(() -> {
-      dataTableModel.addPetrolStations(data);
+      dataTableModel.addPetrolStations(petrolStations);
       btnStartCyclicWork.setEnabled(true);
       btnStartOneShotWork.setEnabled(true);
       footerPanel.onOneShotWorkerFinished();
