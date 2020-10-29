@@ -168,6 +168,28 @@ public class UserPrefs {
     return Optional.ofNullable(realPrefs.get(id, null));
   }
 
+  // TODO unit tests
+  public void writePushMessageMaxCallsUntilForceSend(int max) {
+    realPrefs.putInt("pushmessage.max_calls_until_force_send", max);
+  }
+
+  // TODO unit tests
+  public int readPushMessageMaxCallsUntilForceSend() {
+    checkPrefsMissing("pushmessage.max_calls_until_force_send");
+    final int defaultMax = 20;
+    int maxCalls;
+
+    try {
+      maxCalls = realPrefs.getInt("pushmessage.max_calls_until_force_send", defaultMax);
+    }
+    catch (IllegalStateException e) {
+      LOGGER.warning(e.getMessage());
+      maxCalls = defaultMax;
+    }
+
+    return maxCalls;
+  }
+
   public void writeApiKey(String id, String apiKey) {
     id = StringLegalizer.create(id).mandatory().end();
     apiKey = StringLegalizer.create(apiKey).nullToEmpty().end();

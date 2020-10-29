@@ -20,6 +20,7 @@ import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolStations;
 import de.fornalik.tankschlau.station.PetrolType;
 import de.fornalik.tankschlau.station.Petrols;
+import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 
 import java.util.List;
@@ -41,18 +42,22 @@ public class PetrolStationMessageWorker {
 
   private static int callsSinceLastMessage = 0;
   private static double priceAtLastSentMessage = 0.0;
-  private final ExecutorService executor = Executors.newSingleThreadExecutor();
+
+  private final ExecutorService executor;
   private final MessageService messageService;
   private final PetrolStationMessageContent messageContent;
-  private final int maxRequestsUntilForceSendIfPriceIsRisingSinceLastMsg;
+  private final UserPrefs userPrefs;
 
   public PetrolStationMessageWorker(
       MessageService messageService,
-      PetrolStationMessageContent messageContent) {
+      PetrolStationMessageContent messageContent,
+      UserPrefs userPrefs) {
 
     this.messageService = Objects.requireNonNull(messageService);
     this.messageContent = Objects.requireNonNull(messageContent);
-    this.maxRequestsUntilForceSendIfPriceIsRisingSinceLastMsg = 2;
+    this.userPrefs = userPrefs;
+
+    this.executor = Executors.newSingleThreadExecutor();
   }
 
   /**
@@ -105,7 +110,6 @@ public class PetrolStationMessageWorker {
     // Send message.
     LOGGER.finer("Invoking message service.");
     messageService.sendMessage(messageContent);
-    callsSinceLastMessage = 0;
 
     // Evaluate transaction result.
     Optional<String> responseErrorMsg = messageService.getTransactInfo().getErrorMessage();
@@ -115,8 +119,9 @@ public class PetrolStationMessageWorker {
     else {
       LOGGER.info(L10N.get("msg.SendPushMessageSuccess"));
 
-      // Store current price for subsequent calls.
+      // Update internal values for subsequent calls.
       priceAtLastSentMessage = currentPrice;
+      callsSinceLastMessage = 0;
     }
   }
 
@@ -144,14 +149,20 @@ public class PetrolStationMessageWorker {
   }
 
   private boolean mustSend(double price) {
+    int maxCallsUntilForceSendIfPriceIsRisingSinceLastMessage = userPrefs
+        .readPushMessageMaxCallsUntilForceSend();
+
     boolean isPriceReduction = price > 0.0 && price < priceAtLastSentMessage;
     boolean exceededMaxCallsUntilForceSend =
-        callsSinceLastMessage >= maxRequestsUntilForceSendIfPriceIsRisingSinceLastMsg;
+        callsSinceLastMessage >= maxCallsUntilForceSendIfPriceIsRisingSinceLastMessage;
 
-    LOGGER.fine("Message send check. Price reduced? " + isPriceReduction);
-    LOGGER.fine("Message send check. Exceeded max. calls until force send? "
+    boolean mustSend = isPriceReduction || exceededMaxCallsUntilForceSend;
+
+    LOGGER.finer("Message send check. Price reduced? " + isPriceReduction);
+    LOGGER.finer("Message send check. Exceeded max. calls until force send? "
         + exceededMaxCallsUntilForceSend);
+    LOGGER.fine("Must send message? " + mustSend);
 
-    return isPriceReduction || exceededMaxCallsUntilForceSend;
+    return mustSend;
   }
 }

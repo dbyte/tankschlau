@@ -140,7 +140,8 @@ final class TankSchlauBootstrap {
 
     petrolStationMessageWorker = new PetrolStationMessageWorker(
         messageService,
-        new PushoverMessageContent());
+        new PushoverMessageContent(),
+        userPrefs);
 
     // endregion
     // =====================================================================
