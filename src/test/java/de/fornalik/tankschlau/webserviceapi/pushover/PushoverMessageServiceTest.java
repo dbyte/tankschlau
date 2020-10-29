@@ -18,8 +18,8 @@ package de.fornalik.tankschlau.webserviceapi.pushover;
 
 import com.google.gson.Gson;
 import de.fornalik.tankschlau.net.*;
-import de.fornalik.tankschlau.storage.TransactInfo;
-import de.fornalik.tankschlau.storage.TransactInfoImpl;
+import de.fornalik.tankschlau.service.TransactInfo;
+import de.fornalik.tankschlau.service.TransactInfoImpl;
 import de.fornalik.tankschlau.testhelp_common.FixtureFiles;
 import de.fornalik.tankschlau.testhelp_common.PushoverFixtureHelp;
 import de.fornalik.tankschlau.user.UserPrefs;

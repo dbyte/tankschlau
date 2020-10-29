@@ -22,11 +22,11 @@ import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.service.PetrolStationsRepo;
 import de.fornalik.tankschlau.station.Petrol;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolStationBuilder;
 import de.fornalik.tankschlau.station.PetrolType;
-import de.fornalik.tankschlau.storage.PetrolStationsRepo;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigResponse;
 import org.junit.jupiter.api.Assertions;
 

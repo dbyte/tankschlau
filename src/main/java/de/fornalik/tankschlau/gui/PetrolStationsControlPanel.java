@@ -17,8 +17,8 @@
 package de.fornalik.tankschlau.gui;
 
 import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.service.PetrolStationsWorker;
 import de.fornalik.tankschlau.station.PetrolStation;
-import de.fornalik.tankschlau.storage.PetrolStationsWorker;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.WorkerService;

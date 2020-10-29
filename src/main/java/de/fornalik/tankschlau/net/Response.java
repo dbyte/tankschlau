@@ -16,7 +16,7 @@
 
 package de.fornalik.tankschlau.net;
 
-import de.fornalik.tankschlau.storage.HasTransactionInfo;
+import de.fornalik.tankschlau.service.HasTransactionInfo;
 
 /**
  * The HTTP response interface used by this application.

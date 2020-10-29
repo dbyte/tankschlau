@@ -22,7 +22,7 @@ import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.BaseResponse;
 import de.fornalik.tankschlau.net.JsonResponse;
 import de.fornalik.tankschlau.net.ResponseBody;
-import de.fornalik.tankschlau.storage.TransactInfo;
+import de.fornalik.tankschlau.service.TransactInfo;
 
 import java.util.ArrayList;
 import java.util.Objects;

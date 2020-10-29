@@ -17,10 +17,10 @@
 package de.fornalik.tankschlau.webserviceapi.common;
 
 import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.service.PetrolStationsRepo;
+import de.fornalik.tankschlau.service.PetrolStationsService;
+import de.fornalik.tankschlau.service.TransactInfo;
 import de.fornalik.tankschlau.station.PetrolStation;
-import de.fornalik.tankschlau.storage.PetrolStationsRepo;
-import de.fornalik.tankschlau.storage.PetrolStationsService;
-import de.fornalik.tankschlau.storage.TransactInfo;
 
 import java.util.List;
 import java.util.Objects;

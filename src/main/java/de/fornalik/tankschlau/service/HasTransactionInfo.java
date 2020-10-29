@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-package de.fornalik.tankschlau.storage;
-
-import de.fornalik.tankschlau.geo.Address;
-import de.fornalik.tankschlau.geo.Geo;
-
-import java.util.Optional;
+package de.fornalik.tankschlau.service;
 
 /**
- * Service interface for {@link Geo} model.
+ * The implementing classes have some valuable information about the last transaction with a
+ * repository or service.
  */
-public interface GeocodingService extends HasTransactionInfo {
+public interface HasTransactionInfo {
 
   /**
-   * Calls a webservice which delivers latitude/longitude for a given address and wraps it in
-   * a {@link Geo} object.
-   *
-   * @param forAddress The address for which to retrieve lat/lng data.
-   * @return Optional {@link Geo} object if the service has returned lat/lng.
+   * @return Some valuable information about the last transaction with the repository or service.
+   * @see TransactInfo
    */
-  Optional<Geo> findGeo(Address forAddress);
+  TransactInfo getTransactInfo();
 }

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package de.fornalik.tankschlau.storage;
+package de.fornalik.tankschlau.service;
 
 import java.util.Optional;
 
 /**
- * Holds some kind of information of the last communication with a backend storage.
+ * Holds some kind of information of the last communication with a backend service.
  */
 public interface TransactInfo {
 

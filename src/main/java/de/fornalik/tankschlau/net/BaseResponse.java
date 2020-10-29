@@ -16,7 +16,7 @@
 
 package de.fornalik.tankschlau.net;
 
-import de.fornalik.tankschlau.storage.TransactInfo;
+import de.fornalik.tankschlau.service.TransactInfo;
 
 import java.util.Objects;
 

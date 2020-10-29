@@ -18,7 +18,7 @@ package de.fornalik.tankschlau.gui;
 
 import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.storage.GeocodingWorker;
+import de.fornalik.tankschlau.service.GeocodingWorker;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.WorkerService;
@@ -212,7 +212,7 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
     textGeoLatitude.addFocusListener(this);
     textGeoLongitude.addFocusListener(this);
 
-    // Fire event to BtnGeoRequestController, will initialize button state.
+    // Fire event to BtnGeoRequestController, will initialize button state for geo request button.
     textStreet.setText(" ");
     textStreet.setText("");
   }

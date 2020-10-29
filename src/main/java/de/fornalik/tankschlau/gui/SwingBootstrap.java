@@ -16,8 +16,8 @@
 
 package de.fornalik.tankschlau.gui;
 
-import de.fornalik.tankschlau.storage.GeocodingWorker;
-import de.fornalik.tankschlau.storage.PetrolStationsWorker;
+import de.fornalik.tankschlau.service.GeocodingWorker;
+import de.fornalik.tankschlau.service.PetrolStationsWorker;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyStore;
 

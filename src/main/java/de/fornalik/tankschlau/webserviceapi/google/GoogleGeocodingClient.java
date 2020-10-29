@@ -21,8 +21,8 @@ import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.JsonResponse;
 import de.fornalik.tankschlau.net.Response;
-import de.fornalik.tankschlau.storage.GeocodingService;
-import de.fornalik.tankschlau.storage.TransactInfo;
+import de.fornalik.tankschlau.service.GeocodingService;
+import de.fornalik.tankschlau.service.TransactInfo;
 import de.fornalik.tankschlau.webserviceapi.common.AddressRequest;
 
 import java.util.Objects;

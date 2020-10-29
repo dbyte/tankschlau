@@ -1,7 +1,7 @@
 package de.fornalik.tankschlau.net;
 
-import de.fornalik.tankschlau.storage.TransactInfo;
-import de.fornalik.tankschlau.storage.TransactInfoImpl;
+import de.fornalik.tankschlau.service.TransactInfo;
+import de.fornalik.tankschlau.service.TransactInfoImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

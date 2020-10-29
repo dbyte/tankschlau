@@ -17,7 +17,7 @@
 package de.fornalik.tankschlau.webserviceapi.common;
 
 import de.fornalik.tankschlau.net.Response;
-import de.fornalik.tankschlau.storage.HasTransactionInfo;
+import de.fornalik.tankschlau.service.HasTransactionInfo;
 
 public interface MessageService extends HasTransactionInfo {
 

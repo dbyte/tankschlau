@@ -20,9 +20,9 @@ import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.JsonResponse;
 import de.fornalik.tankschlau.net.Response;
+import de.fornalik.tankschlau.service.PetrolStationsRepo;
+import de.fornalik.tankschlau.service.TransactInfo;
 import de.fornalik.tankschlau.station.PetrolStation;
-import de.fornalik.tankschlau.storage.PetrolStationsRepo;
-import de.fornalik.tankschlau.storage.TransactInfo;
 import de.fornalik.tankschlau.webserviceapi.common.GeoRequest;
 
 import java.util.ArrayList;

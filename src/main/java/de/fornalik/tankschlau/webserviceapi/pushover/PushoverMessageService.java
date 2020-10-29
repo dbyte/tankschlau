@@ -19,7 +19,7 @@ package de.fornalik.tankschlau.webserviceapi.pushover;
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.JsonResponse;
 import de.fornalik.tankschlau.net.Response;
-import de.fornalik.tankschlau.storage.TransactInfo;
+import de.fornalik.tankschlau.service.TransactInfo;
 import de.fornalik.tankschlau.webserviceapi.common.MessageContent;
 import de.fornalik.tankschlau.webserviceapi.common.MessageRequest;
 import de.fornalik.tankschlau.webserviceapi.common.MessageService;
