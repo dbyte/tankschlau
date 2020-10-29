@@ -64,6 +64,11 @@ public class PetrolStationMessageWorker {
    * Execute checking/sending of a petrol station push message.
    */
   public synchronized void execute(List<PetrolStation> stations, PetrolType preferredPetrolType) {
+    if (!userPrefs.readPushMessageEnabled()) {
+      LOGGER.finer("Push messages disabled, skipping.");
+      return;
+    }
+
     executor.execute(() -> checkSendMessage(stations, preferredPetrolType));
   }
 
@@ -149,7 +154,7 @@ public class PetrolStationMessageWorker {
   }
 
   private boolean mustSend(double currentPrice) {
-    int maxCallsUntilForceSendIfPriceIsRisingSinceLastMessage = userPrefs
+    int maxCallsUntilForceSendIfPriceHasRisenSinceLastMessage = userPrefs
         .readPushMessageMaxCallsUntilForceSend();
 
     /*
@@ -165,15 +170,15 @@ public class PetrolStationMessageWorker {
     If the current price is reduced in comparison to the one when the last message was sent,
     variable isPriceReduction would be true anyway and force the message to be sent.
      */
-    boolean exceededMaxCallsUntilForceSend =
-        callsSinceLastMessage >= maxCallsUntilForceSendIfPriceIsRisingSinceLastMessage
+    boolean exceededMaxCallsUntilForceSendAndPriceHasRisen =
+        callsSinceLastMessage >= maxCallsUntilForceSendIfPriceHasRisenSinceLastMessage
             && currentPrice > priceAtLastSentMessage;
 
-    boolean mustSend = isPriceReduction || exceededMaxCallsUntilForceSend;
+    boolean mustSend = isPriceReduction || exceededMaxCallsUntilForceSendAndPriceHasRisen;
 
     LOGGER.finer("Message send check. Price reduced? " + isPriceReduction);
-    LOGGER.finer("Message send check. Exceeded max. calls until force send? "
-        + exceededMaxCallsUntilForceSend);
+    LOGGER.finer("Message send check. Exceeded max. calls until force send and price has risen? "
+        + exceededMaxCallsUntilForceSendAndPriceHasRisen);
     LOGGER.fine("Must send message? " + mustSend);
 
     return mustSend;

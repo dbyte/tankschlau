@@ -24,6 +24,8 @@ import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 /**
  * User preferences panel for cyclic background services.
@@ -34,10 +36,11 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
   private static final int MINIMUM_CYCLE_RATE = 5;
   private static final int DEFAULT_CYCLE_RATE = 300;
   private static final int DEFAULT_ROW_HEIGHT = 25;
-  private static final Dimension TOTAL_DIMENSION = new Dimension(300, 100);
+  private static final Dimension TOTAL_DIMENSION = new Dimension(300, 130);
 
   private final JTextField textCycleRate;
   private final JTextField textMessageMaxCallsUntilForceSend;
+  private final JCheckBox checkEnableMessages;
   private final GridBagConstraints constraints;
 
   private final UserPrefs userPrefs;
@@ -47,7 +50,8 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
     this.userPrefs = userPrefs;
 
     this.textCycleRate = createIntegerOnlyTextField(5);
-    this.textMessageMaxCallsUntilForceSend = createIntegerOnlyTextField(2);
+    this.textMessageMaxCallsUntilForceSend = createIntegerOnlyTextField(3);
+    this.checkEnableMessages = createEnableMessagesCheckbox(L10N.get("label.EnableMessaging"));
 
     this.constraints = new GridBagConstraints();
     this.focusListener = new CycleFocusListener();
@@ -91,6 +95,14 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
     constraints.gridwidth = 1;
 
     constraints.gridy = 2; // Row 3 ---------------------------------------
+    constraints.gridx = 0;
+    constraints.gridwidth = 3;
+    checkEnableMessages.setSelected(userPrefs.readPushMessageEnabled());
+    checkEnableMessages.addItemListener(new CheckboxListener());
+    addToPanel(checkEnableMessages, 120, constraints);
+    constraints.gridwidth = 1;
+
+    constraints.gridy = 3; // Row 4 ---------------------------------------
 
     constraints.gridx = 0;
     JLabel labelMessageMaxCallsUntilForceSend = createLabel(
@@ -101,6 +113,7 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
     constraints.gridx = 1;
     textMessageMaxCallsUntilForceSend
         .setText(String.valueOf(userPrefs.readPushMessageMaxCallsUntilForceSend()));
+    textMessageMaxCallsUntilForceSend.setEnabled(userPrefs.readPushMessageEnabled());
     textMessageMaxCallsUntilForceSend.addFocusListener(focusListener);
     addToPanel(textMessageMaxCallsUntilForceSend, 60, constraints);
 
@@ -175,6 +188,18 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
       else if (e.getSource() == textMessageMaxCallsUntilForceSend) {
         int value = legalizeTextFieldToInteger(e, 1, 20);
         userPrefs.writePushMessageMaxCallsUntilForceSend(value);
+      }
+    }
+  }
+
+  private class CheckboxListener implements ItemListener {
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+      if (e.getSource() == checkEnableMessages) {
+        boolean isChecked = e.getStateChange() == ItemEvent.SELECTED;
+
+        userPrefs.writePushMessageEnabled(isChecked);
+        textMessageMaxCallsUntilForceSend.setEnabled(isChecked);
       }
     }
   }

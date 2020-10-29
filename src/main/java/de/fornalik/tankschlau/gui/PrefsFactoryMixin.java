@@ -66,6 +66,18 @@ interface PrefsFactoryMixin {
   }
 
   /**
+   * @param text The text to be displayed for the checkbox.
+   * @return A custom formatted {@link JCheckBox}.
+   */
+  default JCheckBox createEnableMessagesCheckbox(String text) {
+    JCheckBox checkBox = new JCheckBox();
+    checkBox.setText(text);
+    checkBox.setFocusable(false);
+    checkBox.setForeground(CustomColor.LABEL_TEXT);
+    return checkBox;
+  }
+
+  /**
    * Creates a new customized titled border with the specified title.
    *
    * @param title a <code>String</code> containing the text of the title
