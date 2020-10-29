@@ -22,7 +22,7 @@ import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.WorkerService;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyStore;
-import de.fornalik.tankschlau.webserviceapi.common.MessageWorker;
+import de.fornalik.tankschlau.webserviceapi.common.PetrolStationMessageWorker;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,7 +43,7 @@ class MainWindow extends JFrame {
       ApiKeyStore apiKeyStore,
       WorkerService<List<PetrolStation>> petrolStationsWorkerService,
       WorkerService<Geo> geocodingWorkerService,
-      MessageWorker messageWorker) {
+      PetrolStationMessageWorker messageWorker) {
 
     super(Localization.APP_NAME);
 

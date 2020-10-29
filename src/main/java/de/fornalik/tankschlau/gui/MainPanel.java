@@ -19,7 +19,7 @@ package de.fornalik.tankschlau.gui;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.WorkerService;
-import de.fornalik.tankschlau.webserviceapi.common.MessageWorker;
+import de.fornalik.tankschlau.webserviceapi.common.PetrolStationMessageWorker;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,7 +37,7 @@ class MainPanel extends JPanel {
       FooterPanel footerPanel,
       UserPrefs userPrefs,
       WorkerService<List<PetrolStation>> petrolStationsWorkerService,
-      MessageWorker messageWorker) {
+      PetrolStationMessageWorker messageWorker) {
 
     this.dataPanel = new PetrolStationsDataPanel(
         footerPanel,

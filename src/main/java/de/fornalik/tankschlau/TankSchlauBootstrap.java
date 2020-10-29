@@ -56,7 +56,7 @@ final class TankSchlauBootstrap {
   final ApiKeyManager tankerkoenigApikeyManager;
   final GeocodingWorker geocodingWorker;
   final PetrolStationsWorker petrolStationsWorker;
-  final MessageWorker messageWorker;
+  final PetrolStationMessageWorker petrolStationMessageWorker;
 
   TankSchlauBootstrap() {
     /*
@@ -138,7 +138,9 @@ final class TankSchlauBootstrap {
         messageRequest,
         messageResponse);
 
-    messageWorker = new MessageWorker(messageService, new PushoverMessageContent());
+    petrolStationMessageWorker = new PetrolStationMessageWorker(
+        messageService,
+        new PushoverMessageContent());
 
     // endregion
     // =====================================================================

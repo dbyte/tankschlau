@@ -42,7 +42,7 @@ public final class TankSchlau {
         container.apiKeyStore,
         container.petrolStationsWorker,
         container.geocodingWorker,
-        container.messageWorker);
+        container.petrolStationMessageWorker);
   }
 
   private void processVmOptions() {

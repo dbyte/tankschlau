@@ -22,7 +22,7 @@ import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.WorkerService;
-import de.fornalik.tankschlau.webserviceapi.common.MessageWorker;
+import de.fornalik.tankschlau.webserviceapi.common.PetrolStationMessageWorker;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,7 +42,7 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
   private static final Localization L10N = Localization.getInstance();
 
   private final WorkerService<List<PetrolStation>> workerService;
-  private final MessageWorker messageWorker;
+  private final PetrolStationMessageWorker messageWorker;
   private final UserPrefs userPrefs;
   private final JButton btnStartOneShotWork, btnStartCyclicWork, btnRemoveAllData;
   private final PetrolsStationsTableModel dataTableModel;
@@ -53,7 +53,7 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
       FooterPanel footerPanel,
       UserPrefs userPrefs,
       WorkerService<List<PetrolStation>> petrolStationsWorkerService,
-      MessageWorker messageWorker) {
+      PetrolStationMessageWorker messageWorker) {
 
     this.workerService = petrolStationsWorkerService;
     this.messageWorker = messageWorker;

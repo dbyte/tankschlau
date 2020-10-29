@@ -26,14 +26,17 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-public class MessageWorker {
+public class PetrolStationMessageWorker {
   private static final Localization L10N = Localization.getInstance();
-  private static final Logger LOGGER = Logger.getLogger(MessageWorker.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(PetrolStationMessageWorker.class.getName());
 
   private final MessageService messageService;
-  private final MessageContent messageContent;
+  private final PetrolStationMessageContent messageContent;
 
-  public MessageWorker(MessageService messageService, MessageContent messageContent) {
+  public PetrolStationMessageWorker(
+      MessageService messageService,
+      PetrolStationMessageContent messageContent) {
+
     this.messageService = Objects.requireNonNull(messageService);
     this.messageContent = Objects.requireNonNull(messageContent);
   }
@@ -47,7 +50,7 @@ public class MessageWorker {
     PetrolStation cheapestStation = stations.get(0);
 
     messageContent.reset();
-    ((PetrolStationMessageContent) messageContent).setMessage(cheapestStation, petrolType);
+    messageContent.setMessage(cheapestStation, petrolType);
 
     messageService.sendMessage(messageContent);
 
