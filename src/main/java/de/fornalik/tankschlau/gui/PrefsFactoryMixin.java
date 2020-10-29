@@ -73,7 +73,7 @@ interface PrefsFactoryMixin {
    */
   default TitledBorder createTitledBorder(String title) {
     TitledBorder titledBorder = BorderFactory.createTitledBorder(title);
-    titledBorder.setTitleFont(titledBorder.getTitleFont().deriveFont(11f));
+    titledBorder.setTitleFont(titledBorder.getTitleFont().deriveFont(Font.PLAIN, 11f));
     titledBorder.setTitleColor(CustomColor.LABEL_TEXT);
 
     return titledBorder;

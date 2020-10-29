@@ -95,11 +95,13 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
     setMinimumSize(totalDimension);
 
     add(createAddressFieldsPanel());
+    add(Box.createRigidArea(new Dimension(0, 5)));
     add(createSeparator());
     add(createGeoFieldsPanel());
     add(Box.createRigidArea(new Dimension(0, 5)));
     add(btnGeoRequest);
     addPoweredByGooglePanelIfGoogleIsProvider();
+    add(Box.createRigidArea(new Dimension(0, 5)));
     add(createSeparator());
     add(createDistancePanel());
 
@@ -148,9 +150,9 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
   private JButton createGeoRequestButton() {
     JButton btnRequestGeo = new JButton(L10N.get("button.EvaluateLatLonByAddress"));
     btnRequestGeo.setAlignmentX(LEFT_ALIGNMENT);
-    btnRequestGeo.setMinimumSize(new Dimension(totalDimension.width - 10, 30));
-    btnRequestGeo.setMaximumSize(new Dimension(totalDimension.width - 10, 30));
-    btnRequestGeo.setPreferredSize(new Dimension(totalDimension.width - 10, 30));
+    btnRequestGeo.setMinimumSize(new Dimension(totalDimension.width - 10, 25));
+    btnRequestGeo.setMaximumSize(new Dimension(totalDimension.width - 10, 25));
+    btnRequestGeo.setPreferredSize(new Dimension(totalDimension.width - 10, 25));
     btnRequestGeo.setForeground(CustomColor.BUTTON_FOREGROUND);
     btnRequestGeo.setFocusable(false);
     btnRequestGeo.addActionListener(new BtnGeoRequestListener());
@@ -175,6 +177,7 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
     panel.setMaximumSize(new Dimension(totalDimension.width, 17));
     panel.setPreferredSize(new Dimension(totalDimension.width, 17));
 
+    add(Box.createRigidArea(new Dimension(0, 5)));
     add(panel);
   }
 

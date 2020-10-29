@@ -70,7 +70,7 @@ class MainWindow extends JFrame {
     add(createTabbedPane());
     add(footerPanel);
 
-    setBounds(100, 100, DEFAULT_WINDOW_DIMENSION.width, DEFAULT_WINDOW_DIMENSION.height);
+    setBounds(50, 50, DEFAULT_WINDOW_DIMENSION.width, DEFAULT_WINDOW_DIMENSION.height);
     pack();
     setVisible(true);
   }
