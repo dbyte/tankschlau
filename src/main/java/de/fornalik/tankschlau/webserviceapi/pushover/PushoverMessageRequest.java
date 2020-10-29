@@ -74,5 +74,8 @@ public class PushoverMessageRequest extends JsonRequestImpl implements MessageRe
     String message = StringLegalizer.create(content.getMessage()).safeTrim().nullToEmpty().end();
     putBodyParameter("title", title);
     putBodyParameter("message", message);
+
+    // Additionally, refresh authentication parameters in case they have changed within GUI or so.
+    setAuthenticationParameters();
   }
 }
