@@ -40,7 +40,7 @@ class PrefsPanel extends JPanel {
 
     this.prefsCyclePanel = new PrefsCyclePanel(userPrefs);
     this.prefsAddressPanel = new PrefsAddressPanel(userPrefs, footerPanel, geocodingWorkerService);
-    this.prefsApiKeyPanel = new PrefsApiKeyPanel(apiKeyStore);
+    this.prefsApiKeyPanel = new PrefsApiKeyPanel(apiKeyStore, userPrefs);
     this.initView();
   }
 

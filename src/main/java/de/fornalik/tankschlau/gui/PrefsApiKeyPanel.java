@@ -16,6 +16,7 @@
 
 package de.fornalik.tankschlau.gui;
 
+import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyManager;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyStore;
@@ -31,64 +32,73 @@ import java.awt.event.FocusListener;
 public class PrefsApiKeyPanel extends JPanel implements FocusListener, PrefsFactoryMixin {
 
   private static final Localization L10N = Localization.getInstance();
-  private static final Dimension totalDimension = new Dimension(440, 108);
+  private static final Dimension totalDimension = new Dimension(440, 138);
 
   private final JPasswordField textPetrolStationsServiceApiKey;
   private final JPasswordField textGeocodingServiceApiKey;
   private final JPasswordField textMessageServiceApiKey;
+  private final JPasswordField textMessageServiceUserKey;
+
+  private final UserPrefs userPrefs;
   private final ApiKeyManager apiKeyManagerPetrolStations;
   private final ApiKeyManager apiKeyManagerGeocoding;
   private final ApiKeyManager apiKeyManagerPushMessage;
 
-  public PrefsApiKeyPanel(ApiKeyStore apiKeyStore) {
+  public PrefsApiKeyPanel(ApiKeyStore apiKeyStore, UserPrefs userPrefs) {
     super();
 
     this.apiKeyManagerPetrolStations = ApiKeyManager.createForPetrolStations(apiKeyStore);
     this.apiKeyManagerGeocoding = ApiKeyManager.createForGeocoding(apiKeyStore);
     this.apiKeyManagerPushMessage = ApiKeyManager.createForPushMessage(apiKeyStore);
+    this.userPrefs = userPrefs;
 
     this.textPetrolStationsServiceApiKey = createPasswordField();
     this.textGeocodingServiceApiKey = createPasswordField();
     this.textMessageServiceApiKey = createPasswordField();
+    this.textMessageServiceUserKey = createPasswordField();
 
     this.initView();
     this.populateFields();
   }
 
   private void initView() {
-    setLayout(new GridLayout(3, 2));
+    setLayout(new GridLayout(4, 2));
     setAlignmentX(Component.LEFT_ALIGNMENT);
     setOpaque(true);
-    setBorder(createTitledBorder(L10N.get("borderTitle.ApiKeys")));
+    setBorder(createTitledBorder(L10N.get("borderTitle.Authentication")));
     setPreferredSize(totalDimension);
     setMaximumSize(totalDimension);
     setMinimumSize(totalDimension);
 
     configureFields();
 
-    add(createLabel(L10N.get("label.TankerkoenigService")));
+    add(createLabel("Tankerkoenig.de API Key"));
     add(textPetrolStationsServiceApiKey);
 
-    add(createLabel("Google Geocoding Webservice"));
+    add(createLabel("Google Geocoding API Key"));
     add(textGeocodingServiceApiKey);
 
-    add(createLabel("Pushover Message Webservice"));
+    add(createLabel("Pushover.net Message API Key"));
     add(textMessageServiceApiKey);
+    add(createLabel("Pushover.net Message User Key"));
+    add(textMessageServiceUserKey);
   }
 
   private void configureFields() {
     textPetrolStationsServiceApiKey.addFocusListener(this);
     textGeocodingServiceApiKey.addFocusListener(this);
     textMessageServiceApiKey.addFocusListener(this);
+    textMessageServiceUserKey.addFocusListener(this);
   }
 
   private void populateFields() {
     textPetrolStationsServiceApiKey.setText(apiKeyManagerPetrolStations.read().orElse(""));
     textGeocodingServiceApiKey.setText(apiKeyManagerGeocoding.read().orElse(""));
     textMessageServiceApiKey.setText(apiKeyManagerPushMessage.read().orElse(""));
+    textMessageServiceUserKey.setText(userPrefs.readPushMessageUserId().orElse(""));
   }
 
-  private String getApiKeyFromField(JPasswordField field) {
+  private String getValueFromPasswordField(JPasswordField field) {
     return String.valueOf(field.getPassword());
   }
 
@@ -103,13 +113,16 @@ public class PrefsApiKeyPanel extends JPanel implements FocusListener, PrefsFact
     JPasswordField field = (JPasswordField) e.getSource();
 
     if (field == textPetrolStationsServiceApiKey) {
-      apiKeyManagerPetrolStations.write(getApiKeyFromField(textPetrolStationsServiceApiKey));
+      apiKeyManagerPetrolStations.write(getValueFromPasswordField(textPetrolStationsServiceApiKey));
     }
     else if (field == textGeocodingServiceApiKey) {
-      apiKeyManagerGeocoding.write(getApiKeyFromField(textGeocodingServiceApiKey));
+      apiKeyManagerGeocoding.write(getValueFromPasswordField(textGeocodingServiceApiKey));
     }
     else if (field == textMessageServiceApiKey) {
-      apiKeyManagerPushMessage.write(getApiKeyFromField(textMessageServiceApiKey));
+      apiKeyManagerPushMessage.write(getValueFromPasswordField(textMessageServiceApiKey));
+    }
+    else if (field == textMessageServiceUserKey) {
+      userPrefs.writePushMessageUserId(getValueFromPasswordField(textMessageServiceUserKey));
     }
   }
 }
