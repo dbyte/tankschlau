@@ -37,7 +37,7 @@ class FooterPanel extends JPanel {
   private final ImageIcon iconWork;
 
   FooterPanel() {
-    super(new GridLayout(1, 3));
+    super();
 
     this.labelCountdown = new JLabel();
     this.labelWork = new JLabel();
@@ -47,13 +47,14 @@ class FooterPanel extends JPanel {
   }
 
   private void initView() {
-    add(labelCountdown);
-    add(labelWork);
-    add(new JLabel()); // spare
-
+    setLayout(new GridLayout(1, 3));
     setBackground(Color.DARK_GRAY);
     setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
     setOpaque(true);
+
+    add(labelCountdown);
+    add(labelWork);
+    add(new JLabel()); // spare
 
     configureCountdownLabel();
     configureWorkLabel();
