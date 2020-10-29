@@ -42,7 +42,7 @@ public class PetrolStationMessageWorker {
 
   private final MessageService messageService;
   private final PetrolStationMessageContent messageContent;
-  private int maxRequestsUntilForceSendIfPriceIsRisingSinceLastMsg;
+  private final int maxRequestsUntilForceSendIfPriceIsRisingSinceLastMsg;
 
   public PetrolStationMessageWorker(
       MessageService messageService,
@@ -62,44 +62,81 @@ public class PetrolStationMessageWorker {
       List<PetrolStation> stations,
       PetrolType preferredPetrolType) {
 
-    if (stations == null || stations.size() == 0)
+    if (stations == null || stations.size() == 0) {
+      LOGGER.fine("Given stations are null or empty, so no push message to send.");
       return;
+    }
 
     callsSinceLastMessage++;
+    LOGGER.finer("Valid calls since last message: " + callsSinceLastMessage);
+
+    PetrolStation cheapestStation = findCheapestStation(stations, preferredPetrolType);
+    double price = findPrice(cheapestStation, preferredPetrolType);
+
+    if (!mustSend(price))
+      return;
+
+    doSendMessage(cheapestStation, preferredPetrolType, price);
+  }
+
+  private void doSendMessage(
+      PetrolStation cheapestStation,
+      PetrolType preferredPetrolType,
+      double currentPrice) {
+
+    // Form the message content.
+    messageContent.reset();
+    messageContent.setMessage(cheapestStation, preferredPetrolType);
+
+    // Send message.
+    LOGGER.finer("Invoking message service.");
+    messageService.sendMessage(messageContent);
+    callsSinceLastMessage = 0;
+
+    // Evaluate transaction result.
+    Optional<String> responseErrorMsg = messageService.getTransactInfo().getErrorMessage();
+    if (responseErrorMsg.isPresent()) {
+      LOGGER.warning(L10N.get("msg.SendPushMessageFailed", responseErrorMsg.get()));
+    }
+    else {
+      LOGGER.info(L10N.get("msg.SendPushMessageSuccess"));
+
+      // Store current price for subsequent calls.
+      priceAtLastSentMessage = currentPrice;
+    }
+  }
+
+  private PetrolStation findCheapestStation(
+      List<PetrolStation> stations,
+      PetrolType preferredPetrolType) {
 
     // Find cheapest station according to our business rules.
     Optional<PetrolStation> cheapestStation = PetrolStations
         .findCheapest(stations, preferredPetrolType);
 
-    if (!cheapestStation.isPresent())
-      return;
+    if (!cheapestStation.isPresent()) {
+      String errMessage = "Did not find cheapest petrol station but expected to find one.";
+      LOGGER.severe(errMessage);
+      throw new IllegalStateException(errMessage);
+    }
 
-    // Get price
-    double price = Petrols
-        .findPetrol(cheapestStation.get().getPetrols(), preferredPetrolType)
+    return cheapestStation.get();
+  }
+
+  private double findPrice(PetrolStation cheapestStation, PetrolType preferredPetrolType) {
+    return Petrols
+        .findPetrol(cheapestStation.getPetrols(), preferredPetrolType)
         .map(petrol -> petrol.price).orElse(0.0);
-
-    if (!mustSend(price))
-      return;
-
-    // Form the message content.
-    messageContent.reset();
-    messageContent.setMessage(cheapestStation.get(), preferredPetrolType);
-
-    // Send message.
-    messageService.sendMessage(messageContent);
-    callsSinceLastMessage = 0;
-
-    Optional<String> responseErrorMsg = messageService.getTransactInfo().getErrorMessage();
-
-    responseErrorMsg.ifPresent(
-        errMsg -> LOGGER.warning(L10N.get("msg.SendPushMessageFailed", errMsg)));
   }
 
   private boolean mustSend(double price) {
     boolean isPriceReduction = price > 0.0 && price < priceAtLastSentMessage;
     boolean exceededMaxCallsUntilForceSend =
         callsSinceLastMessage >= maxRequestsUntilForceSendIfPriceIsRisingSinceLastMsg;
+
+    LOGGER.fine("Message send check. Price reduced? " + isPriceReduction);
+    LOGGER.fine("Message send check. Exceeded max. calls until force send? "
+        + exceededMaxCallsUntilForceSend);
 
     return isPriceReduction || exceededMaxCallsUntilForceSend;
   }

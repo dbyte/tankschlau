@@ -20,11 +20,13 @@ import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.JsonResponse;
 import de.fornalik.tankschlau.net.Response;
 import de.fornalik.tankschlau.service.TransactInfo;
+import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.webserviceapi.common.MessageContent;
 import de.fornalik.tankschlau.webserviceapi.common.MessageRequest;
 import de.fornalik.tankschlau.webserviceapi.common.MessageService;
 
 import java.util.Objects;
+import java.util.logging.Logger;
 
 /**
  * Implementation of {@link MessageService} for pushover.net push message webservices.
@@ -33,6 +35,9 @@ import java.util.Objects;
  * <a href="https://pushover.net/api">Pushover Message API documentation: https://pushover.net/api</a>
  */
 public class PushoverMessageService implements MessageService {
+  private static final Localization L10N = Localization.getInstance();
+  private static final Logger LOGGER = Logger.getLogger(PushoverMessageService.class.getName());
+
   private final HttpClient httpClient;
   private final MessageRequest request;
   private final Response response;
@@ -55,6 +60,7 @@ public class PushoverMessageService implements MessageService {
     response.reset();
 
     // It's guaranteed by newCall(...) that returned response is not null.
+    LOGGER.info(L10N.get("msg.SendingPushMessage"));
     httpClient.newCall(request, response, String.class);
 
     Objects.requireNonNull(response, "Response is null.");
