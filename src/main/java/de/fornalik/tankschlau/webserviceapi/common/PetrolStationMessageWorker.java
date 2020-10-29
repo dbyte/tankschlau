@@ -25,6 +25,8 @@ import de.fornalik.tankschlau.util.Localization;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 // TODO unit tests
@@ -39,7 +41,7 @@ public class PetrolStationMessageWorker {
 
   private static int callsSinceLastMessage = 0;
   private static double priceAtLastSentMessage = 0.0;
-
+  private final ExecutorService executor = Executors.newSingleThreadExecutor();
   private final MessageService messageService;
   private final PetrolStationMessageContent messageContent;
   private final int maxRequestsUntilForceSendIfPriceIsRisingSinceLastMsg;
@@ -54,11 +56,18 @@ public class PetrolStationMessageWorker {
   }
 
   /**
+   * Execute checking/sending of a petrol station push message.
+   */
+  public synchronized void execute(List<PetrolStation> stations, PetrolType preferredPetrolType) {
+    executor.execute(() -> checkSendMessage(stations, preferredPetrolType));
+  }
+
+  /**
    * @param stations            List of petrol station in which to find the station of interest.
    * @param preferredPetrolType Type of petrol the message receiver is interested in.
    * @see PetrolStations#sortByPriceAndDistanceForPetrolType(List, PetrolType)
    */
-  public synchronized void checkSendMessage(
+  private void checkSendMessage(
       List<PetrolStation> stations,
       PetrolType preferredPetrolType) {
 
@@ -69,6 +78,11 @@ public class PetrolStationMessageWorker {
 
     callsSinceLastMessage++;
     LOGGER.finer("Valid calls since last message: " + callsSinceLastMessage);
+
+    /*if (callsSinceLastMessage == 1) {
+      // Test thread crash... no unit tests yet.
+      int divisionByZero = 1 / 0;
+    }*/
 
     PetrolStation cheapestStation = findCheapestStation(stations, preferredPetrolType);
     double price = findPrice(cheapestStation, preferredPetrolType);

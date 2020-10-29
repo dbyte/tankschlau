@@ -139,7 +139,7 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
 
   private void onSingleCycleFinished(List<PetrolStation> petrolStations) {
     SwingUtilities.invokeLater(() -> dataTableModel.addPetrolStations(petrolStations));
-    messageWorker.checkSendMessage(petrolStations, userPrefs.readPreferredPetrolType());
+    messageWorker.execute(petrolStations, userPrefs.readPreferredPetrolType());
   }
 
   private void onOneShotWorkerStarted() {
