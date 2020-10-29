@@ -16,7 +16,6 @@
 
 package de.fornalik.tankschlau.gui;
 
-import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.storage.PetrolStationsWorker;
@@ -29,13 +28,16 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 /**
  * Panel with interactive Components, driving worker service and data table model.
  */
 class PetrolStationsControlPanel extends JPanel implements ActionListener {
 
+  private static final Logger LOGGER = Logger.getLogger(FooterPanel.class.getName());
   private static final Localization L10N = Localization.getInstance();
   private static WorkerService<List<PetrolStation>> workerService;
   private final UserPrefs userPrefs;
@@ -185,11 +187,14 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
   }
 
   private Geo getUserGeo() {
-    Address address = userPrefs.readAddress()
-        .orElseThrow(() -> new IllegalStateException(L10N.get(
-            "msg.UnableToRequestPetrolStations_ReasonNoGeoForUser")));
+    Optional<Geo> geo = userPrefs.readGeo();
 
-    return address.getGeo().orElseThrow(() -> new IllegalStateException(L10N.get(
-        "msg.UnableToRequestPetrolStations_ReasonNoGeoForUser")));
+    if (!geo.isPresent()) {
+      String errMessage = L10N.get("msg.UnableToRequestPetrolStations_ReasonNoGeoForUser");
+      LOGGER.warning(errMessage);
+      throw new IllegalStateException(errMessage);
+    }
+
+    return geo.get();
   }
 }

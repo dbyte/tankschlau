@@ -198,12 +198,12 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
       textHouseNumber.setText(adr.getHouseNumber());
       textPostCode.setText(adr.getPostCode());
       textCity.setText(adr.getCity());
+    });
 
-      adr.getGeo().ifPresent(geo -> {
-        textSearchRadius.setText(String.valueOf(geo.getDistance().orElse(DEFAULT_SEARCH_RADIUS)));
-        textGeoLatitude.setText(String.valueOf(geo.getLatitude()));
-        textGeoLongitude.setText(String.valueOf(geo.getLongitude()));
-      });
+    userPrefs.readGeo().ifPresent(geo -> {
+      textSearchRadius.setText(String.valueOf(geo.getDistance().orElse(DEFAULT_SEARCH_RADIUS)));
+      textGeoLatitude.setText(String.valueOf(geo.getLatitude()));
+      textGeoLongitude.setText(String.valueOf(geo.getLongitude()));
     });
   }
 
