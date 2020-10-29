@@ -34,17 +34,23 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
   private static final int MINIMUM_CYCLE_RATE = 5;
   private static final int DEFAULT_CYCLE_RATE = 300;
   private static final int DEFAULT_ROW_HEIGHT = 25;
-  private static final Dimension totalDimension = new Dimension(350, 70);
+  private static final Dimension TOTAL_DIMENSION = new Dimension(300, 100);
 
   private final JTextField textCycleRate;
+  private final JTextField textMessageMaxCallsUntilForceSend;
   private final GridBagConstraints constraints;
 
   private final UserPrefs userPrefs;
+  private final CycleFocusListener focusListener;
 
   PrefsCyclePanel(UserPrefs userPrefs) {
     this.userPrefs = userPrefs;
+
     this.textCycleRate = createIntegerOnlyTextField(5);
+    this.textMessageMaxCallsUntilForceSend = createIntegerOnlyTextField(2);
+
     this.constraints = new GridBagConstraints();
+    this.focusListener = new CycleFocusListener();
 
     this.initView();
   }
@@ -53,30 +59,53 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
     setLayout(new GridBagLayout());
     setOpaque(true);
     setBorder(createTitledBorder(L10N.get("borderTitle.AutomaticDataUpdate")));
-    setMaximumSize(totalDimension);
+    setMaximumSize(TOTAL_DIMENSION);
 
     constraints.anchor = GridBagConstraints.WEST;
     constraints.fill = GridBagConstraints.HORIZONTAL;
     constraints.insets = new Insets(0, 5, 0, 5);
-
-    constraints.gridy = 0; // Row
     createCycleRatePref();
 
     // ---> More rows go here <---
   }
 
   private void createCycleRatePref() {
+    constraints.gridy = 0; // Row 1 ---------------------------------------
+
     constraints.gridx = 0;
     JLabel labelCycleEvery = createLabel(L10N.get("label.CycleEvery"), SwingConstants.LEFT);
     addToPanel(labelCycleEvery, 120, constraints);
 
     constraints.gridx = 1;
     textCycleRate.setText(String.valueOf(userPrefs.readPetrolStationsUpdateCycleRate()));
-    textCycleRate.addFocusListener(new CycleFocusListener());
+    textCycleRate.addFocusListener(focusListener);
     addToPanel(textCycleRate, 60, constraints);
 
     constraints.gridx = 2;
     addToPanel(createLabel(L10N.get("label.Seconds"), SwingConstants.LEFT), 100, constraints);
+
+    constraints.gridy = 1; // Row 2 ---------------------------------------
+    constraints.gridx = 0;
+    constraints.gridwidth = 3;
+    addToPanel(new JSeparator(), TOTAL_DIMENSION.width, constraints);
+    constraints.gridwidth = 1;
+
+    constraints.gridy = 2; // Row 3 ---------------------------------------
+
+    constraints.gridx = 0;
+    JLabel labelMessageMaxCallsUntilForceSend = createLabel(
+        L10N.get("label.CycleMessageMaxCallsUntilForceSend"),
+        SwingConstants.LEFT);
+    addToPanel(labelMessageMaxCallsUntilForceSend, 180, constraints);
+
+    constraints.gridx = 1;
+    textMessageMaxCallsUntilForceSend
+        .setText(String.valueOf(userPrefs.readPushMessageMaxCallsUntilForceSend()));
+    textMessageMaxCallsUntilForceSend.addFocusListener(focusListener);
+    addToPanel(textMessageMaxCallsUntilForceSend, 60, constraints);
+
+    constraints.gridx = 2;
+    addToPanel(createLabel(L10N.get("label.Updates"), SwingConstants.LEFT), 120, constraints);
   }
 
   private void addToPanel(
@@ -94,13 +123,43 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
     component.setPreferredSize(new Dimension(width, DEFAULT_ROW_HEIGHT));
   }
 
-  /**
-   * Corrects given cycle rate when losing focus (if necessary).
-   */
+  private int legalizeTextFieldToInteger(FocusEvent e, int minimumValue, int fallbackValue) {
+    if (!(e.getSource() instanceof JTextField))
+      return fallbackValue;
+
+    JTextField textField = (JTextField) e.getSource();
+    if (textField.getDocument() == null)
+      return fallbackValue;
+
+    int length = textField.getDocument().getLength();
+    if (length == 0) {
+      textField.setText(String.valueOf(fallbackValue));
+      return fallbackValue;
+    }
+
+    int out = 0;
+
+    try {
+      String text = textField.getDocument().getText(0, length);
+      out = Integer.parseInt(text);
+    }
+    catch (BadLocationException ex) {
+      ex.printStackTrace();
+    }
+
+    if (out < minimumValue) {
+      Toolkit.getDefaultToolkit().beep();
+      textField.setText(String.valueOf(fallbackValue));
+      return fallbackValue;
+    }
+
+    return out;
+  }
+
   private class CycleFocusListener implements FocusListener {
     @Override
     public void focusGained(FocusEvent e) {
-      // Empty implementation
+      // No need.
     }
 
     @Override
@@ -108,34 +167,15 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
       if (!(e.getSource() instanceof JTextField))
         return;
 
-      JTextField textField = (JTextField) e.getSource();
-      if (textField.getDocument() == null)
-        return;
-
-      int length = textField.getDocument().getLength();
-      if (length == 0) {
-        textField.setText(String.valueOf(DEFAULT_CYCLE_RATE));
-        return;
+      if (e.getSource() == textCycleRate) {
+        int value = legalizeTextFieldToInteger(e, MINIMUM_CYCLE_RATE, DEFAULT_CYCLE_RATE);
+        userPrefs.writePetrolStationsUpdateCycleRate(value);
       }
 
-      String text;
-
-      try {
-        text = textField.getDocument().getText(0, length);
-        if (text == null || "".equals(text))
-          text = "0";
+      else if (e.getSource() == textMessageMaxCallsUntilForceSend) {
+        int value = legalizeTextFieldToInteger(e, 1, 20);
+        userPrefs.writePushMessageMaxCallsUntilForceSend(value);
       }
-      catch (BadLocationException ex) {
-        ex.printStackTrace();
-        text = "0";
-      }
-
-      if (Integer.parseInt(text) < MINIMUM_CYCLE_RATE) {
-        Toolkit.getDefaultToolkit().beep();
-        textField.setText(String.valueOf(DEFAULT_CYCLE_RATE));
-      }
-
-      userPrefs.writePetrolStationsUpdateCycleRate(Integer.parseInt(text));
     }
   }
 }

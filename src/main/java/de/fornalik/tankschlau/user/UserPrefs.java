@@ -169,25 +169,26 @@ public class UserPrefs {
   }
 
   // TODO unit tests
+  public void writePushMessageEnabled(boolean enable) {
+    realPrefs.putBoolean("pushmessage.enabled", enable);
+  }
+
+  // TODO unit tests
+  public boolean readPushMessageEnabled() {
+    checkPrefsMissing("pushmessage.enabled");
+    return realPrefs.getBoolean("pushmessage.enabled", false);
+  }
+
+  // TODO unit tests
   public void writePushMessageMaxCallsUntilForceSend(int max) {
+    if (max < 0) return;
     realPrefs.putInt("pushmessage.max_calls_until_force_send", max);
   }
 
   // TODO unit tests
   public int readPushMessageMaxCallsUntilForceSend() {
     checkPrefsMissing("pushmessage.max_calls_until_force_send");
-    final int defaultMax = 20;
-    int maxCalls;
-
-    try {
-      maxCalls = realPrefs.getInt("pushmessage.max_calls_until_force_send", defaultMax);
-    }
-    catch (IllegalStateException e) {
-      LOGGER.warning(e.getMessage());
-      maxCalls = defaultMax;
-    }
-
-    return maxCalls;
+    return realPrefs.getInt("pushmessage.max_calls_until_force_send", 20);
   }
 
   public void writeApiKey(String id, String apiKey) {
