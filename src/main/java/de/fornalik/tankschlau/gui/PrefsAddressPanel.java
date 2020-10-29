@@ -22,6 +22,7 @@ import de.fornalik.tankschlau.storage.GeocodingWorker;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.WorkerService;
+import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingClient;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -98,7 +99,7 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
     add(createGeoFieldsPanel());
     add(Box.createRigidArea(new Dimension(0, 5)));
     add(btnGeoRequest);
-    add(createPoweredByGooglePanel());
+    addPoweredByGooglePanelIfGoogleIsProvider();
     add(createSeparator());
     add(createDistancePanel());
 
@@ -157,13 +158,24 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
     return btnRequestGeo;
   }
 
-  private JPanel createPoweredByGooglePanel() {
+  private void addPoweredByGooglePanelIfGoogleIsProvider() {
+    // Evaluate current runtime class for interface GeocodingService
+    Class<?> geocodingProvider = ((GeocodingWorker) workerService.getWorker())
+        .getGeocodingService()
+        .getClass();
+
+    // No need to insert logo if provider is not Google
+    if (geocodingProvider != GoogleGeocodingClient.class)
+      return;
+
+    // Google is current geocoding provider - insert copyright logo
     JPanel panel = new PoweredByGooglePanel();
     panel.setAlignmentX(LEFT_ALIGNMENT);
     panel.setMinimumSize(new Dimension(totalDimension.width, 17));
     panel.setMaximumSize(new Dimension(totalDimension.width, 17));
     panel.setPreferredSize(new Dimension(totalDimension.width, 17));
-    return panel;
+
+    add(panel);
   }
 
   private JPanel createGridPanel(int rows) {

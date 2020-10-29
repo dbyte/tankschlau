@@ -36,7 +36,6 @@ public class GeocodingWorker implements RunnableCallbackWorker<Geo> {
 
   private static final Logger LOGGER = Logger.getLogger(GeocodingWorker.class.getName());
   private static final Localization L10N = Localization.getInstance();
-
   private final GeocodingService geocodingService;
   private Address userAddress;
   private Consumer<Geo> callback;
@@ -44,6 +43,10 @@ public class GeocodingWorker implements RunnableCallbackWorker<Geo> {
   public GeocodingWorker(GeocodingService geocodingService) {
     this.geocodingService = geocodingService;
     this.callback = null;
+  }
+
+  public GeocodingService getGeocodingService() {
+    return geocodingService;
   }
 
   public void setUserAddress(Address userAddress) {
