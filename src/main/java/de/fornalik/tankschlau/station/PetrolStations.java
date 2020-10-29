@@ -19,13 +19,41 @@ package de.fornalik.tankschlau.station;
 import de.fornalik.tankschlau.geo.Geo;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Utility class for dealing with data collections of a {@link PetrolStation}.
  */
 public class PetrolStations {
+
+  // TODO unit tests
+
+  /**
+   * First sorts a {@code List} of {@link PetrolStation} by price and distance, then returns
+   * the petrol station with the cheapest price for the given petrol type.
+   * Does <b>NOT</b> mutate the incoming list of petrol stations, instead creates a shallow
+   * copy before sorting.
+   *
+   * @param petrolStations List of {@link PetrolStation} to search in for the cheapest price.
+   * @param type           The {@link PetrolType} for which to search the cheapest price.
+   * @return The petrol station with the cheapest price for a given petrol type.
+   */
+  public static Optional<PetrolStation> findCheapest(
+      List<PetrolStation> petrolStations,
+      PetrolType type) {
+
+    Objects.requireNonNull(petrolStations);
+    Objects.requireNonNull(type);
+
+    if (petrolStations.size() == 0)
+      return Optional.empty();
+
+    // Do not mutate incoming object
+    List<PetrolStation> copiedList = new ArrayList<>(petrolStations);
+
+    sortByPriceAndDistanceForPetrolType(copiedList, type);
+    return Optional.of(copiedList.get(0));
+  }
 
   /**
    * Sorts a {@code List} of {@link PetrolStation} first by price and then by distance.
