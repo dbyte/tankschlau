@@ -56,11 +56,15 @@ final class TankSchlauBootstrap {
   final ApiKeyManager tankerkoenigApikeyManager;
   final GeocodingWorker geocodingWorker;
   final PetrolStationsWorker petrolStationsWorker;
+  final MessageWorker messageWorker;
 
   TankSchlauBootstrap() {
     /*
     Setup application context dependency graph
     */
+
+    // =====================================================================
+    // region Common
 
     LoggingConfig.init();
 
@@ -79,6 +83,11 @@ final class TankSchlauBootstrap {
         .registerTypeAdapter(Petrols.class, new PetrolsJsonAdapter())
         .create();
 
+    // endregion
+    // =====================================================================
+
+    // region Geocoding Webservice
+
     JsonResponse geocodingResponse = new GoogleGeocodingResponse(
         jsonProvider,
         new ResponseBodyImpl(),
@@ -90,6 +99,11 @@ final class TankSchlauBootstrap {
         geocodingResponse);
 
     geocodingWorker = new GeocodingWorker(geocodingService);
+
+    // endregion
+    // =====================================================================
+
+    // region PetrolStations Webservice
 
     TankerkoenigJsonAdapter tankerkoenigJsonAdapter = new TankerkoenigJsonAdapter(jsonProvider);
 
@@ -108,15 +122,25 @@ final class TankSchlauBootstrap {
 
     petrolStationsWorker = new PetrolStationsWorker(petrolStationsService);
 
-    PetrolStationMessageContent petrolStationMessageContent = new PushoverMessageContent();
+    // endregion
+    // =====================================================================
+
+    // region PetrolStations Push Message Webservice
+
     MessageRequest messageRequest = new PushoverMessageRequest(apiKeyManager, userPrefs);
     JsonResponse messageResponse = new PushoverMessageResponse(
         jsonProvider,
         new ResponseBodyImpl(),
         new TransactInfoImpl());
-    MessageService messageClient = new PushoverMessageService(
+
+    MessageService messageService = new PushoverMessageService(
         httpClient,
         messageRequest,
         messageResponse);
+
+    messageWorker = new MessageWorker(messageService, new PushoverMessageContent());
+
+    // endregion
+    // =====================================================================
   }
 }

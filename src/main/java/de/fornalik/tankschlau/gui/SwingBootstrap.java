@@ -20,6 +20,7 @@ import de.fornalik.tankschlau.service.GeocodingWorker;
 import de.fornalik.tankschlau.service.PetrolStationsWorker;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyStore;
+import de.fornalik.tankschlau.webserviceapi.common.MessageWorker;
 
 import javax.swing.*;
 
@@ -33,13 +34,15 @@ public final class SwingBootstrap {
       final UserPrefs userPrefs,
       final ApiKeyStore apiKeyStore,
       final PetrolStationsWorker petrolStationsWorker,
-      final GeocodingWorker geocodingWorker) {
+      final GeocodingWorker geocodingWorker,
+      final MessageWorker messageWorker) {
 
     SwingUtilities.invokeLater(() -> new MainWindow(
         userPrefs,
         apiKeyStore,
         new SwingWorkerService<>(petrolStationsWorker),
-        new SwingWorkerService<>(geocodingWorker)
+        new SwingWorkerService<>(geocodingWorker),
+        messageWorker
     ));
   }
 }

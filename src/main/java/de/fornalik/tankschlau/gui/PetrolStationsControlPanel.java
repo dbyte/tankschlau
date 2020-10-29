@@ -22,6 +22,7 @@ import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.WorkerService;
+import de.fornalik.tankschlau.webserviceapi.common.MessageWorker;
 
 import javax.swing.*;
 import java.awt.*;
@@ -49,7 +50,8 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
       PetrolsStationsTableModel dataTableModel,
       FooterPanel footerPanel,
       UserPrefs userPrefs,
-      WorkerService<List<PetrolStation>> petrolStationsWorkerService) {
+      WorkerService<List<PetrolStation>> petrolStationsWorkerService,
+      MessageWorker messageWorker) {
 
     workerService = petrolStationsWorkerService;
 

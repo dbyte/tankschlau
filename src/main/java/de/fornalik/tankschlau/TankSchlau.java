@@ -41,7 +41,8 @@ public final class TankSchlau {
         container.userPrefs,
         container.apiKeyStore,
         container.petrolStationsWorker,
-        container.geocodingWorker);
+        container.geocodingWorker,
+        container.messageWorker);
   }
 
   private void processVmOptions() {

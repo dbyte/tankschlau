@@ -81,6 +81,6 @@ public class PushoverMessageService implements MessageService {
 
   @Override
   public TransactInfo getTransactInfo() {
-   return response.getTransactInfo();
+    return response.getTransactInfo();
   }
 }

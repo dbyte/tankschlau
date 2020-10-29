@@ -22,6 +22,7 @@ import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.WorkerService;
 import de.fornalik.tankschlau.webserviceapi.common.ApiKeyStore;
+import de.fornalik.tankschlau.webserviceapi.common.MessageWorker;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,7 +42,8 @@ class MainWindow extends JFrame {
       UserPrefs userPrefs,
       ApiKeyStore apiKeyStore,
       WorkerService<List<PetrolStation>> petrolStationsWorkerService,
-      WorkerService<Geo> geocodingWorkerService) {
+      WorkerService<Geo> geocodingWorkerService,
+      MessageWorker messageWorker) {
 
     super(Localization.APP_NAME);
 
@@ -50,7 +52,8 @@ class MainWindow extends JFrame {
     this.domainPanelTab = new MainPanel(
         (FooterPanel) this.footerPanel,
         userPrefs,
-        petrolStationsWorkerService);
+        petrolStationsWorkerService,
+        messageWorker);
 
     this.prefsPanelTab = new PrefsPanel(
         userPrefs,
