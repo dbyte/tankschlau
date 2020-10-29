@@ -97,7 +97,7 @@ interface PrefsFactoryMixin {
    */
   default JPasswordField createPasswordField() {
     JPasswordField field = new JPasswordField();
-    field.setFont(new Font("monospaced", Font.PLAIN, 9));
+    field.setFont(new Font("monospaced", Font.PLAIN, 11));
     field.setForeground(CustomColor.PASSWORD_DOTS);
     return field;
   }

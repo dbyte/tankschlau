@@ -89,7 +89,7 @@ class MainWindow extends JFrame {
 
     tabbedPane.setPreferredSize(DEFAULT_WINDOW_DIMENSION);
     tabbedPane.setTabPlacement(JTabbedPane.TOP);
-    tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+    tabbedPane.setTabLayoutPolicy(JTabbedPane.WRAP_TAB_LAYOUT);
     tabbedPane.setBorder(BorderFactory.createEmptyBorder());
     tabbedPane.setOpaque(true);
 

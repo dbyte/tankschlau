@@ -91,7 +91,7 @@ class PushoverMessageServiceTest {
         messageResponse);
   }
 
-  @Test
+  // @Test
   void sendMessage_integrationTest_shouldSendRealMessage() {
     // given
     HttpClient realHttpClient = new OkHttpClient(new okhttp3.OkHttpClient());

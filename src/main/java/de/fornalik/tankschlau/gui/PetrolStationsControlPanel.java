@@ -69,10 +69,16 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
     setPreferredSize(new Dimension(190, this.getHeight()));
     setMaximumSize(new Dimension(190, Short.MAX_VALUE));
 
+    add(Box.createRigidArea(new Dimension(getMaximumSize().width, 50)));
     addButton(btnStartOneShotWork, this, L10N.get("button.UpdateOnce"));
+
+    add(Box.createRigidArea(new Dimension(getMaximumSize().width, 5)));
     addButton(btnStartCyclicWork, this, L10N.get("button.UpdateCyclic"));
+
+    add(Box.createRigidArea(new Dimension(getMaximumSize().width, 5)));
     addButton(btnRemoveAllData, this, L10N.get("button.EmptyTableView"));
 
+    add(Box.createRigidArea(new Dimension(getMaximumSize().width, 5)));
     add(createSeparator());
     add(createPetrolTypeChooser());
     add(Box.createVerticalGlue());
@@ -81,9 +87,9 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
   private void addButton(JButton btn, ActionListener listener, String title) {
     btn.setText(title);
     btn.addActionListener(listener);
-    btn.setMinimumSize(new Dimension(getMaximumSize().width, 30));
-    btn.setMaximumSize(new Dimension(getMaximumSize().width, 30));
-    btn.setPreferredSize(new Dimension(getMaximumSize().width, 30));
+    btn.setMinimumSize(new Dimension(getMaximumSize().width, 25));
+    btn.setMaximumSize(new Dimension(getMaximumSize().width, 25));
+    btn.setPreferredSize(new Dimension(getMaximumSize().width, 25));
     btn.setForeground(CustomColor.BUTTON_FOREGROUND);
     btn.setFocusable(false);
     btn.setAlignmentX(CENTER_ALIGNMENT);
@@ -127,6 +133,15 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
   }
 
   private void onSingleCycleFinished(List<PetrolStation> data) {
+    /*private void sendMessage(PetrolStation cheapestStation, PetrolType petrolType) {
+      messageContent.reset();
+      messageContent.setMessage(cheapestStation, petrolType);
+      messageService.sendMessage(messageContent);
+
+      Optional<String> responseErrorMsg = messageService.getTransactInfo().getErrorMessage();
+      responseErrorMsg.ifPresent(errMsg -> LOGGER.warning("Sending push message failed: " +
+      errMsg));
+    }*/
     SwingUtilities.invokeLater(() -> dataTableModel.addPetrolStations(data));
   }
 

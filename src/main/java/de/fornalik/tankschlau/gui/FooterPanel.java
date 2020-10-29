@@ -39,8 +39,8 @@ class FooterPanel extends JPanel {
   FooterPanel() {
     super();
 
-    this.labelCountdown = new JLabel();
-    this.labelWork = new JLabel();
+    this.labelCountdown = createBaseLabel();
+    this.labelWork = createBaseLabel();
     this.iconWork = this.readWorkIndicatorIcon();
 
     this.initView();
@@ -54,7 +54,7 @@ class FooterPanel extends JPanel {
 
     add(labelCountdown);
     add(labelWork);
-    add(new JLabel()); // spare
+    add(createJavaVersionLabel());
 
     configureCountdownLabel();
     configureWorkLabel();
@@ -63,8 +63,6 @@ class FooterPanel extends JPanel {
   private void configureCountdownLabel() {
     labelCountdown.setText(L10N.get("label.AutoUpdateStopped"));
     labelCountdown.setHorizontalAlignment(SwingConstants.LEFT);
-    labelCountdown.setFont(labelCountdown.getFont().deriveFont(12F));
-    labelCountdown.setForeground(Color.getHSBColor(0F, 0F, 0.76F));
   }
 
   private void configureWorkLabel() {
@@ -74,10 +72,23 @@ class FooterPanel extends JPanel {
     labelWork.setHorizontalAlignment(SwingConstants.CENTER);
     labelWork.setHorizontalTextPosition(SwingConstants.LEFT);
     labelWork.setIconTextGap(10);
-    labelWork.setFont(labelWork.getFont().deriveFont(12F));
-    labelWork.setForeground(Color.getHSBColor(0F, 0F, 0.76F));
 
     iconWork.setImageObserver(labelWork);
+  }
+
+  private JLabel createJavaVersionLabel() {
+    JLabel label = createBaseLabel();
+    label.setText("Java " + System.getProperty("java.version"));
+    label.setHorizontalAlignment(SwingConstants.RIGHT);
+    label.setHorizontalTextPosition(SwingConstants.RIGHT);
+    return label;
+  }
+
+  private JLabel createBaseLabel() {
+    JLabel label = new JLabel();
+    label.setFont(label.getFont().deriveFont(12F));
+    label.setForeground(Color.getHSBColor(0F, 0F, 0.76F));
+    return label;
   }
 
   private ImageIcon readWorkIndicatorIcon() {
