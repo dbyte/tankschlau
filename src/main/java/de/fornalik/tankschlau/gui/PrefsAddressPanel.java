@@ -40,7 +40,7 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
 
   private static final Logger LOGGER = Logger.getLogger(PrefsAddressPanel.class.getName());
   private static final Localization L10N = Localization.getInstance();
-  private static final Dimension totalDimension = new Dimension(350, 295);
+  private static final Dimension totalDimension = new Dimension(350, 325);
   private static final double DEFAULT_SEARCH_RADIUS = 5.0;
 
   private static WorkerService<Geo> workerService;
@@ -98,6 +98,7 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
     add(createGeoFieldsPanel());
     add(Box.createRigidArea(new Dimension(0, 5)));
     add(btnGeoRequest);
+    add(createPoweredByGooglePanel());
     add(createSeparator());
     add(createDistancePanel());
 
@@ -154,6 +155,15 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
     btnRequestGeo.addActionListener(new BtnGeoRequestListener());
 
     return btnRequestGeo;
+  }
+
+  private JPanel createPoweredByGooglePanel() {
+    JPanel panel = new PoweredByGooglePanel();
+    panel.setAlignmentX(LEFT_ALIGNMENT);
+    panel.setMinimumSize(new Dimension(totalDimension.width, 17));
+    panel.setMaximumSize(new Dimension(totalDimension.width, 17));
+    panel.setPreferredSize(new Dimension(totalDimension.width, 17));
+    return panel;
   }
 
   private JPanel createGridPanel(int rows) {
