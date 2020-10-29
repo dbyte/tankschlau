@@ -67,6 +67,9 @@ public class TankerkoenigRequest extends BaseRequest implements GeoRequest {
     putUrlParameter("lat", Double.valueOf(geo.getLatitude()).toString());
     putUrlParameter("lng", Double.valueOf(geo.getLongitude()).toString());
     putUrlParameter("rad", maxSearchRadius.toString());
+
+    // Additionally, refresh the API key parameter in case the API key has changed within GUI or so.
+    setApiKeyParameter();
   }
 
   private void setBaseData() {
@@ -80,7 +83,10 @@ public class TankerkoenigRequest extends BaseRequest implements GeoRequest {
     of Tankerkoenig.de, "sort" must be set to "dist" when requesting "type" with "all". */
     putUrlParameter("sort", "dist");
     putUrlParameter("type", "all");
+    setApiKeyParameter();
+  }
 
+  private void setApiKeyParameter() {
     /* Only add API key if we got one. Tankerkoenig will inform us about a missing/invalid key
     in its response, where we handle errors anyway. */
     apiKeyManager.read().ifPresent(value -> putUrlParameter("apikey", value));
@@ -89,7 +95,7 @@ public class TankerkoenigRequest extends BaseRequest implements GeoRequest {
   public static class SearchRadiusException extends IllegalStateException {
     protected SearchRadiusException() {
       super("Maximum distance radius (km), used for searching petrol stations "
-                + "in the user's neighbourhood, must not be null.");
+          + "in the user's neighbourhood, must not be null.");
     }
   }
 }
