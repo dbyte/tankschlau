@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 // TODO unit tests
 
 /**
- * Simulate some operations which should be logged into the Swing TextArea.
+ * Worker for a Geocoding Webservice
  */
 public class GeocodingWorker implements RunnableCallbackWorker<Geo> {
 
