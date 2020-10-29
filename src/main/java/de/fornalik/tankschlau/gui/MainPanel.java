@@ -25,7 +25,7 @@ import java.awt.*;
 import java.util.List;
 
 /**
- * Main content of the app, represented in MainWindowOld.
+ * Main content of the app, represented in MainWindow.
  */
 class MainPanel extends JPanel {
 
