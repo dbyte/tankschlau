@@ -90,12 +90,12 @@ public class PetrolStationMessageWorker {
     }*/
 
     PetrolStation cheapestStation = findCheapestStation(stations, preferredPetrolType);
-    double price = findPrice(cheapestStation, preferredPetrolType);
+    double currentPrice = findPrice(cheapestStation, preferredPetrolType);
 
-    if (!mustSend(price))
+    if (!mustSend(currentPrice))
       return;
 
-    doSendMessage(cheapestStation, preferredPetrolType, price);
+    doSendMessage(cheapestStation, preferredPetrolType, currentPrice);
   }
 
   private void doSendMessage(
@@ -148,13 +148,26 @@ public class PetrolStationMessageWorker {
         .map(petrol -> petrol.price).orElse(0.0);
   }
 
-  private boolean mustSend(double price) {
+  private boolean mustSend(double currentPrice) {
     int maxCallsUntilForceSendIfPriceIsRisingSinceLastMessage = userPrefs
         .readPushMessageMaxCallsUntilForceSend();
 
-    boolean isPriceReduction = price > 0.0 && price < priceAtLastSentMessage;
+    /*
+    If the current price is reduced in comparison to the one when the last message was sent,
+    we want the message to be sent, regardless to the number of invokes of this worker.
+     */
+    boolean isPriceReduction = currentPrice > 0.0 && currentPrice < priceAtLastSentMessage;
+
+    /*
+    Only true when (_additionally_ to exceeding max. calls) the current price is greater than it
+    was at the time the last message was sent! This is because we do not want to force informing
+    the user about a price that is equal to the one in the last sent message.
+    If the current price is reduced in comparison to the one when the last message was sent,
+    variable isPriceReduction would be true anyway and force the message to be sent.
+     */
     boolean exceededMaxCallsUntilForceSend =
-        callsSinceLastMessage >= maxCallsUntilForceSendIfPriceIsRisingSinceLastMessage;
+        callsSinceLastMessage >= maxCallsUntilForceSendIfPriceIsRisingSinceLastMessage
+            && currentPrice > priceAtLastSentMessage;
 
     boolean mustSend = isPriceReduction || exceededMaxCallsUntilForceSend;
 
