@@ -69,7 +69,7 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
     setPreferredSize(new Dimension(190, this.getHeight()));
     setMaximumSize(new Dimension(190, Short.MAX_VALUE));
 
-    add(Box.createRigidArea(new Dimension(getMaximumSize().width, 50)));
+    add(Box.createRigidArea(new Dimension(getMaximumSize().width, 52)));
     addButton(btnStartOneShotWork, this, L10N.get("button.UpdateOnce"));
 
     add(Box.createRigidArea(new Dimension(getMaximumSize().width, 5)));
@@ -78,7 +78,7 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
     add(Box.createRigidArea(new Dimension(getMaximumSize().width, 5)));
     addButton(btnRemoveAllData, this, L10N.get("button.EmptyTableView"));
 
-    add(Box.createRigidArea(new Dimension(getMaximumSize().width, 5)));
+    add(Box.createRigidArea(new Dimension(getMaximumSize().width, 10)));
     add(createSeparator());
     add(createPetrolTypeChooser());
     add(Box.createVerticalGlue());

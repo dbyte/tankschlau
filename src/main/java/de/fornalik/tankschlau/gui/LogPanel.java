@@ -93,18 +93,21 @@ class LogPanel extends JPanel {
   }
 
   private JPanel createLogButtonPanel() {
+    final int maxWidth = 190;
+    final int buttonHeight = 25;
+
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    panel.setMaximumSize(new Dimension(190, getHeight()));
 
-    panel.add(Box.createRigidArea(new Dimension(190, 25)));
+    panel.add(Box.createRigidArea(new Dimension(maxWidth, 27)));
     panel.add(btnClearLog);
 
-    // btnClearLog.setAlignmentY(CENTER_ALIGNMENT);
     btnClearLog.setAlignmentX(CENTER_ALIGNMENT);
     btnClearLog.setText(L10N.get("button.ClearLogView"));
-    btnClearLog.setMinimumSize(new Dimension(190, 25));
-    btnClearLog.setMaximumSize(new Dimension(190, 25));
-    btnClearLog.setPreferredSize(new Dimension(190, 25));
+    btnClearLog.setMinimumSize(new Dimension(maxWidth, buttonHeight));
+    btnClearLog.setMaximumSize(new Dimension(maxWidth, buttonHeight));
+    btnClearLog.setPreferredSize(new Dimension(maxWidth, buttonHeight));
     btnClearLog.setForeground(CustomColor.BUTTON_FOREGROUND);
     btnClearLog.setFocusable(false);
     btnClearLog.addActionListener(buttonListener);
