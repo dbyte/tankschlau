@@ -46,7 +46,7 @@ public final class TankSchlau {
   }
 
   private void processVmOptions() {
-    // Offer option to pass some data at startup. Ex: -Dmyproperty="My value"
+    // Offers option to pass some data at startup. Ex: -Dmyproperty="My value"
 
     logger.finest("Processing VM options");
 

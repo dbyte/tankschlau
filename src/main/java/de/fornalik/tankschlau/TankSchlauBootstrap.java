@@ -50,8 +50,9 @@ import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigResponse;
 import java.util.Locale;
 
 /**
- * Describes a the dependency graph throughout the application.
- * Avoid tight coupling to any classes by ONLY calling it's members from the root of the app.
+ * Describes the dependency graph throughout the application.
+ * Avoid tight coupling to any classes by ONLY calling it's members from the root of the app,
+ * using Inversion Of Control.
  */
 final class TankSchlauBootstrap {
   final UserPrefs userPrefs;
