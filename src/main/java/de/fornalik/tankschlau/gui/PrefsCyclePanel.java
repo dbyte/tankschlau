@@ -39,7 +39,7 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
   private static final Dimension TOTAL_DIMENSION = new Dimension(300, 130);
 
   private final JTextField textCycleRate;
-  private final JTextField textMessageMaxCallsUntilForceSend;
+  private final JTextField textMessageDelayWithNumberOfCalls;
   private final JCheckBox checkEnableMessages;
   private final GridBagConstraints constraints;
 
@@ -50,7 +50,7 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
     this.userPrefs = userPrefs;
 
     this.textCycleRate = createIntegerOnlyTextField(5);
-    this.textMessageMaxCallsUntilForceSend = createIntegerOnlyTextField(3);
+    this.textMessageDelayWithNumberOfCalls = createIntegerOnlyTextField(3);
     this.checkEnableMessages = createEnableMessagesCheckbox(L10N.get("label.EnableMessaging"));
 
     this.constraints = new GridBagConstraints();
@@ -106,16 +106,16 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
 
     constraints.gridx = 0;
     JLabel labelMessageMaxCallsUntilForceSend = createLabel(
-        L10N.get("label.CycleMessageMaxCallsUntilForceSend"),
+        L10N.get("label.CycleMessageDelayWithNumberOfCalls"),
         SwingConstants.LEFT);
     addToPanel(labelMessageMaxCallsUntilForceSend, 180, constraints);
 
     constraints.gridx = 1;
-    textMessageMaxCallsUntilForceSend
-        .setText(String.valueOf(userPrefs.readPushMessageMaxCallsUntilForceSend()));
-    textMessageMaxCallsUntilForceSend.setEnabled(userPrefs.readPushMessageEnabled());
-    textMessageMaxCallsUntilForceSend.addFocusListener(focusListener);
-    addToPanel(textMessageMaxCallsUntilForceSend, 60, constraints);
+    textMessageDelayWithNumberOfCalls
+        .setText(String.valueOf(userPrefs.readPushMessageDelayWithNumberOfCalls()));
+    textMessageDelayWithNumberOfCalls.setEnabled(userPrefs.readPushMessageEnabled());
+    textMessageDelayWithNumberOfCalls.addFocusListener(focusListener);
+    addToPanel(textMessageDelayWithNumberOfCalls, 60, constraints);
 
     constraints.gridx = 2;
     addToPanel(createLabel(L10N.get("label.Updates"), SwingConstants.LEFT), 120, constraints);
@@ -169,6 +169,9 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
     return out;
   }
 
+  // region Listeners
+  // =====================================================================
+
   private class CycleFocusListener implements FocusListener {
     @Override
     public void focusGained(FocusEvent e) {
@@ -185,9 +188,9 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
         userPrefs.writePetrolStationsUpdateCycleRate(value);
       }
 
-      else if (e.getSource() == textMessageMaxCallsUntilForceSend) {
+      else if (e.getSource() == textMessageDelayWithNumberOfCalls) {
         int value = legalizeTextFieldToInteger(e, 1, 20);
-        userPrefs.writePushMessageMaxCallsUntilForceSend(value);
+        userPrefs.writePushMessageDelayWithNumberOfCalls(value);
       }
     }
   }
@@ -199,8 +202,10 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
         boolean isChecked = e.getStateChange() == ItemEvent.SELECTED;
 
         userPrefs.writePushMessageEnabled(isChecked);
-        textMessageMaxCallsUntilForceSend.setEnabled(isChecked);
+        textMessageDelayWithNumberOfCalls.setEnabled(isChecked);
       }
     }
   }
+
+  // endregion
 }

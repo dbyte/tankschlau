@@ -180,13 +180,13 @@ public class UserPrefs {
   }
 
   // TODO unit tests
-  public void writePushMessageMaxCallsUntilForceSend(int max) {
+  public void writePushMessageDelayWithNumberOfCalls(int max) {
     if (max < 0) return;
     realPrefs.putInt("pushmessage.max_calls_until_force_send", max);
   }
 
   // TODO unit tests
-  public int readPushMessageMaxCallsUntilForceSend() {
+  public int readPushMessageDelayWithNumberOfCalls() {
     checkPrefsMissing("pushmessage.max_calls_until_force_send");
     return realPrefs.getInt("pushmessage.max_calls_until_force_send", 20);
   }
