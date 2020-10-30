@@ -25,8 +25,9 @@ import de.fornalik.tankschlau.webserviceapi.common.PetrolStationMessageWorker;
 import javax.swing.*;
 
 /**
- * Describes the dependency graph throughout the Swing GUI.
- * Avoid tight coupling to any classes by ONLY calling it's members from the root of the Swing GUI.
+ * Describes the domain dependencies throughout the Swing GUI.
+ * Avoids tight coupling to any classes by ONLY constructing it's members from the root
+ * of the Swing GUI, using Inversion Of Control.
  */
 public final class SwingBootstrap {
 

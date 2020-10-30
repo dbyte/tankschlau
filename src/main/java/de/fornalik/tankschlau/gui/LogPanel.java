@@ -98,7 +98,7 @@ class LogPanel extends JPanel {
 
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-    panel.setMaximumSize(new Dimension(190, getHeight()));
+    panel.setMaximumSize(new Dimension(maxWidth, getHeight()));
 
     panel.add(Box.createRigidArea(new Dimension(maxWidth, 27)));
     panel.add(btnClearLog);

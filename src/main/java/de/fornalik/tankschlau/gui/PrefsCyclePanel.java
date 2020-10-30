@@ -189,7 +189,7 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
       }
 
       else if (e.getSource() == textMessageDelayWithNumberOfCalls) {
-        int value = legalizeTextFieldToInteger(e, 1, 20);
+        int value = legalizeTextFieldToInteger(e, 0, 20);
         userPrefs.writePushMessageDelayWithNumberOfCalls(value);
       }
     }

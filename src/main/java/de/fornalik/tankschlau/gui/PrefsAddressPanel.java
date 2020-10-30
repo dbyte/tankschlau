@@ -233,7 +233,6 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
   }
 
   private void writeAddressToUserPrefs() {
-    //if (isValidUserAddress())
     userPrefs.writeAddress(createAddressFromFields());
   }
 

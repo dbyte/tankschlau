@@ -27,7 +27,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
 /**
- * User preferences panel for API keys of some webservices.
+ * User preferences panel for authorization keys of needed webservices.
  */
 public class PrefsApiKeyPanel extends JPanel implements FocusListener, PrefsFactoryMixin {
 

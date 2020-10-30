@@ -34,11 +34,11 @@ import java.util.StringTokenizer;
  */
 class PetrolsStationsTableModel extends AbstractTableModel implements Serializable {
   private static final Localization L10N = Localization.getInstance();
-  public static final String COL_NAME = L10N.get("tableHeader.Name");
-  public static final String COL_PRICES = L10N.get("tableHeader.Price");
-  public static final String COL_STREET = L10N.get("tableHeader.Place");
-  public static final String COL_DISTANCE = L10N.get("tableHeader.Distance");
-  public static final String COL_IS_OPEN = L10N.get("tableHeader.Status");
+  static final String COL_NAME = L10N.get("tableHeader.Name");
+  static final String COL_PRICES = L10N.get("tableHeader.Price");
+  static final String COL_STREET = L10N.get("tableHeader.Place");
+  static final String COL_DISTANCE = L10N.get("tableHeader.Distance");
+  static final String COL_IS_OPEN = L10N.get("tableHeader.Status");
   private static final String[] columns = new String[5];
 
   private final List<PetrolStation> petrolStations;
@@ -110,7 +110,6 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
 
   synchronized void removeAllPetrolStations() {
     this.petrolStations.clear();
-    //fireTableDataChanged();
     fireTableRowsDeleted(0, getRowCount());
   }
 
@@ -132,7 +131,7 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
     fireTableDataChanged();
   }
 
-  // TODO This finally belongs to the View Layer, wrong class for a display method.
+  // TODO This finally belongs to the View Layer, wrong class here for a display method.
   private String isOpenToHtml(boolean isOpen) {
     StringBuilder out = new StringBuilder("<html>");
 
@@ -151,7 +150,7 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
     return out.toString();
   }
 
-  // TODO This finally belongs to the View Layer, wrong class for a display method.
+  // TODO This finally belongs to the View Layer, wrong class here for a display method.
   private String petrolsToHtml(Set<Petrol> petrols) {
     if (petrols.size() == 0)
       return "";

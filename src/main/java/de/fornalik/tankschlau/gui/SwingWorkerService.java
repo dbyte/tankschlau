@@ -25,7 +25,7 @@ import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 /**
- * Provides abilities to start a worker on a new Thread (one-shot or cyclic) and forward its
+ * Provides abilities to start a worker on a new Thread (one-shot or cyclic), forwarding its
  * results to a consumer when received.
  *
  * @param <ResultType> Type of the result data which is pushed back to the consumer
