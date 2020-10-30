@@ -83,6 +83,15 @@ public class Petrols {
   }
 
   /**
+   * @param petrols       A {@link Set} of petrols.
+   * @param forPetrolType Type of petrol to search for, assuming it's unique within the collection.
+   * @return The price for a specific petrol in a given set of petrols. 0.0 if not found.
+   */
+  public static double findPrice(Set<Petrol> petrols, PetrolType forPetrolType) {
+    return findPetrol(petrols, forPetrolType).map(petrol -> petrol.price).orElse(0.0);
+  }
+
+  /**
    * Thrown when we've found duplicates of {@link PetrolType} in a {@link Petrol} collection.
    *
    * @implNote This is an unchecked Exception.

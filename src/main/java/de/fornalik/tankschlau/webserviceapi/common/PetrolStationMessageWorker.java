@@ -95,7 +95,7 @@ public class PetrolStationMessageWorker {
     }*/
 
     PetrolStation cheapestStation = findCheapestStation(stations, preferredPetrolType);
-    double currentPrice = findPrice(cheapestStation, preferredPetrolType);
+    double currentPrice = Petrols.findPrice(cheapestStation.getPetrols(), preferredPetrolType);
 
     if (!mustSend(currentPrice))
       return;
@@ -116,7 +116,7 @@ public class PetrolStationMessageWorker {
     LOGGER.finer("Invoking message service.");
     messageService.sendMessage(messageContent);
 
-    // Evaluate transaction result.
+    // Evaluate transaction result of communication with the webservice.
     Optional<String> responseErrorMsg = messageService.getTransactInfo().getErrorMessage();
     if (responseErrorMsg.isPresent()) {
       LOGGER.warning(L10N.get("msg.SendPushMessageFailed", responseErrorMsg.get()));
@@ -147,12 +147,7 @@ public class PetrolStationMessageWorker {
     return cheapestStation.get();
   }
 
-  private double findPrice(PetrolStation cheapestStation, PetrolType preferredPetrolType) {
-    return Petrols
-        .findPetrol(cheapestStation.getPetrols(), preferredPetrolType)
-        .map(petrol -> petrol.price).orElse(0.0);
-  }
-
+  // Evaluates if a price update message has to be sent.
   private boolean mustSend(double currentPrice) {
     int maxCallsUntilForceSendIfPriceHasRisenSinceLastMessage = userPrefs
         .readPushMessageMaxCallsUntilForceSend();

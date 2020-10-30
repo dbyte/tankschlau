@@ -3,6 +3,7 @@ package de.fornalik.tankschlau.station;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.util.*;
 
@@ -123,6 +124,45 @@ class PetrolsTest {
     assertThrows(
         Petrols.PetrolsDuplicateException.class,
         () -> Petrols.findPetrol(givenPetrols, unexpectedPetrol.type));
+  }
+
+  @ParameterizedTest
+  @EnumSource(PetrolType.class)
+  void findPrice_happy(PetrolType petrolTypeToFind) {
+    // given
+    HashSet<Petrol> givenPetrols = new HashSet<>();
+    givenPetrols.add(new Petrol(PetrolType.DIESEL, 0.957));
+    givenPetrols.add(new Petrol(PetrolType.E10, 1.129));
+    givenPetrols.add(new Petrol(PetrolType.E5, 1.158));
+
+    // when
+    double foundPrice = Petrols.findPrice(givenPetrols, petrolTypeToFind);
+
+    // then
+    switch (petrolTypeToFind) {
+      case DIESEL:
+        assertEquals(0.957, foundPrice);
+        break;
+      case E10:
+        assertEquals(1.129, foundPrice);
+        break;
+      case E5:
+        assertEquals(1.158, foundPrice);
+        break;
+    }
+  }
+
+  @Test
+  void findPrice_ReturnsZeroIfPriceNotFound() {
+    // given
+    HashSet<Petrol> givenPetrols = new HashSet<>();
+    givenPetrols.add(new Petrol(PetrolType.E5, 1.149));
+
+    // when
+    double foundPrice = Petrols.findPrice(givenPetrols, PetrolType.DIESEL);
+
+    // then
+    assertEquals(0.0, foundPrice);
   }
 
 }
