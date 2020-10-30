@@ -26,8 +26,6 @@ import java.util.*;
  */
 public class PetrolStations {
 
-  // TODO unit tests
-
   /**
    * First sorts a {@code List} of {@link PetrolStation} by price and distance, then returns
    * the petrol station with the cheapest price for the given petrol type.
