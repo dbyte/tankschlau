@@ -41,12 +41,7 @@ public class PetrolStationBuilder {
   }
 
   public PetrolStation build() {
-    return new PetrolStation(
-        uuid,
-        brand,
-        isOpen,
-        address,
-        petrols);
+    return new PetrolStation(uuid, brand, isOpen, address, petrols);
   }
 
   public PetrolStationBuilder withBrand(String brand) {

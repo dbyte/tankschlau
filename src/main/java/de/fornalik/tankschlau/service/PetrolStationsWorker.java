@@ -71,9 +71,7 @@ public class PetrolStationsWorker implements RunnableCallbackWorker<List<PetrolS
 
       LOGGER.severe(errMsg);
 
-      // Interrupt to This does NOT invoke an InterruptedException as I'm interrupting myself,
-      // which is always
-      // permitted.
+      // Interrupting my own thread does NOT invoke an InterruptedException and is always permitted.
       Thread.currentThread().interrupt();
     }
 

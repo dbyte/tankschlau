@@ -21,7 +21,7 @@ import java.net.URL;
 import java.util.Optional;
 
 /**
- * Use to verify/legalize a String, using method chaining.
+ * Utility class to verify/legalize a String, using method chaining.
  */
 public class StringLegalizer {
   private String string;
@@ -53,8 +53,8 @@ public class StringLegalizer {
    */
   public StringLegalizer safeTrim() {
     string = Optional.ofNullable(string)
-                     .map(String::trim)
-                     .orElse(string);
+        .map(String::trim)
+        .orElse(string);
 
     return this;
   }

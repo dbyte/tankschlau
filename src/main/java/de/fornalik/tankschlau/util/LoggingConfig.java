@@ -22,7 +22,7 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 /**
- * Wrapper for the used logging system
+ * Provides configuration of the used logging system.
  */
 public class LoggingConfig {
   // Create our custom handler which sends log messages to a Swing TextArea.

@@ -24,7 +24,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import java.util.Objects;
 
 /**
- * Holds the price for a petrol type.
+ * Holds petrol type and its price.
  */
 public class Petrol {
   private static final String NBSP_AND_EUR = "\u00A0\u20AC";

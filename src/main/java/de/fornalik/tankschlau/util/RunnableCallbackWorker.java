@@ -19,7 +19,7 @@ package de.fornalik.tankschlau.util;
 import java.util.function.Consumer;
 
 /**
- * Runnable with the ability to pass back data to a Consumer.
+ * Runnable with the ability to pass back data to a Consumer at some time.
  *
  * @param <ResultType> Type of the result data which is passed back to the consumer.
  */

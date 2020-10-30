@@ -14,7 +14,7 @@ public class SwingLoggingHandler extends java.util.logging.Handler {
     if (!isLoggable(record))
       return;
 
-    // Use the injectable formatter delegate to format the message properly.
+    // Use the injectable formatter delegate to format the message properly:
 
     if (SwingUtilities.isEventDispatchThread()) {
       // We're already on the EDT, no need to add something to its queue.
