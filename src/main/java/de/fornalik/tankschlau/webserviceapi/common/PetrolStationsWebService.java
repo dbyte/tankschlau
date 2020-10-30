@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Highest abstraction of tankerkoenig.de webservice.
- * Use this one with a View Model / Presentation Layer or Controller.
+ * Highest abstraction level of tankerkoenig.de webservice.
+ * Use this one with a View Model / Presentation Layer or Worker.
  */
 public class PetrolStationsWebService implements PetrolStationsService {
   private final PetrolStationsRepo repo;

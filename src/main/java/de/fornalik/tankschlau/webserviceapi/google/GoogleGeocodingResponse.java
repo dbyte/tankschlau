@@ -30,8 +30,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 /**
- * Concrete implementation of {@link JsonResponse} for Google Geocoding webservice.
- * Locks the type of the response body to <code>String</code>.
+ * Implementation of {@link JsonResponse} for Google Geocoding webservice.
  *
  * @see <a href="https://maps.googleapis.com/maps/api/geocode/json">API base URL</a>,
  * <a href="https://developers.google.com/maps/documentation/geocoding/overview#GeocodingResponses">Google documentation: GeocodingResponses</a>

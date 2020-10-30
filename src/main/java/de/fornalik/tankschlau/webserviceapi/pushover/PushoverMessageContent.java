@@ -20,8 +20,8 @@ import de.fornalik.tankschlau.util.StringLegalizer;
 import de.fornalik.tankschlau.webserviceapi.common.PetrolStationMessageContent;
 
 /**
- * Concrete implementation of {@link PetrolStationMessageContent} regarding petrol station messages
- * with webservice pushover.net
+ * Concrete implementation of {@link PetrolStationMessageContent} within the context of
+ * petrol station messages with webservice pushover.net.
  */
 public class PushoverMessageContent extends PetrolStationMessageContent {
   private String title;

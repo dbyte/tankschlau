@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Implementation of {@link GeocodingService} for Google Geocoding webservices.
+ * Geocoding implementation of {@link GeocodingService} for Google Geocoding webservices.
  *
  * @see
  * <a href="https://developers.google.com/maps/documentation/geocoding/overview#GeocodingResponses">Google documentation: GeocodingResponses</a>
@@ -44,12 +44,9 @@ public class GoogleGeocodingClient implements GeocodingService {
    *
    * @param httpClient Some implementation of {@link HttpClient} for interaction with webservice.
    * @param request    Some implementation of {@link AddressRequest}, forming a concrete request.
-   * @param response   Some implementation of {@link Response}. Will be implicitly recycled.
+   * @param response   Some implementation of {@link JsonResponse}. Will be implicitly recycled.
    */
-  public GoogleGeocodingClient(
-      HttpClient httpClient,
-      AddressRequest request,
-      Response response) {
+  public GoogleGeocodingClient(HttpClient httpClient, AddressRequest request, Response response) {
 
     this.httpClient = Objects.requireNonNull(httpClient);
     this.request = Objects.requireNonNull(request);

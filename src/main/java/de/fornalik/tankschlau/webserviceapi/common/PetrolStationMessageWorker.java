@@ -128,7 +128,7 @@ public class PetrolStationMessageWorker {
     return mustSend;
   }
 
-  // Does finally execute a push message.
+  // Does finally execute the push message.
   private void doSendMessage(
       PetrolStation cheapestStation,
       PetrolType preferredPetrolType,

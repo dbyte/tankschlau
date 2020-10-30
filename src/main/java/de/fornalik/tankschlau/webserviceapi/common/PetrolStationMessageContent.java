@@ -25,16 +25,16 @@ import de.fornalik.tankschlau.util.Localization;
 import java.util.Optional;
 
 /**
- * Abstract implementation of {@link MessageContent} for (push) message content regarding
- * a {@link PetrolStation}.
+ * Abstract implementation of {@link MessageContent} for message content within a
+ * {@link PetrolStation} context.
  */
 public abstract class PetrolStationMessageContent implements MessageContent {
   private static final Localization l10n = Localization.getInstance();
 
   /**
-   * Formats a ready-to-use push message text.
+   * Formats a ready-to-use message text.
    *
-   * @param station    Petrol station that drives the message content.
+   * @param station    Petrol station which drives the message content.
    * @param petrolType Petrol type for which to show the current price regarding the given station.
    */
   public void setMessage(PetrolStation station, PetrolType petrolType) {
