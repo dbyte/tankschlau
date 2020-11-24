@@ -26,7 +26,8 @@
         <configuration>
           <source>${project.java.version}</source>
           <target>${project.java.version}</target>
-          <encoding>${project.build.sourceEncoding}</encoding>
+          <encoding>UTF-8</encoding>
+          <!-- <encoding>${project.build.sourceEncoding}</encoding> -->
         </configuration>
       </plugin>
 
