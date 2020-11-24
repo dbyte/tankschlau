@@ -55,10 +55,10 @@ public class TankerkoenigPetrolStationsRepo implements PetrolStationsRepo {
       GeoRequest request,
       Response response) {
 
-    this.httpClient = httpClient;
-    this.tankerkoenigPetrolStationsJsonAdapter = petrolStationsJsonAdapter;
-    this.request = request;
-    this.response = response;
+    this.httpClient = Objects.requireNonNull(httpClient);
+    this.tankerkoenigPetrolStationsJsonAdapter = Objects.requireNonNull(petrolStationsJsonAdapter);
+    this.request = Objects.requireNonNull(request);
+    this.response = Objects.requireNonNull(response);
   }
 
   @Override

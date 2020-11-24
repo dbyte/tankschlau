@@ -55,7 +55,7 @@ public class PetrolStationMessageWorker {
 
     this.messageService = Objects.requireNonNull(messageService);
     this.messageContent = Objects.requireNonNull(messageContent);
-    this.userPrefs = userPrefs;
+    this.userPrefs = Objects.requireNonNull(userPrefs);
 
     this.executor = Executors.newSingleThreadExecutor();
   }

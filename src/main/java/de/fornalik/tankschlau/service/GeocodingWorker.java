@@ -41,7 +41,7 @@ public class GeocodingWorker implements RunnableCallbackWorker<Geo> {
   private Consumer<Geo> callback;
 
   public GeocodingWorker(GeocodingService geocodingService) {
-    this.geocodingService = geocodingService;
+    this.geocodingService = Objects.requireNonNull(geocodingService);
     this.callback = null;
   }
 
