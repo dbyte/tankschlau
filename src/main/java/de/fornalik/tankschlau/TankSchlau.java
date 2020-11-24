@@ -23,10 +23,10 @@ import java.util.logging.Logger;
 
 public final class TankSchlau {
   private static Logger logger;
-  private static TankSchlauBootstrap container;
+  private static TankSchlauContext context;
 
   public static void main(String[] args) {
-    container = new TankSchlauBootstrap();
+    context = new TankSchlauContext();
     logger = Logger.getLogger(TankSchlau.class.getName());
 
     final TankSchlau instance = new TankSchlau();
@@ -38,11 +38,11 @@ public final class TankSchlau {
     logger.finest("Invoking GUI");
 
     new SwingBootstrap(
-        container.userPrefs,
-        container.apiKeyStore,
-        container.petrolStationsWorker,
-        container.geocodingWorker,
-        container.petrolStationMessageWorker);
+        context.userPrefs,
+        context.apiKeyStore,
+        context.petrolStationsWorker,
+        context.geocodingWorker,
+        context.petrolStationMessageWorker);
   }
 
   private void processVmOptions() {
@@ -51,15 +51,15 @@ public final class TankSchlau {
     logger.finest("Processing VM options");
 
     Optional.ofNullable(System.getProperty("petrolStationsApiKey"))
-        .ifPresent(container.tankerkoenigApikeyManager::write);
+        .ifPresent(context.tankerkoenigApikeyManager::write);
 
     Optional.ofNullable(System.getProperty("geocodingApiKey"))
-        .ifPresent(container.geocodingApikeyManager::write);
+        .ifPresent(context.geocodingApikeyManager::write);
 
     Optional.ofNullable(System.getProperty("pushmessageApiKey"))
-        .ifPresent(container.apiKeyManager::write);
+        .ifPresent(context.apiKeyManager::write);
 
     Optional.ofNullable(System.getProperty("pushmessageUserId"))
-        .ifPresent(container.userPrefs::writePushMessageUserId);
+        .ifPresent(context.userPrefs::writePushMessageUserId);
   }
 }

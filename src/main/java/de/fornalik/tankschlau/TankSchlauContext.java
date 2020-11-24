@@ -53,7 +53,7 @@ import java.util.Locale;
  * pre-building objects. Avoids tight coupling using Inversion Of Control.
  * Note: ONLY call it's members from the root of the app, mostly this will be the "main" method.
  */
-final class TankSchlauBootstrap {
+final class TankSchlauContext {
   final UserPrefs userPrefs;
   final ApiKeyStore apiKeyStore;
   final ApiKeyManager apiKeyManager;
@@ -66,7 +66,7 @@ final class TankSchlauBootstrap {
   private final HttpClient httpClient;
   private final Gson jsonProvider;
 
-  TankSchlauBootstrap() {
+  TankSchlauContext() {
     LoggingConfig.init();
 
     Localization l10n = Localization.getInstance();
