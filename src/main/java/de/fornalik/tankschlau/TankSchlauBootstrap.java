@@ -31,7 +31,6 @@ import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.user.UserPrefsApiKeyStore;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.LoggingConfig;
-import de.fornalik.tankschlau.webserviceapi.common.MessageRequest;
 import de.fornalik.tankschlau.webserviceapi.common.MessageService;
 import de.fornalik.tankschlau.webserviceapi.common.PetrolStationMessageWorker;
 import de.fornalik.tankschlau.webserviceapi.common.PetrolStationsWebService;
@@ -50,8 +49,8 @@ import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigResponse;
 import java.util.Locale;
 
 /**
- * Describes the dependency graph throughout the application, pre-building objects.
- * Avoid tight coupling using Inversion Of Control.
+ * Composition Root. Describes the dependency graph throughout the application,
+ * pre-building objects. Avoids tight coupling using Inversion Of Control.
  * Note: ONLY call it's members from the root of the app, mostly this will be the "main" method.
  */
 final class TankSchlauBootstrap {
@@ -64,14 +63,10 @@ final class TankSchlauBootstrap {
   final PetrolStationsWorker petrolStationsWorker;
   final PetrolStationMessageWorker petrolStationMessageWorker;
 
+  private final HttpClient httpClient;
+  private final Gson jsonProvider;
+
   TankSchlauBootstrap() {
-    /*
-    Setup application context dependency graph
-    */
-
-    // =====================================================================
-    // region Common
-
     LoggingConfig.init();
 
     Localization l10n = Localization.getInstance();
@@ -83,73 +78,70 @@ final class TankSchlauBootstrap {
     geocodingApikeyManager = ApiKeyManager.createForGeocoding(apiKeyStore);
     tankerkoenigApikeyManager = ApiKeyManager.createForPetrolStations(apiKeyStore);
 
-    HttpClient httpClient = new OkHttpClient(new okhttp3.OkHttpClient());
-
-    Gson jsonProvider = new GsonBuilder()
+    httpClient = new OkHttpClient(new okhttp3.OkHttpClient());
+    jsonProvider = new GsonBuilder()
         .registerTypeAdapter(Petrols.class, new PetrolsJsonAdapter())
         .create();
 
-    // endregion
-    // =====================================================================
+    geocodingWorker = createGeocodingWorker();
 
-    // region Geocoding Webservice
-
-    JsonResponse geocodingResponse = new GoogleGeocodingResponse(
-        jsonProvider,
-        new ResponseBodyImpl(),
-        new TransactInfoImpl());
-
-    GeocodingService geocodingService = new GoogleGeocodingClient(
-        httpClient,
-        GoogleGeocodingRequest.create(geocodingApikeyManager),
-        geocodingResponse);
-
-    geocodingWorker = new GeocodingWorker(geocodingService);
-
-    // endregion
-    // =====================================================================
-
-    // region PetrolStations Webservice
-
-    TankerkoenigJsonAdapter tankerkoenigJsonAdapter = new TankerkoenigJsonAdapter(jsonProvider);
-
-    JsonResponse petrolStationsJsonResponse = new TankerkoenigResponse(
-        jsonProvider,
-        new ResponseBodyImpl(),
-        new TransactInfoImpl());
-
-    PetrolStationsRepo petrolStationsRepo = new TankerkoenigPetrolStationsRepo(
-        httpClient,
-        tankerkoenigJsonAdapter,
-        TankerkoenigRequest.create(tankerkoenigApikeyManager),
-        petrolStationsJsonResponse);
-
-    PetrolStationsService petrolStationsService = new PetrolStationsWebService(petrolStationsRepo);
-
-    petrolStationsWorker = new PetrolStationsWorker(petrolStationsService);
-
-    // endregion
-    // =====================================================================
-
-    // region PetrolStations Push Message Webservice
-
-    MessageRequest messageRequest = new PushoverMessageRequest(apiKeyManager, userPrefs);
-    JsonResponse messageResponse = new PushoverMessageResponse(
-        jsonProvider,
-        new ResponseBodyImpl(),
-        new TransactInfoImpl());
-
-    MessageService messageService = new PushoverMessageService(
-        httpClient,
-        messageRequest,
-        messageResponse);
+    petrolStationsWorker = new PetrolStationsWorker(createPetrolStationsService());
 
     petrolStationMessageWorker = new PetrolStationMessageWorker(
-        messageService,
+        createPushoverMessageService(),
         new PushoverMessageContent(),
         userPrefs);
+  }
 
-    // endregion
-    // =====================================================================
+  private PetrolStationsService createPetrolStationsService() {
+    return new PetrolStationsWebService(
+        createPetrolStationsRepo());
+  }
+
+  private PetrolStationsRepo createPetrolStationsRepo() {
+    return new TankerkoenigPetrolStationsRepo(
+        httpClient,
+        new TankerkoenigJsonAdapter(jsonProvider),
+        TankerkoenigRequest.create(tankerkoenigApikeyManager),
+        createPetrolStationsJsonResponse(jsonProvider));
+  }
+
+  private JsonResponse createPetrolStationsJsonResponse(Gson jsonProvider) {
+    return new TankerkoenigResponse(
+        jsonProvider,
+        new ResponseBodyImpl(),
+        new TransactInfoImpl());
+  }
+
+  private GeocodingWorker createGeocodingWorker() {
+    return new GeocodingWorker(createGeocodingService());
+  }
+
+  private GeocodingService createGeocodingService() {
+    return new GoogleGeocodingClient(
+        httpClient,
+        GoogleGeocodingRequest.create(geocodingApikeyManager),
+        createGeocodingResponse());
+  }
+
+  private JsonResponse createGeocodingResponse() {
+    return new GoogleGeocodingResponse(
+        jsonProvider,
+        new ResponseBodyImpl(),
+        new TransactInfoImpl());
+  }
+
+  private MessageService createPushoverMessageService() {
+    return new PushoverMessageService(
+        httpClient,
+        new PushoverMessageRequest(apiKeyManager, userPrefs),
+        createPushoverMessageResponse());
+  }
+
+  private JsonResponse createPushoverMessageResponse() {
+    return new PushoverMessageResponse(
+        jsonProvider,
+        new ResponseBodyImpl(),
+        new TransactInfoImpl());
   }
 }
