@@ -127,7 +127,7 @@ class GeoTest {
 
     // given
     givenGeo = new Geo(54.354532, 23.0, 54.2);
-    locFixture.configure(Locale.US, ResourceBundle.getBundle(locBaseName, Locale.US));
+    locFixture.configure(Locale.ENGLISH, ResourceBundle.getBundle(locBaseName, Locale.ENGLISH));
     // when
     actualString = givenGeo.getDistanceAwayString();
     // then
