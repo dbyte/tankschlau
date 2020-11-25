@@ -36,7 +36,7 @@ public class ApiKeyManager implements Serializable {
   /**
    * Storage strategy for the API key.
    */
-  private final ApiKeyStore apiKeyStore;
+  private final transient ApiKeyStore apiKeyStore;
 
   /**
    * Constructor. In production, use static factory methods to get a new instance, for example

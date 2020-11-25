@@ -44,7 +44,7 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
   private static final Dimension totalDimension = new Dimension(350, 325);
   private static final double DEFAULT_SEARCH_RADIUS = 5.0;
 
-  private final WorkerService<Geo> workerService;
+  private final transient WorkerService<Geo> workerService;
   private final UserPrefs userPrefs;
 
   private final JTextField textStreet;

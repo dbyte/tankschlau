@@ -41,23 +41,22 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
   static final String COL_IS_OPEN = L10N.get("tableHeader.Status");
   private static final String[] columns = new String[5];
 
-  private final List<PetrolStation> petrolStations;
+  private final transient List<PetrolStation> petrolStations;
   private final UserPrefs userPrefs;
+
+  static {
+    columns[0] = COL_NAME;
+    columns[1] = COL_PRICES;
+    columns[2] = COL_STREET;
+    columns[3] = COL_DISTANCE;
+    columns[4] = COL_IS_OPEN;
+  }
 
   PetrolsStationsTableModel(UserPrefs userPrefs) {
     super();
     this.userPrefs = userPrefs;
     this.userPrefs.registerChangeListener("petrol.preferredtype", this::sortPetrolStations);
     this.petrolStations = new ArrayList<>();
-    this.initColumnIdentifiers();
-  }
-
-  private void initColumnIdentifiers() {
-    columns[0] = COL_NAME;
-    columns[1] = COL_PRICES;
-    columns[2] = COL_STREET;
-    columns[3] = COL_DISTANCE;
-    columns[4] = COL_IS_OPEN;
   }
 
   @Override
@@ -116,7 +115,7 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
   synchronized void addPetrolStations(List<PetrolStation> petrolStations) {
     this.removeAllPetrolStations();
 
-    if (petrolStations.size() == 0) return;
+    if (petrolStations.isEmpty()) return;
     int rowCountBeforeInsert = getRowCount();
 
     this.petrolStations.addAll(petrolStations);
@@ -152,8 +151,7 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
 
   // TODO This finally belongs to the View Layer, wrong class here for a display method.
   private String petrolsToHtml(Set<Petrol> petrols) {
-    if (petrols.size() == 0)
-      return "";
+    if (petrols.isEmpty()) return "";
 
     final PetrolType preferredPetrolType = userPrefs.readPreferredPetrolType();
     final List<Petrol> petrolList = Petrols.getSortedByPetrolTypeAndPrice(petrols);
