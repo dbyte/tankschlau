@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
 
   private static final Localization L10N = Localization.getInstance();
-  private static final Logger LOGGER = Logger.getLogger(FooterPanel.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(PrefsCyclePanel.class.getName());
 
   private static final int MINIMUM_CYCLE_RATE = 5;
   private static final int DEFAULT_CYCLE_RATE = 300;
