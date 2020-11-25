@@ -42,7 +42,23 @@ import java.util.prefs.Preferences;
 public class UserPrefs implements Serializable {
   private static final Logger LOGGER = Logger.getLogger(UserPrefs.class.getName());
   private static final long serialVersionUID = 1L;
-  private final Preferences realPrefs;
+
+  private static final String ADR_NAME_KEY = "address.name";
+  private static final String ADR_STREET_KEY = "address.street";
+  private static final String ADR_HOUSENUMBER_KEY = "address.housenumber";
+  private static final String ADR_CITY_KEY = "address.city";
+  private static final String ADR_POSTCODE_KEY = "address.postcode";
+  private static final String GEO_DISTANCE_KEY = "geo.distance";
+  private static final String GEO_LATITUDE_KEY = "geo.latitude";
+  private static final String GEO_LONGITUDE_KEY = "geo.longitude";
+  private static final String PETROL_PREFERRED_TYPE_KEY = "petrol.preferredtype";
+  private static final String PETROLSTATIONS_UPDATE_RATE_KEY = "petrolstations.updatecyclerate";
+  private static final String MESSAGE_USERID_KEY = "pushmessage.userid";
+  private static final String MESSAGE_ENABLED_KEY = "pushmessage.enabled";
+  private static final String MESSAGE_MAX_CALLS_UNTIL_SEND_KEY =
+      "pushmessage.max_calls_until_force_send";
+
+  private final transient Preferences realPrefs;
 
   public UserPrefs(String node) {
     this.realPrefs = Preferences.userRoot().node(node);
@@ -53,15 +69,15 @@ public class UserPrefs implements Serializable {
   }
 
   public Optional<Address> readAddress() {
-    if (checkPrefsMissing("address.street", "address.city", "address.postcode"))
+    if (checkPrefsMissing(ADR_STREET_KEY, ADR_CITY_KEY, ADR_POSTCODE_KEY))
       return Optional.empty();
 
     Address address = new Address(
-        realPrefs.get("address.name", ""),
-        realPrefs.get("address.street", ""),
-        realPrefs.get("address.housenumber", ""),
-        realPrefs.get("address.city", ""),
-        realPrefs.get("address.postcode", ""),
+        realPrefs.get(ADR_NAME_KEY, ""),
+        realPrefs.get(ADR_STREET_KEY, ""),
+        realPrefs.get(ADR_HOUSENUMBER_KEY, ""),
+        realPrefs.get(ADR_CITY_KEY, ""),
+        realPrefs.get(ADR_POSTCODE_KEY, ""),
         null);
 
     readGeo().ifPresent(address::setGeo);
@@ -70,11 +86,11 @@ public class UserPrefs implements Serializable {
   }
 
   public void writeAddress(Address address) {
-    realPrefs.put("address.name", address.getName());
-    realPrefs.put("address.street", address.getStreet());
-    realPrefs.put("address.housenumber", address.getHouseNumber());
-    realPrefs.put("address.city", address.getCity());
-    realPrefs.put("address.postcode", address.getPostCode());
+    realPrefs.put(ADR_NAME_KEY, address.getName());
+    realPrefs.put(ADR_STREET_KEY, address.getStreet());
+    realPrefs.put(ADR_HOUSENUMBER_KEY, address.getHouseNumber());
+    realPrefs.put(ADR_CITY_KEY, address.getCity());
+    realPrefs.put(ADR_POSTCODE_KEY, address.getPostCode());
     address.getGeo().ifPresent(this::writeGeo);
   }
 
@@ -84,56 +100,56 @@ public class UserPrefs implements Serializable {
     if (!geo.isPresent())
       return Optional.empty();
 
-    if (checkPrefsMissing("geo.distance"))
+    if (checkPrefsMissing(GEO_DISTANCE_KEY))
       return geo;
 
-    geo.get().setDistance(realPrefs.getDouble("geo.distance", -9999.99));
+    geo.get().setDistance(realPrefs.getDouble(GEO_DISTANCE_KEY, -9999.99));
 
     return geo;
   }
 
   private Optional<Geo> readGeoLatLon() {
-    if (checkPrefsMissing("geo.latitude", "geo.longitude"))
+    if (checkPrefsMissing(GEO_LATITUDE_KEY, GEO_LONGITUDE_KEY))
       return Optional.empty();
 
-    double lat = realPrefs.getDouble("geo.latitude", -9999.99);
-    double lon = realPrefs.getDouble("geo.longitude", -9999.99);
+    double lat = realPrefs.getDouble(GEO_LATITUDE_KEY, -9999.99);
+    double lon = realPrefs.getDouble(GEO_LONGITUDE_KEY, -9999.99);
 
     return Optional.of(new Geo(lat, lon));
   }
 
   public void writeGeo(Geo geo) {
-    realPrefs.putDouble("geo.latitude", geo.getLatitude());
-    realPrefs.putDouble("geo.longitude", geo.getLongitude());
-    geo.getDistance().ifPresent(dist -> realPrefs.putDouble("geo.distance", dist));
+    realPrefs.putDouble(GEO_LATITUDE_KEY, geo.getLatitude());
+    realPrefs.putDouble(GEO_LONGITUDE_KEY, geo.getLongitude());
+    geo.getDistance().ifPresent(dist -> realPrefs.putDouble(GEO_DISTANCE_KEY, dist));
   }
 
   public PetrolType readPreferredPetrolType() {
-    checkPrefsMissing("petrol.preferredtype");
+    checkPrefsMissing(PETROL_PREFERRED_TYPE_KEY);
     String petrolTypeString;
 
     try {
-      petrolTypeString = realPrefs.get("petrol.preferredtype", PetrolType.E5.name());
+      petrolTypeString = realPrefs.get(PETROL_PREFERRED_TYPE_KEY, PetrolType.E5.name());
     }
     catch (IllegalStateException e) {
       LOGGER.warning(e.getMessage());
       petrolTypeString = PetrolType.E5.name();
     }
 
-    return PetrolType.valueOf(PetrolType.class, petrolTypeString);
+    return PetrolType.valueOf(petrolTypeString);
   }
 
   public void writePreferredPetrolType(PetrolType type) {
-    realPrefs.put("petrol.preferredtype", type.toString());
+    realPrefs.put(PETROL_PREFERRED_TYPE_KEY, type.toString());
   }
 
   public int readPetrolStationsUpdateCycleRate() {
-    checkPrefsMissing("petrolstations.updatecyclerate");
+    checkPrefsMissing(PETROLSTATIONS_UPDATE_RATE_KEY);
     final int defaultRate = 300;
     int rateSeconds;
 
     try {
-      rateSeconds = realPrefs.getInt("petrolstations.updatecyclerate", defaultRate);
+      rateSeconds = realPrefs.getInt(PETROLSTATIONS_UPDATE_RATE_KEY, defaultRate);
     }
     catch (IllegalStateException e) {
       LOGGER.warning(e.getMessage());
@@ -145,20 +161,18 @@ public class UserPrefs implements Serializable {
 
   public void writePetrolStationsUpdateCycleRate(int seconds) {
     if (seconds < 0) return;
-    realPrefs.putInt("petrolstations.updatecyclerate", seconds);
+    realPrefs.putInt(PETROLSTATIONS_UPDATE_RATE_KEY, seconds);
   }
 
   public Optional<String> readPushMessageUserId() {
-    String key = "pushmessage.userid";
-
-    if (checkPrefsMissing(key))
+    if (checkPrefsMissing(MESSAGE_USERID_KEY))
       return Optional.empty();
 
-    return Optional.ofNullable(realPrefs.get(key, null));
+    return Optional.ofNullable(realPrefs.get(MESSAGE_USERID_KEY, null));
   }
 
   public void writePushMessageUserId(String userId) {
-    realPrefs.put("pushmessage.userid", userId);
+    realPrefs.put(MESSAGE_USERID_KEY, userId);
   }
 
   public Optional<String> readApiKey(String id) {
@@ -172,25 +186,25 @@ public class UserPrefs implements Serializable {
 
   // TODO unit tests
   public void writePushMessageEnabled(boolean enable) {
-    realPrefs.putBoolean("pushmessage.enabled", enable);
+    realPrefs.putBoolean(MESSAGE_ENABLED_KEY, enable);
   }
 
   // TODO unit tests
   public boolean readPushMessageEnabled() {
-    checkPrefsMissing("pushmessage.enabled");
-    return realPrefs.getBoolean("pushmessage.enabled", false);
+    checkPrefsMissing(MESSAGE_ENABLED_KEY);
+    return realPrefs.getBoolean(MESSAGE_ENABLED_KEY, false);
   }
 
   // TODO unit tests
   public void writePushMessageDelayWithNumberOfCalls(int max) {
     if (max < 0) return;
-    realPrefs.putInt("pushmessage.max_calls_until_force_send", max);
+    realPrefs.putInt(MESSAGE_MAX_CALLS_UNTIL_SEND_KEY, max);
   }
 
   // TODO unit tests
   public int readPushMessageDelayWithNumberOfCalls() {
-    checkPrefsMissing("pushmessage.max_calls_until_force_send");
-    return realPrefs.getInt("pushmessage.max_calls_until_force_send", 20);
+    checkPrefsMissing(MESSAGE_MAX_CALLS_UNTIL_SEND_KEY);
+    return realPrefs.getInt(MESSAGE_MAX_CALLS_UNTIL_SEND_KEY, 20);
   }
 
   public void writeApiKey(String id, String apiKey) {
@@ -254,7 +268,7 @@ public class UserPrefs implements Serializable {
     }
   }
 
-  private static abstract class ChangeListener<T> implements PreferenceChangeListener {
+  private abstract static class ChangeListener<T> implements PreferenceChangeListener {
     protected final String forKey;
     protected final T callback;
 

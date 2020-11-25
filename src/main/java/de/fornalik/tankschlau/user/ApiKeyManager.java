@@ -18,13 +18,16 @@ package de.fornalik.tankschlau.user;
 
 import de.fornalik.tankschlau.util.StringLegalizer;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
 /**
  * Class for API key handling.
  */
-public class ApiKeyManager {
+public class ApiKeyManager implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   /**
    * Token to unambiguously identify the api key within {@link #apiKeyStore}.

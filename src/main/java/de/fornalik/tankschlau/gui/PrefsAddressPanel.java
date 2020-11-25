@@ -44,7 +44,7 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
   private static final Dimension totalDimension = new Dimension(350, 325);
   private static final double DEFAULT_SEARCH_RADIUS = 5.0;
 
-  private static WorkerService<Geo> workerService;
+  private final WorkerService<Geo> workerService;
   private final UserPrefs userPrefs;
 
   private final JTextField textStreet;
@@ -56,7 +56,7 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
   private final JTextField textSearchRadius;
   private final JButton btnGeoRequest;
 
-  private final BtnGeoRequestController btnGeoRequestController;
+  private final transient BtnGeoRequestController btnGeoRequestController;
   private final FooterPanel footerPanel;
 
   PrefsAddressPanel(
@@ -66,7 +66,7 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
 
     super();
 
-    workerService = geocodingWorkerService;
+    this.workerService = geocodingWorkerService;
     this.userPrefs = userPrefs;
     this.footerPanel = footerPanel;
 
@@ -258,7 +258,9 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
 
   private Geo createGeoFromFields() {
     Geo geo = null;
-    double lat, lng, searchRadius;
+    double lat;
+    double lng;
+    double searchRadius;
 
     if (!textGeoLatitude.getText().isEmpty() && !textGeoLongitude.getText().isEmpty()) {
       try {

@@ -38,13 +38,15 @@ import java.util.logging.Logger;
  */
 class PetrolStationsControlPanel extends JPanel implements ActionListener {
 
-  private static final Logger LOGGER = Logger.getLogger(FooterPanel.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(PetrolStationsControlPanel.class.getName());
   private static final Localization L10N = Localization.getInstance();
 
-  private final WorkerService<List<PetrolStation>> workerService;
-  private final PetrolStationMessageWorker messageWorker;
+  private final transient WorkerService<List<PetrolStation>> workerService;
+  private final transient PetrolStationMessageWorker messageWorker;
   private final UserPrefs userPrefs;
-  private final JButton btnStartOneShotWork, btnStartCyclicWork, btnRemoveAllData;
+  private final JButton btnStartOneShotWork;
+  private final JButton btnStartCyclicWork;
+  private final JButton btnRemoveAllData;
   private final PetrolsStationsTableModel dataTableModel;
   private final FooterPanel footerPanel;
 
@@ -182,7 +184,7 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
             this::onSingleCycleFinished,
             userPrefs.readPetrolStationsUpdateCycleRate());
 
-        workerService.processCountdown((remaining) ->
+        workerService.processCountdown(remaining ->
             this.updateCountdown(remaining, workerService.getTimeUnit()));
 
         onCyclicWorkerStarted();

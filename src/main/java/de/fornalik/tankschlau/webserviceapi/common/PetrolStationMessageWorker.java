@@ -28,6 +28,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 // TODO unit tests
@@ -81,18 +82,13 @@ public class PetrolStationMessageWorker {
       List<PetrolStation> stations,
       PetrolType preferredPetrolType) {
 
-    if (stations == null || stations.size() == 0) {
+    if (stations == null || stations.isEmpty()) {
       LOGGER.fine("Given stations are null or empty, so no push message to send.");
       return;
     }
 
     callsSinceLastMessage++;
-    LOGGER.finer("Valid calls since last message: " + callsSinceLastMessage);
-
-    /*if (callsSinceLastMessage == 1) {
-      // Test thread crash since there are no unit tests yet.
-      int divisionByZero = 1 / 0;
-    }*/
+    LOGGER.log(Level.FINER, "Valid calls since last message: {0}", callsSinceLastMessage);
 
     PetrolStation cheapestStation = findCheapestStation(stations, preferredPetrolType);
     double currentPrice = Petrols.findPrice(cheapestStation.getPetrols(), preferredPetrolType);
@@ -121,15 +117,15 @@ public class PetrolStationMessageWorker {
 
     boolean mustSend = isPriceChange && !suppressMessage;
 
-    LOGGER.finer("Message send check. Did price change? " + isPriceChange);
-    LOGGER.finer("Message send check. Suppress message? " + suppressMessage);
-    LOGGER.fine("Must send message? " + mustSend);
+    LOGGER.log(Level.FINER, "Message send check. Did price change? {0}", isPriceChange);
+    LOGGER.log(Level.FINER, "Message send check. Suppress message? {0}", suppressMessage);
+    LOGGER.log(Level.FINE, "Must send message? {0}", mustSend);
 
     return mustSend;
   }
 
   // Does finally execute the push message.
-  private void doSendMessage(
+  private synchronized void doSendMessage(
       PetrolStation cheapestStation,
       PetrolType preferredPetrolType,
       double currentPrice) {
@@ -151,8 +147,8 @@ public class PetrolStationMessageWorker {
       LOGGER.info(L10N.get("msg.SendPushMessageSuccess"));
 
       // Update internal values for subsequent calls.
-      priceAtLastSentMessage = currentPrice;
-      callsSinceLastMessage = 0;
+      PetrolStationMessageWorker.priceAtLastSentMessage = currentPrice;
+      PetrolStationMessageWorker.callsSinceLastMessage = 0;
     }
   }
 

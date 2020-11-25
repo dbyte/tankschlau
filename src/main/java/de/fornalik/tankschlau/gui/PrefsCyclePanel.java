@@ -44,7 +44,7 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
   private final GridBagConstraints constraints;
 
   private final UserPrefs userPrefs;
-  private final CycleFocusListener focusListener;
+  private final transient CycleFocusListener cycleFocusListener;
 
   PrefsCyclePanel(UserPrefs userPrefs) {
     this.userPrefs = userPrefs;
@@ -54,7 +54,7 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
     this.checkEnableMessages = createEnableMessagesCheckbox(L10N.get("label.EnableMessaging"));
 
     this.constraints = new GridBagConstraints();
-    this.focusListener = new CycleFocusListener();
+    this.cycleFocusListener = new CycleFocusListener();
 
     this.initView();
   }
@@ -82,7 +82,7 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
 
     constraints.gridx = 1;
     textCycleRate.setText(String.valueOf(userPrefs.readPetrolStationsUpdateCycleRate()));
-    textCycleRate.addFocusListener(focusListener);
+    textCycleRate.addFocusListener(cycleFocusListener);
     addToPanel(textCycleRate, 60, constraints);
 
     constraints.gridx = 2;
@@ -114,7 +114,7 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
     textMessageDelayWithNumberOfCalls
         .setText(String.valueOf(userPrefs.readPushMessageDelayWithNumberOfCalls()));
     textMessageDelayWithNumberOfCalls.setEnabled(userPrefs.readPushMessageEnabled());
-    textMessageDelayWithNumberOfCalls.addFocusListener(focusListener);
+    textMessageDelayWithNumberOfCalls.addFocusListener(cycleFocusListener);
     addToPanel(textMessageDelayWithNumberOfCalls, 60, constraints);
 
     constraints.gridx = 2;
@@ -134,39 +134,6 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
     component.setMinimumSize(new Dimension(width, DEFAULT_ROW_HEIGHT));
     component.setMaximumSize(new Dimension(width, DEFAULT_ROW_HEIGHT));
     component.setPreferredSize(new Dimension(width, DEFAULT_ROW_HEIGHT));
-  }
-
-  private int legalizeTextFieldToInteger(FocusEvent e, int minimumValue, int fallbackValue) {
-    if (!(e.getSource() instanceof JTextField))
-      return fallbackValue;
-
-    JTextField textField = (JTextField) e.getSource();
-    if (textField.getDocument() == null)
-      return fallbackValue;
-
-    int length = textField.getDocument().getLength();
-    if (length == 0) {
-      textField.setText(String.valueOf(fallbackValue));
-      return fallbackValue;
-    }
-
-    int out = 0;
-
-    try {
-      String text = textField.getDocument().getText(0, length);
-      out = Integer.parseInt(text);
-    }
-    catch (BadLocationException ex) {
-      ex.printStackTrace();
-    }
-
-    if (out < minimumValue) {
-      Toolkit.getDefaultToolkit().beep();
-      textField.setText(String.valueOf(fallbackValue));
-      return fallbackValue;
-    }
-
-    return out;
   }
 
   // region Listeners
@@ -192,6 +159,39 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
         int value = legalizeTextFieldToInteger(e, 0, 20);
         userPrefs.writePushMessageDelayWithNumberOfCalls(value);
       }
+    }
+
+    private int legalizeTextFieldToInteger(FocusEvent e, int minimumValue, int fallbackValue) {
+      if (!(e.getSource() instanceof JTextField))
+        return fallbackValue;
+
+      JTextField textField = (JTextField) e.getSource();
+      if (textField.getDocument() == null)
+        return fallbackValue;
+
+      int length = textField.getDocument().getLength();
+      if (length == 0) {
+        textField.setText(String.valueOf(fallbackValue));
+        return fallbackValue;
+      }
+
+      int out = 0;
+
+      try {
+        String text = textField.getDocument().getText(0, length);
+        out = Integer.parseInt(text);
+      }
+      catch (BadLocationException ex) {
+        ex.printStackTrace();
+      }
+
+      if (out < minimumValue) {
+        Toolkit.getDefaultToolkit().beep();
+        textField.setText(String.valueOf(fallbackValue));
+        return fallbackValue;
+      }
+
+      return out;
     }
   }
 
