@@ -26,6 +26,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.logging.Logger;
 
 /**
  * User preferences panel for cyclic background services.
@@ -33,6 +34,8 @@ import java.awt.event.ItemListener;
 class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
 
   private static final Localization L10N = Localization.getInstance();
+  private static final Logger LOGGER = Logger.getLogger(FooterPanel.class.getName());
+
   private static final int MINIMUM_CYCLE_RATE = 5;
   private static final int DEFAULT_CYCLE_RATE = 300;
   private static final int DEFAULT_ROW_HEIGHT = 25;
@@ -182,7 +185,7 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
         out = Integer.parseInt(text);
       }
       catch (BadLocationException ex) {
-        ex.printStackTrace();
+        LOGGER.severe(ex.getMessage());
       }
 
       if (out < minimumValue) {

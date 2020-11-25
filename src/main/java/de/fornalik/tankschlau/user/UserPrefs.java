@@ -225,9 +225,8 @@ public class UserPrefs implements Serializable {
       registeredKeysSet = new HashSet<>(Arrays.asList(realPrefs.keys()));
       keysToCheckSet = new HashSet<>(Arrays.asList(keysToCheck));
     }
-    catch (BackingStoreException e) {
-      e.printStackTrace();
-      LOGGER.severe("No user preferences found. " + e.getMessage());
+    catch (BackingStoreException ex) {
+      LOGGER.severe("No user preferences found. " + ex.getMessage());
       return true;
     }
 

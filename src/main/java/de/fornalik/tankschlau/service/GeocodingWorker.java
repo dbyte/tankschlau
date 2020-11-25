@@ -68,7 +68,6 @@ public class GeocodingWorker implements RunnableCallbackWorker<Geo> {
     }
 
     catch (Exception e) {
-      e.printStackTrace();
       String errMsg = e.getMessage()
           + ". Trace: \n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n")
           + "\n";
