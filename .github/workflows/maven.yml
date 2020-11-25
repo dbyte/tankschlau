@@ -5,9 +5,9 @@ name: tests
 
 on:
   push:
-    branches: [ github-action-fixes ]
+    branches: [ master ]
   pull_request:
-    branches: [ github-action-fixes ]
+    branches: [ master ]
 
 jobs:
   build:
