@@ -30,7 +30,7 @@ import java.util.logging.LogRecord;
  */
 public class LoggingFormatter extends Formatter {
   private final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd kk:mm:ss.SSS");
-  private static boolean useSimpleClassName = false;
+  private final boolean useSimpleClassName;
 
   /**
    * Constructor gets called once, implicitly by the native {@link java.util.logging.LogManager},
@@ -52,6 +52,7 @@ public class LoggingFormatter extends Formatter {
         .equals(logManager.getProperty(thisClassName + ".useSimpleClassName"));
   }
 
+  @Override
   public String format(LogRecord record) {
     StringBuilder builder = new StringBuilder(50);
 
@@ -72,23 +73,19 @@ public class LoggingFormatter extends Formatter {
     return builder.toString();
   }
 
-  public String getHead(Handler h) {
-    return super.getHead(h);
-  }
-
-  public String getTail(Handler h) {
-    return super.getTail(h);
-  }
-
   private String extractSimpleSourceClassName(LogRecord record) {
     // Converts e.g. "some.package.path.TankSchlau" to "TankSchlau".
     String sourceClassName = record.getSourceClassName();
-    if (sourceClassName == null) return "Unknown";
+
+    if (sourceClassName == null) {
+      return "Unknown";
+    }
 
     int lastDot = sourceClassName.lastIndexOf(".");
 
-    if (lastDot > -1 && lastDot < sourceClassName.length())
+    if (lastDot > -1 && lastDot < sourceClassName.length()) {
       return sourceClassName.substring(lastDot + 1);
+    }
 
     return sourceClassName;
   }

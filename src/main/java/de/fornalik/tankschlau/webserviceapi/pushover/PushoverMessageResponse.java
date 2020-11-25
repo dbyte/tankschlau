@@ -72,22 +72,22 @@ public class PushoverMessageResponse extends BaseResponse implements JsonRespons
       }
       getTransactInfo().setErrorMessage(errorMsg);
       LOGGER.warning(errorMsg);
-
-      return Optional.empty();
     }
+    else {
+      getTransactInfo().setStatus(String.valueOf(responseDto.status));
 
-    getTransactInfo().setStatus(String.valueOf(responseDto.status));
-
-    String pushoverErrorMsg = processErrorList(responseDto.errors);
-    if (!"".equals(pushoverErrorMsg))
-      getTransactInfo().setErrorMessage(pushoverErrorMsg);
+      String pushoverErrorMsg = processErrorList(responseDto.errors);
+      if (!"".equals(pushoverErrorMsg)) {
+        getTransactInfo().setErrorMessage(pushoverErrorMsg);
+      }
+    }
 
     return Optional.empty();
   }
 
   private String processErrorList(List<String> errorList) {
     // Must return null if no errors exist.
-    if (errorList == null || errorList.size() == 0)
+    if (errorList == null || errorList.isEmpty())
       return null;
 
     String customErrorMsg = "Pushover reported " + errorList.size() + " error(s): ";

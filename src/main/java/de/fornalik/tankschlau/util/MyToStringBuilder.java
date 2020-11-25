@@ -34,7 +34,7 @@ public class MyToStringBuilder extends ToStringBuilder {
     super(object, toStringStyle);
   }
 
-  private synchronized static StandardToStringStyle createStandardToStringStyle() {
+  private static synchronized StandardToStringStyle createStandardToStringStyle() {
     StandardToStringStyle style = new StandardToStringStyle();
     style.setUseShortClassName(true);
     return style;

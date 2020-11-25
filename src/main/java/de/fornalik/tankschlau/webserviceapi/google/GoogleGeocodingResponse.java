@@ -73,7 +73,7 @@ public class GoogleGeocodingResponse extends BaseResponse implements JsonRespons
       getTransactInfo().setErrorMessage(responseDto.message);
 
 
-    if (responseDto.results.size() == 0) {
+    if (responseDto.results.isEmpty()) {
       getTransactInfo().setErrorMessage(responseDto.message);
       return Optional.empty();
     }

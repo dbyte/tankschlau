@@ -34,7 +34,7 @@ class LogPanel extends JPanel {
   private final JLabel labelLogHeader;
   private final JTextArea textAreaLog;
   private final JButton btnClearLog;
-  private final ButtonListener buttonListener;
+  private final transient ButtonListener buttonListener;
 
   LogPanel() {
     super();

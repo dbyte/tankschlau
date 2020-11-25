@@ -190,14 +190,19 @@ interface PrefsFactoryMixin {
     }
 
     @Override
-    public void replace(FilterBypass fb, int offset, int length, String _text, AttributeSet attrs)
+    public void replace(
+        FilterBypass fb,
+        int offset,
+        int length,
+        String givenText,
+        AttributeSet attrs)
     throws BadLocationException {
 
       String text = fb.getDocument().getText(0, fb.getDocument().getLength());
-      String newText = text.substring(0, offset) + _text + text.substring(offset + length);
+      String newText = text.substring(0, offset) + givenText + text.substring(offset + length);
 
       if (newText.length() <= maxChars && newText.matches(getRegex().pattern())) {
-        super.replace(fb, offset, length, _text, attrs);
+        super.replace(fb, offset, length, givenText, attrs);
       }
       else {
         Toolkit.getDefaultToolkit().beep();

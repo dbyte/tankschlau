@@ -59,7 +59,6 @@ public class PetrolStationsWorker implements RunnableCallbackWorker<List<PetrolS
     List<PetrolStation> data = new ArrayList<>();
 
     try {
-      // int divisionByZero = 1 / 0;
       data = findPetrolStations();
     }
 
@@ -88,7 +87,7 @@ public class PetrolStationsWorker implements RunnableCallbackWorker<List<PetrolS
     errorMessage.ifPresent(
         message -> LOGGER.warning(L10N.get("msg.ErrorServerConnection", message)));
 
-    if (data.size() == 0) {
+    if (data.isEmpty()) {
       LOGGER.warning(L10N.get("msg.NoPetrolStationsFoundInNeighbourhood"));
     }
 

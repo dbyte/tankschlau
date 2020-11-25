@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 public class Localization {
   public static final String APP_NAME = "TankSchlau";
   private static final Logger LOGGER = Logger.getLogger(Localization.class.getName());
-  private static Localization INSTANCE;
+  private static Localization instance;
   private ResourceBundle bundle;
   private Locale region;
 
@@ -41,11 +41,11 @@ public class Localization {
    * @see #newInstance()
    */
   public static Localization getInstance() {
-    if (INSTANCE != null)
-      return INSTANCE;
+    if (instance != null)
+      return instance;
 
-    INSTANCE = newInstance();
-    return INSTANCE;
+    instance = newInstance();
+    return instance;
   }
 
   /**

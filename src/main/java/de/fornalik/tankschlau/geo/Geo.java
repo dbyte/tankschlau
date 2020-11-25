@@ -31,7 +31,7 @@ public class Geo {
   @SerializedName("lat") private final double latitude;
   @SerializedName("lng") private final double longitude;
   @SerializedName("dist") private Double distance;
-  private static final transient Localization l10n = Localization.getInstance();
+  private static final Localization l10n = Localization.getInstance();
 
   /**
    * Constructor
@@ -92,7 +92,7 @@ public class Geo {
     return l10n.get("msg.KmAway", distanceString);
   }
 
-  private void throwOnInvalidDistance(Double km) throws InvalidGeoDataException {
+  private void throwOnInvalidDistance(Double km) {
     /* null is perfectly valid here as it is always returned as an Optional by design
     and as a distance value is not mandatory by business rule. */
     if (km == null)
@@ -102,7 +102,7 @@ public class Geo {
       throw new InvalidGeoDataException("Geographical distance must be >= 0.0 km.");
   }
 
-  private void throwOnInvalidCoordinates() throws InvalidGeoDataException {
+  private void throwOnInvalidCoordinates() {
     /* Throws InvalidGeoDataException if lat/lon are out of geographical constraints
     See also https://stackoverflow.com/a/47188298 */
     if (latitude < -85.05112878 || latitude > 85.05112878

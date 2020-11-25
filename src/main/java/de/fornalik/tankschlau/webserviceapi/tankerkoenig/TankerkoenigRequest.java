@@ -64,8 +64,8 @@ public class TankerkoenigRequest extends BaseRequest implements GeoRequest {
         .getDistance()
         .orElseThrow(SearchRadiusException::new);
 
-    putUrlParameter("lat", Double.valueOf(geo.getLatitude()).toString());
-    putUrlParameter("lng", Double.valueOf(geo.getLongitude()).toString());
+    putUrlParameter("lat", Double.toString(geo.getLatitude()));
+    putUrlParameter("lng", Double.toString(geo.getLongitude()));
     putUrlParameter("rad", maxSearchRadius.toString());
 
     // Additionally, refresh the API key parameter in case the API key has changed within GUI or so.

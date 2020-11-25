@@ -26,7 +26,7 @@ import java.util.logging.Logger;
  */
 class PoweredByGooglePanel extends JPanel {
 
-  private static final Logger LOGGER = Logger.getLogger(FooterPanel.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(PoweredByGooglePanel.class.getName());
 
   PoweredByGooglePanel() {
     super();

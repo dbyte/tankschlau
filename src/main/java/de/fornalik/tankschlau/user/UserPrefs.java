@@ -21,6 +21,7 @@ import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.station.PetrolType;
 import de.fornalik.tankschlau.util.StringLegalizer;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
@@ -38,8 +39,9 @@ import java.util.prefs.Preferences;
  * <span style="color:orange;">Important: Each id should be completely lowercase (for
  * Windows OS).</span>
  */
-public class UserPrefs {
+public class UserPrefs implements Serializable {
   private static final Logger LOGGER = Logger.getLogger(UserPrefs.class.getName());
+  private static final long serialVersionUID = 1L;
   private final Preferences realPrefs;
 
   public UserPrefs(String node) {

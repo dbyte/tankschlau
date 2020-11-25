@@ -136,7 +136,6 @@ class PetrolStationsDataPanel extends JPanel implements TableModelListener {
   }
 
   private void configureDataTable() {
-    // dataTable.setPreferredScrollableViewportSize(new Dimension(0, 350));
     dataTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     dataTable.setForeground(CustomColor.TABLE_TEXT);
     dataTable.getTableHeader().setPreferredSize(new Dimension(0, 25));
@@ -171,10 +170,8 @@ class PetrolStationsDataPanel extends JPanel implements TableModelListener {
     if (e.getType() == TableModelEvent.INSERT) {
       setLastUpdateText(LocalDateTime.now());
     }
-    else if (e.getType() == TableModelEvent.DELETE) {
-      if (dataTable.getModel().getRowCount() == 0) {
-        setLastUpdateText(LocalDateTime.MIN);
-      }
+    else if (e.getType() == TableModelEvent.DELETE && dataTable.getModel().getRowCount() == 0) {
+      setLastUpdateText(LocalDateTime.MIN);
     }
   }
 }

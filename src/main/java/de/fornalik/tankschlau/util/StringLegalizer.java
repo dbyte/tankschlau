@@ -67,7 +67,7 @@ public class StringLegalizer {
    * @return Instance of StringLegalizer for fluid usage if String is valid.
    * @throws ValueException If String is null or empty.
    */
-  public StringLegalizer mandatory() throws ValueException {
+  public StringLegalizer mandatory() {
     boolean isValid = string != null && !string.isEmpty();
     if (isValid) return this;
 
@@ -94,7 +94,7 @@ public class StringLegalizer {
       return new URL(string);
     }
     catch (MalformedURLException e) {
-      throw new RuntimeException("Malformed URL: " + string, e);
+      throw new MalformedURLRuntimeException("Malformed URL: " + string, e);
     }
   }
 
@@ -110,6 +110,12 @@ public class StringLegalizer {
   public static class ValueException extends RuntimeException {
     public ValueException(String message) {
       super(message);
+    }
+  }
+
+  public static class MalformedURLRuntimeException extends RuntimeException {
+    public MalformedURLRuntimeException(String message, Throwable cause) {
+      super(message, cause);
     }
   }
 }

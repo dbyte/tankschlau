@@ -57,18 +57,19 @@ public class GoogleGeocodingRequest extends BaseRequest implements AddressReques
   @Override
   public void setAddressUrlParameters(Address address) {
     Objects.requireNonNull(address, "Address must not be null.");
+    final String addressKey = "address";
 
     putUrlParameter(
-        "address",
+        addressKey,
         (address.getStreet() + " " + address.getHouseNumber()).trim());
 
     appendUrlParameterString(
-        "address",
+        addressKey,
         ",+",
         null);
 
     appendUrlParameterString(
-        "address",
+        addressKey,
         (address.getPostCode() + " " + address.getCity()).trim(),
         "UTF-8");
 

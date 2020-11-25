@@ -35,10 +35,12 @@ public class SwingLoggingHandler extends java.util.logging.Handler {
 
   @Override
   public void flush() {
+    throw new UnsupportedOperationException("Method not implemented");
   }
 
   @Override
-  public void close() throws SecurityException {
+  public void close() {
+    throw new UnsupportedOperationException("Method not implemented");
   }
 
   public void setTextArea(JTextArea textArea) {

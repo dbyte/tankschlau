@@ -117,9 +117,15 @@ public abstract class BaseRequest implements Request {
     }
     catch (UnsupportedEncodingException e) {
       LOGGER.severe("Unsupported URL encoding: '" + e.getMessage() + "'");
-      throw new RuntimeException("Unsupported URL encoding: '" + e.getMessage() + "'");
+      throw new RequestEncodingException(toEncoding);
     }
 
     return encodedString;
+  }
+
+  public static class RequestEncodingException extends RuntimeException {
+    public RequestEncodingException(String encoding) {
+      super("Unsupported URL encoding: " + encoding);
+    }
   }
 }

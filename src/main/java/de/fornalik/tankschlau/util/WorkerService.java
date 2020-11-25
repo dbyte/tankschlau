@@ -18,17 +18,18 @@ package de.fornalik.tankschlau.util;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.LongConsumer;
 
 /**
  * Providing abilities to start a worker (one-shot or cyclic) and forward its results to a
  * consumer when received.
  *
- * @param <ResultType> Type of the result data which is pushed back to the consumer
- *                     right after receiving results from a dedicated worker.
+ * @param <T> Type of the result data which is pushed back to the consumer
+ *            right after receiving results from a dedicated worker.
  */
-public interface WorkerService<ResultType> {
+public interface WorkerService<T> {
 
-  RunnableCallbackWorker<ResultType> getWorker();
+  RunnableCallbackWorker<T> getWorker();
 
   /**
    * Execute some worker only once.
@@ -36,7 +37,7 @@ public interface WorkerService<ResultType> {
    * @param callback A runnable callback. Consumer.accept(...) should be called by the worker when
    *                 it's done with its work and a result exists.
    */
-  void startOneShot(Consumer<ResultType> callback);
+  void startOneShot(Consumer<T> callback);
 
   /**
    * Execute a worker in timed intervalls.
@@ -46,7 +47,7 @@ public interface WorkerService<ResultType> {
    * @param intervall Intervall between each cycle. TimeUnit must be set by
    *                  {@link #setTimeUnit(TimeUnit)}.
    */
-  void startCyclic(Consumer<ResultType> callback, long intervall);
+  void startCyclic(Consumer<T> callback, long intervall);
 
   /**
    * Stop the cycle.
@@ -70,5 +71,5 @@ public interface WorkerService<ResultType> {
    *
    * @param callback Pass in a Consumer which handles the service's countdown phase.
    */
-  void processCountdown(Consumer<Long> callback);
+  void processCountdown(LongConsumer callback);
 }

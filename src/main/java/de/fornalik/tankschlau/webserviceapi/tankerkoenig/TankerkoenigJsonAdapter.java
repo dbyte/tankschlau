@@ -31,6 +31,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class TankerkoenigJsonAdapter {
@@ -55,7 +56,7 @@ public class TankerkoenigJsonAdapter {
    */
   List<PetrolStation> createPetrolStations(String jsonString) {
     if (jsonString == null || "".equals(jsonString)) {
-      LOGGER.warning("JSON response string is null or empty: " + jsonString);
+      LOGGER.log(Level.WARNING, "JSON response string is null or empty: {0}", jsonString);
       return new ArrayList<>();
     }
 
@@ -65,7 +66,7 @@ public class TankerkoenigJsonAdapter {
         .get("stations");
 
     if (stationsJsonElement == null || !stationsJsonElement.isJsonArray()) {
-      LOGGER.warning("No stations found in JSON: " + jsonString);
+      LOGGER.log(Level.WARNING, "No stations found in JSON: {0}", jsonString);
       return new ArrayList<>();
     }
 

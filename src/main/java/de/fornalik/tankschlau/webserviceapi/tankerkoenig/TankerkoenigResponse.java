@@ -56,18 +56,17 @@ public class TankerkoenigResponse extends BaseResponse implements JsonResponse {
       getTransactInfo().setErrorMessage(errMsg);
       getTransactInfo().setStatus("ERROR");
       LOGGER.warning(errMsg);
-
-      return Optional.empty();
     }
+    else {
+      if (!responseDto.getStatus().isEmpty())
+        getTransactInfo().setStatus(responseDto.getStatus());
 
-    if (!responseDto.getStatus().isEmpty())
-      getTransactInfo().setStatus(responseDto.getStatus());
+      if (!responseDto.getMessage().isEmpty())
+        getTransactInfo().setErrorMessage(responseDto.getMessage());
 
-    if (!responseDto.getMessage().isEmpty())
-      getTransactInfo().setErrorMessage(responseDto.getMessage());
-
-    if (!responseDto.getLicense().isEmpty())
-      getTransactInfo().setLicence(responseDto.getLicense());
+      if (!responseDto.getLicense().isEmpty())
+        getTransactInfo().setLicence(responseDto.getLicense());
+    }
 
     return Optional.empty();
   }

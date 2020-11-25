@@ -64,7 +64,6 @@ public class GeocodingWorker implements RunnableCallbackWorker<Geo> {
     Geo data = null;
 
     try {
-      // int divisionByZero = 1 / 0;
       data = findUserGeo();
     }
 

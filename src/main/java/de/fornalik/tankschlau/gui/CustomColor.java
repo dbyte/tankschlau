@@ -23,6 +23,10 @@ import java.awt.*;
  */
 class CustomColor {
 
+  private CustomColor() {
+    throw new IllegalStateException("Utility class - not meant to be instantiated");
+  }
+
   static final Color BUTTON_FOREGROUND = new Color(40, 40, 40);
   static final Color LABEL_TEXT = new Color(40, 40, 40);
   static final Color FIELD_TEXT = new Color(40, 40, 40);

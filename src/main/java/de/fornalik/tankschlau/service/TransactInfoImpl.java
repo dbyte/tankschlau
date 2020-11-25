@@ -22,7 +22,9 @@ import de.fornalik.tankschlau.util.StringLegalizer;
 import java.util.Optional;
 
 public class TransactInfoImpl implements TransactInfo {
-  private String status, errorMessage, licence;
+  private String status;
+  private String errorMessage;
+  private String licence;
 
   public TransactInfoImpl() {
     this.reset();

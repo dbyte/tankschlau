@@ -32,8 +32,10 @@ class FooterPanel extends JPanel {
 
   private static final Localization L10N = Localization.getInstance();
   private static final Logger LOGGER = Logger.getLogger(FooterPanel.class.getName());
+  private static final String L10N_NETWORK_ACTIVITY = "label.NoNetworkActivity";
 
-  private final JLabel labelCountdown, labelWork;
+  private final JLabel labelCountdown;
+  private final JLabel labelWork;
   private final ImageIcon iconWork;
 
   FooterPanel() {
@@ -66,7 +68,7 @@ class FooterPanel extends JPanel {
   }
 
   private void configureWorkLabel() {
-    labelWork.setText(L10N.get("label.NoNetworkActivity"));
+    labelWork.setText(L10N.get(L10N_NETWORK_ACTIVITY));
     labelWork.setIcon(null);
     labelWork.setPreferredSize(new Dimension(getMaximumSize().width, 40));
     labelWork.setHorizontalAlignment(SwingConstants.CENTER);
@@ -114,13 +116,13 @@ class FooterPanel extends JPanel {
   }
 
   void onOneShotWorkerFinished() {
-    labelWork.setText(L10N.get("label.NoNetworkActivity"));
+    labelWork.setText(L10N.get(L10N_NETWORK_ACTIVITY));
     labelWork.setIcon(null);
   }
 
   void onCyclicWorkerStopped() {
     labelCountdown.setText(L10N.get("label.AutoUpdateStopped"));
-    labelWork.setText(L10N.get("label.NoNetworkActivity"));
+    labelWork.setText(L10N.get(L10N_NETWORK_ACTIVITY));
     labelWork.setIcon(null);
   }
 
@@ -139,7 +141,7 @@ class FooterPanel extends JPanel {
       textForCyclicWorker =
           L10N.get("label.TaskCountdown", remaining + " " + L10N.get("timeUnit." + timeUnit));
 
-      textForSingleWorker = L10N.get("label.NoNetworkActivity");
+      textForSingleWorker = L10N.get(L10N_NETWORK_ACTIVITY);
       workerIndicator = null;
     }
 

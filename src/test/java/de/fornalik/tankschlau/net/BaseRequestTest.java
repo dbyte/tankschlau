@@ -120,7 +120,7 @@ class BaseRequestTest {
 
     // when
     assertThrows(
-        RuntimeException.class,
+        BaseRequest.RequestEncodingException.class,
         () -> baseRequest
             .appendUrlParameterString("key1", "_part2", "This-Encoding-Is-NotSupported"));
   }

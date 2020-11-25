@@ -28,6 +28,10 @@ public class LoggingConfig {
   // Create our custom handler which sends log messages to a Swing TextArea.
   public static final Handler SWING_LOGGING_HANDLER = new SwingLoggingHandler();
 
+  private LoggingConfig() {
+    throw new IllegalStateException("Utility class - not meant to be instantiated");
+  }
+
   /**
    * Call once at boot time!
    * Implicitly calls constructor of <code>LoggingFormatter</code>, if logging.properties

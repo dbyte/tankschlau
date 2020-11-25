@@ -137,7 +137,7 @@ class StringLegalizerTest {
     legalizer = StringLegalizer.create("trump://should-throw-runtime-error.always");
 
     // when then
-    assertThrows(RuntimeException.class, () -> legalizer.toUrl());
+    assertThrows(StringLegalizer.MalformedURLRuntimeException.class, () -> legalizer.toUrl());
   }
 
   @Test

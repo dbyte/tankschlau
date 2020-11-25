@@ -61,7 +61,7 @@ public class PetrolStation {
    *
    * @return A Set of {@link Petrol} objects, else an empty Set.
    */
-  public HashSet<Petrol> getPetrols() {
+  public Set<Petrol> getPetrols() {
     if (petrols == null) return new HashSet<>();
     return petrols;
   }

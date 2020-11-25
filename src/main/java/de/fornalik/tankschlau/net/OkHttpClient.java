@@ -27,6 +27,8 @@ import java.util.logging.Logger;
 public class OkHttpClient implements HttpClient {
 
   private static final Logger LOGGER = Logger.getLogger(OkHttpClient.class.getName());
+  private static final String HTTP_CLIENT_ERROR_STRING = "HTTP_CLIENT_ERROR";
+
   private final okhttp3.OkHttpClient okHttp3Client;
   private Request request;
 
@@ -85,7 +87,7 @@ public class OkHttpClient implements HttpClient {
       response.getBody().setData(Objects.requireNonNull(okhttpResponse.body()).string());
     }
     catch (IOException | NullPointerException e) {
-      response.getTransactInfo().setStatus("HTTP_CLIENT_ERROR");
+      response.getTransactInfo().setStatus(HTTP_CLIENT_ERROR_STRING);
       String msg = "Body of response could not be converted to string. " + e.getMessage();
       response.getTransactInfo().setErrorMessage(msg + " " + getDetails(okhttpResponse));
       LOGGER.warning(msg);
@@ -95,7 +97,7 @@ public class OkHttpClient implements HttpClient {
   }
 
   private okhttp3.Response realCall(final Request request, final Response response)
-  throws IOException, IllegalStateException {
+  throws IOException {
     this.request = request;
 
     okhttp3.HttpUrl url = adaptUrl();
@@ -107,7 +109,7 @@ public class OkHttpClient implements HttpClient {
     }
     catch (IOException e) {
       String errMsg = e.getMessage();
-      response.getTransactInfo().setStatus("HTTP_CLIENT_ERROR");
+      response.getTransactInfo().setStatus(HTTP_CLIENT_ERROR_STRING);
       response.getTransactInfo().setErrorMessage(errMsg);
       LOGGER.warning(errMsg);
       throw e;
@@ -115,7 +117,7 @@ public class OkHttpClient implements HttpClient {
 
     if (okhttpResponse.body() == null) {
       String errMsg = "Body of response is null.\n" + getDetails(okhttpResponse);
-      response.getTransactInfo().setStatus("HTTP_CLIENT_ERROR");
+      response.getTransactInfo().setStatus(HTTP_CLIENT_ERROR_STRING);
       response.getTransactInfo().setErrorMessage(errMsg);
       LOGGER.warning(errMsg);
       throw new IllegalStateException(errMsg);

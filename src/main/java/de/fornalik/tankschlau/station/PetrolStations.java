@@ -26,6 +26,10 @@ import java.util.*;
  */
 public class PetrolStations {
 
+  private PetrolStations() {
+    throw new IllegalStateException("Utility class - not meant to be instantiated");
+  }
+
   /**
    * First sorts a {@code List} of {@link PetrolStation} by price and distance, then returns
    * the petrol station with the cheapest price for the given petrol type.
@@ -43,7 +47,7 @@ public class PetrolStations {
     Objects.requireNonNull(petrolStations);
     Objects.requireNonNull(type);
 
-    if (petrolStations.size() == 0)
+    if (petrolStations.isEmpty())
       return Optional.empty();
 
     // Do not mutate incoming object
@@ -94,7 +98,7 @@ public class PetrolStations {
     private Double getPriceForSort(PetrolStation station) {
       return station
           .findPetrol(this.petrolType)
-          .map((p) -> p.price)
+          .map(p -> p.price)
           .orElse(999999D);
     }
 

@@ -21,9 +21,9 @@ import java.util.function.Consumer;
 /**
  * Runnable with the ability to pass back data to a Consumer at some time.
  *
- * @param <ResultType> Type of the result data which is passed back to the consumer.
+ * @param <T> Type of the result data which is passed back to the consumer.
  */
-public interface RunnableCallbackWorker<ResultType> extends Runnable {
+public interface RunnableCallbackWorker<T> extends Runnable {
 
-  void setCallback(Consumer<ResultType> callback);
+  void setCallback(Consumer<T> callback);
 }

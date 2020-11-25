@@ -22,26 +22,27 @@ import de.fornalik.tankschlau.util.WorkerService;
 import java.util.Objects;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
+import java.util.function.LongConsumer;
 import java.util.logging.Logger;
 
 /**
  * Provides abilities to start a worker on a new Thread (one-shot or cyclic), forwarding its
  * results to a consumer when received.
  *
- * @param <ResultType> Type of the result data which is pushed back to the consumer
- *                     right after receiving results from RunnableCallbackWorker.
+ * @param <T> Type of the result data which is pushed back to the consumer
+ *            right after receiving results from RunnableCallbackWorker.
  */
-class SwingWorkerService<ResultType> implements WorkerService<ResultType> {
+class SwingWorkerService<T> implements WorkerService<T> {
   private static final Logger LOGGER = Logger.getLogger(SwingWorkerService.class.getName());
   private static final int INITIAL_DELAY_SECONDS = 3;
 
-  private final RunnableCallbackWorker<ResultType> worker;
+  private final RunnableCallbackWorker<T> worker;
   private final ScheduledExecutorService workerSchedule;
   private ScheduledFuture<?> workerFuture;
   private ScheduledExecutorService countdownAgent;
   private TimeUnit timeUnit;
 
-  SwingWorkerService(RunnableCallbackWorker<ResultType> worker) {
+  SwingWorkerService(RunnableCallbackWorker<T> worker) {
     this.worker = worker;
     this.workerSchedule = Executors.newSingleThreadScheduledExecutor();
     this.workerFuture = null;
@@ -50,7 +51,7 @@ class SwingWorkerService<ResultType> implements WorkerService<ResultType> {
   }
 
   @Override
-  public RunnableCallbackWorker<ResultType> getWorker() {
+  public RunnableCallbackWorker<T> getWorker() {
     return worker;
   }
 
@@ -65,7 +66,7 @@ class SwingWorkerService<ResultType> implements WorkerService<ResultType> {
   }
 
   @Override
-  public void startOneShot(Consumer<ResultType> callback) {
+  public void startOneShot(Consumer<T> callback) {
     worker.setCallback(callback);
     ExecutorService executorService = Executors.newSingleThreadExecutor();
     executorService.submit(worker);
@@ -73,7 +74,7 @@ class SwingWorkerService<ResultType> implements WorkerService<ResultType> {
   }
 
   @Override
-  public void startCyclic(Consumer<ResultType> callback, long intervall) {
+  public void startCyclic(Consumer<T> callback, long intervall) {
     if (workerFuture != null && !workerFuture.isDone())
       return;
 
@@ -98,7 +99,7 @@ class SwingWorkerService<ResultType> implements WorkerService<ResultType> {
   }
 
   @Override
-  public void processCountdown(Consumer<Long> callback) {
+  public void processCountdown(LongConsumer callback) {
     if (countdownAgent.isShutdown())
       countdownAgent = Executors.newSingleThreadScheduledExecutor();
 

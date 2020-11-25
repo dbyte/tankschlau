@@ -27,8 +27,6 @@ public class PushoverMessageContent extends PetrolStationMessageContent {
   private String title;
   private String message;
 
-  public PushoverMessageContent() {}
-
   @Override
   public String getTitle() {
     return StringLegalizer.create(title).nullToEmpty().end();
