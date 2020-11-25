@@ -35,7 +35,8 @@ import java.util.List;
 class MainWindow extends JFrame {
   private static final Localization L10N = Localization.getInstance();
   private static final Dimension DEFAULT_WINDOW_DIMENSION = new Dimension(1400, 900);
-  private final JPanel domainPanelTab, prefsPanelTab;
+  private final JPanel domainPanelTab;
+  private final JPanel prefsPanelTab;
   private final JPanel footerPanel;
 
   MainWindow(
@@ -65,7 +66,7 @@ class MainWindow extends JFrame {
   }
 
   private void initView() {
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
     configureFooterPanel();
@@ -91,7 +92,7 @@ class MainWindow extends JFrame {
     tabbedPane.setSelectedIndex(0);
 
     tabbedPane.setPreferredSize(DEFAULT_WINDOW_DIMENSION);
-    tabbedPane.setTabPlacement(JTabbedPane.TOP);
+    tabbedPane.setTabPlacement(SwingConstants.TOP);
     tabbedPane.setTabLayoutPolicy(JTabbedPane.WRAP_TAB_LAYOUT);
     tabbedPane.setBorder(BorderFactory.createEmptyBorder());
     tabbedPane.setOpaque(true);

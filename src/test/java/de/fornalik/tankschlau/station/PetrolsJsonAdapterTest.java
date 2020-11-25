@@ -51,7 +51,8 @@ class PetrolsJsonAdapterTest {
   @Test
   void read_happy() {
     // given
-    fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
+    fixture
+        .setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_1STATION_HAPPY);
 
     // when
     actualPetrols = gson.fromJson(fixture.jsonFixture, (Type) Petrols.class);
@@ -63,7 +64,8 @@ class PetrolsJsonAdapterTest {
   @Test
   void read_doesNotCreatePetrolsForMissingPrices() {
     // given
-    fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_DIESEL_AND_E5);
+    fixture
+        .setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_MISSING_DIESEL_AND_E5);
 
     // when
     actualPetrols = gson.fromJson(fixture.jsonFixture, (Type) Petrols.class);
@@ -76,7 +78,8 @@ class PetrolsJsonAdapterTest {
   @Test
   void read_doesNotCreatePetrolsWithZeroPrice() {
     // given
-    fixture.setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_ZERO_PRICE_DIESEL_AND_E10);
+    fixture
+        .setupSingleFixture(FixtureFiles.TANKERKOENIG_JSON_RESPONSE_NEIGHBOURHOOD_ZERO_PRICE_DIESEL_AND_E10);
 
     // when
     actualPetrols = gson.fromJson(fixture.jsonFixture, (Type) Petrols.class);
@@ -88,9 +91,12 @@ class PetrolsJsonAdapterTest {
 
   @Test
   void write_throwsUnsupportedOperation() {
+    // given
+    Set<Petrol> emptyHashSet = new HashSet<>();
+
     // when then
     assertThrows(
         UnsupportedOperationException.class,
-        () -> petrolsJsonAdapter.write(null, new HashSet<>()));
+        () -> petrolsJsonAdapter.write(null, emptyHashSet));
   }
 }
