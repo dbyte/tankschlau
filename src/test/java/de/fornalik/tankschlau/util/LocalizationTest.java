@@ -17,8 +17,8 @@ class LocalizationTest {
 
   @BeforeAll
   static void setUpAll() {
-    sutGerman = createLocalization(Locale.GERMANY, Locale.GERMAN);
-    sutEnglish = createLocalization(Locale.US, Locale.ENGLISH);
+    sutGerman = createLocalization(Locale.GERMANY);
+    sutEnglish = createLocalization(Locale.US);
   }
 
   @AfterAll
@@ -27,25 +27,25 @@ class LocalizationTest {
     sutEnglish = null;
   }
 
-  private static Localization createLocalization(Locale forLocale, Locale forLanguage) {
+  private static Localization createLocalization(Locale forLocale) {
     // Return a subject under test.
     Localization loc = Localization.newInstance();
-    loc.configure(forLocale, ResourceBundle.getBundle("LocaleTestStrings", forLanguage));
+    loc.configure(forLocale, ResourceBundle.getBundle("LocaleTestStrings", forLocale));
     return loc;
   }
 
   @Test
-  void getLocale_returnsCurrentLocale() {
+  void getRegion_returnsCurrentLocale() {
     // given
     Localization l10n = Localization.newInstance();
     l10n.configure(Locale.US);
-    Locale actualLocale;
+    Locale actualRegion;
 
     // when
-    actualLocale = l10n.getLocale();
+    actualRegion = l10n.getRegion();
 
     // then
-    assertEquals(Locale.US, actualLocale);
+    assertEquals(Locale.US, actualRegion);
   }
 
   @Test

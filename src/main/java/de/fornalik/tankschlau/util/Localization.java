@@ -32,7 +32,7 @@ public class Localization {
   private static final Logger LOGGER = Logger.getLogger(Localization.class.getName());
   private static Localization INSTANCE;
   private ResourceBundle bundle;
-  private Locale locale;
+  private Locale region;
 
   private Localization() {}
 
@@ -64,32 +64,33 @@ public class Localization {
   }
 
   /**
-   * @return The current Locale for the app.
+   * @return The current region for the app.
    */
-  public Locale getLocale() {
-    return locale;
+  public Locale getRegion() {
+    return region;
   }
 
   /**
    * Configure app for the given language/region. Implicitly sets path to production bundle of
    * language properties files.
    *
-   * @param locale App language and formats.
+   * @param region App language and formats.
    */
-  public void configure(Locale locale) {
-    this.configure(locale, ResourceBundle.getBundle("LocaleStrings", locale));
+  public void configure(Locale region) {
+    this.configure(region, ResourceBundle.getBundle("LocaleStrings", region));
   }
 
   /**
-   * Configure app for the given language/region. Unlike {@link #configure(Locale)}, this one
+   * Configure app for the given language/region. Unlike {@link #configure(Locale)}, this
+   * one
    * does NOT implicitly set the path to production bundle of language properties files.
    *
+   * @param region Region for specific formats we use.
    * @param bundle Target {@link ResourceBundle} for the language property files.
-   * @param locale Region for specific formats we use.
    */
-  public void configure(Locale locale, ResourceBundle bundle) {
+  public void configure(Locale region, ResourceBundle bundle) {
+    this.region = region;
     this.bundle = bundle;
-    this.locale = locale;
   }
 
   /**
@@ -135,7 +136,7 @@ public class Localization {
    * @return The application-wide price formatter. Decimal separator depending on Locale settings.
    */
   public NumberFormat priceFormat() {
-    NumberFormat nf = NumberFormat.getInstance(locale);
+    NumberFormat nf = NumberFormat.getInstance(region);
     nf.setMaximumFractionDigits(3);
     nf.setMinimumFractionDigits(2);
     return nf;
@@ -146,7 +147,7 @@ public class Localization {
    * settings.
    */
   public NumberFormat kmFormat() {
-    NumberFormat nf = NumberFormat.getInstance(locale);
+    NumberFormat nf = NumberFormat.getInstance(region);
     nf.setMaximumFractionDigits(2);
     nf.setMinimumFractionDigits(0);
     return nf;

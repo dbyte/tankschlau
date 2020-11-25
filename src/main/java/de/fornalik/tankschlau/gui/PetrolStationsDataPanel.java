@@ -123,7 +123,7 @@ class PetrolStationsDataPanel extends JPanel implements TableModelListener {
     }
 
     DateTimeFormatter formatter = DateTimeFormatter
-        .ofPattern("dd.MM.yyyy HH:mm:ss", L10N.getLocale());
+        .ofPattern("dd.MM.yyyy HH:mm:ss", L10N.getRegion());
 
     String lastUpdateStr = formatter.format(lastUpdateAt);
     lastUpdateLabel.setText(L10N.get("msg.LastUpdateAt", lastUpdateStr));
