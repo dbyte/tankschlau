@@ -29,7 +29,7 @@ import java.util.logging.LogRecord;
  * <b>NOTE:</b> Class must remain public to be accessible through logging.properties file.
  */
 public class LoggingFormatter extends Formatter {
-  private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd kk:mm:ss.SSS");
+  private final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd kk:mm:ss.SSS");
   private static boolean useSimpleClassName = false;
 
   /**
