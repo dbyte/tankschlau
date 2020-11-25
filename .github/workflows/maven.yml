@@ -5,9 +5,9 @@ name: build-test-package
 
 on:
   push:
-    branches: [ feat-github-package-action ]
+    branches: [ master ]
   pull_request:
-    branches: [ feat-github-package-action ]
+    branches: [ master ]
 
 jobs:
   build:
