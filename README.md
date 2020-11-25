@@ -1,5 +1,5 @@
-![tests](https://github.com/dbyte/tankschlau/workflows/tests/badge.svg)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+![build](https://github.com/dbyte/tankschlau/workflows/build-test-package/badge.svg)
+[![license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 # TankSchlau
 ### Get notified about the cheapest fuel prices in your area
