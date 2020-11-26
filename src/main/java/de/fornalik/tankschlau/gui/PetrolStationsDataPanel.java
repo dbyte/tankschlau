@@ -16,12 +16,11 @@
 
 package de.fornalik.tankschlau.gui;
 
-import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.PetrolType;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
-import de.fornalik.tankschlau.util.WorkerService;
-import de.fornalik.tankschlau.webserviceapi.common.PetrolStationMessageWorker;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
@@ -29,11 +28,11 @@ import javax.swing.event.TableModelListener;
 import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 /**
  * The app's main representation of data, using a JTable.
  */
+@Controller
 class PetrolStationsDataPanel extends JPanel implements TableModelListener {
   private static final Localization L10N = Localization.getInstance();
 
@@ -45,26 +44,19 @@ class PetrolStationsDataPanel extends JPanel implements TableModelListener {
   private final JLabel headerLabel;
   private final JLabel lastUpdateLabel;
 
+  @Autowired
   PetrolStationsDataPanel(
-      FooterPanel footerPanel,
       UserPrefs userPrefs,
-      WorkerService<List<PetrolStation>> petrolStationsWorkerService,
-      PetrolStationMessageWorker messageWorker) {
+      PetrolStationsControlPanel petrolStationsControlPanel,
+      PetrolsStationsTableModel petrolsStationsTableModel) {
 
     this.userPrefs = userPrefs;
+    this.dataControlPanel = petrolStationsControlPanel;
 
-    PetrolsStationsTableModel dataTableModel = new PetrolsStationsTableModel(userPrefs);
-    dataTableModel.addTableModelListener(this);
-    this.dataTable = new JTable(dataTableModel);
+    petrolsStationsTableModel.addTableModelListener(this);
+    this.dataTable = new JTable(petrolsStationsTableModel);
 
     this.dataScrollPane = new JScrollPane(dataTable);
-    this.dataControlPanel = new PetrolStationsControlPanel(
-        dataTableModel,
-        footerPanel,
-        userPrefs,
-        petrolStationsWorkerService,
-        messageWorker);
-
     this.headerLabel = new JLabel();
     this.lastUpdateLabel = new JLabel();
 

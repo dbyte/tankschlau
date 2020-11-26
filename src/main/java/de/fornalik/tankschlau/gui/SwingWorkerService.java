@@ -32,6 +32,7 @@ import java.util.logging.Logger;
  * @param <T> Type of the result data which is pushed back to the consumer
  *            right after receiving results from RunnableCallbackWorker.
  */
+public
 class SwingWorkerService<T> implements WorkerService<T> {
   private static final Logger LOGGER = Logger.getLogger(SwingWorkerService.class.getName());
   private static final int INITIAL_DELAY_SECONDS = 3;
@@ -42,8 +43,8 @@ class SwingWorkerService<T> implements WorkerService<T> {
   private ScheduledExecutorService countdownAgent;
   private TimeUnit timeUnit;
 
-  SwingWorkerService(RunnableCallbackWorker<T> worker) {
-    this.worker = worker;
+  public SwingWorkerService(RunnableCallbackWorker<T> runnableCallbackWorker) {
+    this.worker = runnableCallbackWorker;
     this.workerSchedule = Executors.newSingleThreadScheduledExecutor();
     this.workerFuture = null;
     this.countdownAgent = Executors.newSingleThreadScheduledExecutor();

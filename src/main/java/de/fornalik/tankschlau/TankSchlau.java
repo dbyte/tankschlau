@@ -16,7 +16,7 @@
 
 package de.fornalik.tankschlau;
 
-import de.fornalik.tankschlau.gui.SwingBootstrap;
+import de.fornalik.tankschlau.gui.MainWindow;
 import de.fornalik.tankschlau.user.ApiKeyManager;
 import de.fornalik.tankschlau.user.UserPrefs;
 import org.springframework.boot.Banner;
@@ -24,6 +24,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import javax.swing.*;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,43 +32,42 @@ import java.util.logging.Logger;
 @SpringBootApplication
 public class TankSchlau {
   private static Logger logger;
-  private static ConfigurableApplicationContext context;
 
   public static void main(String... args) {
-    startSpringApplication(args);
+    ConfigurableApplicationContext context = createApplicationContext(args);
 
     logger = Logger.getLogger(TankSchlau.class.getName());
     logger.log(Level.FINEST, "Spring DI container is active as expected: {0}", context.isActive());
 
-    processVmOptions();
-    startSwingApplication();
+    processVmOptions(context);
+    startSwingApplication(context);
   }
 
-  private static void startSpringApplication(String... args) {
-    SpringApplicationBuilder builder = new SpringApplicationBuilder(TankSchlau.class);
-    builder.bannerMode(Banner.Mode.OFF);
-    builder.headless(false); // needed for Swing
-    context = builder.run(args);
+  private static ConfigurableApplicationContext createApplicationContext(String... args) {
+    return new SpringApplicationBuilder(TankSchlau.class)
+        .bannerMode(Banner.Mode.OFF)
+        .headless(false) // needed for Swing
+        .run(args);
   }
 
-  private static void startSwingApplication() {
+  private static void startSwingApplication(ConfigurableApplicationContext context) {
     logger.finest("Invoking GUI");
-    context.getBean(SwingBootstrap.class).run();
+    SwingUtilities.invokeLater(() -> context.getBean(MainWindow.class));
   }
 
-  private static void processVmOptions() {
+  private static void processVmOptions(ConfigurableApplicationContext context) {
     // Offers option to pass some data at startup. Ex: -Dmyproperty="My value"
 
     logger.finest("Processing VM options");
 
     Optional.ofNullable(System.getProperty("petrolStationsApiKey"))
-        .ifPresent(context.getBean("tankerkoenigApikeyManager", ApiKeyManager.class)::write);
+        .ifPresent(context.getBean("apiKeyManagerPetrolStations", ApiKeyManager.class)::write);
 
     Optional.ofNullable(System.getProperty("geocodingApiKey"))
-        .ifPresent(context.getBean("geocodingApikeyManager", ApiKeyManager.class)::write);
+        .ifPresent(context.getBean("apiKeyManagerGeocoding", ApiKeyManager.class)::write);
 
     Optional.ofNullable(System.getProperty("pushmessageApiKey"))
-        .ifPresent(context.getBean("pushMessageApikeyManager", ApiKeyManager.class)::write);
+        .ifPresent(context.getBean("apiKeyManagerPushMessage", ApiKeyManager.class)::write);
 
     Optional.ofNullable(System.getProperty("pushmessageUserId"))
         .ifPresent(context.getBean(UserPrefs.class)::writePushMessageUserId);

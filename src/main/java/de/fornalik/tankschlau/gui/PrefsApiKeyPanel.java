@@ -17,9 +17,10 @@
 package de.fornalik.tankschlau.gui;
 
 import de.fornalik.tankschlau.user.ApiKeyManager;
-import de.fornalik.tankschlau.user.ApiKeyStore;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,6 +30,7 @@ import java.awt.event.FocusListener;
 /**
  * User preferences panel for authorization keys of needed webservices.
  */
+@Controller
 public class PrefsApiKeyPanel extends JPanel implements FocusListener, PrefsFactoryMixin {
 
   private static final Localization L10N = Localization.getInstance();
@@ -44,12 +46,17 @@ public class PrefsApiKeyPanel extends JPanel implements FocusListener, PrefsFact
   private final ApiKeyManager apiKeyManagerGeocoding;
   private final ApiKeyManager apiKeyManagerPushMessage;
 
-  public PrefsApiKeyPanel(ApiKeyStore apiKeyStore, UserPrefs userPrefs) {
+  @Autowired
+  public PrefsApiKeyPanel(
+      UserPrefs userPrefs,
+      ApiKeyManager apiKeyManagerPetrolStations,
+      ApiKeyManager apiKeyManagerGeocoding,
+      ApiKeyManager apiKeyManagerPushMessage) {
     super();
 
-    this.apiKeyManagerPetrolStations = ApiKeyManager.createForPetrolStations(apiKeyStore);
-    this.apiKeyManagerGeocoding = ApiKeyManager.createForGeocoding(apiKeyStore);
-    this.apiKeyManagerPushMessage = ApiKeyManager.createForPushMessage(apiKeyStore);
+    this.apiKeyManagerPetrolStations = apiKeyManagerPetrolStations;
+    this.apiKeyManagerGeocoding = apiKeyManagerGeocoding;
+    this.apiKeyManagerPushMessage = apiKeyManagerPushMessage;
     this.userPrefs = userPrefs;
 
     this.textPetrolStationsServiceApiKey = createPasswordField();

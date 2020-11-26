@@ -18,11 +18,14 @@ package de.fornalik.tankschlau;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.gui.SwingWorkerService;
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.JsonResponse;
 import de.fornalik.tankschlau.net.OkHttpClient;
 import de.fornalik.tankschlau.net.ResponseBodyImpl;
 import de.fornalik.tankschlau.service.*;
+import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.Petrols;
 import de.fornalik.tankschlau.station.PetrolsJsonAdapter;
 import de.fornalik.tankschlau.user.ApiKeyManager;
@@ -46,6 +49,7 @@ import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -74,17 +78,17 @@ class TankSchlauContext {
   }
 
   @Bean
-  ApiKeyManager tankerkoenigApikeyManager() {
+  ApiKeyManager apiKeyManagerPetrolStations() {
     return ApiKeyManager.createForPetrolStations(userPrefsApiKeyStore());
   }
 
   @Bean
-  ApiKeyManager geocodingApikeyManager() {
+  ApiKeyManager apiKeyManagerGeocoding() {
     return ApiKeyManager.createForGeocoding(userPrefsApiKeyStore());
   }
 
   @Bean
-  ApiKeyManager pushMessageApikeyManager() {
+  ApiKeyManager apiKeyManagerPushMessage() {
     return ApiKeyManager.createForPushMessage(userPrefsApiKeyStore());
   }
 
@@ -101,16 +105,13 @@ class TankSchlauContext {
   }
 
   @Bean
-  PetrolStationsWorker petrolStationsWorker() {
-    return new PetrolStationsWorker(petrolStationsService());
+  SwingWorkerService<List<PetrolStation>> petrolStationsWorkerService() {
+    return new SwingWorkerService<>(petrolStationsWorker());
   }
 
   @Bean
-  PetrolStationMessageWorker petrolStationMessageWorker() {
-    return new PetrolStationMessageWorker(
-        pushoverMessageService(),
-        new PushoverMessageContent(),
-        userPrefs());
+  PetrolStationsWorker petrolStationsWorker() {
+    return new PetrolStationsWorker(petrolStationsService());
   }
 
   @Bean
@@ -124,7 +125,7 @@ class TankSchlauContext {
     return new TankerkoenigPetrolStationsRepo(
         okHttpClient(),
         new TankerkoenigJsonAdapter(jsonProvider()),
-        TankerkoenigRequest.create(tankerkoenigApikeyManager()),
+        TankerkoenigRequest.create(apiKeyManagerPetrolStations()),
         petrolStationsResponse());
   }
 
@@ -134,6 +135,42 @@ class TankSchlauContext {
         jsonProvider(),
         new ResponseBodyImpl(),
         new TransactInfoImpl());
+  }
+
+  @Bean
+  PetrolStationMessageWorker petrolStationMessageWorker() {
+    return new PetrolStationMessageWorker(
+        pushoverMessageService(),
+        new PushoverMessageContent(),
+        userPrefs());
+  }
+
+  @Bean
+  MessageService pushoverMessageService() {
+    return new PushoverMessageService(
+        okHttpClient(),
+        pushoverMessageRequest(),
+        pushoverMessageResponse());
+  }
+
+  @Bean
+  MessageRequest pushoverMessageRequest() {
+    return new PushoverMessageRequest(
+        apiKeyManagerPushMessage(),
+        userPrefs());
+  }
+
+  @Bean
+  JsonResponse pushoverMessageResponse() {
+    return new PushoverMessageResponse(
+        jsonProvider(),
+        new ResponseBodyImpl(),
+        new TransactInfoImpl());
+  }
+
+  @Bean
+  SwingWorkerService<Geo> geocodingWorkerService() {
+    return new SwingWorkerService<>(geocodingWorker());
   }
 
   @Bean
@@ -151,35 +188,12 @@ class TankSchlauContext {
 
   @Bean
   AddressRequest geocodingRequest() {
-    return GoogleGeocodingRequest.create(geocodingApikeyManager());
+    return GoogleGeocodingRequest.create(apiKeyManagerGeocoding());
   }
 
   @Bean
   JsonResponse geocodingResponse() {
     return new GoogleGeocodingResponse(
-        jsonProvider(),
-        new ResponseBodyImpl(),
-        new TransactInfoImpl());
-  }
-
-  @Bean
-  MessageService pushoverMessageService() {
-    return new PushoverMessageService(
-        okHttpClient(),
-        pushoverMessageRequest(),
-        pushoverMessageResponse());
-  }
-
-  @Bean
-  MessageRequest pushoverMessageRequest() {
-    return new PushoverMessageRequest(
-        pushMessageApikeyManager(),
-        userPrefs());
-  }
-
-  @Bean
-  JsonResponse pushoverMessageResponse() {
-    return new PushoverMessageResponse(
         jsonProvider(),
         new ResponseBodyImpl(),
         new TransactInfoImpl());

@@ -23,6 +23,8 @@ import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.WorkerService;
 import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -37,6 +39,7 @@ import java.util.logging.Logger;
 /**
  * User preferences panel for user location
  */
+@Controller
 class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMixin {
 
   private static final Logger LOGGER = Logger.getLogger(PrefsAddressPanel.class.getName());
@@ -59,6 +62,7 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
   private final transient BtnGeoRequestController btnGeoRequestController;
   private final FooterPanel footerPanel;
 
+  @Autowired
   PrefsAddressPanel(
       UserPrefs userPrefs,
       FooterPanel footerPanel,
@@ -167,8 +171,7 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
         .getClass();
 
     // No need to insert logo if provider is not Google
-    if (geocodingProvider != GoogleGeocodingClient.class)
-      return;
+    if (geocodingProvider != GoogleGeocodingClient.class) return;
 
     // Google is current geocoding provider - insert copyright logo
     JPanel panel = new PoweredByGooglePanel();
