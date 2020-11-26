@@ -31,9 +31,7 @@ import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.user.UserPrefsApiKeyStore;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.LoggingConfig;
-import de.fornalik.tankschlau.webserviceapi.common.MessageService;
-import de.fornalik.tankschlau.webserviceapi.common.PetrolStationMessageWorker;
-import de.fornalik.tankschlau.webserviceapi.common.PetrolStationsWebService;
+import de.fornalik.tankschlau.webserviceapi.common.*;
 import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingClient;
 import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingRequest;
 import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingResponse;
@@ -45,6 +43,8 @@ import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigJsonAdapter
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigPetrolStationsRepo;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigRequest;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigResponse;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.util.Locale;
 
@@ -53,94 +53,134 @@ import java.util.Locale;
  * pre-building objects. Avoids tight coupling using Inversion Of Control.
  * Note: ONLY call it's members from the root of the app, mostly this will be the "main" method.
  */
-final class TankSchlauContext {
-  final UserPrefs userPrefs;
-  final ApiKeyStore apiKeyStore;
-  final ApiKeyManager apiKeyManager;
-  final ApiKeyManager geocodingApikeyManager;
-  final ApiKeyManager tankerkoenigApikeyManager;
-  final GeocodingWorker geocodingWorker;
-  final PetrolStationsWorker petrolStationsWorker;
-  final PetrolStationMessageWorker petrolStationMessageWorker;
-
-  private final HttpClient httpClient;
-  private final Gson jsonProvider;
+@Configuration
+class TankSchlauContext {
 
   TankSchlauContext() {
     LoggingConfig.init();
 
     Localization l10n = Localization.getInstance();
     l10n.configure(Locale.GERMANY);
+  }
 
-    userPrefs = new UserPrefs("/de/fornalik/tankschlau");
-    apiKeyStore = new UserPrefsApiKeyStore(userPrefs);
-    apiKeyManager = ApiKeyManager.createForPushMessage(apiKeyStore);
-    geocodingApikeyManager = ApiKeyManager.createForGeocoding(apiKeyStore);
-    tankerkoenigApikeyManager = ApiKeyManager.createForPetrolStations(apiKeyStore);
+  @Bean
+  UserPrefs userPrefs() {
+    return new UserPrefs("/de/fornalik/tankschlau");
+  }
 
-    httpClient = new OkHttpClient(new okhttp3.OkHttpClient());
-    jsonProvider = new GsonBuilder()
+  @Bean
+  ApiKeyStore userPrefsApiKeyStore() {
+    return new UserPrefsApiKeyStore(userPrefs());
+  }
+
+  @Bean
+  ApiKeyManager tankerkoenigApikeyManager() {
+    return ApiKeyManager.createForPetrolStations(userPrefsApiKeyStore());
+  }
+
+  @Bean
+  ApiKeyManager geocodingApikeyManager() {
+    return ApiKeyManager.createForGeocoding(userPrefsApiKeyStore());
+  }
+
+  @Bean
+  ApiKeyManager pushMessageApikeyManager() {
+    return ApiKeyManager.createForPushMessage(userPrefsApiKeyStore());
+  }
+
+  @Bean
+  HttpClient okHttpClient() {
+    return new OkHttpClient(new okhttp3.OkHttpClient());
+  }
+
+  @Bean
+  Gson jsonProvider() {
+    return new GsonBuilder()
         .registerTypeAdapter(Petrols.class, new PetrolsJsonAdapter())
         .create();
+  }
 
-    geocodingWorker = createGeocodingWorker();
+  @Bean
+  PetrolStationsWorker petrolStationsWorker() {
+    return new PetrolStationsWorker(petrolStationsService());
+  }
 
-    petrolStationsWorker = new PetrolStationsWorker(createPetrolStationsService());
-
-    petrolStationMessageWorker = new PetrolStationMessageWorker(
-        createPushoverMessageService(),
+  @Bean
+  PetrolStationMessageWorker petrolStationMessageWorker() {
+    return new PetrolStationMessageWorker(
+        pushoverMessageService(),
         new PushoverMessageContent(),
-        userPrefs);
+        userPrefs());
   }
 
-  private PetrolStationsService createPetrolStationsService() {
+  @Bean
+  PetrolStationsService petrolStationsService() {
     return new PetrolStationsWebService(
-        createPetrolStationsRepo());
+        petrolStationsRepo());
   }
 
-  private PetrolStationsRepo createPetrolStationsRepo() {
+  @Bean
+  PetrolStationsRepo petrolStationsRepo() {
     return new TankerkoenigPetrolStationsRepo(
-        httpClient,
-        new TankerkoenigJsonAdapter(jsonProvider),
-        TankerkoenigRequest.create(tankerkoenigApikeyManager),
-        createPetrolStationsJsonResponse(jsonProvider));
+        okHttpClient(),
+        new TankerkoenigJsonAdapter(jsonProvider()),
+        TankerkoenigRequest.create(tankerkoenigApikeyManager()),
+        petrolStationsResponse());
   }
 
-  private JsonResponse createPetrolStationsJsonResponse(Gson jsonProvider) {
+  @Bean
+  JsonResponse petrolStationsResponse() {
     return new TankerkoenigResponse(
-        jsonProvider,
+        jsonProvider(),
         new ResponseBodyImpl(),
         new TransactInfoImpl());
   }
 
-  private GeocodingWorker createGeocodingWorker() {
-    return new GeocodingWorker(createGeocodingService());
+  @Bean
+  GeocodingWorker geocodingWorker() {
+    return new GeocodingWorker(geocodingService());
   }
 
-  private GeocodingService createGeocodingService() {
+  @Bean
+  GeocodingService geocodingService() {
     return new GoogleGeocodingClient(
-        httpClient,
-        GoogleGeocodingRequest.create(geocodingApikeyManager),
-        createGeocodingResponse());
+        okHttpClient(),
+        geocodingRequest(),
+        geocodingResponse());
   }
 
-  private JsonResponse createGeocodingResponse() {
+  @Bean
+  AddressRequest geocodingRequest() {
+    return GoogleGeocodingRequest.create(geocodingApikeyManager());
+  }
+
+  @Bean
+  JsonResponse geocodingResponse() {
     return new GoogleGeocodingResponse(
-        jsonProvider,
+        jsonProvider(),
         new ResponseBodyImpl(),
         new TransactInfoImpl());
   }
 
-  private MessageService createPushoverMessageService() {
+  @Bean
+  MessageService pushoverMessageService() {
     return new PushoverMessageService(
-        httpClient,
-        new PushoverMessageRequest(apiKeyManager, userPrefs),
-        createPushoverMessageResponse());
+        okHttpClient(),
+        pushoverMessageRequest(),
+        pushoverMessageResponse());
   }
 
-  private JsonResponse createPushoverMessageResponse() {
+  @Bean
+  MessageRequest pushoverMessageRequest() {
+    return new PushoverMessageRequest(
+        pushMessageApikeyManager(),
+        userPrefs());
+  }
+
+  @Bean
+  JsonResponse pushoverMessageResponse() {
     return new PushoverMessageResponse(
-        jsonProvider,
+        jsonProvider(),
         new ResponseBodyImpl(),
         new TransactInfoImpl());
   }

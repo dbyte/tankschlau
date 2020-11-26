@@ -17,49 +17,59 @@
 package de.fornalik.tankschlau;
 
 import de.fornalik.tankschlau.gui.SwingBootstrap;
+import de.fornalik.tankschlau.user.ApiKeyManager;
+import de.fornalik.tankschlau.user.UserPrefs;
+import org.springframework.boot.Banner;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.Optional;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public final class TankSchlau {
+@SpringBootApplication
+public class TankSchlau {
   private static Logger logger;
-  private static TankSchlauContext context;
+  private static ConfigurableApplicationContext context;
 
-  public static void main(String[] args) {
-    context = new TankSchlauContext();
+  public static void main(String... args) {
+    startSpringApplication(args);
+
     logger = Logger.getLogger(TankSchlau.class.getName());
+    logger.log(Level.FINEST, "Spring DI container is active as expected: {0}", context.isActive());
 
-    final TankSchlau instance = new TankSchlau();
-    instance.processVmOptions();
-    instance.startSwingApplication();
+    processVmOptions();
+    startSwingApplication();
   }
 
-  private void startSwingApplication() {
+  private static void startSpringApplication(String... args) {
+    SpringApplicationBuilder builder = new SpringApplicationBuilder(TankSchlau.class);
+    builder.bannerMode(Banner.Mode.OFF);
+    builder.headless(false); // needed for Swing
+    context = builder.run(args);
+  }
+
+  private static void startSwingApplication() {
     logger.finest("Invoking GUI");
-
-    new SwingBootstrap(
-        context.userPrefs,
-        context.apiKeyStore,
-        context.petrolStationsWorker,
-        context.geocodingWorker,
-        context.petrolStationMessageWorker);
+    context.getBean(SwingBootstrap.class).run();
   }
 
-  private void processVmOptions() {
+  private static void processVmOptions() {
     // Offers option to pass some data at startup. Ex: -Dmyproperty="My value"
 
     logger.finest("Processing VM options");
 
     Optional.ofNullable(System.getProperty("petrolStationsApiKey"))
-        .ifPresent(context.tankerkoenigApikeyManager::write);
+        .ifPresent(context.getBean("tankerkoenigApikeyManager", ApiKeyManager.class)::write);
 
     Optional.ofNullable(System.getProperty("geocodingApiKey"))
-        .ifPresent(context.geocodingApikeyManager::write);
+        .ifPresent(context.getBean("geocodingApikeyManager", ApiKeyManager.class)::write);
 
     Optional.ofNullable(System.getProperty("pushmessageApiKey"))
-        .ifPresent(context.apiKeyManager::write);
+        .ifPresent(context.getBean("pushMessageApikeyManager", ApiKeyManager.class)::write);
 
     Optional.ofNullable(System.getProperty("pushmessageUserId"))
-        .ifPresent(context.userPrefs::writePushMessageUserId);
+        .ifPresent(context.getBean(UserPrefs.class)::writePushMessageUserId);
   }
 }
