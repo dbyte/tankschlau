@@ -23,24 +23,27 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 /**
- * This class offers an option to pass and handle one or more API keys at startup.
+ * This class offers an option to pass and persist one or more API keys from given properties.
  */
 @Component
-public class ApiKeyVmOptionHandler {
-  private static final Logger LOGGER = Logger.getLogger(ApiKeyVmOptionHandler.class.getName());
+public class ApiKeyPropertyHandler {
+  private static final Logger LOGGER = Logger.getLogger(ApiKeyPropertyHandler.class.getName());
 
+  private final PropertyReader propertyReader;
   private final ApiKeyManager apiKeyManagerPetrolStations;
   private final ApiKeyManager apiKeyManagerGeocoding;
   private final ApiKeyManager apiKeyManagerPushMessage;
   private final UserPrefs userPrefs;
 
   @Autowired
-  public ApiKeyVmOptionHandler(
+  public ApiKeyPropertyHandler(
+      PropertyReader propertyReader,
       ApiKeyManager apiKeyManagerPetrolStations,
       ApiKeyManager apiKeyManagerGeocoding,
       ApiKeyManager apiKeyManagerPushMessage,
       UserPrefs userPrefs) {
 
+    this.propertyReader = propertyReader;
     this.apiKeyManagerPetrolStations = apiKeyManagerPetrolStations;
     this.apiKeyManagerGeocoding = apiKeyManagerGeocoding;
     this.apiKeyManagerPushMessage = apiKeyManagerPushMessage;
@@ -48,26 +51,28 @@ public class ApiKeyVmOptionHandler {
   }
 
   /**
-   * Offers an option to pass and persist multiple API keys at startup.
-   * Valid keys for the values are:
-   * <code>petrolStationsApiKey, geocodingApiKey, pushmessageApiKey, pushmessageUserId</code>
+   * Offers an option to pass and persist multiple API keys from given properties, e.g. from
+   * variables of the VM environment. Valid keys for the values are:
    * <br><br>
-   * Example for a single cmdline param:
+   * <code style="color:yellow;">petrolStationsApiKey, geocodingApiKey, pushmessageApiKey,
+   * pushmessageUserId</code>
+   * <br><br>
+   * Example for a valid single cmdline param:
    * <code>-DpetrolStationsApiKey="your-api-key-goes-here"</code>
    */
-  public void processVmOptions() {
+  public void persistApiKeys() {
     LOGGER.finest("Processing VM options");
 
-    Optional.ofNullable(System.getProperty("petrolStationsApiKey"))
+    Optional.ofNullable(propertyReader.getProperty("petrolStationsApiKey"))
         .ifPresent(apiKeyManagerPetrolStations::write);
 
-    Optional.ofNullable(System.getProperty("geocodingApiKey"))
+    Optional.ofNullable(propertyReader.getProperty("geocodingApiKey"))
         .ifPresent(apiKeyManagerGeocoding::write);
 
-    Optional.ofNullable(System.getProperty("pushmessageApiKey"))
+    Optional.ofNullable(propertyReader.getProperty("pushmessageApiKey"))
         .ifPresent(apiKeyManagerPushMessage::write);
 
-    Optional.ofNullable(System.getProperty("pushmessageUserId"))
+    Optional.ofNullable(propertyReader.getProperty("pushmessageUserId"))
         .ifPresent(userPrefs::writePushMessageUserId);
   }
 }

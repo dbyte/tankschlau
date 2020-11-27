@@ -17,7 +17,7 @@
 package de.fornalik.tankschlau;
 
 import de.fornalik.tankschlau.gui.MainWindow;
-import de.fornalik.tankschlau.user.ApiKeyVmOptionHandler;
+import de.fornalik.tankschlau.user.ApiKeyPropertyHandler;
 import de.fornalik.tankschlau.util.LoggingConfig;
 import org.springframework.boot.Banner;
 import org.springframework.boot.WebApplicationType;
@@ -47,7 +47,7 @@ public class TankSchlau {
   }
 
   private static void processVmParameters(ConfigurableApplicationContext context) {
-    context.getBean(ApiKeyVmOptionHandler.class).processVmOptions();
+    context.getBean(ApiKeyPropertyHandler.class).persistApiKeys();
   }
 
   private static void startSwingApplication(ConfigurableApplicationContext context) {

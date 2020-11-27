@@ -35,6 +35,7 @@ import de.fornalik.tankschlau.station.Petrols;
 import de.fornalik.tankschlau.station.PetrolsJsonAdapter;
 import de.fornalik.tankschlau.user.ApiKeyManager;
 import de.fornalik.tankschlau.user.ApiKeyStore;
+import de.fornalik.tankschlau.user.PropertyReader;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.user.UserPrefsApiKeyStore;
 import de.fornalik.tankschlau.webserviceapi.common.AddressRequest;
@@ -72,23 +73,28 @@ class TankSchlauContext {
   }
 
   @Bean
-  ApiKeyStore userPrefsApiKeyStore() {
+  ApiKeyStore apiKeyStore() {
     return new UserPrefsApiKeyStore(userPrefs());
   }
 
   @Bean
+  PropertyReader systemPropertyReader() {
+    return System::getProperty;
+  }
+
+  @Bean
   ApiKeyManager apiKeyManagerPetrolStations() {
-    return ApiKeyManager.createForPetrolStations(userPrefsApiKeyStore());
+    return ApiKeyManager.createForPetrolStations(apiKeyStore());
   }
 
   @Bean
   ApiKeyManager apiKeyManagerGeocoding() {
-    return ApiKeyManager.createForGeocoding(userPrefsApiKeyStore());
+    return ApiKeyManager.createForGeocoding(apiKeyStore());
   }
 
   @Bean
   ApiKeyManager apiKeyManagerPushMessage() {
-    return ApiKeyManager.createForPushMessage(userPrefsApiKeyStore());
+    return ApiKeyManager.createForPushMessage(apiKeyStore());
   }
 
   @Bean
@@ -139,28 +145,28 @@ class TankSchlauContext {
   @Bean
   PetrolStationMessageWorker petrolStationMessageWorker() {
     return new PetrolStationMessageWorker(
-        pushoverMessageService(),
+        messageService(),
         new PushoverMessageContent(),
         userPrefs());
   }
 
   @Bean
-  MessageService pushoverMessageService() {
+  MessageService messageService() {
     return new PushoverMessageService(
         httpClient(),
-        pushoverMessageRequest(),
-        pushoverMessageResponse());
+        messageRequest(),
+        messageResponse());
   }
 
   @Bean
-  MessageRequest pushoverMessageRequest() {
+  MessageRequest messageRequest() {
     return new PushoverMessageRequest(
         apiKeyManagerPushMessage(),
         userPrefs());
   }
 
   @Bean
-  JsonResponse pushoverMessageResponse() {
+  JsonResponse messageResponse() {
     return new PushoverMessageResponse(
         jsonProvider(),
         new ResponseBodyImpl(),
