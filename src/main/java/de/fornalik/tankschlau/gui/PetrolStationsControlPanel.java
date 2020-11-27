@@ -23,6 +23,8 @@ import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.WorkerService;
 import de.fornalik.tankschlau.webserviceapi.common.PetrolStationMessageWorker;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,33 +38,40 @@ import java.util.logging.Logger;
 /**
  * Panel with interactive Components, driving worker service and data table model.
  */
+@Controller
 class PetrolStationsControlPanel extends JPanel implements ActionListener {
 
   private static final Logger LOGGER = Logger.getLogger(PetrolStationsControlPanel.class.getName());
   private static final Localization L10N = Localization.getInstance();
 
+  private final PetrolsStationsTableModel dataTableModel;
+  private final FooterPanel footerPanel;
+  private final PetrolTypePanel petrolTypePanel;
+  private final UserPrefs userPrefs;
   private final transient WorkerService<List<PetrolStation>> workerService;
   private final transient PetrolStationMessageWorker messageWorker;
-  private final UserPrefs userPrefs;
+
   private final JButton btnStartOneShotWork;
   private final JButton btnStartCyclicWork;
   private final JButton btnRemoveAllData;
-  private final PetrolsStationsTableModel dataTableModel;
-  private final FooterPanel footerPanel;
 
+  @Autowired
   PetrolStationsControlPanel(
       PetrolsStationsTableModel dataTableModel,
       FooterPanel footerPanel,
-      UserPrefs userPrefs,
+      PetrolTypePanel petrolTypePanel,
       WorkerService<List<PetrolStation>> petrolStationsWorkerService,
-      PetrolStationMessageWorker messageWorker) {
+      PetrolStationMessageWorker messageWorker,
+      UserPrefs userPrefs) {
+
+    this.dataTableModel = dataTableModel;
+    this.footerPanel = footerPanel;
+    this.petrolTypePanel = petrolTypePanel;
 
     this.workerService = petrolStationsWorkerService;
     this.messageWorker = messageWorker;
-
     this.userPrefs = userPrefs;
-    this.dataTableModel = dataTableModel;
-    this.footerPanel = footerPanel;
+
     this.btnStartOneShotWork = new JButton();
     this.btnStartCyclicWork = new JButton();
     this.btnRemoveAllData = new JButton();
@@ -104,13 +113,12 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
   }
 
   private JPanel createPetrolTypeChooser() {
-    PetrolTypePanel panel = new PetrolTypePanel(userPrefs);
-    panel.setMinimumSize(new Dimension(getMaximumSize().width, 100));
-    panel.setMaximumSize(new Dimension(getMaximumSize().width, 100));
-    panel.setPreferredSize(new Dimension(getMaximumSize().width, 100));
-    panel.setAlignmentX(CENTER_ALIGNMENT);
+    petrolTypePanel.setMinimumSize(new Dimension(getMaximumSize().width, 100));
+    petrolTypePanel.setMaximumSize(new Dimension(getMaximumSize().width, 100));
+    petrolTypePanel.setPreferredSize(new Dimension(getMaximumSize().width, 100));
+    petrolTypePanel.setAlignmentX(CENTER_ALIGNMENT);
 
-    return panel;
+    return petrolTypePanel;
   }
 
   private JSeparator createSeparator() {

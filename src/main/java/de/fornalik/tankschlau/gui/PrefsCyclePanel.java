@@ -18,6 +18,8 @@ package de.fornalik.tankschlau.gui;
 
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -31,6 +33,7 @@ import java.util.logging.Logger;
 /**
  * User preferences panel for cyclic background services.
  */
+@Controller
 class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
 
   private static final Localization L10N = Localization.getInstance();
@@ -49,6 +52,7 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
   private final UserPrefs userPrefs;
   private final transient CycleFocusListener cycleFocusListener;
 
+  @Autowired
   PrefsCyclePanel(UserPrefs userPrefs) {
     this.userPrefs = userPrefs;
 

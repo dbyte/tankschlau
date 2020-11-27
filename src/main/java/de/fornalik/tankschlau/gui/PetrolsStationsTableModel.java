@@ -17,9 +17,15 @@
 package de.fornalik.tankschlau.gui;
 
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.station.*;
+import de.fornalik.tankschlau.station.Petrol;
+import de.fornalik.tankschlau.station.PetrolStation;
+import de.fornalik.tankschlau.station.PetrolStations;
+import de.fornalik.tankschlau.station.PetrolType;
+import de.fornalik.tankschlau.station.Petrols;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.swing.table.AbstractTableModel;
 import java.io.Serializable;
@@ -32,6 +38,7 @@ import java.util.StringTokenizer;
  * Handles the domain table model and its data, which is a result of the WorkerService and
  * its owned Worker.
  */
+@Component
 class PetrolsStationsTableModel extends AbstractTableModel implements Serializable {
   private static final Localization L10N = Localization.getInstance();
   static final String COL_NAME = L10N.get("tableHeader.Name");
@@ -52,6 +59,7 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
     columns[4] = COL_IS_OPEN;
   }
 
+  @Autowired
   PetrolsStationsTableModel(UserPrefs userPrefs) {
     super();
     this.userPrefs = userPrefs;

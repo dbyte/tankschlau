@@ -18,19 +18,27 @@ package de.fornalik.tankschlau;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import de.fornalik.tankschlau.geo.Geo;
+import de.fornalik.tankschlau.gui.SwingWorkerService;
 import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.JsonResponse;
 import de.fornalik.tankschlau.net.OkHttpClient;
 import de.fornalik.tankschlau.net.ResponseBodyImpl;
-import de.fornalik.tankschlau.service.*;
+import de.fornalik.tankschlau.service.GeocodingService;
+import de.fornalik.tankschlau.service.GeocodingWorker;
+import de.fornalik.tankschlau.service.PetrolStationsRepo;
+import de.fornalik.tankschlau.service.PetrolStationsService;
+import de.fornalik.tankschlau.service.PetrolStationsWorker;
+import de.fornalik.tankschlau.service.TransactInfoImpl;
+import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.Petrols;
 import de.fornalik.tankschlau.station.PetrolsJsonAdapter;
 import de.fornalik.tankschlau.user.ApiKeyManager;
 import de.fornalik.tankschlau.user.ApiKeyStore;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.user.UserPrefsApiKeyStore;
-import de.fornalik.tankschlau.util.Localization;
-import de.fornalik.tankschlau.util.LoggingConfig;
+import de.fornalik.tankschlau.webserviceapi.common.AddressRequest;
+import de.fornalik.tankschlau.webserviceapi.common.MessageRequest;
 import de.fornalik.tankschlau.webserviceapi.common.MessageService;
 import de.fornalik.tankschlau.webserviceapi.common.PetrolStationMessageWorker;
 import de.fornalik.tankschlau.webserviceapi.common.PetrolStationsWebService;
@@ -45,102 +53,147 @@ import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigJsonAdapter
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigPetrolStationsRepo;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigRequest;
 import de.fornalik.tankschlau.webserviceapi.tankerkoenig.TankerkoenigResponse;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-import java.util.Locale;
+import java.util.List;
 
 /**
  * Composition Root. Describes the dependency graph throughout the application,
  * pre-building objects. Avoids tight coupling using Inversion Of Control.
  * Note: ONLY call it's members from the root of the app, mostly this will be the "main" method.
  */
-final class TankSchlauContext {
-  final UserPrefs userPrefs;
-  final ApiKeyStore apiKeyStore;
-  final ApiKeyManager apiKeyManager;
-  final ApiKeyManager geocodingApikeyManager;
-  final ApiKeyManager tankerkoenigApikeyManager;
-  final GeocodingWorker geocodingWorker;
-  final PetrolStationsWorker petrolStationsWorker;
-  final PetrolStationMessageWorker petrolStationMessageWorker;
+@Configuration
+class TankSchlauContext {
 
-  private final HttpClient httpClient;
-  private final Gson jsonProvider;
+  @Bean
+  UserPrefs userPrefs() {
+    return new UserPrefs("/de/fornalik/tankschlau");
+  }
 
-  TankSchlauContext() {
-    LoggingConfig.init();
+  @Bean
+  ApiKeyStore userPrefsApiKeyStore() {
+    return new UserPrefsApiKeyStore(userPrefs());
+  }
 
-    Localization l10n = Localization.getInstance();
-    l10n.configure(Locale.GERMANY);
+  @Bean
+  ApiKeyManager apiKeyManagerPetrolStations() {
+    return ApiKeyManager.createForPetrolStations(userPrefsApiKeyStore());
+  }
 
-    userPrefs = new UserPrefs("/de/fornalik/tankschlau");
-    apiKeyStore = new UserPrefsApiKeyStore(userPrefs);
-    apiKeyManager = ApiKeyManager.createForPushMessage(apiKeyStore);
-    geocodingApikeyManager = ApiKeyManager.createForGeocoding(apiKeyStore);
-    tankerkoenigApikeyManager = ApiKeyManager.createForPetrolStations(apiKeyStore);
+  @Bean
+  ApiKeyManager apiKeyManagerGeocoding() {
+    return ApiKeyManager.createForGeocoding(userPrefsApiKeyStore());
+  }
 
-    httpClient = new OkHttpClient(new okhttp3.OkHttpClient());
-    jsonProvider = new GsonBuilder()
+  @Bean
+  ApiKeyManager apiKeyManagerPushMessage() {
+    return ApiKeyManager.createForPushMessage(userPrefsApiKeyStore());
+  }
+
+  @Bean
+  HttpClient httpClient() {
+    return new OkHttpClient(new okhttp3.OkHttpClient());
+  }
+
+  @Bean
+  Gson jsonProvider() {
+    return new GsonBuilder()
         .registerTypeAdapter(Petrols.class, new PetrolsJsonAdapter())
         .create();
-
-    geocodingWorker = createGeocodingWorker();
-
-    petrolStationsWorker = new PetrolStationsWorker(createPetrolStationsService());
-
-    petrolStationMessageWorker = new PetrolStationMessageWorker(
-        createPushoverMessageService(),
-        new PushoverMessageContent(),
-        userPrefs);
   }
 
-  private PetrolStationsService createPetrolStationsService() {
+  @Bean
+  SwingWorkerService<List<PetrolStation>> petrolStationsWorkerService() {
+    return new SwingWorkerService<>(petrolStationsWorker());
+  }
+
+  @Bean
+  PetrolStationsWorker petrolStationsWorker() {
+    return new PetrolStationsWorker(petrolStationsService());
+  }
+
+  @Bean
+  PetrolStationsService petrolStationsService() {
     return new PetrolStationsWebService(
-        createPetrolStationsRepo());
+        petrolStationsRepo());
   }
 
-  private PetrolStationsRepo createPetrolStationsRepo() {
+  @Bean
+  PetrolStationsRepo petrolStationsRepo() {
     return new TankerkoenigPetrolStationsRepo(
-        httpClient,
-        new TankerkoenigJsonAdapter(jsonProvider),
-        TankerkoenigRequest.create(tankerkoenigApikeyManager),
-        createPetrolStationsJsonResponse(jsonProvider));
+        httpClient(),
+        new TankerkoenigJsonAdapter(jsonProvider()),
+        TankerkoenigRequest.create(apiKeyManagerPetrolStations()),
+        petrolStationsResponse());
   }
 
-  private JsonResponse createPetrolStationsJsonResponse(Gson jsonProvider) {
+  @Bean
+  JsonResponse petrolStationsResponse() {
     return new TankerkoenigResponse(
-        jsonProvider,
+        jsonProvider(),
         new ResponseBodyImpl(),
         new TransactInfoImpl());
   }
 
-  private GeocodingWorker createGeocodingWorker() {
-    return new GeocodingWorker(createGeocodingService());
+  @Bean
+  PetrolStationMessageWorker petrolStationMessageWorker() {
+    return new PetrolStationMessageWorker(
+        pushoverMessageService(),
+        new PushoverMessageContent(),
+        userPrefs());
   }
 
-  private GeocodingService createGeocodingService() {
-    return new GoogleGeocodingClient(
-        httpClient,
-        GoogleGeocodingRequest.create(geocodingApikeyManager),
-        createGeocodingResponse());
-  }
-
-  private JsonResponse createGeocodingResponse() {
-    return new GoogleGeocodingResponse(
-        jsonProvider,
-        new ResponseBodyImpl(),
-        new TransactInfoImpl());
-  }
-
-  private MessageService createPushoverMessageService() {
+  @Bean
+  MessageService pushoverMessageService() {
     return new PushoverMessageService(
-        httpClient,
-        new PushoverMessageRequest(apiKeyManager, userPrefs),
-        createPushoverMessageResponse());
+        httpClient(),
+        pushoverMessageRequest(),
+        pushoverMessageResponse());
   }
 
-  private JsonResponse createPushoverMessageResponse() {
+  @Bean
+  MessageRequest pushoverMessageRequest() {
+    return new PushoverMessageRequest(
+        apiKeyManagerPushMessage(),
+        userPrefs());
+  }
+
+  @Bean
+  JsonResponse pushoverMessageResponse() {
     return new PushoverMessageResponse(
-        jsonProvider,
+        jsonProvider(),
+        new ResponseBodyImpl(),
+        new TransactInfoImpl());
+  }
+
+  @Bean
+  SwingWorkerService<Geo> geocodingWorkerService() {
+    return new SwingWorkerService<>(geocodingWorker());
+  }
+
+  @Bean
+  GeocodingWorker geocodingWorker() {
+    return new GeocodingWorker(geocodingService());
+  }
+
+  @Bean
+  GeocodingService geocodingService() {
+    return new GoogleGeocodingClient(
+        httpClient(),
+        geocodingRequest(),
+        geocodingResponse());
+  }
+
+  @Bean
+  AddressRequest geocodingRequest() {
+    return GoogleGeocodingRequest.create(apiKeyManagerGeocoding());
+  }
+
+  @Bean
+  JsonResponse geocodingResponse() {
+    return new GoogleGeocodingResponse(
+        jsonProvider(),
         new ResponseBodyImpl(),
         new TransactInfoImpl());
   }

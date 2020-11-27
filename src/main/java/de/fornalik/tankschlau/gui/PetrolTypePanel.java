@@ -20,6 +20,8 @@ import de.fornalik.tankschlau.station.PetrolType;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 import org.apache.commons.lang3.EnumUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,6 +34,7 @@ import java.util.logging.Logger;
 /**
  * Chooser for preferred PetrolType.
  */
+@Controller
 class PetrolTypePanel extends JPanel implements ActionListener {
 
   private static final Localization L10N = Localization.getInstance();
@@ -40,6 +43,7 @@ class PetrolTypePanel extends JPanel implements ActionListener {
   private final UserPrefs userPrefs;
   private final ButtonGroup petrolTypeBtnGroup;
 
+  @Autowired
   PetrolTypePanel(UserPrefs userPrefs) {
     this.userPrefs = userPrefs;
     this.petrolTypeBtnGroup = new ButtonGroup();

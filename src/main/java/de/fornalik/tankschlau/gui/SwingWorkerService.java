@@ -20,7 +20,11 @@ import de.fornalik.tankschlau.util.RunnableCallbackWorker;
 import de.fornalik.tankschlau.util.WorkerService;
 
 import java.util.Objects;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.LongConsumer;
 import java.util.logging.Logger;
@@ -32,7 +36,7 @@ import java.util.logging.Logger;
  * @param <T> Type of the result data which is pushed back to the consumer
  *            right after receiving results from RunnableCallbackWorker.
  */
-class SwingWorkerService<T> implements WorkerService<T> {
+public class SwingWorkerService<T> implements WorkerService<T> {
   private static final Logger LOGGER = Logger.getLogger(SwingWorkerService.class.getName());
   private static final int INITIAL_DELAY_SECONDS = 3;
 
@@ -42,8 +46,8 @@ class SwingWorkerService<T> implements WorkerService<T> {
   private ScheduledExecutorService countdownAgent;
   private TimeUnit timeUnit;
 
-  SwingWorkerService(RunnableCallbackWorker<T> worker) {
-    this.worker = worker;
+  public SwingWorkerService(RunnableCallbackWorker<T> runnableCallbackWorker) {
+    this.worker = runnableCallbackWorker;
     this.workerSchedule = Executors.newSingleThreadScheduledExecutor();
     this.workerFuture = null;
     this.countdownAgent = Executors.newSingleThreadScheduledExecutor();

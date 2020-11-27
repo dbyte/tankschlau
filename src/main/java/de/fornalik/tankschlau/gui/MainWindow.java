@@ -16,62 +16,45 @@
 
 package de.fornalik.tankschlau.gui;
 
-import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.station.PetrolStation;
-import de.fornalik.tankschlau.user.ApiKeyStore;
-import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
-import de.fornalik.tankschlau.util.WorkerService;
-import de.fornalik.tankschlau.webserviceapi.common.PetrolStationMessageWorker;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
-
+import java.util.logging.Logger;
 
 /**
- * The app's main JFrame.
+ * The app's main window.
  */
-class MainWindow extends JFrame {
+@Controller
+public class MainWindow extends JFrame {
+  private static final Logger LOGGER = Logger.getLogger(MainWindow.class.getName());
   private static final Localization L10N = Localization.getInstance();
   private static final Dimension DEFAULT_WINDOW_DIMENSION = new Dimension(1400, 900);
-  private final JPanel domainPanelTab;
-  private final JPanel prefsPanelTab;
-  private final JPanel footerPanel;
 
-  MainWindow(
-      UserPrefs userPrefs,
-      ApiKeyStore apiKeyStore,
-      WorkerService<List<PetrolStation>> petrolStationsWorkerService,
-      WorkerService<Geo> geocodingWorkerService,
-      PetrolStationMessageWorker messageWorker) {
+  private final MainPanel domainPanelTab;
+  private final PrefsPanel prefsPanelTab;
+  private final FooterPanel footerPanel;
 
+  @Autowired
+  public MainWindow(FooterPanel footerPanel, MainPanel domainPanelTab, PrefsPanel prefsPanelTab) {
     super(Localization.APP_NAME);
 
-    this.footerPanel = new FooterPanel();
-
-    this.domainPanelTab = new MainPanel(
-        (FooterPanel) this.footerPanel,
-        userPrefs,
-        petrolStationsWorkerService,
-        messageWorker);
-
-    this.prefsPanelTab = new PrefsPanel(
-        userPrefs,
-        apiKeyStore,
-        geocodingWorkerService,
-        (FooterPanel) this.footerPanel);
-
-    this.initView();
+    this.footerPanel = footerPanel;
+    this.domainPanelTab = domainPanelTab;
+    this.prefsPanelTab = prefsPanelTab;
   }
 
-  private void initView() {
+  public void initView() {
+    LOGGER.finest("Loading initial view");
+
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
-    configureFooterPanel();
-
     add(createTabbedPane());
+
+    configureFooterPanel();
     add(footerPanel);
 
     setBounds(50, 50, DEFAULT_WINDOW_DIMENSION.width, DEFAULT_WINDOW_DIMENSION.height);

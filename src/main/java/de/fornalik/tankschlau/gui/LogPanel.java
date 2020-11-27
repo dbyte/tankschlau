@@ -19,6 +19,8 @@ package de.fornalik.tankschlau.gui;
 import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.LoggingConfig;
 import de.fornalik.tankschlau.util.SwingLoggingHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,6 +30,7 @@ import java.awt.event.ActionListener;
 /**
  * Shows and drives logging. The log records are represented in a JTextArea by a custom Log Handler.
  */
+@Controller
 class LogPanel extends JPanel {
   private static final Localization L10N = Localization.getInstance();
 
@@ -36,6 +39,7 @@ class LogPanel extends JPanel {
   private final JButton btnClearLog;
   private final transient ButtonListener buttonListener;
 
+  @Autowired
   LogPanel() {
     super();
 
@@ -45,9 +49,6 @@ class LogPanel extends JPanel {
     this.buttonListener = new ButtonListener();
 
     this.initView();
-
-    // Bind logging handler to our TextArea
-    ((SwingLoggingHandler) LoggingConfig.SWING_LOGGING_HANDLER).setTextArea(textAreaLog);
   }
 
   private void initView() {
@@ -57,6 +58,9 @@ class LogPanel extends JPanel {
 
     add(createMainPanel(), BorderLayout.CENTER);
     add(createLogButtonPanel(), BorderLayout.LINE_START);
+
+    // Bind logging handler to our TextArea
+    ((SwingLoggingHandler) LoggingConfig.SWING_LOGGING_HANDLER).setTextArea(textAreaLog);
   }
 
   private JPanel createMainPanel() {

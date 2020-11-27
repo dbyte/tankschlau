@@ -16,36 +16,25 @@
 
 package de.fornalik.tankschlau.gui;
 
-import de.fornalik.tankschlau.station.PetrolStation;
-import de.fornalik.tankschlau.user.UserPrefs;
-import de.fornalik.tankschlau.util.WorkerService;
-import de.fornalik.tankschlau.webserviceapi.common.PetrolStationMessageWorker;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 
 /**
  * Main content (the domain) of the app, represented in MainWindow.
  */
+@Controller
 class MainPanel extends JPanel {
 
-  private final JPanel logPanel;
-  private final JPanel dataPanel;
+  private final PetrolStationsDataPanel dataPanel;
+  private final LogPanel logPanel;
 
-  MainPanel(
-      FooterPanel footerPanel,
-      UserPrefs userPrefs,
-      WorkerService<List<PetrolStation>> petrolStationsWorkerService,
-      PetrolStationMessageWorker messageWorker) {
-
-    this.dataPanel = new PetrolStationsDataPanel(
-        footerPanel,
-        userPrefs,
-        petrolStationsWorkerService,
-        messageWorker);
-
-    this.logPanel = new LogPanel();
+  @Autowired
+  MainPanel(PetrolStationsDataPanel dataPanel, LogPanel logPanel) {
+    this.dataPanel = dataPanel;
+    this.logPanel = logPanel;
 
     this.initView();
   }
