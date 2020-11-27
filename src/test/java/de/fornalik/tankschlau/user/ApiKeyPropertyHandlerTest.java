@@ -47,7 +47,7 @@ class ApiKeyPropertyHandlerTest {
   }
 
   @Test
-  void processVmOptions_mapsGivenPropertyKeysAsExpectedAndCallsWriteMethodsWithCorrespondingValues() {
+  void persistApiKeys_mapsGivenPropertyKeysAsExpectedAndCallsWriteMethodsWithCorrespondingValues() {
     // given
     when(mockPropertyReader.getProperty("petrolStationsApiKey"))
         .thenReturn("PetrolStationsApiKey-012345-6789");
