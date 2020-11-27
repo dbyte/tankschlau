@@ -22,12 +22,14 @@ import org.springframework.stereotype.Controller;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.logging.Logger;
 
 /**
  * The app's main window.
  */
 @Controller
 public class MainWindow extends JFrame {
+  private static final Logger LOGGER = Logger.getLogger(MainWindow.class.getName());
   private static final Localization L10N = Localization.getInstance();
   private static final Dimension DEFAULT_WINDOW_DIMENSION = new Dimension(1400, 900);
 
@@ -42,11 +44,11 @@ public class MainWindow extends JFrame {
     this.footerPanel = footerPanel;
     this.domainPanelTab = domainPanelTab;
     this.prefsPanelTab = prefsPanelTab;
-
-    this.initView();
   }
 
-  private void initView() {
+  public void initView() {
+    LOGGER.finest("Loading initial view");
+
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 

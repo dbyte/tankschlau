@@ -24,7 +24,12 @@ import de.fornalik.tankschlau.net.HttpClient;
 import de.fornalik.tankschlau.net.JsonResponse;
 import de.fornalik.tankschlau.net.OkHttpClient;
 import de.fornalik.tankschlau.net.ResponseBodyImpl;
-import de.fornalik.tankschlau.service.*;
+import de.fornalik.tankschlau.service.GeocodingService;
+import de.fornalik.tankschlau.service.GeocodingWorker;
+import de.fornalik.tankschlau.service.PetrolStationsRepo;
+import de.fornalik.tankschlau.service.PetrolStationsService;
+import de.fornalik.tankschlau.service.PetrolStationsWorker;
+import de.fornalik.tankschlau.service.TransactInfoImpl;
 import de.fornalik.tankschlau.station.PetrolStation;
 import de.fornalik.tankschlau.station.Petrols;
 import de.fornalik.tankschlau.station.PetrolsJsonAdapter;
@@ -32,9 +37,11 @@ import de.fornalik.tankschlau.user.ApiKeyManager;
 import de.fornalik.tankschlau.user.ApiKeyStore;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.user.UserPrefsApiKeyStore;
-import de.fornalik.tankschlau.util.Localization;
-import de.fornalik.tankschlau.util.LoggingConfig;
-import de.fornalik.tankschlau.webserviceapi.common.*;
+import de.fornalik.tankschlau.webserviceapi.common.AddressRequest;
+import de.fornalik.tankschlau.webserviceapi.common.MessageRequest;
+import de.fornalik.tankschlau.webserviceapi.common.MessageService;
+import de.fornalik.tankschlau.webserviceapi.common.PetrolStationMessageWorker;
+import de.fornalik.tankschlau.webserviceapi.common.PetrolStationsWebService;
 import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingClient;
 import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingRequest;
 import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingResponse;
@@ -50,7 +57,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Composition Root. Describes the dependency graph throughout the application,
@@ -59,13 +65,6 @@ import java.util.Locale;
  */
 @Configuration
 class TankSchlauContext {
-
-  TankSchlauContext() {
-    LoggingConfig.init();
-
-    Localization l10n = Localization.getInstance();
-    l10n.configure(Locale.GERMANY);
-  }
 
   @Bean
   UserPrefs userPrefs() {
@@ -93,7 +92,7 @@ class TankSchlauContext {
   }
 
   @Bean
-  HttpClient okHttpClient() {
+  HttpClient httpClient() {
     return new OkHttpClient(new okhttp3.OkHttpClient());
   }
 
@@ -123,7 +122,7 @@ class TankSchlauContext {
   @Bean
   PetrolStationsRepo petrolStationsRepo() {
     return new TankerkoenigPetrolStationsRepo(
-        okHttpClient(),
+        httpClient(),
         new TankerkoenigJsonAdapter(jsonProvider()),
         TankerkoenigRequest.create(apiKeyManagerPetrolStations()),
         petrolStationsResponse());
@@ -148,7 +147,7 @@ class TankSchlauContext {
   @Bean
   MessageService pushoverMessageService() {
     return new PushoverMessageService(
-        okHttpClient(),
+        httpClient(),
         pushoverMessageRequest(),
         pushoverMessageResponse());
   }
@@ -181,7 +180,7 @@ class TankSchlauContext {
   @Bean
   GeocodingService geocodingService() {
     return new GoogleGeocodingClient(
-        okHttpClient(),
+        httpClient(),
         geocodingRequest(),
         geocodingResponse());
   }

@@ -64,6 +64,6 @@ public class LoggingConfig {
     }
 
     Logger logger = Logger.getLogger(LoggingConfig.class.getName());
-    logger.finest("Logger initialized.");
+    logger.finest("Logger initialized");
   }
 }
