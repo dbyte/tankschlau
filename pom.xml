@@ -23,7 +23,6 @@
     <junit.version>5.6.2</junit.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <project.coverage.exclude>**/gui/**/*</project.coverage.exclude>
 
     <!-- https://sonarcloud.io code analysis -->
     <sonar.projectKey>dbyte_tankschlau</sonar.projectKey>
@@ -31,7 +30,11 @@
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../target/site/jacoco/jacoco.xml
     </sonar.coverage.jacoco.xmlReportPaths>
-    <sonar.coverage.exclusions>${project.coverage.exclude}</sonar.coverage.exclusions>
+    <!-- Exclude full Swing GUI package from test coverage.
+    Also exclude starter class and Spring Boot configuration class.
+    Should also be defined in <jacoco-maven-plugin> if it is involved -->
+    <sonar.coverage.exclusions>**/gui/**/*, **/*TankSchlau.java, **/*TankSchlauContext.java
+    </sonar.coverage.exclusions>
   </properties>
 
   <build>
@@ -101,15 +104,18 @@
             <goals>
               <goal>report</goal>
             </goals>
-            <configuration>
-              <excludes>
-                <!-- Exclude full Swing GUI package from test coverage.
-                Should also be defined in <sonar.coverage.exclusions> if SonarCloud is involved -->
-                <exclude>${project.coverage.exclude}</exclude>
-              </excludes>
-            </configuration>
           </execution>
         </executions>
+        <configuration>
+          <excludes>
+            <!-- Exclude full Swing GUI package from test coverage.
+            Also exclude starter class and Spring Boot configuration class.
+            Should also be defined in <sonar.coverage.exclusions> if SonarCloud is involved -->
+            <exclude>**/gui/**/*</exclude>
+            <exclude>**/*TankSchlau.*</exclude>
+            <exclude>**/*TankSchlauContext.*</exclude>
+          </excludes>
+        </configuration>
       </plugin>
     </plugins>
   </build>
