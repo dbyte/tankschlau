@@ -17,7 +17,7 @@
 package de.fornalik.tankschlau.gui;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +25,7 @@ import java.awt.*;
 /**
  * Main content (the domain) of the app, represented in MainWindow.
  */
-@Controller
+@Component
 class MainPanel extends JPanel {
 
   private final PetrolStationsDataPanel dataPanel;

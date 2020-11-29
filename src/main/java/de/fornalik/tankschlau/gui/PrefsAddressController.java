@@ -22,21 +22,21 @@ import org.springframework.stereotype.Controller;
 import javax.annotation.PostConstruct;
 
 @Controller
-public class LogController {
+class PrefsAddressController {
 
-  private final LogPanel logPanel;
+  private final PrefsAddressPanel prefsAddressPanel;
 
   @Autowired
-  public LogController(LogPanel logPanel) {
-    this.logPanel = logPanel;
+  PrefsAddressController(PrefsAddressPanel prefsAddressPanel) {
+    this.prefsAddressPanel = prefsAddressPanel;
   }
 
   @PostConstruct
-  private void registerActions() {
-    logPanel.getBtnClearLog().addActionListener(e -> clearLogArea());
+  void init() {
+    registerActionListeners();
   }
 
-  void clearLogArea() {
-    logPanel.getTextAreaLog().setText("");
+  void registerActionListeners() {
+
   }
 }

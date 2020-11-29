@@ -51,9 +51,7 @@ public class PetrolTypeController {
   }
 
   private void createPetrolTypeSelectionButtons() {
-    PetrolType[] petrolTypes = PetrolType.values();
-
-    for (PetrolType petrolType : petrolTypes) {
+    for (PetrolType petrolType : PetrolType.values()) {
       JRadioButton button = new JRadioButton(petrolType.getReadableName());
       button.setForeground(CustomColor.BUTTON_FOREGROUND);
       button.setFocusable(false);
@@ -75,10 +73,9 @@ public class PetrolTypeController {
   }
 
   private void readSelectionFromUserPrefs() {
-    List<AbstractButton> allRadioButtons = Collections
-        .list(petrolTypeBtnGroup.getElements());
+    List<AbstractButton> radioButtons = Collections.list(petrolTypeBtnGroup.getElements());
 
-    for (AbstractButton radioButton : allRadioButtons) {
+    for (AbstractButton radioButton : radioButtons) {
       if (userPrefs.readPreferredPetrolType().name().equals(radioButton.getActionCommand())) {
         radioButton.setSelected(true);
         break;

@@ -24,8 +24,8 @@ import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.WorkerService;
 import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 
+import javax.annotation.PostConstruct;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -39,7 +39,8 @@ import java.util.logging.Logger;
 /**
  * User preferences panel for user location
  */
-@Controller
+
+@org.springframework.stereotype.Component
 class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMixin {
 
   private static final Logger LOGGER = Logger.getLogger(PrefsAddressPanel.class.getName());
@@ -86,14 +87,12 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
 
     this.btnGeoRequest = this.createGeoRequestButton();
     this.btnGeoRequestController = new BtnGeoRequestController();
-
-    this.initView();
-    this.populateFields();
   }
 
+  @PostConstruct
   private void initView() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    setAlignmentX(Component.LEFT_ALIGNMENT);
+    setAlignmentX(LEFT_ALIGNMENT);
     setOpaque(true);
     setBorder(createTitledBorder(l10n.get("borderTitle.YourLocation")));
     setPreferredSize(totalDimension);
@@ -112,6 +111,7 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
     add(createDistancePanel());
 
     initEventListeners();
+    populateFields();
   }
 
   private JPanel createAddressFieldsPanel() {
@@ -296,6 +296,38 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
   @Override
   public void focusLost(FocusEvent e) {
     writeAddressToUserPrefs();
+  }
+
+  JTextField getTextStreet() {
+    return textStreet;
+  }
+
+  JTextField getTextHouseNumber() {
+    return textHouseNumber;
+  }
+
+  JTextField getTextPostCode() {
+    return textPostCode;
+  }
+
+  JTextField getTextCity() {
+    return textCity;
+  }
+
+  JTextField getTextGeoLatitude() {
+    return textGeoLatitude;
+  }
+
+  JTextField getTextGeoLongitude() {
+    return textGeoLongitude;
+  }
+
+  JTextField getTextSearchRadius() {
+    return textSearchRadius;
+  }
+
+  JButton getBtnGeoRequest() {
+    return btnGeoRequest;
   }
 
   /**

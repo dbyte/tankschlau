@@ -18,7 +18,7 @@ package de.fornalik.tankschlau.gui;
 
 import de.fornalik.tankschlau.util.Localization;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
@@ -30,7 +30,7 @@ import java.util.logging.Logger;
  * Shows application-wide information for the current state of the app and its background workers.
  * It can be driven by various controllers.
  */
-@Controller
+@Component
 class FooterPanel extends JPanel {
 
   private static final Logger LOGGER = Logger.getLogger(FooterPanel.class.getName());

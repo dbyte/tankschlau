@@ -20,8 +20,9 @@ import de.fornalik.tankschlau.station.PetrolType;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -32,7 +33,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * The app's main representation of data, using a JTable.
  */
-@Controller
+@Component
 class PetrolStationsDataPanel extends JPanel implements TableModelListener {
 
   private final JPanel dataControlPanel;
@@ -61,10 +62,9 @@ class PetrolStationsDataPanel extends JPanel implements TableModelListener {
     this.dataScrollPane = new JScrollPane(dataTable);
     this.headerLabel = new JLabel();
     this.lastUpdateLabel = new JLabel();
-
-    initView();
   }
 
+  @PostConstruct
   private void initView() {
     setLayout(new BorderLayout(5, 5));
     setOpaque(true);

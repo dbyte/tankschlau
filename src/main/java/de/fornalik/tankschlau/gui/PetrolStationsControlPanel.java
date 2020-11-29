@@ -26,6 +26,7 @@ import de.fornalik.tankschlau.webserviceapi.common.PetrolStationMessageWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -77,10 +78,9 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
     this.btnStartOneShotWork = new JButton();
     this.btnStartCyclicWork = new JButton();
     this.btnRemoveAllData = new JButton();
-
-    this.initView();
   }
 
+  @PostConstruct
   private void initView() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setAlignmentX(Component.CENTER_ALIGNMENT);

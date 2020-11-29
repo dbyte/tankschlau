@@ -20,15 +20,16 @@ import de.fornalik.tankschlau.util.Localization;
 import de.fornalik.tankschlau.util.LoggingConfig;
 import de.fornalik.tankschlau.util.SwingLoggingHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
 
 /**
  * Shows and drives logging. The log records are represented in a JTextArea by a custom Log Handler.
  */
-@Controller
+@Component
 class LogPanel extends JPanel {
 
   private final Localization l10n;
@@ -43,10 +44,9 @@ class LogPanel extends JPanel {
     this.labelLogHeader = new JLabel();
     this.textAreaLog = new JTextArea();
     this.btnClearLog = new JButton();
-
-    this.initView();
   }
 
+  @PostConstruct
   private void initView() {
     setLayout(new BorderLayout(5, 5));
     setOpaque(true);

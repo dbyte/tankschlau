@@ -18,7 +18,7 @@ package de.fornalik.tankschlau.gui;
 
 import de.fornalik.tankschlau.util.Localization;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 /**
  * The app's main window.
  */
-@Controller
+@Component
 public class MainWindow extends JFrame {
   private static final Logger LOGGER = Logger.getLogger(MainWindow.class.getName());
   private static final Dimension DEFAULT_WINDOW_DIMENSION = new Dimension(1400, 900);
