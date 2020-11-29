@@ -42,14 +42,14 @@ import java.util.logging.Logger;
 class PetrolStationsControlPanel extends JPanel implements ActionListener {
 
   private static final Logger LOGGER = Logger.getLogger(PetrolStationsControlPanel.class.getName());
-  private static final Localization L10N = Localization.getInstance();
 
   private final PetrolsStationsTableModel dataTableModel;
-  private final FooterPanel footerPanel;
+  private final FooterController footerPanel;
   private final PetrolTypePanel petrolTypePanel;
-  private final UserPrefs userPrefs;
   private final transient WorkerService<List<PetrolStation>> workerService;
   private final transient PetrolStationMessageWorker messageWorker;
+  private final UserPrefs userPrefs;
+  private final Localization l10n;
 
   private final JButton btnStartOneShotWork;
   private final JButton btnStartCyclicWork;
@@ -58,19 +58,21 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
   @Autowired
   PetrolStationsControlPanel(
       PetrolsStationsTableModel dataTableModel,
-      FooterPanel footerPanel,
+      FooterController footerController,
       PetrolTypePanel petrolTypePanel,
       WorkerService<List<PetrolStation>> petrolStationsWorkerService,
       PetrolStationMessageWorker messageWorker,
-      UserPrefs userPrefs) {
+      UserPrefs userPrefs,
+      Localization l10n) {
 
     this.dataTableModel = dataTableModel;
-    this.footerPanel = footerPanel;
+    this.footerPanel = footerController;
     this.petrolTypePanel = petrolTypePanel;
 
     this.workerService = petrolStationsWorkerService;
     this.messageWorker = messageWorker;
     this.userPrefs = userPrefs;
+    this.l10n = l10n;
 
     this.btnStartOneShotWork = new JButton();
     this.btnStartCyclicWork = new JButton();
@@ -86,13 +88,13 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
     setMaximumSize(new Dimension(190, Short.MAX_VALUE));
 
     add(Box.createRigidArea(new Dimension(getMaximumSize().width, 52)));
-    addButton(btnStartOneShotWork, this, L10N.get("button.UpdateOnce"));
+    addButton(btnStartOneShotWork, this, l10n.get("button.UpdateOnce"));
 
     add(Box.createRigidArea(new Dimension(getMaximumSize().width, 5)));
-    addButton(btnStartCyclicWork, this, L10N.get("button.UpdateCyclic"));
+    addButton(btnStartCyclicWork, this, l10n.get("button.UpdateCyclic"));
 
     add(Box.createRigidArea(new Dimension(getMaximumSize().width, 5)));
-    addButton(btnRemoveAllData, this, L10N.get("button.EmptyTableView"));
+    addButton(btnRemoveAllData, this, l10n.get("button.EmptyTableView"));
 
     add(Box.createRigidArea(new Dimension(getMaximumSize().width, 10)));
     add(createSeparator());
@@ -133,7 +135,7 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
   private void onCyclicWorkerStarted() {
     SwingUtilities.invokeLater(() -> {
       btnStartCyclicWork.setActionCommand("STOP");
-      btnStartCyclicWork.setText(L10N.get("button.StopCycling"));
+      btnStartCyclicWork.setText(l10n.get("button.StopCycling"));
       btnStartOneShotWork.setEnabled(false);
     });
   }
@@ -141,7 +143,7 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
   private void onCyclicWorkerStopped() {
     SwingUtilities.invokeLater(() -> {
       btnStartCyclicWork.setActionCommand("START");
-      btnStartCyclicWork.setText(L10N.get("button.UpdateCyclic"));
+      btnStartCyclicWork.setText(l10n.get("button.UpdateCyclic"));
       btnStartOneShotWork.setEnabled(true);
       footerPanel.onCyclicWorkerStopped();
     });
@@ -156,7 +158,7 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
     SwingUtilities.invokeLater(() -> {
       btnStartCyclicWork.setEnabled(false);
       btnStartOneShotWork.setEnabled(false);
-      footerPanel.onOneShotWorkerStarted(L10N.get("msg.PetrolStationRequestRunning"));
+      footerPanel.onOneShotWorkerStarted(l10n.get("msg.PetrolStationRequestRunning"));
     });
   }
 
@@ -212,7 +214,7 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
     Optional<Geo> geo = userPrefs.readGeo();
 
     if (!geo.isPresent()) {
-      String errMessage = L10N.get("msg.UnableToRequestPetrolStations_ReasonNoGeoForUser");
+      String errMessage = l10n.get("msg.UnableToRequestPetrolStations_ReasonNoGeoForUser");
       LOGGER.warning(errMessage);
       throw new IllegalStateException(errMessage);
     }

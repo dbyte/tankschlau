@@ -30,17 +30,22 @@ import java.util.logging.Logger;
 @Controller
 public class MainWindow extends JFrame {
   private static final Logger LOGGER = Logger.getLogger(MainWindow.class.getName());
-  private static final Localization L10N = Localization.getInstance();
   private static final Dimension DEFAULT_WINDOW_DIMENSION = new Dimension(1400, 900);
 
+  private final Localization l10n;
   private final MainPanel domainPanelTab;
   private final PrefsPanel prefsPanelTab;
   private final FooterPanel footerPanel;
 
   @Autowired
-  public MainWindow(FooterPanel footerPanel, MainPanel domainPanelTab, PrefsPanel prefsPanelTab) {
-    super(Localization.APP_NAME);
+  public MainWindow(
+      Localization l10n,
+      FooterPanel footerPanel,
+      MainPanel domainPanelTab,
+      PrefsPanel prefsPanelTab) {
 
+    super(Localization.APP_NAME);
+    this.l10n = l10n;
     this.footerPanel = footerPanel;
     this.domainPanelTab = domainPanelTab;
     this.prefsPanelTab = prefsPanelTab;
@@ -70,8 +75,8 @@ public class MainWindow extends JFrame {
 
   private JTabbedPane createTabbedPane() {
     JTabbedPane tabbedPane = new JTabbedPane();
-    tabbedPane.addTab(L10N.get("tab.PetrolPrices"), domainPanelTab);
-    tabbedPane.addTab(L10N.get("tab.Preferences"), prefsPanelTab);
+    tabbedPane.addTab(l10n.get("tab.PetrolPrices"), domainPanelTab);
+    tabbedPane.addTab(l10n.get("tab.Preferences"), prefsPanelTab);
     tabbedPane.setSelectedIndex(0);
 
     tabbedPane.setPreferredSize(DEFAULT_WINDOW_DIMENSION);

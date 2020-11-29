@@ -36,7 +36,6 @@ import java.util.logging.Logger;
 @Controller
 class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
 
-  private static final Localization L10N = Localization.getInstance();
   private static final Logger LOGGER = Logger.getLogger(PrefsCyclePanel.class.getName());
 
   private static final int MINIMUM_CYCLE_RATE = 5;
@@ -50,15 +49,17 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
   private final GridBagConstraints constraints;
 
   private final UserPrefs userPrefs;
+  private final Localization l10n;
   private final transient CycleFocusListener cycleFocusListener;
 
   @Autowired
-  PrefsCyclePanel(UserPrefs userPrefs) {
+  PrefsCyclePanel(UserPrefs userPrefs, Localization l10n) {
     this.userPrefs = userPrefs;
+    this.l10n = l10n;
 
     this.textCycleRate = createIntegerOnlyTextField(5);
     this.textMessageDelayWithNumberOfCalls = createIntegerOnlyTextField(3);
-    this.checkEnableMessages = createEnableMessagesCheckbox(L10N.get("label.EnableMessaging"));
+    this.checkEnableMessages = createEnableMessagesCheckbox(l10n.get("label.EnableMessaging"));
 
     this.constraints = new GridBagConstraints();
     this.cycleFocusListener = new CycleFocusListener();
@@ -69,7 +70,7 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
   private void initView() {
     setLayout(new GridBagLayout());
     setOpaque(true);
-    setBorder(createTitledBorder(L10N.get("borderTitle.AutomaticDataUpdate")));
+    setBorder(createTitledBorder(l10n.get("borderTitle.AutomaticDataUpdate")));
     setMaximumSize(TOTAL_DIMENSION);
 
     constraints.anchor = GridBagConstraints.WEST;
@@ -84,7 +85,7 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
     constraints.gridy = 0; // Row 1 ---------------------------------------
 
     constraints.gridx = 0;
-    JLabel labelCycleEvery = createLabel(L10N.get("label.CycleEvery"), SwingConstants.LEFT);
+    JLabel labelCycleEvery = createLabel(l10n.get("label.CycleEvery"), SwingConstants.LEFT);
     addToPanel(labelCycleEvery, 120, constraints);
 
     constraints.gridx = 1;
@@ -93,7 +94,7 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
     addToPanel(textCycleRate, 60, constraints);
 
     constraints.gridx = 2;
-    addToPanel(createLabel(L10N.get("label.Seconds"), SwingConstants.LEFT), 100, constraints);
+    addToPanel(createLabel(l10n.get("label.Seconds"), SwingConstants.LEFT), 100, constraints);
 
     constraints.gridy = 1; // Row 2 ---------------------------------------
     constraints.gridx = 0;
@@ -113,7 +114,7 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
 
     constraints.gridx = 0;
     JLabel labelMessageMaxCallsUntilForceSend = createLabel(
-        L10N.get("label.CycleMessageDelayWithNumberOfCalls"),
+        l10n.get("label.CycleMessageDelayWithNumberOfCalls"),
         SwingConstants.LEFT);
     addToPanel(labelMessageMaxCallsUntilForceSend, 180, constraints);
 
@@ -125,7 +126,7 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
     addToPanel(textMessageDelayWithNumberOfCalls, 60, constraints);
 
     constraints.gridx = 2;
-    addToPanel(createLabel(L10N.get("label.Updates"), SwingConstants.LEFT), 120, constraints);
+    addToPanel(createLabel(l10n.get("label.Updates"), SwingConstants.LEFT), 120, constraints);
   }
 
   private void addToPanel(

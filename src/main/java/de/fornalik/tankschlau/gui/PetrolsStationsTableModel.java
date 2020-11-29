@@ -27,6 +27,7 @@ import de.fornalik.tankschlau.util.Localization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.swing.table.AbstractTableModel;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -40,36 +41,39 @@ import java.util.StringTokenizer;
  */
 @Component
 class PetrolsStationsTableModel extends AbstractTableModel implements Serializable {
-  private static final Localization L10N = Localization.getInstance();
-  static final String COL_NAME = L10N.get("tableHeader.Name");
-  static final String COL_PRICES = L10N.get("tableHeader.Price");
-  static final String COL_STREET = L10N.get("tableHeader.Place");
-  static final String COL_DISTANCE = L10N.get("tableHeader.Distance");
-  static final String COL_IS_OPEN = L10N.get("tableHeader.Status");
-  private static final String[] columns = new String[5];
+
+  private static final int COL_NAME_INDEX = 0;
+  private static final int COL_PRICES_INDEX = 1;
+  private static final int COL_STREET_INDEX = 2;
+  private static final int COL_DISTANCE_INDEX = 3;
+  private static final int COL_IS_OPEN_INDEX = 4;
+  private static final String[] COLUMN_NAMES = new String[5];
 
   private final transient List<PetrolStation> petrolStations;
   private final UserPrefs userPrefs;
-
-  static {
-    columns[0] = COL_NAME;
-    columns[1] = COL_PRICES;
-    columns[2] = COL_STREET;
-    columns[3] = COL_DISTANCE;
-    columns[4] = COL_IS_OPEN;
-  }
+  private final Localization l10n;
 
   @Autowired
-  PetrolsStationsTableModel(UserPrefs userPrefs) {
+  PetrolsStationsTableModel(UserPrefs userPrefs, Localization l10n) {
     super();
     this.userPrefs = userPrefs;
     this.userPrefs.registerChangeListener("petrol.preferredtype", this::sortPetrolStations);
+    this.l10n = l10n;
     this.petrolStations = new ArrayList<>();
+  }
+
+  @PostConstruct
+  private void initColumnNames() {
+    COLUMN_NAMES[0] = l10n.get("tableHeader.Name");
+    COLUMN_NAMES[1] = l10n.get("tableHeader.Price");
+    COLUMN_NAMES[2] = l10n.get("tableHeader.Place");
+    COLUMN_NAMES[3] = l10n.get("tableHeader.Distance");
+    COLUMN_NAMES[4] = l10n.get("tableHeader.Status");
   }
 
   @Override
   public String getColumnName(int forIndex) {
-    return columns[forIndex];
+    return COLUMN_NAMES[forIndex];
   }
 
   @Override
@@ -79,7 +83,7 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
 
   @Override
   public int getColumnCount() {
-    return columns.length;
+    return COLUMN_NAMES.length;
   }
 
   @Override
@@ -92,22 +96,22 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
     PetrolStation petrolStation = petrolStations.get(rowIndex);
 
     switch (columnIndex) {
-      case 0:
+      case COL_NAME_INDEX:
         return petrolStation.getAddress().getName();
 
-      case 1:
+      case COL_PRICES_INDEX:
         return petrolsToHtml(petrolStation.getPetrols());
 
-      case 2:
+      case COL_STREET_INDEX:
         return petrolStation.getAddress().getStreetAndHouseNumber();
 
-      case 3:
+      case COL_DISTANCE_INDEX:
         return petrolStation.getAddress()
             .getGeo()
             .map(Geo::getDistanceAwayString)
-            .orElse(L10N.get("msg.Unknown"));
+            .orElse(l10n.get("msg.Unknown"));
 
-      case 4:
+      case COL_IS_OPEN_INDEX:
         return isOpenToHtml(petrolStation.isOpen());
 
       default:
@@ -144,12 +148,12 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
 
     if (isOpen) {
       out.append("<p>")
-          .append(L10N.get("msg.NowOpen"))
+          .append(l10n.get("msg.NowOpen"))
           .append("</p>");
     }
     else {
       out.append("<p style=\"color:#B71414;\">")
-          .append(L10N.get("msg.NowClosed"))
+          .append(l10n.get("msg.NowClosed"))
           .append("</p>");
     }
 

@@ -43,12 +43,12 @@ import java.util.logging.Logger;
 class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMixin {
 
   private static final Logger LOGGER = Logger.getLogger(PrefsAddressPanel.class.getName());
-  private static final Localization L10N = Localization.getInstance();
   private static final Dimension totalDimension = new Dimension(350, 325);
   private static final double DEFAULT_SEARCH_RADIUS = 5.0;
 
   private final transient WorkerService<Geo> workerService;
   private final UserPrefs userPrefs;
+  private final Localization l10n;
 
   private final JTextField textStreet;
   private final JTextField textHouseNumber;
@@ -60,19 +60,21 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
   private final JButton btnGeoRequest;
 
   private final transient BtnGeoRequestController btnGeoRequestController;
-  private final FooterPanel footerPanel;
+  private final FooterController footerController;
 
   @Autowired
   PrefsAddressPanel(
       UserPrefs userPrefs,
-      FooterPanel footerPanel,
+      Localization l10n,
+      FooterController footerController,
       WorkerService<Geo> geocodingWorkerService) {
 
     super();
 
     this.workerService = geocodingWorkerService;
     this.userPrefs = userPrefs;
-    this.footerPanel = footerPanel;
+    this.l10n = l10n;
+    this.footerController = footerController;
 
     this.textStreet = createTextField();
     this.textHouseNumber = createTextField();
@@ -93,7 +95,7 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setAlignmentX(Component.LEFT_ALIGNMENT);
     setOpaque(true);
-    setBorder(createTitledBorder(L10N.get("borderTitle.YourLocation")));
+    setBorder(createTitledBorder(l10n.get("borderTitle.YourLocation")));
     setPreferredSize(totalDimension);
     setMaximumSize(totalDimension);
     setMinimumSize(totalDimension);
@@ -115,16 +117,16 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
   private JPanel createAddressFieldsPanel() {
     JPanel panel = createGridPanel(4);
 
-    panel.add(createLabel(L10N.get("label.AdrStreet")));
+    panel.add(createLabel(l10n.get("label.AdrStreet")));
     panel.add(textStreet);
 
-    panel.add(createLabel(L10N.get("label.AdrHouseNumber")));
+    panel.add(createLabel(l10n.get("label.AdrHouseNumber")));
     panel.add(textHouseNumber);
 
-    panel.add(createLabel(L10N.get("label.AdrPostcode")));
+    panel.add(createLabel(l10n.get("label.AdrPostcode")));
     panel.add(textPostCode);
 
-    panel.add(createLabel(L10N.get("label.AdrCity")));
+    panel.add(createLabel(l10n.get("label.AdrCity")));
     panel.add(textCity);
 
     return panel;
@@ -133,10 +135,10 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
   private JPanel createGeoFieldsPanel() {
     JPanel panel = createGridPanel(2);
 
-    panel.add(createLabel(L10N.get("label.AdrLatitude")));
+    panel.add(createLabel(l10n.get("label.AdrLatitude")));
     panel.add(textGeoLatitude);
 
-    panel.add(createLabel(L10N.get("label.AdrLongitude")));
+    panel.add(createLabel(l10n.get("label.AdrLongitude")));
     panel.add(textGeoLongitude);
 
     return panel;
@@ -145,14 +147,14 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
   private JPanel createDistancePanel() {
     JPanel panel = createGridPanel(1);
 
-    panel.add(createLabel(L10N.get("label.PetrolStationsSearchRadius")));
+    panel.add(createLabel(l10n.get("label.PetrolStationsSearchRadius")));
     panel.add(textSearchRadius);
 
     return panel;
   }
 
   private JButton createGeoRequestButton() {
-    JButton btnRequestGeo = new JButton(L10N.get("button.EvaluateLatLonByAddress"));
+    JButton btnRequestGeo = new JButton(l10n.get("button.EvaluateLatLonByAddress"));
     btnRequestGeo.setAlignmentX(LEFT_ALIGNMENT);
     btnRequestGeo.setMinimumSize(new Dimension(totalDimension.width - 10, 25));
     btnRequestGeo.setMaximumSize(new Dimension(totalDimension.width - 10, 25));
@@ -241,7 +243,7 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
 
   private Address createAddressFromFields() {
     if (!isValidUserAddress()) {
-      LOGGER.warning(L10N.get("msg.IncompleteUserAddress"));
+      LOGGER.warning(l10n.get("msg.IncompleteUserAddress"));
     }
 
     return new Address(
@@ -338,14 +340,14 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
     private void onGeocodingWorkerStarted() {
       SwingUtilities.invokeLater(() -> {
         btnGeoRequest.setEnabled(false);
-        footerPanel.onOneShotWorkerStarted(L10N.get("msg.GeocodingRequestRunning"));
+        footerController.onOneShotWorkerStarted(l10n.get("msg.GeocodingRequestRunning"));
       });
     }
 
     private void onGeocodingWorkerFinished(Geo data) {
       SwingUtilities.invokeLater(() -> {
         btnGeoRequest.setEnabled(true);
-        footerPanel.onOneShotWorkerFinished();
+        footerController.onOneShotWorkerFinished();
         if (data == null) return;
 
         textGeoLatitude.setText(String.valueOf(data.getLatitude()));

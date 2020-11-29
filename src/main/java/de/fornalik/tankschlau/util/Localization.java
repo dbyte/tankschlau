@@ -16,6 +16,8 @@
 
 package de.fornalik.tankschlau.util;
 
+import org.springframework.stereotype.Component;
+
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -27,6 +29,7 @@ import java.util.logging.Logger;
 /**
  * ResourceBundle/Locale wrapper for localized strings and region formats. Singleton.
  */
+@Component
 public class Localization {
   public static final String APP_NAME = "TankSchlau";
   private static final Logger LOGGER = Logger.getLogger(Localization.class.getName());
@@ -34,7 +37,11 @@ public class Localization {
   private ResourceBundle bundle;
   private Locale region;
 
-  private Localization() {}
+  public Localization() {
+    this.configure(Locale.GERMANY);
+  }
+
+  //  private Localization() {}
 
   /**
    * @return Singleton - defaults to our custom german language/format settings at creation time.

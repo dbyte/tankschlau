@@ -37,15 +37,16 @@ import java.util.logging.Logger;
 @Controller
 class PetrolTypePanel extends JPanel implements ActionListener {
 
-  private static final Localization L10N = Localization.getInstance();
   private static final Logger LOGGER = Logger.getLogger(PetrolTypePanel.class.getName());
 
   private final UserPrefs userPrefs;
+  private final Localization l10n;
   private final ButtonGroup petrolTypeBtnGroup;
 
   @Autowired
-  PetrolTypePanel(UserPrefs userPrefs) {
+  PetrolTypePanel(UserPrefs userPrefs, Localization l10n) {
     this.userPrefs = userPrefs;
+    this.l10n = l10n;
     this.petrolTypeBtnGroup = new ButtonGroup();
 
     this.initView();
@@ -61,7 +62,7 @@ class PetrolTypePanel extends JPanel implements ActionListener {
 
   private JPanel createHeaderLabel() {
     JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    JLabel label = new JLabel(L10N.get("label.PreferredPetrolType"));
+    JLabel label = new JLabel(l10n.get("label.PreferredPetrolType"));
     label.setForeground(CustomColor.LABEL_TEXT);
 
     panel.add(label);

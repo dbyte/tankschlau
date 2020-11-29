@@ -33,9 +33,9 @@ import java.awt.event.FocusListener;
 @Controller
 public class PrefsApiKeyPanel extends JPanel implements FocusListener, PrefsFactoryMixin {
 
-  private static final Localization L10N = Localization.getInstance();
   private static final Dimension totalDimension = new Dimension(440, 138);
 
+  private final Localization l10n;
   private final JPasswordField textPetrolStationsServiceApiKey;
   private final JPasswordField textGeocodingServiceApiKey;
   private final JPasswordField textMessageServiceApiKey;
@@ -49,6 +49,7 @@ public class PrefsApiKeyPanel extends JPanel implements FocusListener, PrefsFact
   @Autowired
   public PrefsApiKeyPanel(
       UserPrefs userPrefs,
+      Localization l10n,
       ApiKeyManager apiKeyManagerPetrolStations,
       ApiKeyManager apiKeyManagerGeocoding,
       ApiKeyManager apiKeyManagerPushMessage) {
@@ -58,6 +59,7 @@ public class PrefsApiKeyPanel extends JPanel implements FocusListener, PrefsFact
     this.apiKeyManagerGeocoding = apiKeyManagerGeocoding;
     this.apiKeyManagerPushMessage = apiKeyManagerPushMessage;
     this.userPrefs = userPrefs;
+    this.l10n = l10n;
 
     this.textPetrolStationsServiceApiKey = createPasswordField();
     this.textGeocodingServiceApiKey = createPasswordField();
@@ -72,7 +74,7 @@ public class PrefsApiKeyPanel extends JPanel implements FocusListener, PrefsFact
     setLayout(new GridLayout(4, 2));
     setAlignmentX(Component.LEFT_ALIGNMENT);
     setOpaque(true);
-    setBorder(createTitledBorder(L10N.get("borderTitle.Authentication")));
+    setBorder(createTitledBorder(l10n.get("borderTitle.Authentication")));
     setPreferredSize(totalDimension);
     setMaximumSize(totalDimension);
     setMinimumSize(totalDimension);

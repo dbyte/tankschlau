@@ -24,29 +24,25 @@ import org.springframework.stereotype.Controller;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Shows and drives logging. The log records are represented in a JTextArea by a custom Log Handler.
  */
 @Controller
 class LogPanel extends JPanel {
-  private static final Localization L10N = Localization.getInstance();
 
+  private final Localization l10n;
   private final JLabel labelLogHeader;
   private final JTextArea textAreaLog;
   private final JButton btnClearLog;
-  private final transient ButtonListener buttonListener;
 
   @Autowired
-  LogPanel() {
+  LogPanel(Localization l10n) {
     super();
-
+    this.l10n = l10n;
     this.labelLogHeader = new JLabel();
     this.textAreaLog = new JTextArea();
     this.btnClearLog = new JButton();
-    this.buttonListener = new ButtonListener();
 
     this.initView();
   }
@@ -74,7 +70,7 @@ class LogPanel extends JPanel {
   }
 
   private JPanel createLogHeaderPanel() {
-    labelLogHeader.setText(L10N.get("label.Log"));
+    labelLogHeader.setText(l10n.get("label.Log"));
     labelLogHeader.setForeground(CustomColor.BOX_HEADER_TEXT);
 
     JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -108,28 +104,21 @@ class LogPanel extends JPanel {
     panel.add(btnClearLog);
 
     btnClearLog.setAlignmentX(CENTER_ALIGNMENT);
-    btnClearLog.setText(L10N.get("button.ClearLogView"));
+    btnClearLog.setText(l10n.get("button.ClearLogView"));
     btnClearLog.setMinimumSize(new Dimension(maxWidth, buttonHeight));
     btnClearLog.setMaximumSize(new Dimension(maxWidth, buttonHeight));
     btnClearLog.setPreferredSize(new Dimension(maxWidth, buttonHeight));
     btnClearLog.setForeground(CustomColor.BUTTON_FOREGROUND);
     btnClearLog.setFocusable(false);
-    btnClearLog.addActionListener(buttonListener);
 
     return panel;
   }
 
-  // region ActionListeners
-  // =====================================================================
-
-  private class ButtonListener implements ActionListener {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      if (e.getSource() == btnClearLog) {
-        textAreaLog.setText("");
-      }
-    }
+  JTextArea getTextAreaLog() {
+    return textAreaLog;
   }
 
-  // endregion
+  JButton getBtnClearLog() {
+    return btnClearLog;
+  }
 }

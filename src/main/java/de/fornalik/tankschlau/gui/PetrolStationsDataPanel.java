@@ -34,9 +34,6 @@ import java.time.format.DateTimeFormatter;
  */
 @Controller
 class PetrolStationsDataPanel extends JPanel implements TableModelListener {
-  private static final Localization L10N = Localization.getInstance();
-
-  private final UserPrefs userPrefs;
 
   private final JPanel dataControlPanel;
   private final JTable dataTable;
@@ -44,13 +41,18 @@ class PetrolStationsDataPanel extends JPanel implements TableModelListener {
   private final JLabel headerLabel;
   private final JLabel lastUpdateLabel;
 
+  private final UserPrefs userPrefs;
+  private final Localization l10n;
+
   @Autowired
   PetrolStationsDataPanel(
-      UserPrefs userPrefs,
       PetrolStationsControlPanel petrolStationsControlPanel,
-      PetrolsStationsTableModel petrolsStationsTableModel) {
+      PetrolsStationsTableModel petrolsStationsTableModel,
+      UserPrefs userPrefs,
+      Localization l10n) {
 
     this.userPrefs = userPrefs;
+    this.l10n = l10n;
     this.dataControlPanel = petrolStationsControlPanel;
 
     petrolsStationsTableModel.addTableModelListener(this);
@@ -104,7 +106,7 @@ class PetrolStationsDataPanel extends JPanel implements TableModelListener {
   }
 
   private void setHeaderText(String petrolTypeString) {
-    headerLabel.setText(L10N.get("msg.CurrentPricesSortedBy", petrolTypeString));
+    headerLabel.setText(l10n.get("msg.CurrentPricesSortedBy", petrolTypeString));
   }
 
   private void setLastUpdateText(LocalDateTime lastUpdateAt) {
@@ -115,10 +117,10 @@ class PetrolStationsDataPanel extends JPanel implements TableModelListener {
     }
 
     DateTimeFormatter formatter = DateTimeFormatter
-        .ofPattern("dd.MM.yyyy HH:mm:ss", L10N.getRegion());
+        .ofPattern("dd.MM.yyyy HH:mm:ss", l10n.getRegion());
 
     String lastUpdateStr = formatter.format(lastUpdateAt);
-    lastUpdateLabel.setText(L10N.get("msg.LastUpdateAt", lastUpdateStr));
+    lastUpdateLabel.setText(l10n.get("msg.LastUpdateAt", lastUpdateStr));
   }
 
   private void configureDataScrollPane() {
@@ -140,7 +142,7 @@ class PetrolStationsDataPanel extends JPanel implements TableModelListener {
     dataTable.setShowHorizontalLines(true);
     dataTable.setGridColor(Color.getHSBColor(0f, 0f, 0.93f));
     dataTable.setRowHeight(69);
-    dataTable.getColumn(PetrolsStationsTableModel.COL_NAME).setMinWidth(200);
+    dataTable.getColumn(l10n.get("tableHeader.Name")).setMinWidth(200);
   }
 
   private void configureDataControlPanel() {

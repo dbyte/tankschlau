@@ -20,10 +20,10 @@ import de.fornalik.tankschlau.util.Localization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 /**
@@ -33,25 +33,23 @@ import java.util.logging.Logger;
 @Controller
 class FooterPanel extends JPanel {
 
-  private static final Localization L10N = Localization.getInstance();
   private static final Logger LOGGER = Logger.getLogger(FooterPanel.class.getName());
-  private static final String L10N_NETWORK_ACTIVITY = "label.NoNetworkActivity";
 
+  private final Localization l10n;
   private final JLabel labelCountdown;
   private final JLabel labelWork;
   private final ImageIcon iconWork;
 
   @Autowired
-  FooterPanel() {
+  FooterPanel(Localization l10n) {
     super();
-
+    this.l10n = l10n;
     this.labelCountdown = createBaseLabel();
     this.labelWork = createBaseLabel();
     this.iconWork = this.readWorkIndicatorIcon();
-
-    this.initView();
   }
 
+  @PostConstruct
   private void initView() {
     setLayout(new GridLayout(1, 3));
     setBackground(Color.DARK_GRAY);
@@ -67,12 +65,12 @@ class FooterPanel extends JPanel {
   }
 
   private void configureCountdownLabel() {
-    labelCountdown.setText(L10N.get("label.AutoUpdateStopped"));
+    labelCountdown.setText(l10n.get("label.AutoUpdateStopped"));
     labelCountdown.setHorizontalAlignment(SwingConstants.LEFT);
   }
 
   private void configureWorkLabel() {
-    labelWork.setText(L10N.get(L10N_NETWORK_ACTIVITY));
+    labelWork.setText(l10n.get("label.NoNetworkActivity"));
     labelWork.setIcon(null);
     labelWork.setPreferredSize(new Dimension(getMaximumSize().width, 40));
     labelWork.setHorizontalAlignment(SwingConstants.CENTER);
@@ -113,44 +111,15 @@ class FooterPanel extends JPanel {
     return icon;
   }
 
-  void onOneShotWorkerStarted(String name) {
-    String legalizedName = name != null ? name : "";
-    labelWork.setText(legalizedName);
-    labelWork.setIcon(iconWork);
+  JLabel getLabelCountdown() {
+    return labelCountdown;
   }
 
-  void onOneShotWorkerFinished() {
-    labelWork.setText(L10N.get(L10N_NETWORK_ACTIVITY));
-    labelWork.setIcon(null);
+  JLabel getLabelWork() {
+    return labelWork;
   }
 
-  void onCyclicWorkerStopped() {
-    labelCountdown.setText(L10N.get("label.AutoUpdateStopped"));
-    labelWork.setText(L10N.get(L10N_NETWORK_ACTIVITY));
-    labelWork.setIcon(null);
-  }
-
-  void updateCountdown(long remaining, TimeUnit timeUnit) {
-    final String textForCyclicWorker;
-    final String textForSingleWorker;
-    final ImageIcon workerIndicator;
-
-    if (remaining <= 0) {
-      textForCyclicWorker = L10N.get("label.WaitingForTaskFinish");
-      textForSingleWorker = L10N.get("label.TaskRunning", "").trim();
-      workerIndicator = iconWork;
-    }
-
-    else {
-      textForCyclicWorker =
-          L10N.get("label.TaskCountdown", remaining + " " + L10N.get("timeUnit." + timeUnit));
-
-      textForSingleWorker = L10N.get(L10N_NETWORK_ACTIVITY);
-      workerIndicator = null;
-    }
-
-    labelCountdown.setText(textForCyclicWorker);
-    labelWork.setText(textForSingleWorker);
-    labelWork.setIcon(workerIndicator);
+  ImageIcon getIconWork() {
+    return iconWork;
   }
 }
