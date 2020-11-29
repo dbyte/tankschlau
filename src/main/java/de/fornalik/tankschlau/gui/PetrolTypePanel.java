@@ -16,48 +16,37 @@
 
 package de.fornalik.tankschlau.gui;
 
-import de.fornalik.tankschlau.station.PetrolType;
-import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
-import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Chooser for preferred PetrolType.
  */
-@Controller
-class PetrolTypePanel extends JPanel implements ActionListener {
+@Component
+class PetrolTypePanel extends JPanel {
 
-  private static final Logger LOGGER = Logger.getLogger(PetrolTypePanel.class.getName());
-
-  private final UserPrefs userPrefs;
   private final Localization l10n;
-  private final ButtonGroup petrolTypeBtnGroup;
+  private final JPanel petrolTypeSelectionPanel;
 
   @Autowired
-  PetrolTypePanel(UserPrefs userPrefs, Localization l10n) {
-    this.userPrefs = userPrefs;
+  PetrolTypePanel(Localization l10n) {
     this.l10n = l10n;
-    this.petrolTypeBtnGroup = new ButtonGroup();
-
-    this.initView();
-    this.readSelectionFromUserPrefs();
+    this.petrolTypeSelectionPanel = new JPanel();
   }
 
+  @PostConstruct
   private void initView() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
+    configurePetrolTypeSelectionPanel();
+
     add(createHeaderLabel());
-    add(createRadioPanel());
+    add(petrolTypeSelectionPanel);
   }
 
   private JPanel createHeaderLabel() {
@@ -69,55 +58,11 @@ class PetrolTypePanel extends JPanel implements ActionListener {
     return panel;
   }
 
-  private JPanel createRadioPanel() {
-    JPanel panel = new JPanel(new GridLayout(0, 1));
-    PetrolType[] petrolTypes = PetrolType.values();
-
-    for (PetrolType petrolType : petrolTypes) {
-      JRadioButton radioButton = new JRadioButton(petrolType.getReadableName());
-      radioButton.setForeground(CustomColor.BUTTON_FOREGROUND);
-      radioButton.addActionListener(this);
-      radioButton.setActionCommand(petrolType.name());
-      radioButton.setFocusable(false);
-      petrolTypeBtnGroup.add(radioButton);
-      panel.add(radioButton);
-    }
-
-    return panel;
+  private void configurePetrolTypeSelectionPanel() {
+    petrolTypeSelectionPanel.setLayout(new GridLayout(0, 1));
   }
 
-  private void readSelectionFromUserPrefs() {
-    List<AbstractButton> allRadioButtons = Collections.list(petrolTypeBtnGroup.getElements());
-
-    for (AbstractButton radioButton : allRadioButtons) {
-      if (userPrefs.readPreferredPetrolType().name().equals(radioButton.getActionCommand())) {
-        radioButton.setSelected(true);
-        break;
-      }
-    }
-  }
-
-  private void writeSelectionToUserPrefs(String petrolTypeString) {
-    if (petrolTypeString == null || petrolTypeString.isEmpty()) {
-      String errMsg = "Illegal petrol type selection: Empty or null string.";
-      LOGGER.severe(errMsg);
-      throw new IllegalStateException(errMsg);
-    }
-
-    if (!EnumUtils.isValidEnum(PetrolType.class, petrolTypeString)) {
-      String errMsg = "Illegal petrol type selection: " + petrolTypeString;
-      LOGGER.severe(errMsg);
-      throw new IllegalStateException(errMsg);
-    }
-
-    userPrefs.writePreferredPetrolType(PetrolType.valueOf(petrolTypeString));
-  }
-
-  @Override
-  public void actionPerformed(ActionEvent e) {
-    if (!(e.getSource() instanceof JRadioButton)) return;
-
-    String enumString = petrolTypeBtnGroup.getSelection().getActionCommand();
-    writeSelectionToUserPrefs(enumString);
+  JPanel getPetrolTypeSelectionPanel() {
+    return petrolTypeSelectionPanel;
   }
 }
