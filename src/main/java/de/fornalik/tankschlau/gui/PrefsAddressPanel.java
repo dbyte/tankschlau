@@ -16,40 +16,20 @@
 
 package de.fornalik.tankschlau.gui;
 
-import de.fornalik.tankschlau.geo.Address;
-import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.service.GeocodingWorker;
-import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
-import de.fornalik.tankschlau.util.WorkerService;
-import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingClient;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.util.logging.Logger;
 
 /**
  * User preferences panel for user location
  */
-
 @org.springframework.stereotype.Component
-class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMixin {
+class PrefsAddressPanel extends JPanel implements PrefsFactoryMixin {
 
-  private static final Logger LOGGER = Logger.getLogger(PrefsAddressPanel.class.getName());
-  private static final Dimension totalDimension = new Dimension(350, 325);
-  private static final double DEFAULT_SEARCH_RADIUS = 5.0;
-
-  private final transient WorkerService<Geo> workerService;
-  private final UserPrefs userPrefs;
-  private final Localization l10n;
+  private static final Dimension DEFAULT_SIZE = new Dimension(350, 325);
 
   private final JTextField textStreet;
   private final JTextField textHouseNumber;
@@ -60,22 +40,12 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
   private final JTextField textSearchRadius;
   private final JButton btnGeoRequest;
 
-  private final transient BtnGeoRequestController btnGeoRequestController;
-  private final FooterController footerController;
+  private final Localization l10n;
 
   @Autowired
-  PrefsAddressPanel(
-      UserPrefs userPrefs,
-      Localization l10n,
-      FooterController footerController,
-      WorkerService<Geo> geocodingWorkerService) {
-
+  PrefsAddressPanel(Localization l10n) {
     super();
-
-    this.workerService = geocodingWorkerService;
-    this.userPrefs = userPrefs;
     this.l10n = l10n;
-    this.footerController = footerController;
 
     this.textStreet = createTextField();
     this.textHouseNumber = createTextField();
@@ -85,8 +55,7 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
     this.textGeoLongitude = createIntegerOrFloatOnlyTextField(20);
     this.textSearchRadius = createIntegerOrFloatOnlyTextField(5);
 
-    this.btnGeoRequest = this.createGeoRequestButton();
-    this.btnGeoRequestController = new BtnGeoRequestController();
+    this.btnGeoRequest = createGeoRequestButton();
   }
 
   @PostConstruct
@@ -95,9 +64,9 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
     setAlignmentX(LEFT_ALIGNMENT);
     setOpaque(true);
     setBorder(createTitledBorder(l10n.get("borderTitle.YourLocation")));
-    setPreferredSize(totalDimension);
-    setMaximumSize(totalDimension);
-    setMinimumSize(totalDimension);
+    setPreferredSize(DEFAULT_SIZE);
+    setMaximumSize(DEFAULT_SIZE);
+    setMinimumSize(DEFAULT_SIZE);
 
     add(createAddressFieldsPanel());
     add(Box.createRigidArea(new Dimension(0, 5)));
@@ -105,13 +74,11 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
     add(createGeoFieldsPanel());
     add(Box.createRigidArea(new Dimension(0, 5)));
     add(btnGeoRequest);
-    addPoweredByGooglePanelIfGoogleIsProvider();
+    // ---> Google Logo panel gets inserted here if Google GeoService in current GeoService
+    // implementation, see insertPoweredByGooglePanel() <---
     add(Box.createRigidArea(new Dimension(0, 5)));
     add(createSeparator());
     add(createDistancePanel());
-
-    initEventListeners();
-    populateFields();
   }
 
   private JPanel createAddressFieldsPanel() {
@@ -156,42 +123,36 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
   private JButton createGeoRequestButton() {
     JButton btnRequestGeo = new JButton(l10n.get("button.EvaluateLatLonByAddress"));
     btnRequestGeo.setAlignmentX(LEFT_ALIGNMENT);
-    btnRequestGeo.setMinimumSize(new Dimension(totalDimension.width - 10, 25));
-    btnRequestGeo.setMaximumSize(new Dimension(totalDimension.width - 10, 25));
-    btnRequestGeo.setPreferredSize(new Dimension(totalDimension.width - 10, 25));
+    btnRequestGeo.setMinimumSize(new Dimension(DEFAULT_SIZE.width - 10, 25));
+    btnRequestGeo.setMaximumSize(new Dimension(DEFAULT_SIZE.width - 10, 25));
+    btnRequestGeo.setPreferredSize(new Dimension(DEFAULT_SIZE.width - 10, 25));
     btnRequestGeo.setForeground(CustomColor.BUTTON_FOREGROUND);
     btnRequestGeo.setFocusable(false);
-    btnRequestGeo.addActionListener(new BtnGeoRequestListener());
 
     return btnRequestGeo;
   }
 
-  private void addPoweredByGooglePanelIfGoogleIsProvider() {
-    // Evaluate current runtime class for interface GeocodingService
-    Class<?> geocodingProvider = ((GeocodingWorker) workerService.getWorker())
-        .getGeocodingService()
-        .getClass();
-
-    // No need to insert logo if provider is not Google
-    if (geocodingProvider != GoogleGeocodingClient.class) return;
-
-    // Google is current geocoding provider - insert copyright logo
+  void insertPoweredByGooglePanel() {
+    // Should be conditionally called by the controller if Google GeoService is the active used
+    // implementation asking for lat/lon data. Insert copyright logo:
     JPanel panel = new PoweredByGooglePanel();
+    final int indexPositionInParentBoxLayout = 7;
+
     panel.setAlignmentX(LEFT_ALIGNMENT);
-    panel.setMinimumSize(new Dimension(totalDimension.width, 17));
-    panel.setMaximumSize(new Dimension(totalDimension.width, 17));
-    panel.setPreferredSize(new Dimension(totalDimension.width, 17));
+    panel.setMinimumSize(new Dimension(DEFAULT_SIZE.width, 17));
+    panel.setMaximumSize(new Dimension(DEFAULT_SIZE.width, 17));
+    panel.setPreferredSize(new Dimension(DEFAULT_SIZE.width, 17));
 
     add(Box.createRigidArea(new Dimension(0, 5)));
-    add(panel);
+    add(panel, indexPositionInParentBoxLayout);
   }
 
   private JPanel createGridPanel(int rows) {
     JPanel panel = new JPanel(new GridLayout(rows, 2));
     panel.setAlignmentX(LEFT_ALIGNMENT);
-    panel.setPreferredSize(new Dimension(totalDimension.width, rows * 25 + 4 * rows));
-    panel.setMinimumSize(new Dimension(totalDimension.width, rows * 25 + 4 * rows));
-    panel.setMaximumSize(new Dimension(totalDimension.width, rows * 25 + 4 * rows));
+    panel.setPreferredSize(new Dimension(DEFAULT_SIZE.width, rows * 25 + 4 * rows));
+    panel.setMinimumSize(new Dimension(DEFAULT_SIZE.width, rows * 25 + 4 * rows));
+    panel.setMaximumSize(new Dimension(DEFAULT_SIZE.width, rows * 25 + 4 * rows));
 
     return panel;
   }
@@ -199,103 +160,9 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
   private JSeparator createSeparator() {
     JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
     separator.setAlignmentX(LEFT_ALIGNMENT);
-    separator.setMaximumSize(new Dimension(totalDimension.width, 13));
+    separator.setMaximumSize(new Dimension(DEFAULT_SIZE.width, 13));
 
     return separator;
-  }
-
-  private void initEventListeners() {
-    textStreet.getDocument().addDocumentListener(btnGeoRequestController);
-    textStreet.addFocusListener(this);
-    textHouseNumber.addFocusListener(this);
-    textCity.getDocument().addDocumentListener(btnGeoRequestController);
-    textCity.addFocusListener(this);
-    textPostCode.getDocument().addDocumentListener(btnGeoRequestController);
-    textPostCode.addFocusListener(this);
-
-    textSearchRadius.addFocusListener(this);
-    textGeoLatitude.addFocusListener(this);
-    textGeoLongitude.addFocusListener(this);
-
-    // Fire event to BtnGeoRequestController, will initialize button state for geo request button.
-    textStreet.setText(" ");
-    textStreet.setText("");
-  }
-
-  private void populateFields() {
-    userPrefs.readAddress().ifPresent(adr -> {
-      textStreet.setText(adr.getStreet());
-      textHouseNumber.setText(adr.getHouseNumber());
-      textPostCode.setText(adr.getPostCode());
-      textCity.setText(adr.getCity());
-    });
-
-    userPrefs.readGeo().ifPresent(geo -> {
-      textSearchRadius.setText(String.valueOf(geo.getDistance().orElse(DEFAULT_SEARCH_RADIUS)));
-      textGeoLatitude.setText(String.valueOf(geo.getLatitude()));
-      textGeoLongitude.setText(String.valueOf(geo.getLongitude()));
-    });
-  }
-
-  private void writeAddressToUserPrefs() {
-    userPrefs.writeAddress(createAddressFromFields());
-  }
-
-  private Address createAddressFromFields() {
-    if (!isValidUserAddress()) {
-      LOGGER.warning(l10n.get("msg.IncompleteUserAddress"));
-    }
-
-    return new Address(
-        "",
-        textStreet.getText(),
-        textHouseNumber.getText(),
-        textCity.getText(),
-        textPostCode.getText(),
-        createGeoFromFields());
-  }
-
-  private boolean isValidUserAddress() {
-    return textStreet.getDocument().getLength() > 0
-        && textCity.getDocument().getLength() >= 2
-        && textPostCode.getDocument().getLength() >= 4;
-  }
-
-  private Geo createGeoFromFields() {
-    Geo geo = null;
-    double lat;
-    double lng;
-    double searchRadius;
-
-    if (!textGeoLatitude.getText().isEmpty() && !textGeoLongitude.getText().isEmpty()) {
-      try {
-        lat = Double.parseDouble(textGeoLatitude.getText());
-        lng = Double.parseDouble(textGeoLongitude.getText());
-        searchRadius = Double.parseDouble(textSearchRadius.getText());
-        geo = new Geo(lat, lng, searchRadius);
-      }
-      catch (NumberFormatException e) {
-        textGeoLatitude.setText("");
-        textGeoLongitude.setText("");
-        textSearchRadius.setText(String.valueOf(DEFAULT_SEARCH_RADIUS));
-        Toolkit.getDefaultToolkit().beep();
-      }
-    }
-
-    return geo;
-  }
-
-  // region Listeners/Callbacks
-  // =====================================================================
-
-  @Override
-  public void focusGained(FocusEvent e) {
-    // No need.
-  }
-
-  @Override
-  public void focusLost(FocusEvent e) {
-    writeAddressToUserPrefs();
   }
 
   JTextField getTextStreet() {
@@ -329,66 +196,4 @@ class PrefsAddressPanel extends JPanel implements FocusListener, PrefsFactoryMix
   JButton getBtnGeoRequest() {
     return btnGeoRequest;
   }
-
-  /**
-   * Controls the "enabled" state of button {@link #btnGeoRequest} depending on address fields
-   * validation.
-   */
-  private class BtnGeoRequestController implements DocumentListener {
-    @Override
-    public void changedUpdate(DocumentEvent e) {
-      changeGeoRequestButtonState();
-    }
-
-    @Override
-    public void insertUpdate(DocumentEvent e) {
-      changeGeoRequestButtonState();
-    }
-
-    @Override
-    public void removeUpdate(DocumentEvent e) {
-      changeGeoRequestButtonState();
-    }
-
-    private void changeGeoRequestButtonState() {
-      btnGeoRequest.setEnabled(isValidUserAddress());
-    }
-  }
-
-  /**
-   * Click listener for button {@link #btnGeoRequest}.
-   */
-  private class BtnGeoRequestListener implements ActionListener {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      // Force focusLost for eventually focussed field.
-      requestFocusInWindow();
-
-      ((GeocodingWorker) workerService.getWorker()).setUserAddress(createAddressFromFields());
-      workerService.startOneShot(this::onGeocodingWorkerFinished);
-      this.onGeocodingWorkerStarted();
-    }
-
-    private void onGeocodingWorkerStarted() {
-      SwingUtilities.invokeLater(() -> {
-        btnGeoRequest.setEnabled(false);
-        footerController.onOneShotWorkerStarted(l10n.get("msg.GeocodingRequestRunning"));
-      });
-    }
-
-    private void onGeocodingWorkerFinished(Geo data) {
-      SwingUtilities.invokeLater(() -> {
-        btnGeoRequest.setEnabled(true);
-        footerController.onOneShotWorkerFinished();
-        if (data == null) return;
-
-        textGeoLatitude.setText(String.valueOf(data.getLatitude()));
-        textGeoLongitude.setText(String.valueOf(data.getLongitude()));
-
-        writeAddressToUserPrefs();
-      });
-    }
-  }
-
-  // endregion
 }
