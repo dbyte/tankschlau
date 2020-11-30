@@ -28,15 +28,15 @@ import java.awt.*;
  * Chooser for preferred PetrolType.
  */
 @Component
-class PetrolTypePanel extends JPanel {
+class PetrolTypeView extends JPanel {
 
   private final Localization l10n;
-  private final JPanel petrolTypeSelectionPanel;
+  private final JPanel petrolTypeSelectionView;
 
   @Autowired
-  PetrolTypePanel(Localization l10n) {
+  PetrolTypeView(Localization l10n) {
     this.l10n = l10n;
-    this.petrolTypeSelectionPanel = new JPanel();
+    this.petrolTypeSelectionView = new JPanel();
   }
 
   @PostConstruct
@@ -46,7 +46,7 @@ class PetrolTypePanel extends JPanel {
     configurePetrolTypeSelectionPanel();
 
     add(createHeaderLabel());
-    add(petrolTypeSelectionPanel);
+    add(petrolTypeSelectionView);
   }
 
   private JPanel createHeaderLabel() {
@@ -59,10 +59,10 @@ class PetrolTypePanel extends JPanel {
   }
 
   private void configurePetrolTypeSelectionPanel() {
-    petrolTypeSelectionPanel.setLayout(new GridLayout(0, 1));
+    petrolTypeSelectionView.setLayout(new GridLayout(0, 1));
   }
 
-  JPanel getPetrolTypeSelectionPanel() {
-    return petrolTypeSelectionPanel;
+  JPanel getPetrolTypeSelectionView() {
+    return petrolTypeSelectionView;
   }
 }

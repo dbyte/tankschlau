@@ -28,11 +28,11 @@ public class FooterController {
 
   private static final String LABEL_NO_NETWORK_ACTIVITY = "label.NoNetworkActivity";
 
-  private final FooterPanel view;
+  private final FooterView view;
   private final Localization l10n;
 
   @Autowired
-  public FooterController(FooterPanel view, Localization l10n) {
+  public FooterController(FooterView view, Localization l10n) {
     this.view = view;
     this.l10n = l10n;
   }

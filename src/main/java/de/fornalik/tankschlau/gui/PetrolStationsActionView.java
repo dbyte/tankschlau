@@ -40,13 +40,13 @@ import java.util.logging.Logger;
  * Panel with interactive Components, driving worker service and data table model.
  */
 @Controller
-class PetrolStationsActionPanel extends JPanel implements ActionListener {
+class PetrolStationsActionView extends JPanel implements ActionListener {
 
-  private static final Logger LOGGER = Logger.getLogger(PetrolStationsActionPanel.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(PetrolStationsActionView.class.getName());
 
   private final PetrolsStationsTableModel dataTableModel;
   private final FooterController footerController;
-  private final PetrolTypePanel petrolTypeView;
+  private final PetrolTypeView petrolTypeView;
   private final transient WorkerService<List<PetrolStation>> workerService;
   private final transient PetrolStationMessageWorker messageWorker;
   private final UserPrefs userPrefs;
@@ -57,10 +57,10 @@ class PetrolStationsActionPanel extends JPanel implements ActionListener {
   private final JButton btnRemoveAllData;
 
   @Autowired
-  PetrolStationsActionPanel(
+  PetrolStationsActionView(
       PetrolsStationsTableModel dataTableModel,
       FooterController footerController,
-      PetrolTypePanel petrolTypeView,
+      PetrolTypeView petrolTypeView,
       WorkerService<List<PetrolStation>> petrolStationsWorkerService,
       PetrolStationMessageWorker messageWorker,
       UserPrefs userPrefs,

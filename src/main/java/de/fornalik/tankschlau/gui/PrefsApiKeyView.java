@@ -27,7 +27,7 @@ import java.awt.*;
  * User preferences panel for authorization keys of needed webservices.
  */
 @org.springframework.stereotype.Component
-public class PrefsApiKeyPanel extends JPanel implements PrefsFactoryMixin {
+public class PrefsApiKeyView extends JPanel implements PrefsFactoryMixin {
 
   private static final Dimension DEFAULT_SIZE = new Dimension(440, 138);
 
@@ -39,7 +39,7 @@ public class PrefsApiKeyPanel extends JPanel implements PrefsFactoryMixin {
   private final JPasswordField textMessageServiceUserKey;
 
   @Autowired
-  public PrefsApiKeyPanel(Localization l10n) {
+  public PrefsApiKeyView(Localization l10n) {
     super();
 
     this.l10n = l10n;

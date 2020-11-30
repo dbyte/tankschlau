@@ -37,10 +37,10 @@ public class PrefsCycleController {
   private static final int DEFAULT_CYCLE_RATE = 300;
 
   private final PrefsCycleModel model;
-  private final PrefsCyclePanel view;
+  private final PrefsCycleView view;
 
   @Autowired
-  public PrefsCycleController(PrefsCycleModel model, PrefsCyclePanel view) {
+  public PrefsCycleController(PrefsCycleModel model, PrefsCycleView view) {
     this.model = model;
     this.view = view;
   }

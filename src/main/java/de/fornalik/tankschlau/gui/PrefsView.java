@@ -17,33 +17,33 @@
 package de.fornalik.tankschlau.gui;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
 
 /**
  * The app's main preferences panel.
  */
-@Controller
-class PrefsPanel extends JPanel {
-  private final PrefsCyclePanel prefsCycleView;
-  private final PrefsAddressPanel prefsAddressView;
-  private final PrefsApiKeyPanel prefsApiKeyView;
+@Component
+class PrefsView extends JPanel {
+  private final PrefsCycleView prefsCycleView;
+  private final PrefsAddressView prefsAddressView;
+  private final PrefsApiKeyView prefsApiKeyView;
 
   @Autowired
-  PrefsPanel(
-      PrefsCyclePanel prefsCycleView,
-      PrefsAddressPanel prefsAddressView,
-      PrefsApiKeyPanel prefsApiKeyView) {
+  PrefsView(
+      PrefsCycleView prefsCycleView,
+      PrefsAddressView prefsAddressView,
+      PrefsApiKeyView prefsApiKeyView) {
 
     this.prefsCycleView = prefsCycleView;
     this.prefsAddressView = prefsAddressView;
     this.prefsApiKeyView = prefsApiKeyView;
-
-    this.initView();
   }
 
+  @PostConstruct
   private void initView() {
     setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 

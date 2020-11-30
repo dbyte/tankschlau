@@ -26,13 +26,13 @@ import java.awt.*;
  * Main content (the domain) of the app, represented in MainWindow.
  */
 @Component
-class MainPanel extends JPanel {
+class MainView extends JPanel {
 
-  private final PetrolStationsPanel petrolStationsView;
-  private final LogPanel logView;
+  private final PetrolStationsView petrolStationsView;
+  private final LogView logView;
 
   @Autowired
-  MainPanel(PetrolStationsPanel petrolStationsView, LogPanel logView) {
+  MainView(PetrolStationsView petrolStationsView, LogView logView) {
     this.petrolStationsView = petrolStationsView;
     this.logView = logView;
 

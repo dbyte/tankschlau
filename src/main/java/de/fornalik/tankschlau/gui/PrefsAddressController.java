@@ -37,7 +37,7 @@ class PrefsAddressController {
 
   private static final double DEFAULT_SEARCH_RADIUS = 5.0;
 
-  private final PrefsAddressPanel view;
+  private final PrefsAddressView view;
   private final AddressFieldsDocumentListener addressFieldsDocumentListener;
   private final AddressFieldsFocusListener addressFieldsFocusListener;
   private final FooterController footerController;
@@ -47,7 +47,7 @@ class PrefsAddressController {
   @Autowired
   PrefsAddressController(
       PrefsAddressModel model,
-      PrefsAddressPanel view,
+      PrefsAddressView view,
       FooterController footerController,
       Localization l10n) {
 

@@ -28,7 +28,7 @@ import java.awt.*;
  * User preferences panel for cyclic background services.
  */
 @Component
-class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
+class PrefsCycleView extends JPanel implements PrefsFactoryMixin {
 
   private static final int DEFAULT_ROW_HEIGHT = 25;
   private static final Dimension DEFAULT_SIZE = new Dimension(300, 130);
@@ -41,7 +41,7 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
   private final Localization l10n;
 
   @Autowired
-  PrefsCyclePanel(Localization l10n) {
+  PrefsCycleView(Localization l10n) {
     this.l10n = l10n;
 
     this.textCycleRate = createIntegerOnlyTextField(5);

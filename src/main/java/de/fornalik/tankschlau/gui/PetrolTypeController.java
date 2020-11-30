@@ -29,11 +29,11 @@ import java.util.List;
 public class PetrolTypeController {
 
   private final PetrolTypeModel model;
-  private final PetrolTypePanel view;
+  private final PetrolTypeView view;
   private final ButtonGroup petrolTypeBtnGroup;
 
   @Autowired
-  public PetrolTypeController(PetrolTypeModel model, PetrolTypePanel view) {
+  public PetrolTypeController(PetrolTypeModel model, PetrolTypeView view) {
     this.model = model;
     this.view = view;
     this.petrolTypeBtnGroup = new ButtonGroup();
@@ -52,7 +52,7 @@ public class PetrolTypeController {
       button.setFocusable(false);
 
       petrolTypeBtnGroup.add(button);
-      view.getPetrolTypeSelectionPanel().add(button);
+      view.getPetrolTypeSelectionView().add(button);
       addPetrolTypeSelectionListener(button, petrolType);
     }
   }

@@ -30,7 +30,7 @@ import java.awt.*;
  * Shows and drives logging. The log records are represented in a JTextArea by a custom Log Handler.
  */
 @Component
-class LogPanel extends JPanel {
+class LogView extends JPanel {
 
   private final Localization l10n;
   private final JLabel labelLogHeader;
@@ -38,7 +38,7 @@ class LogPanel extends JPanel {
   private final JButton btnClearLog;
 
   @Autowired
-  LogPanel(Localization l10n) {
+  LogView(Localization l10n) {
     super();
     this.l10n = l10n;
     this.labelLogHeader = new JLabel();

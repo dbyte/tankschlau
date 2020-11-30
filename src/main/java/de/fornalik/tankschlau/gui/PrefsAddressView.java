@@ -27,7 +27,7 @@ import java.awt.*;
  * User preferences panel for user location
  */
 @org.springframework.stereotype.Component
-class PrefsAddressPanel extends JPanel implements PrefsFactoryMixin {
+class PrefsAddressView extends JPanel implements PrefsFactoryMixin {
 
   private static final Dimension DEFAULT_SIZE = new Dimension(350, 325);
 
@@ -43,7 +43,7 @@ class PrefsAddressPanel extends JPanel implements PrefsFactoryMixin {
   private final Localization l10n;
 
   @Autowired
-  PrefsAddressPanel(Localization l10n) {
+  PrefsAddressView(Localization l10n) {
     super();
     this.l10n = l10n;
 
@@ -135,7 +135,7 @@ class PrefsAddressPanel extends JPanel implements PrefsFactoryMixin {
   void insertPoweredByGooglePanel() {
     // Should be conditionally called by the controller if Google GeoService is the active used
     // implementation asking for lat/lon data. Insert copyright logo:
-    JPanel panel = new PoweredByGooglePanel();
+    JPanel panel = new PoweredByGoogleView();
     final int indexPositionInParentBoxLayout = 7;
 
     panel.setAlignmentX(LEFT_ALIGNMENT);

@@ -31,9 +31,9 @@ import java.util.logging.Logger;
  * It can be driven by various controllers.
  */
 @Component
-class FooterPanel extends JPanel {
+class FooterView extends JPanel {
 
-  private static final Logger LOGGER = Logger.getLogger(FooterPanel.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(FooterView.class.getName());
 
   private final Localization l10n;
   private final JLabel labelCountdown;
@@ -41,7 +41,7 @@ class FooterPanel extends JPanel {
   private final ImageIcon iconWork;
 
   @Autowired
-  FooterPanel(Localization l10n) {
+  FooterView(Localization l10n) {
     super();
     this.l10n = l10n;
     this.labelCountdown = createBaseLabel();

@@ -34,9 +34,9 @@ import java.time.format.DateTimeFormatter;
  * The app's main representation of data, using a JTable.
  */
 @Component
-class PetrolStationsPanel extends JPanel implements TableModelListener {
+class PetrolStationsView extends JPanel implements TableModelListener {
 
-  private final PetrolStationsActionPanel actionView;
+  private final PetrolStationsActionView actionView;
   private final JTable dataTable;
   private final JScrollPane dataScrollPane;
   private final JLabel headerLabel;
@@ -46,8 +46,8 @@ class PetrolStationsPanel extends JPanel implements TableModelListener {
   private final Localization l10n;
 
   @Autowired
-  PetrolStationsPanel(
-      PetrolStationsActionPanel actionView,
+  PetrolStationsView(
+      PetrolStationsActionView actionView,
       PetrolsStationsTableModel petrolsStationsTableModel,
       UserPrefs userPrefs,
       Localization l10n) {

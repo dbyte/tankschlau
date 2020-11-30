@@ -32,16 +32,16 @@ public class MainWindow extends JFrame {
   private static final Logger LOGGER = Logger.getLogger(MainWindow.class.getName());
   private static final Dimension DEFAULT_WINDOW_DIMENSION = new Dimension(1400, 900);
 
-  private final MainPanel mainView;
-  private final PrefsPanel prefsView;
-  private final FooterPanel footerView;
+  private final MainView mainView;
+  private final PrefsView prefsView;
+  private final FooterView footerView;
   private final Localization l10n;
 
   @Autowired
   public MainWindow(
-      MainPanel mainView,
-      PrefsPanel prefsView,
-      FooterPanel footerView,
+      MainView mainView,
+      PrefsView prefsView,
+      FooterView footerView,
       Localization l10n) {
 
     super(Localization.APP_NAME);

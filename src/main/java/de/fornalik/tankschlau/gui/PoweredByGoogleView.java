@@ -24,11 +24,11 @@ import java.util.logging.Logger;
 /**
  * This JPanel provides support for the Google Copyright Icon.
  */
-class PoweredByGooglePanel extends JPanel {
+class PoweredByGoogleView extends JPanel {
 
-  private static final Logger LOGGER = Logger.getLogger(PoweredByGooglePanel.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(PoweredByGoogleView.class.getName());
 
-  PoweredByGooglePanel() {
+  PoweredByGoogleView() {
     super();
     initView();
   }
@@ -52,7 +52,7 @@ class PoweredByGooglePanel extends JPanel {
   private ImageIcon readPoweredByGoogleIcon() {
     ImageIcon icon = new ImageIcon(); // Setup empty image in case reading fails
 
-    URL iconPath = PoweredByGooglePanel.class.getClassLoader()
+    URL iconPath = PoweredByGoogleView.class.getClassLoader()
         .getResource("powered_by_google_on_white.png");
 
     if (iconPath != null) {

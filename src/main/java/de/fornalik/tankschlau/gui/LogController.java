@@ -24,10 +24,10 @@ import javax.annotation.PostConstruct;
 @Controller
 public class LogController {
 
-  private final LogPanel view;
+  private final LogView view;
 
   @Autowired
-  public LogController(LogPanel view) {
+  public LogController(LogView view) {
     this.view = view;
   }
 
