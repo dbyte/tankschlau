@@ -34,9 +34,9 @@ import java.time.format.DateTimeFormatter;
  * The app's main representation of data, using a JTable.
  */
 @Component
-class PetrolStationsDataPanel extends JPanel implements TableModelListener {
+class PetrolStationsPanel extends JPanel implements TableModelListener {
 
-  private final JPanel dataControlPanel;
+  private final PetrolStationsActionPanel actionView;
   private final JTable dataTable;
   private final JScrollPane dataScrollPane;
   private final JLabel headerLabel;
@@ -46,15 +46,15 @@ class PetrolStationsDataPanel extends JPanel implements TableModelListener {
   private final Localization l10n;
 
   @Autowired
-  PetrolStationsDataPanel(
-      PetrolStationsControlPanel petrolStationsControlPanel,
+  PetrolStationsPanel(
+      PetrolStationsActionPanel actionView,
       PetrolsStationsTableModel petrolsStationsTableModel,
       UserPrefs userPrefs,
       Localization l10n) {
 
     this.userPrefs = userPrefs;
     this.l10n = l10n;
-    this.dataControlPanel = petrolStationsControlPanel;
+    this.actionView = actionView;
 
     petrolsStationsTableModel.addTableModelListener(this);
     this.dataTable = new JTable(petrolsStationsTableModel);
@@ -76,7 +76,7 @@ class PetrolStationsDataPanel extends JPanel implements TableModelListener {
     configureDataScrollPane();
     configureDataControlPanel();
 
-    add(dataControlPanel, BorderLayout.LINE_START);
+    add(actionView, BorderLayout.LINE_START);
     add(createMainPanel(), BorderLayout.CENTER);
   }
 
@@ -147,10 +147,10 @@ class PetrolStationsDataPanel extends JPanel implements TableModelListener {
 
   private void configureDataControlPanel() {
     int width = 190;
-    dataControlPanel.setPreferredSize(
+    actionView.setPreferredSize(
         new Dimension(width, dataScrollPane.getHeight()));
 
-    dataControlPanel.setMaximumSize(
+    actionView.setMaximumSize(
         new Dimension(width, Short.MAX_VALUE));
   }
 

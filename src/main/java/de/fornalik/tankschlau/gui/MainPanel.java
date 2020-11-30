@@ -28,13 +28,13 @@ import java.awt.*;
 @Component
 class MainPanel extends JPanel {
 
-  private final PetrolStationsDataPanel dataPanel;
-  private final LogPanel logPanel;
+  private final PetrolStationsPanel petrolStationsView;
+  private final LogPanel logView;
 
   @Autowired
-  MainPanel(PetrolStationsDataPanel dataPanel, LogPanel logPanel) {
-    this.dataPanel = dataPanel;
-    this.logPanel = logPanel;
+  MainPanel(PetrolStationsPanel petrolStationsView, LogPanel logView) {
+    this.petrolStationsView = petrolStationsView;
+    this.logView = logView;
 
     this.initView();
   }
@@ -61,7 +61,7 @@ class MainPanel extends JPanel {
 
   private JPanel createTopPanel() {
     JPanel panel = new JPanel();
-    panel.add(dataPanel);
+    panel.add(petrolStationsView);
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
     return panel;
@@ -69,7 +69,7 @@ class MainPanel extends JPanel {
 
   private JPanel createBottomPanel() {
     JPanel panel = new JPanel();
-    panel.add(logPanel);
+    panel.add(logView);
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
     return panel;

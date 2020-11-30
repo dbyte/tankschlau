@@ -27,19 +27,19 @@ import java.awt.*;
  */
 @Controller
 class PrefsPanel extends JPanel {
-  private final PrefsCyclePanel prefsCyclePanel;
-  private final PrefsAddressPanel prefsAddressPanel;
-  private final PrefsApiKeyPanel prefsApiKeyPanel;
+  private final PrefsCyclePanel prefsCycleView;
+  private final PrefsAddressPanel prefsAddressView;
+  private final PrefsApiKeyPanel prefsApiKeyView;
 
   @Autowired
   PrefsPanel(
-      PrefsCyclePanel prefsCyclePanel,
-      PrefsAddressPanel prefsAddressPanel,
-      PrefsApiKeyPanel prefsApiKeyPanel) {
+      PrefsCyclePanel prefsCycleView,
+      PrefsAddressPanel prefsAddressView,
+      PrefsApiKeyPanel prefsApiKeyView) {
 
-    this.prefsCyclePanel = prefsCyclePanel;
-    this.prefsAddressPanel = prefsAddressPanel;
-    this.prefsApiKeyPanel = prefsApiKeyPanel;
+    this.prefsCycleView = prefsCycleView;
+    this.prefsAddressView = prefsAddressView;
+    this.prefsApiKeyView = prefsApiKeyView;
 
     this.initView();
   }
@@ -47,16 +47,16 @@ class PrefsPanel extends JPanel {
   private void initView() {
     setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
-    prefsCyclePanel.setAlignmentY(TOP_ALIGNMENT);
-    prefsAddressPanel.setAlignmentY(TOP_ALIGNMENT);
-    prefsApiKeyPanel.setAlignmentY(TOP_ALIGNMENT);
+    prefsCycleView.setAlignmentY(TOP_ALIGNMENT);
+    prefsAddressView.setAlignmentY(TOP_ALIGNMENT);
+    prefsApiKeyView.setAlignmentY(TOP_ALIGNMENT);
 
-    add(prefsCyclePanel);
+    add(prefsCycleView);
     add(Box.createHorizontalGlue());
     add(Box.createRigidArea(new Dimension(20, 0)));
-    add(prefsAddressPanel);
+    add(prefsAddressView);
     add(Box.createHorizontalGlue());
     add(Box.createRigidArea(new Dimension(20, 0)));
-    add(prefsApiKeyPanel);
+    add(prefsApiKeyView);
   }
 }

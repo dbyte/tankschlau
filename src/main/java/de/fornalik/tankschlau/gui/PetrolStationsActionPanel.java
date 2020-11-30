@@ -40,13 +40,13 @@ import java.util.logging.Logger;
  * Panel with interactive Components, driving worker service and data table model.
  */
 @Controller
-class PetrolStationsControlPanel extends JPanel implements ActionListener {
+class PetrolStationsActionPanel extends JPanel implements ActionListener {
 
-  private static final Logger LOGGER = Logger.getLogger(PetrolStationsControlPanel.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(PetrolStationsActionPanel.class.getName());
 
   private final PetrolsStationsTableModel dataTableModel;
-  private final FooterController footerPanel;
-  private final PetrolTypePanel petrolTypePanel;
+  private final FooterController footerController;
+  private final PetrolTypePanel petrolTypeView;
   private final transient WorkerService<List<PetrolStation>> workerService;
   private final transient PetrolStationMessageWorker messageWorker;
   private final UserPrefs userPrefs;
@@ -57,18 +57,18 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
   private final JButton btnRemoveAllData;
 
   @Autowired
-  PetrolStationsControlPanel(
+  PetrolStationsActionPanel(
       PetrolsStationsTableModel dataTableModel,
       FooterController footerController,
-      PetrolTypePanel petrolTypePanel,
+      PetrolTypePanel petrolTypeView,
       WorkerService<List<PetrolStation>> petrolStationsWorkerService,
       PetrolStationMessageWorker messageWorker,
       UserPrefs userPrefs,
       Localization l10n) {
 
     this.dataTableModel = dataTableModel;
-    this.footerPanel = footerController;
-    this.petrolTypePanel = petrolTypePanel;
+    this.footerController = footerController;
+    this.petrolTypeView = petrolTypeView;
 
     this.workerService = petrolStationsWorkerService;
     this.messageWorker = messageWorker;
@@ -115,12 +115,12 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
   }
 
   private JPanel createPetrolTypeChooser() {
-    petrolTypePanel.setMinimumSize(new Dimension(getMaximumSize().width, 100));
-    petrolTypePanel.setMaximumSize(new Dimension(getMaximumSize().width, 100));
-    petrolTypePanel.setPreferredSize(new Dimension(getMaximumSize().width, 100));
-    petrolTypePanel.setAlignmentX(CENTER_ALIGNMENT);
+    petrolTypeView.setMinimumSize(new Dimension(getMaximumSize().width, 100));
+    petrolTypeView.setMaximumSize(new Dimension(getMaximumSize().width, 100));
+    petrolTypeView.setPreferredSize(new Dimension(getMaximumSize().width, 100));
+    petrolTypeView.setAlignmentX(CENTER_ALIGNMENT);
 
-    return petrolTypePanel;
+    return petrolTypeView;
   }
 
   private JSeparator createSeparator() {
@@ -145,7 +145,7 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
       btnStartCyclicWork.setActionCommand("START");
       btnStartCyclicWork.setText(l10n.get("button.UpdateCyclic"));
       btnStartOneShotWork.setEnabled(true);
-      footerPanel.onCyclicWorkerStopped();
+      footerController.onCyclicWorkerStopped();
     });
   }
 
@@ -158,7 +158,7 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
     SwingUtilities.invokeLater(() -> {
       btnStartCyclicWork.setEnabled(false);
       btnStartOneShotWork.setEnabled(false);
-      footerPanel.onOneShotWorkerStarted(l10n.get("msg.PetrolStationRequestRunning"));
+      footerController.onOneShotWorkerStarted(l10n.get("msg.PetrolStationRequestRunning"));
     });
   }
 
@@ -167,12 +167,12 @@ class PetrolStationsControlPanel extends JPanel implements ActionListener {
       dataTableModel.addPetrolStations(petrolStations);
       btnStartCyclicWork.setEnabled(true);
       btnStartOneShotWork.setEnabled(true);
-      footerPanel.onOneShotWorkerFinished();
+      footerController.onOneShotWorkerFinished();
     });
   }
 
   private void updateCountdown(long remaining, TimeUnit timeUnit) {
-    SwingUtilities.invokeLater(() -> footerPanel.updateCountdown(remaining, timeUnit));
+    SwingUtilities.invokeLater(() -> footerController.updateCountdown(remaining, timeUnit));
   }
 
   @Override

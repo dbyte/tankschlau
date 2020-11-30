@@ -32,23 +32,23 @@ public class MainWindow extends JFrame {
   private static final Logger LOGGER = Logger.getLogger(MainWindow.class.getName());
   private static final Dimension DEFAULT_WINDOW_DIMENSION = new Dimension(1400, 900);
 
+  private final MainPanel mainView;
+  private final PrefsPanel prefsView;
+  private final FooterPanel footerView;
   private final Localization l10n;
-  private final MainPanel domainPanelTab;
-  private final PrefsPanel prefsPanelTab;
-  private final FooterPanel footerPanel;
 
   @Autowired
   public MainWindow(
-      Localization l10n,
-      FooterPanel footerPanel,
-      MainPanel domainPanelTab,
-      PrefsPanel prefsPanelTab) {
+      MainPanel mainView,
+      PrefsPanel prefsView,
+      FooterPanel footerView,
+      Localization l10n) {
 
     super(Localization.APP_NAME);
+    this.mainView = mainView;
+    this.prefsView = prefsView;
+    this.footerView = footerView;
     this.l10n = l10n;
-    this.footerPanel = footerPanel;
-    this.domainPanelTab = domainPanelTab;
-    this.prefsPanelTab = prefsPanelTab;
   }
 
   public void initView() {
@@ -60,7 +60,7 @@ public class MainWindow extends JFrame {
     add(createTabbedPane());
 
     configureFooterPanel();
-    add(footerPanel);
+    add(footerView);
 
     setBounds(50, 50, DEFAULT_WINDOW_DIMENSION.width, DEFAULT_WINDOW_DIMENSION.height);
     pack();
@@ -68,15 +68,15 @@ public class MainWindow extends JFrame {
   }
 
   private void configureFooterPanel() {
-    footerPanel.setPreferredSize(new Dimension(0, 40));
-    footerPanel.setMinimumSize(new Dimension(getWidth(), 40));
-    footerPanel.setMaximumSize(new Dimension(getMaximumSize().width, 40));
+    footerView.setPreferredSize(new Dimension(0, 40));
+    footerView.setMinimumSize(new Dimension(getWidth(), 40));
+    footerView.setMaximumSize(new Dimension(getMaximumSize().width, 40));
   }
 
   private JTabbedPane createTabbedPane() {
     JTabbedPane tabbedPane = new JTabbedPane();
-    tabbedPane.addTab(l10n.get("tab.PetrolPrices"), domainPanelTab);
-    tabbedPane.addTab(l10n.get("tab.Preferences"), prefsPanelTab);
+    tabbedPane.addTab(l10n.get("tab.PetrolPrices"), mainView);
+    tabbedPane.addTab(l10n.get("tab.Preferences"), prefsView);
     tabbedPane.setSelectedIndex(0);
 
     tabbedPane.setPreferredSize(DEFAULT_WINDOW_DIMENSION);
