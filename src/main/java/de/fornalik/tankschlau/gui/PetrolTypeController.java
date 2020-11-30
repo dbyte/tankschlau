@@ -17,8 +17,6 @@
 package de.fornalik.tankschlau.gui;
 
 import de.fornalik.tankschlau.station.PetrolType;
-import de.fornalik.tankschlau.user.UserPrefs;
-import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -26,21 +24,18 @@ import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 
 @Controller
 public class PetrolTypeController {
 
-  private static final Logger LOGGER = Logger.getLogger(PetrolTypeController.class.getName());
-
-  private final PetrolTypePanel petrolTypePanel;
+  private final PetrolTypeModel model;
+  private final PetrolTypePanel view;
   private final ButtonGroup petrolTypeBtnGroup;
-  private final UserPrefs userPrefs;
 
   @Autowired
-  public PetrolTypeController(PetrolTypePanel petrolTypePanel, UserPrefs userPrefs) {
-    this.petrolTypePanel = petrolTypePanel;
-    this.userPrefs = userPrefs;
+  public PetrolTypeController(PetrolTypeModel model, PetrolTypePanel view) {
+    this.model = model;
+    this.view = view;
     this.petrolTypeBtnGroup = new ButtonGroup();
   }
 
@@ -57,8 +52,7 @@ public class PetrolTypeController {
       button.setFocusable(false);
 
       petrolTypeBtnGroup.add(button);
-      petrolTypePanel.getPetrolTypeSelectionPanel().add(button);
-
+      view.getPetrolTypeSelectionPanel().add(button);
       addPetrolTypeSelectionListener(button, petrolType);
     }
   }
@@ -68,7 +62,7 @@ public class PetrolTypeController {
 
     button.addActionListener(e -> {
       JRadioButton selectedPetrolTypeButton = (JRadioButton) e.getSource();
-      writeSelectionToUserPrefs(selectedPetrolTypeButton.getActionCommand());
+      model.writeSelectionToUserPrefs(selectedPetrolTypeButton.getActionCommand());
     });
   }
 
@@ -76,26 +70,10 @@ public class PetrolTypeController {
     List<AbstractButton> radioButtons = Collections.list(petrolTypeBtnGroup.getElements());
 
     for (AbstractButton radioButton : radioButtons) {
-      if (userPrefs.readPreferredPetrolType().name().equals(radioButton.getActionCommand())) {
+      if (model.readPreferredPetrolTypeName().equals(radioButton.getActionCommand())) {
         radioButton.setSelected(true);
         break;
       }
     }
-  }
-
-  private void writeSelectionToUserPrefs(String petrolTypeString) {
-    if (petrolTypeString == null || petrolTypeString.isEmpty()) {
-      String errMsg = "Illegal petrol type selection: Empty or null string.";
-      LOGGER.severe(errMsg);
-      throw new IllegalStateException(errMsg);
-    }
-
-    if (!EnumUtils.isValidEnum(PetrolType.class, petrolTypeString)) {
-      String errMsg = "Illegal petrol type selection: " + petrolTypeString;
-      LOGGER.severe(errMsg);
-      throw new IllegalStateException(errMsg);
-    }
-
-    userPrefs.writePreferredPetrolType(PetrolType.valueOf(petrolTypeString));
   }
 }
