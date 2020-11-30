@@ -16,70 +16,49 @@
 
 package de.fornalik.tankschlau.gui;
 
-import de.fornalik.tankschlau.user.ApiKeyManager;
-import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 
+import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 
 /**
  * User preferences panel for authorization keys of needed webservices.
  */
-@Controller
-public class PrefsApiKeyPanel extends JPanel implements FocusListener, PrefsFactoryMixin {
+@org.springframework.stereotype.Component
+public class PrefsApiKeyPanel extends JPanel implements PrefsFactoryMixin {
 
-  private static final Dimension totalDimension = new Dimension(440, 138);
+  private static final Dimension DEFAULT_SIZE = new Dimension(440, 138);
 
   private final Localization l10n;
+
   private final JPasswordField textPetrolStationsServiceApiKey;
   private final JPasswordField textGeocodingServiceApiKey;
   private final JPasswordField textMessageServiceApiKey;
   private final JPasswordField textMessageServiceUserKey;
 
-  private final UserPrefs userPrefs;
-  private final ApiKeyManager apiKeyManagerPetrolStations;
-  private final ApiKeyManager apiKeyManagerGeocoding;
-  private final ApiKeyManager apiKeyManagerPushMessage;
-
   @Autowired
-  public PrefsApiKeyPanel(
-      UserPrefs userPrefs,
-      Localization l10n,
-      ApiKeyManager apiKeyManagerPetrolStations,
-      ApiKeyManager apiKeyManagerGeocoding,
-      ApiKeyManager apiKeyManagerPushMessage) {
+  public PrefsApiKeyPanel(Localization l10n) {
     super();
 
-    this.apiKeyManagerPetrolStations = apiKeyManagerPetrolStations;
-    this.apiKeyManagerGeocoding = apiKeyManagerGeocoding;
-    this.apiKeyManagerPushMessage = apiKeyManagerPushMessage;
-    this.userPrefs = userPrefs;
     this.l10n = l10n;
 
     this.textPetrolStationsServiceApiKey = createPasswordField();
     this.textGeocodingServiceApiKey = createPasswordField();
     this.textMessageServiceApiKey = createPasswordField();
     this.textMessageServiceUserKey = createPasswordField();
-
-    this.initView();
-    this.populateFields();
   }
 
+  @PostConstruct
   private void initView() {
     setLayout(new GridLayout(4, 2));
     setAlignmentX(Component.LEFT_ALIGNMENT);
     setOpaque(true);
     setBorder(createTitledBorder(l10n.get("borderTitle.Authentication")));
-    setPreferredSize(totalDimension);
-    setMaximumSize(totalDimension);
-    setMinimumSize(totalDimension);
-
-    configureFields();
+    setPreferredSize(DEFAULT_SIZE);
+    setMaximumSize(DEFAULT_SIZE);
+    setMinimumSize(DEFAULT_SIZE);
 
     add(createLabel("Tankerkoenig.de API Key"));
     add(textPetrolStationsServiceApiKey);
@@ -93,45 +72,19 @@ public class PrefsApiKeyPanel extends JPanel implements FocusListener, PrefsFact
     add(textMessageServiceUserKey);
   }
 
-  private void configureFields() {
-    textPetrolStationsServiceApiKey.addFocusListener(this);
-    textGeocodingServiceApiKey.addFocusListener(this);
-    textMessageServiceApiKey.addFocusListener(this);
-    textMessageServiceUserKey.addFocusListener(this);
+  JPasswordField getTextPetrolStationsServiceApiKey() {
+    return textPetrolStationsServiceApiKey;
   }
 
-  private void populateFields() {
-    textPetrolStationsServiceApiKey.setText(apiKeyManagerPetrolStations.read().orElse(""));
-    textGeocodingServiceApiKey.setText(apiKeyManagerGeocoding.read().orElse(""));
-    textMessageServiceApiKey.setText(apiKeyManagerPushMessage.read().orElse(""));
-    textMessageServiceUserKey.setText(userPrefs.readPushMessageUserId().orElse(""));
+  JPasswordField getTextGeocodingServiceApiKey() {
+    return textGeocodingServiceApiKey;
   }
 
-  private String getValueFromPasswordField(JPasswordField field) {
-    return String.valueOf(field.getPassword());
+  JPasswordField getTextMessageServiceApiKey() {
+    return textMessageServiceApiKey;
   }
 
-  @Override
-  public void focusGained(FocusEvent e) {
-    // No need
-  }
-
-  @Override
-  public void focusLost(FocusEvent e) {
-    if (!(e.getSource() instanceof JPasswordField)) return;
-    JPasswordField field = (JPasswordField) e.getSource();
-
-    if (field == textPetrolStationsServiceApiKey) {
-      apiKeyManagerPetrolStations.write(getValueFromPasswordField(textPetrolStationsServiceApiKey));
-    }
-    else if (field == textGeocodingServiceApiKey) {
-      apiKeyManagerGeocoding.write(getValueFromPasswordField(textGeocodingServiceApiKey));
-    }
-    else if (field == textMessageServiceApiKey) {
-      apiKeyManagerPushMessage.write(getValueFromPasswordField(textMessageServiceApiKey));
-    }
-    else if (field == textMessageServiceUserKey) {
-      userPrefs.writePushMessageUserId(getValueFromPasswordField(textMessageServiceUserKey));
-    }
+  JPasswordField getTextMessageServiceUserKey() {
+    return textMessageServiceUserKey;
   }
 }
