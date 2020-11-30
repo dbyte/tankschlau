@@ -166,6 +166,7 @@ class PetrolStationsView extends JPanel implements TableModelListener {
     }
     else if (e.getType() == TableModelEvent.DELETE && dataTable.getModel().getRowCount() == 0) {
       setLastUpdateText(LocalDateTime.MIN);
+      repaint();
     }
   }
 }
