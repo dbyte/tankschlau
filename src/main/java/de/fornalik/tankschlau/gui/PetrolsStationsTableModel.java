@@ -142,7 +142,10 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
     fireTableDataChanged();
   }
 
-  // TODO This finally belongs to the Controller Layer, wrong class here for a display method.
+  /*
+  This setup finally belongs to a Controller Layer, wrong class here for a display method.
+  TODO So set up a TableCellRenderer as stated at https://stackoverflow.com/a/32793088
+  */
   private String isOpenToHtml(boolean isOpen) {
     StringBuilder out = new StringBuilder("<html>");
 
@@ -161,7 +164,10 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
     return out.toString();
   }
 
-  // TODO This finally belongs to the Controller Layer, wrong class here for a display method.
+  /*
+  This setup finally belongs to a Controller Layer, wrong class here for a display method.
+  TODO So set up a TableCellRenderer as stated at https://stackoverflow.com/a/32793088
+  */
   private String petrolsToHtml(Set<Petrol> petrols) {
     if (petrols.isEmpty()) return "";
 
