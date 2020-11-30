@@ -23,6 +23,8 @@ import de.fornalik.tankschlau.service.GeocodingWorker;
 import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.WorkerService;
 import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingClient;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -43,10 +45,26 @@ class PrefsAddressModel {
     this.userPrefs = userPrefs;
   }
 
-  void getGeoDataForAddress(Consumer<Geo> geoDataConsumerCallback, Map<String, String> addressMap) {
+  void queryGeoDataForAddress(
+      Map<String, String> addressMap,
+      Consumer<Pair<Double, Double>> latLonCallback) {
+
+    Objects.requireNonNull(addressMap);
+    Objects.requireNonNull(latLonCallback);
+
     // Get Geo data (latitude, longitude) from a web service by the provided address.
     getGeocodingWorker().setUserAddress(createAddressFromMap(addressMap));
-    workerService.startOneShot(geoDataConsumerCallback);
+    workerService.startOneShot(geoResult -> postprocessGeoQuery(geoResult, latLonCallback));
+  }
+
+  private void postprocessGeoQuery(Geo geo, Consumer<Pair<Double, Double>> latLonCallback) {
+    if (geo == null) {
+      latLonCallback.accept(null);
+      return;
+    }
+
+    userPrefs.writeGeo(geo);
+    latLonCallback.accept(new ImmutablePair<>(geo.getLatitude(), geo.getLongitude()));
   }
 
   boolean isGeoServiceGoogleGeocodingImplementation() {
@@ -63,15 +81,6 @@ class PrefsAddressModel {
 
   Optional<Geo> readGeoFromUserPrefs() {
     return userPrefs.readGeo();
-  }
-
-  void writeGeoToUserPrefs(Map<String, String> map) {
-    try {
-      userPrefs.writeGeo(createGeoFromMap(map));
-    }
-    catch (GeoDataParsingException ex) {
-      // Ignore, as address without Geo data is perfectly valid.
-    }
   }
 
   private Address createAddressFromMap(Map<String, String> map) {
@@ -92,9 +101,8 @@ class PrefsAddressModel {
     return address;
   }
 
-  Geo createGeoFromMap(Map<String, String> map) throws GeoDataParsingException {
+  private Geo createGeoFromMap(Map<String, String> map) throws GeoDataParsingException {
     Objects.requireNonNull(map);
-
     final Geo geo;
 
     try {

@@ -16,8 +16,8 @@
 
 package de.fornalik.tankschlau.gui;
 
-import de.fornalik.tankschlau.geo.Geo;
 import de.fornalik.tankschlau.util.Localization;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -198,27 +198,26 @@ class PrefsAddressController {
     @Override
     public void actionPerformed(ActionEvent e) {
       view.requestFocusInWindow(); // Force focusLost for eventually focussed field.
-      model.getGeoDataForAddress(this::onGeocodingWorkerFinished, convertAddressFieldsToMap());
-      this.onGeocodingWorkerStarted();
+      model.queryGeoDataForAddress(convertAddressFieldsToMap(), this::onGeoQueryFinished);
+      this.onGeoQueryStarted();
     }
 
-    private void onGeocodingWorkerStarted() {
+    private void onGeoQueryStarted() {
       SwingUtilities.invokeLater(() -> {
         view.getBtnGeoRequest().setEnabled(false);
         footerController.onOneShotWorkerStarted(l10n.get("msg.GeocodingRequestRunning"));
       });
     }
 
-    private void onGeocodingWorkerFinished(Geo data) {
+    private void onGeoQueryFinished(Pair<Double, Double> latLonResult) {
       SwingUtilities.invokeLater(() -> {
         view.getBtnGeoRequest().setEnabled(true);
         footerController.onOneShotWorkerFinished();
-        if (data == null) return;
 
-        view.getTextGeoLatitude().setText(String.valueOf(data.getLatitude()));
-        view.getTextGeoLongitude().setText(String.valueOf(data.getLongitude()));
+        if (latLonResult == null) return;
 
-        model.writeGeoToUserPrefs(convertGeoFieldsToMap());
+        view.getTextGeoLatitude().setText(String.valueOf(latLonResult.getLeft()));
+        view.getTextGeoLongitude().setText(String.valueOf(latLonResult.getRight()));
       });
     }
   }
