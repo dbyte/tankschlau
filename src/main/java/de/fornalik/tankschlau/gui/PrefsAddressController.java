@@ -231,6 +231,7 @@ class PrefsAddressController {
       // Force focusLost for eventually focussed field.
       view.requestFocusInWindow();
 
+      // Do business stuff.
       ((GeocodingWorker) workerService.getWorker()).setUserAddress(createAddressFromFields());
       workerService.startOneShot(this::onGeocodingWorkerFinished);
       this.onGeocodingWorkerStarted();
@@ -252,7 +253,7 @@ class PrefsAddressController {
         view.getTextGeoLatitude().setText(String.valueOf(data.getLatitude()));
         view.getTextGeoLongitude().setText(String.valueOf(data.getLongitude()));
 
-        writeAddressToUserPrefs();
+        userPrefs.writeGeo(new Geo(data.getLatitude(), data.getLongitude()));
       });
     }
   }
