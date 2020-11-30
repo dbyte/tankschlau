@@ -64,7 +64,6 @@ class PrefsAddressController {
   void init() {
     addPoweredByGoogleLogoIfGoogleIsProvider();
     registerActionListeners();
-    registerFocusListener();
     populateFields();
   }
 
@@ -88,20 +87,6 @@ class PrefsAddressController {
 
     // Init button state.
     changeGeoRequestButtonState();
-  }
-
-  private void registerFocusListener() {
-    view.addFocusListener(new FocusListener() {
-      @Override
-      public void focusGained(FocusEvent e) {
-        // No need.
-      }
-
-      @Override
-      public void focusLost(FocusEvent e) {
-        writeAddressToUserPrefs();
-      }
-    });
   }
 
   private void populateFields() {
