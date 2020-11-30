@@ -142,7 +142,7 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
     fireTableDataChanged();
   }
 
-  // TODO This finally belongs to the View Layer, wrong class here for a display method.
+  // TODO This finally belongs to the Controller Layer, wrong class here for a display method.
   private String isOpenToHtml(boolean isOpen) {
     StringBuilder out = new StringBuilder("<html>");
 
@@ -161,7 +161,7 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
     return out.toString();
   }
 
-  // TODO This finally belongs to the View Layer, wrong class here for a display method.
+  // TODO This finally belongs to the Controller Layer, wrong class here for a display method.
   private String petrolsToHtml(Set<Petrol> petrols) {
     if (petrols.isEmpty()) return "";
 
