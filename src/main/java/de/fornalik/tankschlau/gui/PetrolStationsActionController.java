@@ -27,13 +27,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 @Controller
 class PetrolStationsActionController {
-
-  private static final Logger LOGGER = Logger
-      .getLogger(PetrolStationsActionController.class.getName());
 
   private static final String CMD_START_CYCLIC = "START";
   private static final String CMD_STOP_CYCLIC = "STOP";
