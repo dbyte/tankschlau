@@ -28,30 +28,30 @@ public class FooterController {
 
   private static final String LABEL_NO_NETWORK_ACTIVITY = "label.NoNetworkActivity";
 
+  private final FooterPanel view;
   private final Localization l10n;
-  private final FooterPanel footerPanel;
 
   @Autowired
-  public FooterController(FooterPanel footerPanel, Localization l10n) {
+  public FooterController(FooterPanel view, Localization l10n) {
+    this.view = view;
     this.l10n = l10n;
-    this.footerPanel = footerPanel;
   }
 
   void onOneShotWorkerStarted(String name) {
     String legalizedName = name != null ? name : "";
-    footerPanel.getLabelWork().setText(legalizedName);
-    footerPanel.getLabelWork().setIcon(footerPanel.getIconWork());
+    view.getLabelWork().setText(legalizedName);
+    view.getLabelWork().setIcon(view.getIconWork());
   }
 
   void onOneShotWorkerFinished() {
-    footerPanel.getLabelWork().setText(l10n.get(LABEL_NO_NETWORK_ACTIVITY));
-    footerPanel.getLabelWork().setIcon(null);
+    view.getLabelWork().setText(l10n.get(LABEL_NO_NETWORK_ACTIVITY));
+    view.getLabelWork().setIcon(null);
   }
 
   void onCyclicWorkerStopped() {
-    footerPanel.getLabelCountdown().setText(l10n.get("label.AutoUpdateStopped"));
-    footerPanel.getLabelWork().setText(l10n.get(LABEL_NO_NETWORK_ACTIVITY));
-    footerPanel.getLabelWork().setIcon(null);
+    view.getLabelCountdown().setText(l10n.get("label.AutoUpdateStopped"));
+    view.getLabelWork().setText(l10n.get(LABEL_NO_NETWORK_ACTIVITY));
+    view.getLabelWork().setIcon(null);
   }
 
   void updateCountdown(long remaining, TimeUnit timeUnit) {
@@ -62,7 +62,7 @@ public class FooterController {
     if (remaining <= 0) {
       textForCyclicWorker = l10n.get("label.WaitingForTaskFinish");
       textForSingleWorker = l10n.get("label.TaskRunning", "").trim();
-      workerIndicator = footerPanel.getIconWork();
+      workerIndicator = view.getIconWork();
     }
 
     else {
@@ -73,8 +73,8 @@ public class FooterController {
       workerIndicator = null;
     }
 
-    footerPanel.getLabelCountdown().setText(textForCyclicWorker);
-    footerPanel.getLabelWork().setText(textForSingleWorker);
-    footerPanel.getLabelWork().setIcon(workerIndicator);
+    view.getLabelCountdown().setText(textForCyclicWorker);
+    view.getLabelWork().setText(textForSingleWorker);
+    view.getLabelWork().setIcon(workerIndicator);
   }
 }

@@ -27,14 +27,14 @@ import java.awt.event.FocusListener;
 @Controller
 class PrefsApiKeyController {
 
-  private final PrefsApiKeyPanel view;
   private final PrefsApiKeyModel model;
+  private final PrefsApiKeyPanel view;
   private final ApiKeyFieldsFocusListener focusListener;
 
   @Autowired
-  PrefsApiKeyController(PrefsApiKeyPanel view, PrefsApiKeyModel model) {
-    this.view = view;
+  PrefsApiKeyController(PrefsApiKeyModel model, PrefsApiKeyPanel view) {
     this.model = model;
+    this.view = view;
     this.focusListener = new ApiKeyFieldsFocusListener();
   }
 

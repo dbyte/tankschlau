@@ -24,19 +24,19 @@ import javax.annotation.PostConstruct;
 @Controller
 public class LogController {
 
-  private final LogPanel logPanel;
+  private final LogPanel view;
 
   @Autowired
-  public LogController(LogPanel logPanel) {
-    this.logPanel = logPanel;
+  public LogController(LogPanel view) {
+    this.view = view;
   }
 
   @PostConstruct
   private void registerActions() {
-    logPanel.getBtnClearLog().addActionListener(e -> clearLogArea());
+    view.getBtnClearLog().addActionListener(e -> clearLogArea());
   }
 
   void clearLogArea() {
-    logPanel.getTextAreaLog().setText("");
+    view.getTextAreaLog().setText("");
   }
 }
