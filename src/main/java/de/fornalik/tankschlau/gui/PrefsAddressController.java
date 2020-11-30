@@ -16,13 +16,8 @@
 
 package de.fornalik.tankschlau.gui;
 
-import de.fornalik.tankschlau.geo.Address;
 import de.fornalik.tankschlau.geo.Geo;
-import de.fornalik.tankschlau.service.GeocodingWorker;
-import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
-import de.fornalik.tankschlau.util.WorkerService;
-import de.fornalik.tankschlau.webserviceapi.google.GoogleGeocodingClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -30,39 +25,35 @@ import javax.annotation.PostConstruct;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.util.logging.Logger;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 class PrefsAddressController {
 
-  private static final Logger LOGGER = Logger.getLogger(PrefsAddressController.class.getName());
   private static final double DEFAULT_SEARCH_RADIUS = 5.0;
 
   private final PrefsAddressPanel view;
   private final AddressFieldsDocumentListener addressFieldsDocumentListener;
   private final AddressFieldsFocusListener addressFieldsFocusListener;
   private final FooterController footerController;
-  private final WorkerService<Geo> workerService;
-  private final UserPrefs userPrefs;
+  private final PrefsAddressModel model;
   private final Localization l10n;
 
   @Autowired
   PrefsAddressController(
+      PrefsAddressModel model,
       PrefsAddressPanel view,
       FooterController footerController,
-      WorkerService<Geo> geocodingWorkerService,
-      UserPrefs userPrefs,
       Localization l10n) {
 
     this.view = view;
+    this.model = model;
     this.footerController = footerController;
-    this.workerService = geocodingWorkerService;
-    this.userPrefs = userPrefs;
     this.l10n = l10n;
 
     this.addressFieldsDocumentListener = new AddressFieldsDocumentListener();
@@ -78,15 +69,10 @@ class PrefsAddressController {
   }
 
   private void addPoweredByGoogleLogoIfGoogleIsProvider() {
-    // Evaluate current runtime class for interface GeocodingService
-    Class<?> geocodingProvider = ((GeocodingWorker) workerService.getWorker())
-        .getGeocodingService()
-        .getClass();
-
-    // No need to insert logo if provider is not Google
-    if (geocodingProvider != GoogleGeocodingClient.class) return;
-
-    view.insertPoweredByGooglePanel();
+    // Only need to insert logo if provider is Google Geocoding
+    if (model.isGeoServiceGoogleGeocodingImplementation()) {
+      view.insertPoweredByGooglePanel();
+    }
   }
 
   private void registerActionListeners() {
@@ -119,14 +105,14 @@ class PrefsAddressController {
   }
 
   private void populateFields() {
-    userPrefs.readAddress().ifPresent(adr -> {
+    model.readAddressFromUserPrefs().ifPresent(adr -> {
       view.getTextStreet().setText(adr.getStreet());
       view.getTextHouseNumber().setText(adr.getHouseNumber());
       view.getTextPostCode().setText(adr.getPostCode());
       view.getTextCity().setText(adr.getCity());
     });
 
-    userPrefs.readGeo().ifPresent(geo -> {
+    model.readGeoFromUserPrefs().ifPresent(geo -> {
       view.getTextSearchRadius()
           .setText(String.valueOf(geo.getDistance().orElse(DEFAULT_SEARCH_RADIUS)));
       view.getTextGeoLatitude().setText(String.valueOf(geo.getLatitude()));
@@ -135,7 +121,7 @@ class PrefsAddressController {
   }
 
   private void writeAddressToUserPrefs() {
-    userPrefs.writeAddress(createAddressFromFields());
+    model.writeAddressToUserPrefs(convertAddressFieldsToMap());
   }
 
   private boolean isValidUserAddress() {
@@ -148,43 +134,26 @@ class PrefsAddressController {
     view.getBtnGeoRequest().setEnabled(isValidUserAddress());
   }
 
-  private Address createAddressFromFields() {
-    if (!isValidUserAddress()) {
-      LOGGER.warning(l10n.get("msg.IncompleteUserAddress"));
-    }
+  private Map<String, String> convertAddressFieldsToMap() {
+    Map<String, String> map = new HashMap<>();
 
-    return new Address(
-        "",
-        view.getTextStreet().getText(),
-        view.getTextHouseNumber().getText(),
-        view.getTextCity().getText(),
-        view.getTextPostCode().getText(),
-        createGeoFromFields());
+    map.put("street", view.getTextStreet().getText());
+    map.put("houseNumber", view.getTextHouseNumber().getText());
+    map.put("city", view.getTextCity().getText());
+    map.put("postCode", view.getTextPostCode().getText());
+    map.putAll(convertGeoFieldsToMap());
+
+    return map;
   }
 
-  private Geo createGeoFromFields() {
-    Geo geo = null;
-    double lat;
-    double lng;
-    double searchRadius;
+  private Map<String, String> convertGeoFieldsToMap() {
+    Map<String, String> map = new HashMap<>();
 
-    if (!view.getTextGeoLatitude().getText().isEmpty() && !view
-        .getTextGeoLongitude().getText().isEmpty()) {
-      try {
-        lat = Double.parseDouble(view.getTextGeoLatitude().getText());
-        lng = Double.parseDouble(view.getTextGeoLongitude().getText());
-        searchRadius = Double.parseDouble(view.getTextSearchRadius().getText());
-        geo = new Geo(lat, lng, searchRadius);
-      }
-      catch (NumberFormatException e) {
-        view.getTextGeoLatitude().setText("");
-        view.getTextGeoLongitude().setText("");
-        view.getTextSearchRadius().setText(String.valueOf(DEFAULT_SEARCH_RADIUS));
-        Toolkit.getDefaultToolkit().beep();
-      }
-    }
+    map.put("latitude", view.getTextGeoLatitude().getText());
+    map.put("longitude", view.getTextGeoLongitude().getText());
+    map.put("searchRadius", view.getTextSearchRadius().getText());
 
-    return geo;
+    return map;
   }
 
   /**
@@ -228,12 +197,8 @@ class PrefsAddressController {
   private class BtnGeoRequestListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
-      // Force focusLost for eventually focussed field.
-      view.requestFocusInWindow();
-
-      // Do business stuff.
-      ((GeocodingWorker) workerService.getWorker()).setUserAddress(createAddressFromFields());
-      workerService.startOneShot(this::onGeocodingWorkerFinished);
+      view.requestFocusInWindow(); // Force focusLost for eventually focussed field.
+      model.getGeoDataForAddress(this::onGeocodingWorkerFinished, convertAddressFieldsToMap());
       this.onGeocodingWorkerStarted();
     }
 
@@ -253,7 +218,7 @@ class PrefsAddressController {
         view.getTextGeoLatitude().setText(String.valueOf(data.getLatitude()));
         view.getTextGeoLongitude().setText(String.valueOf(data.getLongitude()));
 
-        userPrefs.writeGeo(new Geo(data.getLatitude(), data.getLongitude()));
+        model.writeGeoToUserPrefs(convertGeoFieldsToMap());
       });
     }
   }
