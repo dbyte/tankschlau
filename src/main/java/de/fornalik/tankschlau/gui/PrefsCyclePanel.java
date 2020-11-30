@@ -16,45 +16,32 @@
 
 package de.fornalik.tankschlau.gui;
 
-import de.fornalik.tankschlau.user.UserPrefs;
 import de.fornalik.tankschlau.util.Localization;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
 import java.awt.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.logging.Logger;
 
 /**
  * User preferences panel for cyclic background services.
  */
-@Controller
+@Component
 class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
 
-  private static final Logger LOGGER = Logger.getLogger(PrefsCyclePanel.class.getName());
-
-  private static final int MINIMUM_CYCLE_RATE = 5;
-  private static final int DEFAULT_CYCLE_RATE = 300;
   private static final int DEFAULT_ROW_HEIGHT = 25;
-  private static final Dimension TOTAL_DIMENSION = new Dimension(300, 130);
+  private static final Dimension DEFAULT_SIZE = new Dimension(300, 130);
 
   private final JTextField textCycleRate;
   private final JTextField textMessageDelayWithNumberOfCalls;
   private final JCheckBox checkEnableMessages;
   private final GridBagConstraints constraints;
 
-  private final UserPrefs userPrefs;
   private final Localization l10n;
-  private final transient CycleFocusListener cycleFocusListener;
 
   @Autowired
-  PrefsCyclePanel(UserPrefs userPrefs, Localization l10n) {
-    this.userPrefs = userPrefs;
+  PrefsCyclePanel(Localization l10n) {
     this.l10n = l10n;
 
     this.textCycleRate = createIntegerOnlyTextField(5);
@@ -62,16 +49,14 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
     this.checkEnableMessages = createEnableMessagesCheckbox(l10n.get("label.EnableMessaging"));
 
     this.constraints = new GridBagConstraints();
-    this.cycleFocusListener = new CycleFocusListener();
-
-    this.initView();
   }
 
+  @PostConstruct
   private void initView() {
     setLayout(new GridBagLayout());
     setOpaque(true);
     setBorder(createTitledBorder(l10n.get("borderTitle.AutomaticDataUpdate")));
-    setMaximumSize(TOTAL_DIMENSION);
+    setMaximumSize(DEFAULT_SIZE);
 
     constraints.anchor = GridBagConstraints.WEST;
     constraints.fill = GridBagConstraints.HORIZONTAL;
@@ -89,8 +74,6 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
     addToPanel(labelCycleEvery, 120, constraints);
 
     constraints.gridx = 1;
-    textCycleRate.setText(String.valueOf(userPrefs.readPetrolStationsUpdateCycleRate()));
-    textCycleRate.addFocusListener(cycleFocusListener);
     addToPanel(textCycleRate, 60, constraints);
 
     constraints.gridx = 2;
@@ -99,14 +82,12 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
     constraints.gridy = 1; // Row 2 ---------------------------------------
     constraints.gridx = 0;
     constraints.gridwidth = 3;
-    addToPanel(new JSeparator(), TOTAL_DIMENSION.width, constraints);
+    addToPanel(new JSeparator(), DEFAULT_SIZE.width, constraints);
     constraints.gridwidth = 1;
 
     constraints.gridy = 2; // Row 3 ---------------------------------------
     constraints.gridx = 0;
     constraints.gridwidth = 3;
-    checkEnableMessages.setSelected(userPrefs.readPushMessageEnabled());
-    checkEnableMessages.addItemListener(new CheckboxListener());
     addToPanel(checkEnableMessages, 120, constraints);
     constraints.gridwidth = 1;
 
@@ -119,10 +100,6 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
     addToPanel(labelMessageMaxCallsUntilForceSend, 180, constraints);
 
     constraints.gridx = 1;
-    textMessageDelayWithNumberOfCalls
-        .setText(String.valueOf(userPrefs.readPushMessageDelayWithNumberOfCalls()));
-    textMessageDelayWithNumberOfCalls.setEnabled(userPrefs.readPushMessageEnabled());
-    textMessageDelayWithNumberOfCalls.addFocusListener(cycleFocusListener);
     addToPanel(textMessageDelayWithNumberOfCalls, 60, constraints);
 
     constraints.gridx = 2;
@@ -144,76 +121,15 @@ class PrefsCyclePanel extends JPanel implements PrefsFactoryMixin {
     component.setPreferredSize(new Dimension(width, DEFAULT_ROW_HEIGHT));
   }
 
-  // region Listeners
-  // =====================================================================
-
-  private class CycleFocusListener implements FocusListener {
-    @Override
-    public void focusGained(FocusEvent e) {
-      // No need.
-    }
-
-    @Override
-    public void focusLost(FocusEvent e) {
-      if (!(e.getSource() instanceof JTextField))
-        return;
-
-      if (e.getSource() == textCycleRate) {
-        int value = legalizeTextFieldToInteger(e, MINIMUM_CYCLE_RATE, DEFAULT_CYCLE_RATE);
-        userPrefs.writePetrolStationsUpdateCycleRate(value);
-      }
-
-      else if (e.getSource() == textMessageDelayWithNumberOfCalls) {
-        int value = legalizeTextFieldToInteger(e, 0, 20);
-        userPrefs.writePushMessageDelayWithNumberOfCalls(value);
-      }
-    }
-
-    private int legalizeTextFieldToInteger(FocusEvent e, int minimumValue, int fallbackValue) {
-      if (!(e.getSource() instanceof JTextField))
-        return fallbackValue;
-
-      JTextField textField = (JTextField) e.getSource();
-      if (textField.getDocument() == null)
-        return fallbackValue;
-
-      int length = textField.getDocument().getLength();
-      if (length == 0) {
-        textField.setText(String.valueOf(fallbackValue));
-        return fallbackValue;
-      }
-
-      int out = 0;
-
-      try {
-        String text = textField.getDocument().getText(0, length);
-        out = Integer.parseInt(text);
-      }
-      catch (BadLocationException ex) {
-        LOGGER.severe(ex.getMessage());
-      }
-
-      if (out < minimumValue) {
-        Toolkit.getDefaultToolkit().beep();
-        textField.setText(String.valueOf(fallbackValue));
-        return fallbackValue;
-      }
-
-      return out;
-    }
+  JTextField getTextCycleRate() {
+    return textCycleRate;
   }
 
-  private class CheckboxListener implements ItemListener {
-    @Override
-    public void itemStateChanged(ItemEvent e) {
-      if (e.getSource() == checkEnableMessages) {
-        boolean isChecked = e.getStateChange() == ItemEvent.SELECTED;
-
-        userPrefs.writePushMessageEnabled(isChecked);
-        textMessageDelayWithNumberOfCalls.setEnabled(isChecked);
-      }
-    }
+  JTextField getTextMessageDelayWithNumberOfCalls() {
+    return textMessageDelayWithNumberOfCalls;
   }
 
-  // endregion
+  JCheckBox getCheckEnableMessages() {
+    return checkEnableMessages;
+  }
 }
