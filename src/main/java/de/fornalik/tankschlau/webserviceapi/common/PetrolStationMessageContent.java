@@ -29,7 +29,7 @@ import java.util.Optional;
  * {@link PetrolStation} context.
  */
 public abstract class PetrolStationMessageContent implements MessageContent {
-  private static final Localization l10n = Localization.getInstance();
+  private static final Localization L10N = Localization.getInstance();
 
   /**
    * Formats a ready-to-use message text.
@@ -39,7 +39,7 @@ public abstract class PetrolStationMessageContent implements MessageContent {
    */
   public void setMessage(PetrolStation station, PetrolType petrolType) {
     String stationHeader = createStationHeader(station);
-    String petrol = l10n.get("msg.BestPrice", createPetrolString(station, petrolType));
+    String petrol = L10N.get("msg.BestPrice", createPetrolString(station, petrolType));
     String distance = createDistanceString(station);
     String street = station.getAddress().getStreetAndHouseNumber();
 
@@ -49,14 +49,14 @@ public abstract class PetrolStationMessageContent implements MessageContent {
   private String createStationHeader(PetrolStation station) {
     String stationName = station.getAddress().getName();
     String open = station.isOpen()
-        ? l10n.get("msg.NowOpen")
-        : l10n.get("msg.NowClosed");
+        ? L10N.get("msg.NowOpen")
+        : L10N.get("msg.NowClosed");
 
     return stationName + " - " + open;
   }
 
   private String createPetrolString(PetrolStation station, PetrolType type) {
-    String msg = l10n
+    String msg = L10N
         .get("msg.NoPetrolDataForStation", type.name(), station.getAddress().getName());
 
     return station
@@ -70,6 +70,6 @@ public abstract class PetrolStationMessageContent implements MessageContent {
 
     return geo.isPresent()
         ? geo.get().getDistanceAwayString()
-        : l10n.get("msg.Unknown");
+        : L10N.get("msg.Unknown");
   }
 }

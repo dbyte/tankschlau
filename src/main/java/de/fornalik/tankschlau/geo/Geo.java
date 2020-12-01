@@ -31,7 +31,7 @@ public class Geo {
   @SerializedName("lat") private final double latitude;
   @SerializedName("lng") private final double longitude;
   @SerializedName("dist") private Double distance;
-  private static final Localization l10n = Localization.getInstance();
+  private static final Localization L10N = Localization.getInstance();
 
   /**
    * Constructor
@@ -86,10 +86,10 @@ public class Geo {
    */
   public String getDistanceAwayString() {
     String distanceString = getDistance().isPresent()
-        ? l10n.kmFormat().format(getDistance().get())
-        : l10n.get("msg.Unknown");
+        ? L10N.kmFormat().format(getDistance().get())
+        : L10N.get("msg.Unknown");
 
-    return l10n.get("msg.KmAway", distanceString);
+    return L10N.get("msg.KmAway", distanceString);
   }
 
   private void throwOnInvalidDistance(Double km) {
