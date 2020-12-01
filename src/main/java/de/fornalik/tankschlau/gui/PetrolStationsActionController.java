@@ -62,56 +62,13 @@ class PetrolStationsActionController {
     view.getBtnRemoveAllData().addActionListener(buttonListener);
   }
 
-  private void onCyclicWorkerStarted() {
-    SwingUtilities.invokeLater(() -> {
-      view.getBtnStartCyclicWork().setActionCommand(CMD_STOP_CYCLIC);
-      view.getBtnStartCyclicWork().setText(L10N.get("button.StopCycling"));
-      view.getBtnStartOneShotWork().setEnabled(false);
-    });
-  }
-
-  private void onCyclicWorkerStopped() {
-    SwingUtilities.invokeLater(() -> {
-      view.getBtnStartCyclicWork().setActionCommand(CMD_START_CYCLIC);
-      view.getBtnStartCyclicWork().setText(L10N.get("button.UpdateCyclic"));
-      view.getBtnStartOneShotWork().setEnabled(true);
-      footerController.onCyclicWorkerStopped();
-    });
-  }
-
-  private void onSingleCycleFinished(List<PetrolStation> petrolStations) {
-    SwingUtilities.invokeLater(() -> tableModel.addPetrolStations(petrolStations));
-    model.sendPushmessage(petrolStations);
-  }
-
-  private void onOneShotWorkerStarted() {
-    SwingUtilities.invokeLater(() -> {
-      view.getBtnStartCyclicWork().setEnabled(false);
-      view.getBtnStartOneShotWork().setEnabled(false);
-      footerController.onOneShotWorkerStarted(L10N.get("msg.PetrolStationRequestRunning"));
-    });
-  }
-
-  private void onOneShotWorkerFinished(List<PetrolStation> petrolStations) {
-    SwingUtilities.invokeLater(() -> {
-      tableModel.addPetrolStations(petrolStations);
-      view.getBtnStartCyclicWork().setEnabled(true);
-      view.getBtnStartOneShotWork().setEnabled(true);
-      footerController.onOneShotWorkerFinished();
-    });
-  }
-
-  private void updateCountdown(long remaining, TimeUnit timeUnit) {
-    SwingUtilities.invokeLater(() -> footerController.updateCountdown(remaining, timeUnit));
-  }
-
   private class ButtonListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
       // Update petrol stations once.
       if (e.getSource() == view.getBtnStartOneShotWork()) {
-        model.updatePetrolStations(PetrolStationsActionController.this::onOneShotWorkerFinished);
+        model.updatePetrolStations(this::onOneShotWorkerFinished);
         onOneShotWorkerStarted();
       }
 
@@ -120,10 +77,8 @@ class PetrolStationsActionController {
 
         // Start automatic update of petrol stations every X time units.
         if (!CMD_STOP_CYCLIC.equals(actionCommand)) {
-          model.startCyclicUpdatePetrolStations(
-              PetrolStationsActionController.this::onSingleCycleFinished);
-
-          model.startObservingCycleCountdown(PetrolStationsActionController.this::updateCountdown);
+          model.startCyclicUpdatePetrolStations(this::onSingleCycleFinished);
+          model.startObservingCycleCountdown(this::updateCountdown);
           onCyclicWorkerStarted();
         }
 
@@ -138,6 +93,49 @@ class PetrolStationsActionController {
       else if (e.getSource() == view.getBtnRemoveAllData()) {
         tableModel.removeAllPetrolStations();
       }
+    }
+
+    private void onOneShotWorkerStarted() {
+      SwingUtilities.invokeLater(() -> {
+        view.getBtnStartCyclicWork().setEnabled(false);
+        view.getBtnStartOneShotWork().setEnabled(false);
+        footerController.onOneShotWorkerStarted(L10N.get("msg.PetrolStationRequestRunning"));
+      });
+    }
+
+    private void onOneShotWorkerFinished(List<PetrolStation> petrolStations) {
+      SwingUtilities.invokeLater(() -> {
+        tableModel.addPetrolStations(petrolStations);
+        view.getBtnStartCyclicWork().setEnabled(true);
+        view.getBtnStartOneShotWork().setEnabled(true);
+        footerController.onOneShotWorkerFinished();
+      });
+    }
+
+    private void onCyclicWorkerStarted() {
+      SwingUtilities.invokeLater(() -> {
+        view.getBtnStartCyclicWork().setActionCommand(CMD_STOP_CYCLIC);
+        view.getBtnStartCyclicWork().setText(L10N.get("button.StopCycling"));
+        view.getBtnStartOneShotWork().setEnabled(false);
+      });
+    }
+
+    private void onCyclicWorkerStopped() {
+      SwingUtilities.invokeLater(() -> {
+        view.getBtnStartCyclicWork().setActionCommand(CMD_START_CYCLIC);
+        view.getBtnStartCyclicWork().setText(L10N.get("button.UpdateCyclic"));
+        view.getBtnStartOneShotWork().setEnabled(true);
+        footerController.onCyclicWorkerStopped();
+      });
+    }
+
+    private void onSingleCycleFinished(List<PetrolStation> petrolStations) {
+      SwingUtilities.invokeLater(() -> tableModel.addPetrolStations(petrolStations));
+      model.sendPushmessage(petrolStations);
+    }
+
+    private void updateCountdown(long remaining, TimeUnit timeUnit) {
+      SwingUtilities.invokeLater(() -> footerController.updateCountdown(remaining, timeUnit));
     }
   }
 }

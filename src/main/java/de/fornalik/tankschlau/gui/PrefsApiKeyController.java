@@ -58,10 +58,6 @@ class PrefsApiKeyController {
     view.getTextMessageServiceUserKey().setText(model.readPushmessageUserId());
   }
 
-  private String getValueFromPasswordField(JPasswordField field) {
-    return String.valueOf(field.getPassword());
-  }
-
   /**
    * Controls what to do when an API Key field has lost its focus.
    */
@@ -94,6 +90,10 @@ class PrefsApiKeyController {
         model.writePushmessageUserId(getValueFromPasswordField(
             view.getTextMessageServiceUserKey()));
       }
+    }
+
+    private String getValueFromPasswordField(JPasswordField field) {
+      return String.valueOf(field.getPassword());
     }
   }
 }

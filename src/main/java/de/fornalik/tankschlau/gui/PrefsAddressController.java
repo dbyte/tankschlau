@@ -103,10 +103,6 @@ class PrefsAddressController {
     });
   }
 
-  private void writeAddressToUserPrefs() {
-    model.writeAddressToUserPrefs(convertAddressFieldsToMap());
-  }
-
   private boolean isValidUserAddress() {
     return view.getTextStreet().getDocument().getLength() > 0
         && view.getTextCity().getDocument().getLength() >= 2
@@ -150,7 +146,7 @@ class PrefsAddressController {
 
     @Override
     public void focusLost(FocusEvent e) {
-      writeAddressToUserPrefs();
+      model.writeAddressToUserPrefs(convertAddressFieldsToMap());
     }
   }
 
