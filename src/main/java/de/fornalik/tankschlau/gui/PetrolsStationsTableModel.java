@@ -62,7 +62,11 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
   }
 
   @PostConstruct
-  private void initColumnNames() {
+  private void init() {
+    initColumnNames();
+  }
+
+  private static void initColumnNames() {
     COLUMN_NAMES[0] = L10N.get("tableHeader.Name");
     COLUMN_NAMES[1] = L10N.get("tableHeader.Price");
     COLUMN_NAMES[2] = L10N.get("tableHeader.Place");
