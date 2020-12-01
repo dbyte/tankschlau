@@ -42,6 +42,7 @@ import java.util.StringTokenizer;
 @Component
 class PetrolsStationsTableModel extends AbstractTableModel implements Serializable {
 
+  private static final Localization L10N = Localization.getInstance();
   private static final int COL_NAME_INDEX = 0;
   private static final int COL_PRICES_INDEX = 1;
   private static final int COL_STREET_INDEX = 2;
@@ -51,24 +52,22 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
 
   private final transient List<PetrolStation> petrolStations;
   private final UserPrefs userPrefs;
-  private final Localization l10n;
 
   @Autowired
-  PetrolsStationsTableModel(UserPrefs userPrefs, Localization l10n) {
+  PetrolsStationsTableModel(UserPrefs userPrefs) {
     super();
     this.userPrefs = userPrefs;
     this.userPrefs.registerChangeListener("petrol.preferredtype", this::sortPetrolStations);
-    this.l10n = l10n;
     this.petrolStations = new ArrayList<>();
   }
 
   @PostConstruct
   private void initColumnNames() {
-    COLUMN_NAMES[0] = l10n.get("tableHeader.Name");
-    COLUMN_NAMES[1] = l10n.get("tableHeader.Price");
-    COLUMN_NAMES[2] = l10n.get("tableHeader.Place");
-    COLUMN_NAMES[3] = l10n.get("tableHeader.Distance");
-    COLUMN_NAMES[4] = l10n.get("tableHeader.Status");
+    COLUMN_NAMES[0] = L10N.get("tableHeader.Name");
+    COLUMN_NAMES[1] = L10N.get("tableHeader.Price");
+    COLUMN_NAMES[2] = L10N.get("tableHeader.Place");
+    COLUMN_NAMES[3] = L10N.get("tableHeader.Distance");
+    COLUMN_NAMES[4] = L10N.get("tableHeader.Status");
   }
 
   @Override
@@ -109,7 +108,7 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
         return petrolStation.getAddress()
             .getGeo()
             .map(Geo::getDistanceAwayString)
-            .orElse(l10n.get("msg.Unknown"));
+            .orElse(L10N.get("msg.Unknown"));
 
       case COL_IS_OPEN_INDEX:
         return isOpenToHtml(petrolStation.isOpen());
@@ -151,12 +150,12 @@ class PetrolsStationsTableModel extends AbstractTableModel implements Serializab
 
     if (isOpen) {
       out.append("<p>")
-          .append(l10n.get("msg.NowOpen"))
+          .append(L10N.get("msg.NowOpen"))
           .append("</p>");
     }
     else {
       out.append("<p style=\"color:#B71414;\">")
-          .append(l10n.get("msg.NowClosed"))
+          .append(L10N.get("msg.NowClosed"))
           .append("</p>");
     }
 

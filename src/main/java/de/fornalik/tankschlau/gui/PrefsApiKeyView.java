@@ -29,9 +29,8 @@ import java.awt.*;
 @org.springframework.stereotype.Component
 public class PrefsApiKeyView extends JPanel implements PrefsFactoryMixin {
 
+  private static final Localization L10N = Localization.getInstance();
   private static final Dimension DEFAULT_SIZE = new Dimension(440, 138);
-
-  private final Localization l10n;
 
   private final JPasswordField textPetrolStationsServiceApiKey;
   private final JPasswordField textGeocodingServiceApiKey;
@@ -39,11 +38,8 @@ public class PrefsApiKeyView extends JPanel implements PrefsFactoryMixin {
   private final JPasswordField textMessageServiceUserKey;
 
   @Autowired
-  public PrefsApiKeyView(Localization l10n) {
+  public PrefsApiKeyView() {
     super();
-
-    this.l10n = l10n;
-
     this.textPetrolStationsServiceApiKey = createPasswordField();
     this.textGeocodingServiceApiKey = createPasswordField();
     this.textMessageServiceApiKey = createPasswordField();
@@ -55,7 +51,7 @@ public class PrefsApiKeyView extends JPanel implements PrefsFactoryMixin {
     setLayout(new GridLayout(4, 2));
     setAlignmentX(Component.LEFT_ALIGNMENT);
     setOpaque(true);
-    setBorder(createTitledBorder(l10n.get("borderTitle.Authentication")));
+    setBorder(createTitledBorder(L10N.get("borderTitle.Authentication")));
     setPreferredSize(DEFAULT_SIZE);
     setMaximumSize(DEFAULT_SIZE);
     setMinimumSize(DEFAULT_SIZE);

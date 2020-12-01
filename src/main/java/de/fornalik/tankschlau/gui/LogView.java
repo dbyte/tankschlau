@@ -32,15 +32,15 @@ import java.awt.*;
 @Component
 class LogView extends JPanel {
 
-  private final Localization l10n;
+  private static final Localization L10N = Localization.getInstance();
+
   private final JLabel labelLogHeader;
   private final JTextArea textAreaLog;
   private final JButton btnClearLog;
 
   @Autowired
-  LogView(Localization l10n) {
+  LogView() {
     super();
-    this.l10n = l10n;
     this.labelLogHeader = new JLabel();
     this.textAreaLog = new JTextArea();
     this.btnClearLog = new JButton();
@@ -70,7 +70,7 @@ class LogView extends JPanel {
   }
 
   private JPanel createLogHeaderPanel() {
-    labelLogHeader.setText(l10n.get("label.Log"));
+    labelLogHeader.setText(L10N.get("label.Log"));
     labelLogHeader.setForeground(CustomColor.BOX_HEADER_TEXT);
 
     JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -104,7 +104,7 @@ class LogView extends JPanel {
     panel.add(btnClearLog);
 
     btnClearLog.setAlignmentX(CENTER_ALIGNMENT);
-    btnClearLog.setText(l10n.get("button.ClearLogView"));
+    btnClearLog.setText(L10N.get("button.ClearLogView"));
     btnClearLog.setMinimumSize(new Dimension(maxWidth, buttonHeight));
     btnClearLog.setMaximumSize(new Dimension(maxWidth, buttonHeight));
     btnClearLog.setPreferredSize(new Dimension(maxWidth, buttonHeight));

@@ -34,16 +34,15 @@ import java.util.logging.Logger;
 class FooterView extends JPanel {
 
   private static final Logger LOGGER = Logger.getLogger(FooterView.class.getName());
+  private static final Localization L10N = Localization.getInstance();
 
-  private final Localization l10n;
   private final JLabel labelCountdown;
   private final JLabel labelWork;
   private final ImageIcon iconWork;
 
   @Autowired
-  FooterView(Localization l10n) {
+  FooterView() {
     super();
-    this.l10n = l10n;
     this.labelCountdown = createBaseLabel();
     this.labelWork = createBaseLabel();
     this.iconWork = this.readWorkIndicatorIcon();
@@ -65,12 +64,12 @@ class FooterView extends JPanel {
   }
 
   private void configureCountdownLabel() {
-    labelCountdown.setText(l10n.get("label.AutoUpdateStopped"));
+    labelCountdown.setText(L10N.get("label.AutoUpdateStopped"));
     labelCountdown.setHorizontalAlignment(SwingConstants.LEFT);
   }
 
   private void configureWorkLabel() {
-    labelWork.setText(l10n.get("label.NoNetworkActivity"));
+    labelWork.setText(L10N.get("label.NoNetworkActivity"));
     labelWork.setIcon(null);
     labelWork.setPreferredSize(new Dimension(getMaximumSize().width, 40));
     labelWork.setHorizontalAlignment(SwingConstants.CENTER);

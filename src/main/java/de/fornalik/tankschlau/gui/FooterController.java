@@ -26,15 +26,14 @@ import java.util.concurrent.TimeUnit;
 @Controller
 public class FooterController {
 
+  private static final Localization L10N = Localization.getInstance();
   private static final String LABEL_NO_NETWORK_ACTIVITY = "label.NoNetworkActivity";
 
   private final FooterView view;
-  private final Localization l10n;
 
   @Autowired
-  public FooterController(FooterView view, Localization l10n) {
+  public FooterController(FooterView view) {
     this.view = view;
-    this.l10n = l10n;
   }
 
   void onOneShotWorkerStarted(String name) {
@@ -44,13 +43,13 @@ public class FooterController {
   }
 
   void onOneShotWorkerFinished() {
-    view.getLabelWork().setText(l10n.get(LABEL_NO_NETWORK_ACTIVITY));
+    view.getLabelWork().setText(L10N.get(LABEL_NO_NETWORK_ACTIVITY));
     view.getLabelWork().setIcon(null);
   }
 
   void onCyclicWorkerStopped() {
-    view.getLabelCountdown().setText(l10n.get("label.AutoUpdateStopped"));
-    view.getLabelWork().setText(l10n.get(LABEL_NO_NETWORK_ACTIVITY));
+    view.getLabelCountdown().setText(L10N.get("label.AutoUpdateStopped"));
+    view.getLabelWork().setText(L10N.get(LABEL_NO_NETWORK_ACTIVITY));
     view.getLabelWork().setIcon(null);
   }
 
@@ -60,16 +59,16 @@ public class FooterController {
     final ImageIcon workerIndicator;
 
     if (remaining <= 0) {
-      textForCyclicWorker = l10n.get("label.WaitingForTaskFinish");
-      textForSingleWorker = l10n.get("label.TaskRunning", "").trim();
+      textForCyclicWorker = L10N.get("label.WaitingForTaskFinish");
+      textForSingleWorker = L10N.get("label.TaskRunning", "").trim();
       workerIndicator = view.getIconWork();
     }
 
     else {
       textForCyclicWorker =
-          l10n.get("label.TaskCountdown", remaining + " " + l10n.get("timeUnit." + timeUnit));
+          L10N.get("label.TaskCountdown", remaining + " " + L10N.get("timeUnit." + timeUnit));
 
-      textForSingleWorker = l10n.get(LABEL_NO_NETWORK_ACTIVITY);
+      textForSingleWorker = L10N.get(LABEL_NO_NETWORK_ACTIVITY);
       workerIndicator = null;
     }
 

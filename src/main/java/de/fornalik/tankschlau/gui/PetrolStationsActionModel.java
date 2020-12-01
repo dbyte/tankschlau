@@ -38,23 +38,21 @@ import java.util.logging.Logger;
 class PetrolStationsActionModel {
 
   private static final Logger LOGGER = Logger.getLogger(PetrolStationsActionModel.class.getName());
+  private static final Localization L10N = Localization.getInstance();
 
   private final WorkerService<List<PetrolStation>> petrolStationsWorkerService;
   private final PetrolStationMessageWorker messageWorker;
   private final UserPrefs userPrefs;
-  private final Localization l10n;
 
   @Autowired
   PetrolStationsActionModel(
       WorkerService<List<PetrolStation>> petrolStationsWorkerService,
       PetrolStationMessageWorker messageWorker,
-      UserPrefs userPrefs,
-      Localization l10n) {
+      UserPrefs userPrefs) {
 
     this.petrolStationsWorkerService = petrolStationsWorkerService;
     this.messageWorker = messageWorker;
     this.userPrefs = userPrefs;
-    this.l10n = l10n;
   }
 
   @PostConstruct
@@ -97,7 +95,7 @@ class PetrolStationsActionModel {
     Optional<Geo> geo = userPrefs.readGeo();
 
     if (!geo.isPresent()) {
-      String errMessage = l10n.get("msg.UnableToRequestPetrolStations_ReasonNoGeoForUser");
+      String errMessage = L10N.get("msg.UnableToRequestPetrolStations_ReasonNoGeoForUser");
       LOGGER.warning(errMessage);
       throw new IllegalStateException(errMessage);
     }

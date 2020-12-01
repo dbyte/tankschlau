@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 @Controller
 class PetrolStationsActionController {
 
+  private static final Localization L10N = Localization.getInstance();
   private static final String CMD_START_CYCLIC = "START";
   private static final String CMD_STOP_CYCLIC = "STOP";
 
@@ -39,22 +40,17 @@ class PetrolStationsActionController {
   private final PetrolsStationsTableModel tableModel;
   private final FooterController footerController;
 
-  private final Localization l10n;
-
   @Autowired
   PetrolStationsActionController(
       PetrolStationsActionModel model,
       PetrolStationsActionView view,
       PetrolsStationsTableModel tableModel,
-      FooterController footerController,
-      Localization l10n) {
+      FooterController footerController) {
 
     this.model = model;
     this.view = view;
     this.tableModel = tableModel;
     this.footerController = footerController;
-
-    this.l10n = l10n;
   }
 
   @PostConstruct
@@ -69,7 +65,7 @@ class PetrolStationsActionController {
   private void onCyclicWorkerStarted() {
     SwingUtilities.invokeLater(() -> {
       view.getBtnStartCyclicWork().setActionCommand(CMD_STOP_CYCLIC);
-      view.getBtnStartCyclicWork().setText(l10n.get("button.StopCycling"));
+      view.getBtnStartCyclicWork().setText(L10N.get("button.StopCycling"));
       view.getBtnStartOneShotWork().setEnabled(false);
     });
   }
@@ -77,7 +73,7 @@ class PetrolStationsActionController {
   private void onCyclicWorkerStopped() {
     SwingUtilities.invokeLater(() -> {
       view.getBtnStartCyclicWork().setActionCommand(CMD_START_CYCLIC);
-      view.getBtnStartCyclicWork().setText(l10n.get("button.UpdateCyclic"));
+      view.getBtnStartCyclicWork().setText(L10N.get("button.UpdateCyclic"));
       view.getBtnStartOneShotWork().setEnabled(true);
       footerController.onCyclicWorkerStopped();
     });
@@ -92,7 +88,7 @@ class PetrolStationsActionController {
     SwingUtilities.invokeLater(() -> {
       view.getBtnStartCyclicWork().setEnabled(false);
       view.getBtnStartOneShotWork().setEnabled(false);
-      footerController.onOneShotWorkerStarted(l10n.get("msg.PetrolStationRequestRunning"));
+      footerController.onOneShotWorkerStarted(L10N.get("msg.PetrolStationRequestRunning"));
     });
   }
 

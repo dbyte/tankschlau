@@ -35,6 +35,7 @@ import java.util.Map;
 @Controller
 class PrefsAddressController {
 
+  private static final Localization L10N = Localization.getInstance();
   private static final double DEFAULT_SEARCH_RADIUS = 5.0;
 
   private final PrefsAddressView view;
@@ -42,19 +43,16 @@ class PrefsAddressController {
   private final AddressFieldsFocusListener addressFieldsFocusListener;
   private final FooterController footerController;
   private final PrefsAddressModel model;
-  private final Localization l10n;
 
   @Autowired
   PrefsAddressController(
       PrefsAddressModel model,
       PrefsAddressView view,
-      FooterController footerController,
-      Localization l10n) {
+      FooterController footerController) {
 
     this.view = view;
     this.model = model;
     this.footerController = footerController;
-    this.l10n = l10n;
 
     this.addressFieldsDocumentListener = new AddressFieldsDocumentListener();
     this.addressFieldsFocusListener = new AddressFieldsFocusListener();
@@ -190,7 +188,7 @@ class PrefsAddressController {
     private void onGeoQueryStarted() {
       SwingUtilities.invokeLater(() -> {
         view.getBtnGeoRequest().setEnabled(false);
-        footerController.onOneShotWorkerStarted(l10n.get("msg.GeocodingRequestRunning"));
+        footerController.onOneShotWorkerStarted(L10N.get("msg.GeocodingRequestRunning"));
       });
     }
 

@@ -36,6 +36,8 @@ import java.time.format.DateTimeFormatter;
 @Component
 class PetrolStationsView extends JPanel implements TableModelListener {
 
+  private static final Localization L10N = Localization.getInstance();
+
   private final PetrolStationsActionView actionView;
   private final JTable dataTable;
   private final JScrollPane dataScrollPane;
@@ -43,17 +45,14 @@ class PetrolStationsView extends JPanel implements TableModelListener {
   private final JLabel lastUpdateLabel;
 
   private final UserPrefs userPrefs;
-  private final Localization l10n;
 
   @Autowired
   PetrolStationsView(
       PetrolStationsActionView actionView,
       PetrolsStationsTableModel petrolsStationsTableModel,
-      UserPrefs userPrefs,
-      Localization l10n) {
+      UserPrefs userPrefs) {
 
     this.userPrefs = userPrefs;
-    this.l10n = l10n;
     this.actionView = actionView;
 
     petrolsStationsTableModel.addTableModelListener(this);
@@ -106,7 +105,7 @@ class PetrolStationsView extends JPanel implements TableModelListener {
   }
 
   private void setHeaderText(String petrolTypeString) {
-    headerLabel.setText(l10n.get("msg.CurrentPricesSortedBy", petrolTypeString));
+    headerLabel.setText(L10N.get("msg.CurrentPricesSortedBy", petrolTypeString));
   }
 
   private void setLastUpdateText(LocalDateTime lastUpdateAt) {
@@ -117,10 +116,10 @@ class PetrolStationsView extends JPanel implements TableModelListener {
     }
 
     DateTimeFormatter formatter = DateTimeFormatter
-        .ofPattern("dd.MM.yyyy HH:mm:ss", l10n.getRegion());
+        .ofPattern("dd.MM.yyyy HH:mm:ss", L10N.getRegion());
 
     String lastUpdateStr = formatter.format(lastUpdateAt);
-    lastUpdateLabel.setText(l10n.get("msg.LastUpdateAt", lastUpdateStr));
+    lastUpdateLabel.setText(L10N.get("msg.LastUpdateAt", lastUpdateStr));
   }
 
   private void configureDataScrollPane() {
@@ -142,7 +141,7 @@ class PetrolStationsView extends JPanel implements TableModelListener {
     dataTable.setShowHorizontalLines(true);
     dataTable.setGridColor(Color.getHSBColor(0f, 0f, 0.93f));
     dataTable.setRowHeight(69);
-    dataTable.getColumn(l10n.get("tableHeader.Name")).setMinWidth(200);
+    dataTable.getColumn(L10N.get("tableHeader.Name")).setMinWidth(200);
   }
 
   private void configureDataControlPanel() {

@@ -29,17 +29,16 @@ import java.awt.*;
 @org.springframework.stereotype.Component
 class PetrolStationsActionView extends JPanel {
 
-  private final PetrolTypeView petrolTypeView;
-  private final Localization l10n;
+  private static final Localization L10N = Localization.getInstance();
 
+  private final PetrolTypeView petrolTypeView;
   private final JButton btnStartOneShotWork;
   private final JButton btnStartCyclicWork;
   private final JButton btnRemoveAllData;
 
   @Autowired
-  PetrolStationsActionView(PetrolTypeView petrolTypeView, Localization l10n) {
+  PetrolStationsActionView(PetrolTypeView petrolTypeView) {
     this.petrolTypeView = petrolTypeView;
-    this.l10n = l10n;
 
     this.btnStartOneShotWork = new JButton();
     this.btnStartCyclicWork = new JButton();
@@ -54,13 +53,13 @@ class PetrolStationsActionView extends JPanel {
     setMaximumSize(new Dimension(190, Short.MAX_VALUE));
 
     add(Box.createRigidArea(new Dimension(getMaximumSize().width, 52)));
-    addButton(btnStartOneShotWork, l10n.get("button.UpdateOnce"));
+    addButton(btnStartOneShotWork, L10N.get("button.UpdateOnce"));
 
     add(Box.createRigidArea(new Dimension(getMaximumSize().width, 5)));
-    addButton(btnStartCyclicWork, l10n.get("button.UpdateCyclic"));
+    addButton(btnStartCyclicWork, L10N.get("button.UpdateCyclic"));
 
     add(Box.createRigidArea(new Dimension(getMaximumSize().width, 5)));
-    addButton(btnRemoveAllData, l10n.get("button.EmptyTableView"));
+    addButton(btnRemoveAllData, L10N.get("button.EmptyTableView"));
 
     add(Box.createRigidArea(new Dimension(getMaximumSize().width, 10)));
     add(createSeparator());

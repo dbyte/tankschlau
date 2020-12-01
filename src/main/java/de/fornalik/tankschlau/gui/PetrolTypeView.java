@@ -30,12 +30,11 @@ import java.awt.*;
 @Component
 class PetrolTypeView extends JPanel {
 
-  private final Localization l10n;
+  private static final Localization L10N = Localization.getInstance();
   private final JPanel petrolTypeSelectionView;
 
   @Autowired
-  PetrolTypeView(Localization l10n) {
-    this.l10n = l10n;
+  PetrolTypeView() {
     this.petrolTypeSelectionView = new JPanel();
   }
 
@@ -51,7 +50,7 @@ class PetrolTypeView extends JPanel {
 
   private JPanel createHeaderLabel() {
     JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    JLabel label = new JLabel(l10n.get("label.PreferredPetrolType"));
+    JLabel label = new JLabel(L10N.get("label.PreferredPetrolType"));
     label.setForeground(CustomColor.LABEL_TEXT);
 
     panel.add(label);

@@ -29,6 +29,7 @@ import java.awt.*;
 @org.springframework.stereotype.Component
 class PrefsAddressView extends JPanel implements PrefsFactoryMixin {
 
+  private static final Localization L10N = Localization.getInstance();
   private static final Dimension DEFAULT_SIZE = new Dimension(350, 325);
 
   private final JTextField textStreet;
@@ -40,12 +41,9 @@ class PrefsAddressView extends JPanel implements PrefsFactoryMixin {
   private final JTextField textSearchRadius;
   private final JButton btnGeoRequest;
 
-  private final Localization l10n;
-
   @Autowired
-  PrefsAddressView(Localization l10n) {
+  PrefsAddressView() {
     super();
-    this.l10n = l10n;
 
     this.textStreet = createTextField();
     this.textHouseNumber = createTextField();
@@ -63,7 +61,7 @@ class PrefsAddressView extends JPanel implements PrefsFactoryMixin {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setAlignmentX(LEFT_ALIGNMENT);
     setOpaque(true);
-    setBorder(createTitledBorder(l10n.get("borderTitle.YourLocation")));
+    setBorder(createTitledBorder(L10N.get("borderTitle.YourLocation")));
     setPreferredSize(DEFAULT_SIZE);
     setMaximumSize(DEFAULT_SIZE);
     setMinimumSize(DEFAULT_SIZE);
@@ -84,16 +82,16 @@ class PrefsAddressView extends JPanel implements PrefsFactoryMixin {
   private JPanel createAddressFieldsPanel() {
     JPanel panel = createGridPanel(4);
 
-    panel.add(createLabel(l10n.get("label.AdrStreet")));
+    panel.add(createLabel(L10N.get("label.AdrStreet")));
     panel.add(textStreet);
 
-    panel.add(createLabel(l10n.get("label.AdrHouseNumber")));
+    panel.add(createLabel(L10N.get("label.AdrHouseNumber")));
     panel.add(textHouseNumber);
 
-    panel.add(createLabel(l10n.get("label.AdrPostcode")));
+    panel.add(createLabel(L10N.get("label.AdrPostcode")));
     panel.add(textPostCode);
 
-    panel.add(createLabel(l10n.get("label.AdrCity")));
+    panel.add(createLabel(L10N.get("label.AdrCity")));
     panel.add(textCity);
 
     return panel;
@@ -102,10 +100,10 @@ class PrefsAddressView extends JPanel implements PrefsFactoryMixin {
   private JPanel createGeoFieldsPanel() {
     JPanel panel = createGridPanel(2);
 
-    panel.add(createLabel(l10n.get("label.AdrLatitude")));
+    panel.add(createLabel(L10N.get("label.AdrLatitude")));
     panel.add(textGeoLatitude);
 
-    panel.add(createLabel(l10n.get("label.AdrLongitude")));
+    panel.add(createLabel(L10N.get("label.AdrLongitude")));
     panel.add(textGeoLongitude);
 
     return panel;
@@ -114,14 +112,14 @@ class PrefsAddressView extends JPanel implements PrefsFactoryMixin {
   private JPanel createDistancePanel() {
     JPanel panel = createGridPanel(1);
 
-    panel.add(createLabel(l10n.get("label.PetrolStationsSearchRadius")));
+    panel.add(createLabel(L10N.get("label.PetrolStationsSearchRadius")));
     panel.add(textSearchRadius);
 
     return panel;
   }
 
   private JButton createGeoRequestButton() {
-    JButton btnRequestGeo = new JButton(l10n.get("button.EvaluateLatLonByAddress"));
+    JButton btnRequestGeo = new JButton(L10N.get("button.EvaluateLatLonByAddress"));
     btnRequestGeo.setAlignmentX(LEFT_ALIGNMENT);
     btnRequestGeo.setMinimumSize(new Dimension(DEFAULT_SIZE.width - 10, 25));
     btnRequestGeo.setMaximumSize(new Dimension(DEFAULT_SIZE.width - 10, 25));
