@@ -40,9 +40,6 @@ public class Localization {
   public Localization() {
     this.configure(Locale.GERMANY);
   }
-
-  //  private Localization() {}
-
   /**
    * @return Singleton - defaults to our custom german language/format settings at creation time.
    * @see #newInstance()
